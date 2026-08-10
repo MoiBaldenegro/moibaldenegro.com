@@ -432,9 +432,8 @@ La flor SVG irá aquí después.
         inset 0 1px 0 rgba(255,255,255,.05),
         0 18px 40px rgba(0,0,0,.28);
 
-    transition:
-        transform .25s ease,
-        box-shadow .25s ease;
+    transition: all .35s cubic-bezier(.2,.8,.2,1);
+        
 
     isolation:isolate;
 
@@ -446,8 +445,11 @@ La flor SVG irá aquí después.
         translateY(-4px);
 
     box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.233),
         0 25px 60px rgba(0,0,0,.38);
+
+
+    filter: contrast(1.4);
 
 }
 
@@ -555,15 +557,16 @@ La flor SVG irá aquí después.
 
 }
 
-.card-icon img{
+
+.card-icon svg{
 
     position:absolute;
 
-    right:-16px;
-
-    bottom:-14px;
+    right: 4px;
+    bottom:32px;
 
     width:var(--icon-width);
+
 
     transform:
 
@@ -585,13 +588,13 @@ La flor SVG irá aquí después.
 
 /* Hover */
 
-.hero-card:hover .card-icon img{
+.hero-card:hover .card-icon svg{
 
     transform:
 
-        rotate(var(--icon-rotation))
+        rotate(2deg)
 
-        scale(calc(var(--icon-scale) * 1.06));
+        scale(calc(var(--icon-scale) * 1.12));
 
 }
 
@@ -599,23 +602,6 @@ La flor SVG irá aquí después.
    Ajustes especiales
 ========================================== */
 
-.hero-card:nth-child(2) .card-icon img{
-
-    right:-25px;
-
-}
-
-.hero-card:nth-child(5) .card-icon img{
-
-    bottom:-25px;
-
-}
-
-.hero-card:nth-child(8) .card-icon img{
-
-    right:-8px;
-
-}
 
 /* ==========================================
    Responsive Tablet
@@ -729,7 +715,7 @@ font-size:.82rem;
 
 }
 
-.card-icon img{
+.card-icon svg{
 
 width:110px !important;
 

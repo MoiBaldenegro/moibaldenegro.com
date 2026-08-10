@@ -1,0 +1,23 @@
+---
+import { getCollection } from 'astro:content';
+
+const arch_articles = await getCollection('architecture');
+console.log(arch_articles);
+---
+
+<section>
+  {arch_articles.map((article) => (
+    <article>
+      <h2>{article.data.title}</h2>
+      <p>Por {article.data.author} • {article.data.readtime} min de lectura</p>
+      <p>{article.data.description}</p>
+      
+      {/* Acceso directo al array de tags transformado por Zod */}
+      <div>
+        {article.data.tags.map((tag) => (
+          <span>#{tag} </span>
+        ))}
+      </div>
+    </article>
+  ))}
+</section>

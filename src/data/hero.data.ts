@@ -56,7 +56,7 @@ export const heroCards: HeroCardData[] = [
 
     rotate: -8,
 
-    scale: 1.12,
+    scale: 5,
 
     iconWidth: "165px"
   },
@@ -76,7 +76,7 @@ export const heroCards: HeroCardData[] = [
 
     rotate: -7,
 
-    scale: .95,
+    scale: 5,
 
     iconWidth: "115px"
   },
@@ -96,7 +96,7 @@ export const heroCards: HeroCardData[] = [
 
     rotate: -10,
 
-    scale: 1,
+    scale: 5,
 
     iconWidth: "120px"
   },
@@ -116,7 +116,7 @@ export const heroCards: HeroCardData[] = [
 
     rotate: -12,
 
-    scale: 1.15,
+    scale: 5,
 
     iconWidth: "190px"
   },
@@ -136,7 +136,7 @@ export const heroCards: HeroCardData[] = [
 
     rotate: -8,
 
-    scale: 1,
+    scale: 5,
 
     iconWidth: "170px"
   },
@@ -156,7 +156,7 @@ export const heroCards: HeroCardData[] = [
 
     rotate: -8,
 
-    scale: 1,
+    scale: 5,
 
     iconWidth: "115px"
   },
@@ -176,7 +176,7 @@ export const heroCards: HeroCardData[] = [
 
     rotate: -10,
 
-    scale: 1,
+    scale: 5,
 
     iconWidth: "110px"
   },
@@ -196,7 +196,7 @@ export const heroCards: HeroCardData[] = [
 
     rotate: -8,
 
-    scale: 1,
+    scale: 5,
 
     iconWidth: "105px"
   },
@@ -216,7 +216,7 @@ export const heroCards: HeroCardData[] = [
 
     rotate: -6,
 
-    scale: 1,
+    scale: 5,
 
     iconWidth: "120px"
   },
@@ -236,7 +236,7 @@ export const heroCards: HeroCardData[] = [
 
     rotate: 0,
 
-    scale: 1.08,
+    scale: 5,
 
     iconWidth: "165px"
   },
@@ -256,7 +256,7 @@ export const heroCards: HeroCardData[] = [
 
     rotate: -5,
 
-    scale: 1,
+    scale: 5,
 
     iconWidth: "120px"
   },
@@ -276,7 +276,7 @@ export const heroCards: HeroCardData[] = [
 
     rotate: -6,
 
-    scale: 1,
+    scale: 5,
 
     iconWidth: "170px"
   }
