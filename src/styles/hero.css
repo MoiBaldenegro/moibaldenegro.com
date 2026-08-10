@@ -1,0 +1,796 @@
+/* ==========================================
+   VARIABLES
+========================================== */
+
+:root{
+
+    --background:#070716;
+
+    --surface:#101018;
+
+    --border:rgba(255,255,255,.08);
+
+    --border-strong:rgba(255,255,255,.15);
+
+    --text:#ffffff;
+
+    --text-secondary:#B8B8C5;
+
+    --radius:22px;
+
+    --gap:14px;
+
+    --container:1500px;
+
+    --transition:.28s cubic-bezier(.2,.8,.2,1);
+
+}
+
+/* ==========================================
+   RESET
+========================================== */
+
+*,
+*::before,
+*::after{
+
+    box-sizing:border-box;
+
+}
+
+.new-hero{
+
+    position:relative;
+
+    overflow:hidden;
+
+    min-height:100vh;
+
+    background:radial-gradient(circle at top right,#25144f 0%,#0b0818 35%,#05050b 100%);
+
+    color:var(--text);
+
+    font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        sans-serif;
+
+}
+
+/* ==========================================
+   BACKGROUND
+========================================== */
+
+.hero-background{
+
+    position:absolute;
+
+    inset:0;
+
+    overflow:hidden;
+
+    pointer-events:none;
+
+}
+
+.hero-gradient{
+
+    position:absolute;
+
+    width:900px;
+
+    height:900px;
+
+    right:-300px;
+
+    top:-200px;
+
+    border-radius:50%;
+
+    background:
+
+    radial-gradient(circle,
+    rgba(120,70,255,.25),
+    transparent 70%);
+
+}
+
+.hero-noise{
+
+    position:absolute;
+
+    inset:0;
+
+    opacity:.03;
+
+    background-image:
+
+    radial-gradient(#fff 1px,transparent 1px);
+
+    background-size:14px 14px;
+
+}
+
+/*
+La flor SVG irá aquí después.
+
+.hero-flower{
+
+}
+*/
+
+/* ==========================================
+   NAVBAR
+========================================== */
+
+.hero-navbar{
+
+    position:sticky;
+
+    top:0;
+
+    z-index:100;
+
+    backdrop-filter:blur(18px);
+
+    background:rgba(8,8,18,.75);
+
+    border-bottom:1px solid var(--border-strong);
+
+}
+
+.hero-navbar nav{
+
+    width:min(var(--container),95%);
+
+    margin:auto;
+
+    height:74px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:42px;
+
+}
+
+.hero-navbar a{
+
+    color:white;
+
+    text-decoration:none;
+
+    font-size:.95rem;
+
+    transition:var(--transition);
+
+    position:relative;
+
+}
+
+.hero-navbar a::after{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+
+    bottom:-6px;
+
+    width:0;
+
+    height:2px;
+
+    border-radius:999px;
+
+    background:#7d68ff;
+
+    transition:.25s;
+
+}
+
+.hero-navbar a:hover{
+
+    color:#9a89ff;
+
+}
+
+.hero-navbar a:hover::after{
+
+    width:100%;
+
+}
+
+/* ==========================================
+   GRID
+========================================== */
+
+.hero-grid{
+
+    width:min(var(--container),95%);
+
+    margin:32px auto;
+
+    display:grid;
+
+    grid-template-columns:repeat(12,1fr);
+
+    grid-auto-rows:95px;
+
+    gap:var(--gap);
+
+}
+
+/* ==========================================
+   HERO PRINCIPAL
+========================================== */
+
+.profile-card{
+
+    grid-column:1 / span 5;
+
+    grid-row:1 / span 6;
+
+    display:flex;
+
+    flex-direction:column;
+
+    overflow:hidden;
+
+    background:#101018;
+
+    border:1px solid var(--border);
+
+    border-radius:24px;
+
+    transition:var(--transition);
+
+    box-shadow:
+
+    0 25px 80px rgba(0,0,0,.35);
+
+}
+
+.profile-card:hover{
+
+    transform:translateY(-6px);
+
+}
+
+.profile-image{
+
+    position:relative;
+
+    height:68%;
+
+    overflow:hidden;
+
+}
+
+.profile-image img{
+
+    width:100%;
+
+    height:100%;
+
+    display:block;
+
+    object-fit:cover;
+
+    transform:scale(1.02);
+
+}
+
+.profile-overlay{
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+
+    linear-gradient(
+
+        to top,
+
+        rgba(0,0,0,.75),
+
+        rgba(0,0,0,.05) 45%,
+
+        transparent
+
+    );
+
+}
+
+/* ==========================================
+   USERNAME
+========================================== */
+
+.profile-username{
+
+    position:absolute;
+
+    left:50%;
+
+    bottom:24px;
+
+    transform:translateX(-50%);
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    padding:12px 28px;
+
+    border-radius:999px;
+
+    background:#081a28;
+
+    border:1px solid rgba(0,195,255,.35);
+
+    box-shadow:
+
+    0 0 35px rgba(0,170,255,.15);
+
+}
+
+.profile-username span:first-child{
+
+    color:#5fd6ff;
+
+    font-weight:600;
+
+}
+
+.verified{
+
+    width:26px;
+
+    height:26px;
+
+    display:grid;
+
+    place-items:center;
+
+    border-radius:50%;
+
+    background:#17b8ff;
+
+    color:white;
+
+    font-size:.8rem;
+
+}
+
+/* ==========================================
+   TEXTO
+========================================== */
+
+.profile-content{
+
+    flex:1;
+
+    padding:28px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    text-align:center;
+
+}
+
+.profile-content h1{
+
+    margin:0;
+
+    font-size:clamp(2.5rem,4vw,4rem);
+
+    line-height:1;
+
+    letter-spacing:-2px;
+
+}
+
+.profile-content p{
+
+    margin-top:20px;
+
+    color:var(--text-secondary);
+
+    font-size:1.08rem;
+
+    line-height:1.75;
+
+}
+
+/* ==========================================
+   HERO CARDS
+========================================== */
+
+.hero-card{
+
+    position:relative;
+
+    overflow:hidden;
+
+    border-radius:20px;
+
+    background:var(--card-bg);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.05),
+        0 18px 40px rgba(0,0,0,.28);
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease;
+
+    isolation:isolate;
+
+}
+
+.hero-card:hover{
+
+    transform:
+        translateY(-4px);
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.08),
+        0 25px 60px rgba(0,0,0,.38);
+
+}
+
+/* ==========================================
+   Degradado superior
+========================================== */
+
+.hero-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+
+        linear-gradient(
+
+            180deg,
+
+            rgba(255,255,255,.08),
+
+            transparent 45%
+
+        );
+
+    pointer-events:none;
+
+}
+
+/* ==========================================
+   Glow inferior
+========================================== */
+
+.hero-card::after{
+
+    content:"";
+
+    position:absolute;
+
+    right:-45px;
+
+    bottom:-45px;
+
+    width:180px;
+
+    height:180px;
+
+    border-radius:50%;
+
+    background:
+
+        radial-gradient(
+
+            rgba(255,255,255,.08),
+
+            transparent 70%
+
+        );
+
+}
+
+/* ==========================================
+   Header
+========================================== */
+
+.card-header{
+
+    position:absolute;
+
+    left:22px;
+
+    top:18px;
+
+    z-index:4;
+
+}
+
+.card-header h3{
+
+    margin:0;
+
+    font-size:.95rem;
+
+    font-weight:700;
+
+    letter-spacing:.08em;
+
+    text-transform:uppercase;
+
+}
+
+/* ==========================================
+   ICONO
+========================================== */
+
+.card-icon{
+
+    position:absolute;
+
+    inset:0;
+
+    overflow:hidden;
+
+}
+
+.card-icon img{
+
+    position:absolute;
+
+    right:-16px;
+
+    bottom:-14px;
+
+    width:var(--icon-width);
+
+    transform:
+
+        rotate(var(--icon-rotation))
+
+        scale(var(--icon-scale));
+
+    transform-origin:center;
+
+    pointer-events:none;
+
+    user-select:none;
+
+    transition:
+
+        transform .35s ease;
+
+}
+
+/* Hover */
+
+.hero-card:hover .card-icon img{
+
+    transform:
+
+        rotate(var(--icon-rotation))
+
+        scale(calc(var(--icon-scale) * 1.06));
+
+}
+
+/* ==========================================
+   Ajustes especiales
+========================================== */
+
+.hero-card:nth-child(2) .card-icon img{
+
+    right:-25px;
+
+}
+
+.hero-card:nth-child(5) .card-icon img{
+
+    bottom:-25px;
+
+}
+
+.hero-card:nth-child(8) .card-icon img{
+
+    right:-8px;
+
+}
+
+/* ==========================================
+   Responsive Tablet
+========================================== */
+
+@media (max-width:1200px){
+
+.hero-grid{
+
+grid-template-columns:repeat(6,1fr);
+
+grid-auto-rows:140px;
+
+}
+
+.profile-card{
+
+grid-column:1/span 6;
+
+grid-row:auto;
+
+min-height:650px;
+
+}
+
+.hero-card{
+
+grid-column:auto !important;
+
+grid-row:auto !important;
+
+}
+
+}
+
+/* ==========================================
+   Responsive Mobile
+========================================== */
+
+@media (max-width:768px){
+
+.hero-navbar nav{
+
+justify-content:center;
+
+gap:24px;
+
+}
+
+.hero-navbar a{
+
+font-size:.85rem;
+
+}
+
+.hero-grid{
+
+grid-template-columns:1fr;
+
+grid-auto-rows:190px;
+
+}
+
+.profile-card{
+
+grid-column:auto;
+
+min-height:auto;
+
+}
+
+.hero-card{
+
+grid-column:auto !important;
+
+grid-row:auto !important;
+
+min-height:190px;
+
+}
+
+.profile-content{
+
+padding:24px;
+
+}
+
+.profile-content h1{
+
+font-size:2rem;
+
+}
+
+.profile-content p{
+
+font-size:.95rem;
+
+line-height:1.6;
+
+}
+
+.profile-username{
+
+padding:10px 18px;
+
+}
+
+.card-header h3{
+
+font-size:.82rem;
+
+}
+
+.card-icon img{
+
+width:110px !important;
+
+}
+
+}
+
+/* ==========================================
+   Animaciones
+========================================== */
+
+@keyframes float{
+
+0%{
+
+transform:translateY(0px);
+
+}
+
+50%{
+
+transform:translateY(-6px);
+
+}
+
+100%{
+
+transform:translateY(0px);
+
+}
+
+}
+
+.hero-gradient{
+
+animation:
+
+float 10s ease-in-out infinite;
+
+}
+
+/* ==========================================
+   Scrollbar
+========================================== */
+
+.new-hero ::-webkit-scrollbar{
+
+width:10px;
+
+}
+
+.new-hero ::-webkit-scrollbar-thumb{
+
+background:#4732a5;
+
+border-radius:999px;
+
+}
+
+.new-hero ::-webkit-scrollbar-track{
+
+background:#090912;
+
+}

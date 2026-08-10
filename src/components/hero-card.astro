@@ -1,0 +1,39 @@
+---
+import type { HeroCardData } from "../data/hero.data";
+
+interface Props {
+  card: HeroCardData;
+}
+
+const { card } = Astro.props;
+---
+
+<article
+  class="hero-card"
+  style={`
+      --card-bg:${card.background};
+      --icon-rotation:${card.rotate ?? 0}deg;
+      --icon-scale:${card.scale ?? 1};
+      --icon-width:${card.iconWidth ?? "150px"};
+      grid-column:${card.gridColumn};
+      grid-row:${card.gridRow};
+  `}
+>
+
+    <header class="card-header">
+
+        <h3>{card.title}</h3>
+
+    </header>
+
+    <div class="card-icon">
+
+        <a href="">
+            <svg width="32px" height="32px" viewBox="0 0 24 24">
+                 <use xlink:href={card.icon} href={card.icon}/>
+            </svg>
+        </a>
+
+    </div>
+
+</article>
