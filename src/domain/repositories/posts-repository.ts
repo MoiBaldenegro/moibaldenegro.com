@@ -1,8 +1,7 @@
-import type { Post } from '../entities/post.ts';
 
-export interface PostsRepository {
-  getPosts(): Promise<Post[]>;
-}
+// export interface PostsRepository {
+//   getPosts(): Promise<Post[]>;
+// }
 
 export class PostsDataError extends Error {
   constructor(message: string) {
@@ -11,41 +10,22 @@ export class PostsDataError extends Error {
   }
 }
 
-export function markdownPostRepository(){
+export async function markdownPostRepository(){
+
+  const { getCollection } = await import('astro:content');
+  let collection =  [];
+
   return {
-    async getPosts(): Promise<Post[]> {
-    let entries: Post[];
+    async getPosts(){
     try {
-      entries = await loadArchitectureEntries();
+        collection = await getCollection('architecture');
     } catch {
       throw new PostsDataError(
         'architecture: no se pudieron leer los artículos de la colección',
       );
     }
-    return entries ;
+    return collection;
     }
   }
-}
-
-async function loadArchitectureEntries(): Promise<Post[]> {
-  const { getCollection } = await import('astro:content');
-  const collection = await getCollection('architecture');
-  return collection.map((el) => {
-
-    const {data} = el;
-
-    return {
-      id: el.id,
-      slug: data.slug,
-      title: data.title,
-      author: data.author,
-      img: data.img,
-      readtime: data.readtime,
-      description: data.description,
-      tags: data.tags,
-      created: data.created,
-      updated: data.updated,
-    };
-  });
 }
 

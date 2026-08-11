@@ -50,3 +50,10 @@
   - Decidir: clase BEM `latest-articles__image` + regla única en la hoja existente (width 100%, aspect-ratio 16:9, object-fit cover, display block, border-radius/border/margin por tokens `--radius-card`/`--color-border`/`--gap-card`); `alt={post.title}` sin tocar el dominio; `loading="lazy"`; **sin tokens nuevos** (tokens.css 96/100; 16:9 = valor propio del componente justificado en design.md).
   - Alta única feature 17 (el diagnóstico apunta a CSS + clase; una sola petición, sin capa de datos que tocar).
 - **Resultado:** feature 17 `article-card-images` dada de alta en `feature_list.json` con status `pending`. Spec creada: `specs/17_article-card-images/requirements.md` (REQ-17-01..09) + `design.md` (toca UI/presentación: estilos de imagen de card, tokens, responsive). Análisis completo en `progress/research/article-card-images.md`. `node scripts/check-format.mjs` en verde tras el alta y JSON válido.
+
+### Investigación en curso
+
+**Tema:** Hack The Box API `connection/status` y endpoint de progreso de usuario.
+- **Inicio:** 2026-08-11 · explorer
+- **Estado:** `done`
+- **Salida:** `progress/research/htb-api-connection-status.md`

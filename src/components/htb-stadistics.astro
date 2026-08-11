@@ -1,0 +1,31 @@
+---
+import { HTB_API_TOKEN, HTB_USER_ID } from 'astro:env/server';
+const url = `https://labs.hackthebox.com/api/v4/profile/activity/${HTB_USER_ID}`;
+
+try {
+  const res = await fetch(url, {
+    headers: {
+      'Authorization': `Bearer ${HTB_API_TOKEN}`,
+      'Accept': 'application/json',
+      'User-Agent': 'Astro-SSR-App'
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error(`HTB API responded with ${res.status} ${res.statusText}`);
+  }
+
+  const data = await res.json();
+  console.log('HTB API Response:', data);
+
+  // Esto se imprime solo en la consola del servidor de Astro.
+  console.log('HTB user id:', HTB_USER_ID);
+
+} catch (error) {
+  console.error('Error fetching HTB data:', error);
+}
+---
+
+<div>
+  <h2>Progreso de Sistemas Operativos HTB</h2>
+</div>

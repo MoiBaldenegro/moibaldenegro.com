@@ -1,5 +1,25 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
+import { defineConfig, envField } from 'astro/config';
 
-// https://astro.build/config
-export default defineConfig({});
+export default defineConfig({
+    env: {
+        schema:{
+            IN_MAINTENANCE: envField.boolean({
+            access: 'public',
+            context: 'client',
+            }),
+            HTB_API_TOKEN: envField.string({
+                access: 'secret',
+                context: 'server',
+            }),
+            HTB_USER_ID: envField.string({
+                access: 'secret',
+                context: 'server',
+            }),
+        },
+
+    }
+});
+
+
+// 

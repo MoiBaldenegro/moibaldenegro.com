@@ -1,0 +1,32 @@
+---
+import { markdownPostRepository } from "../../domain/repositories/posts-repository.ts";
+import Layout from "../../layouts/Layout.astro";
+import {render, getCollection} from "astro:content"; 
+
+export async function getStaticPaths() {
+const repository = await markdownPostRepository()
+const posts = await repository.getPosts();
+  return posts.map((post) => ({
+    params: { id: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { data } = post;
+const { title, author, readtime, img } = data;
+const { Content }  = await render(post);
+---
+
+<Layout title={title}>
+  <main class="post">
+    <article class="post__content">
+      <h1 transition:name={`title-${post.id}`} class="post__title">{title}</h1>
+      <p class="post__meta">Por {author} • {readtime} min de lectura</p>
+      <img transition:name={`img-${post.id}`} src={`/assets/content/${img}`} alt={title} class="post__image" />
+      <main>
+        <Content  />
+      </main>
+    </article>
+  </main>   
+</Layout>
