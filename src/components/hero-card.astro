@@ -1,8 +1,9 @@
 ---
-import type { HeroCardData } from "../data/hero.data";
+import "../styles/hero-card.css";
+import type { HeroCard } from "../domain/entities/hero-card.ts";
 
 interface Props {
-  card: HeroCardData;
+  card: HeroCard;
 }
 
 const { card } = Astro.props;
@@ -10,14 +11,7 @@ const { card } = Astro.props;
 
 <article
   class="hero-card"
-  style={`
-      --card-bg:${card.background};
-      --icon-rotation:${card.rotate ?? 12}deg;
-      --icon-scale:${card.scale ?? 1};
-      --icon-width:${card.iconWidth ?? "150px"};
-      grid-column:${card.gridColumn};
-      grid-row:${card.gridRow};
-  `}
+  data-color-token={card.colorToken}
 >
 
     <header class="card-header">

@@ -1,9 +1,15 @@
 ---
-import "../../styles/hero.css";
+import "../../styles/tokens.css";
+import "../../styles/hero-section.css";
+import "../../styles/profile-card.css";
 
 import HeroCard from "../hero-card.astro";
 
-import { heroCards, profile } from "../../data/hero.data";
+import { HeroCardsRepository } from "../../domain/repositories/hero-cards-repository.ts";
+import { HeroProfileRepository } from "../../domain/repositories/hero-profile-repository.ts";
+
+const heroCards = new HeroCardsRepository().getCards();
+const profile = new HeroProfileRepository().getProfile();
 ---
 
 <section class="new-hero">
@@ -14,23 +20,6 @@ import { heroCards, profile } from "../../data/hero.data";
         <div class="hero-noise"></div>
         <div class="hero-flower"></div>
     </div>
-
-    <!-- Header -->
-    <header class="hero-navbar">
-
-        <nav>
-
-            <a href="/">Home</a>
-
-            <a href="/about">About</a>
-
-            <a href="https://x.com/moibaldenegro">
-                @moibaldenegro
-            </a>
-
-        </nav>
-
-    </header>
 
     <!-- Contenido -->
 

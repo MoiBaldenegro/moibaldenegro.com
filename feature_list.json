@@ -1,0 +1,182 @@
+{
+  "project": "moibaldenegro.com — sitio personal Astro 7.2.0",
+  "description": "Refactor completo del sitio para alinearlo con docs/architecture.md y docs/conventions.md: arnés funcional, tokens de diseño centralizados, dominio con datos JSON + entidades + repositorios con errores nombrados, componentes que consumen repositorios sin estilos inline, layout único personalizado, limpieza de código muerto y documentación real.",
+  "rules": {
+    "one_feature_at_a_time": true,
+    "require_tests_to_close": true,
+    "valid_status": ["pending", "in_progress", "done", "blocked"]
+  },
+  "features": [
+    {
+      "id": 1,
+      "name": "harness-kit-mount",
+      "title": "Completar el arnés: plantillas, script test y fix del test de integridad",
+      "description": "init.sh exige feature_list.json, check-format y el script test; el test tests/harness-kit-integrity.test.mjs recorre actualmente TODO el repo (incluidos node_modules/, dist/, .astro/ y src/) buscando tokens de la app, lo que hace fallar el kit con el código actual. Esta feature completa las piezas faltantes del arnés: plantillas templates/feature_list.json (con exactamente 1 feature de ejemplo), templates/current.md y templates/history.md, script \"test\" en package.json que ejecuta node --test tests/, y corrección del test de integridad para que escanee únicamente los archivos del kit (lista de obligatorios + plantillas). Base del refactor: sin ella init.sh no termina en verde. feature_list.json de raíz y las specs de cada feature los crea el spec_author; esta feature no los crea.",
+      "acceptance": [
+        "templates/feature_list.json existe con exactamente una feature de ejemplo y pasa el parseo JSON (REQ-01-01)",
+        "templates/current.md y templates/history.md existen y reproducen la estructura de progress/ (REQ-01-02)",
+        "`pnpm test` ejecuta los tests node:test de tests/ incluyendo harness-kit-integrity y termina en verde (REQ-01-03)",
+        "El test de integridad no lee archivos de node_modules, dist, .astro ni src y ./init.sh termina con el mensaje de entorno perfecto (REQ-01-04, REQ-01-05, REQ-01-06)"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 2,
+      "name": "design-tokens",
+      "title": "Sistema de tokens de diseño en src/styles/tokens.css",
+      "description": "El diseño actual define variables dentro de hero.css (:root) y usa valores sueltos (hex, rgba, px) por todo el CSS, violando el principio 'Tokens, no valores sueltos'. Esta feature crea src/styles/tokens.css con el sistema de tokens del sitio (grupos: color de fondo, superficie, texto, borde, acento, marca, radio, espaciado, sombra, tipografía, transición y contenedor) derivado de la paleta actual del hero, con test node:test (tests/design-tokens.test.mjs) escrito en rojo primero. Es la base de todas las features de estilos y UI posteriores (3, 4, 8, 10, 11).",
+      "acceptance": [
+        "tests/design-tokens.test.mjs se escribe en rojo antes de crear tokens.css y queda en verde al final (REQ-02-05)",
+        "src/styles/tokens.css existe y define al menos un token por cada grupo listado en la spec (REQ-02-01, REQ-02-02)",
+        "Los tokens de marca react html node github youtube twitch typescript y css existen en tokens.css con los colores de la paleta actual de hero.data.ts (REQ-02-03)",
+        "Todas las custom properties de tokens.css cumplen el patrón --grupo-nombre en kebab-case (REQ-02-04)"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 3,
+      "name": "hero-section-styles",
+      "title": "Extraer los estilos de la sección hero a hero-section.css con tokens",
+      "description": "src/styles/hero.css tiene 782 líneas (viola el límite de 100) y mezcla estilos de varias secciones. Esta feature extrae la hoja src/styles/hero-section.css con los estilos de fondo, navbar y cuadrícula del hero consumiendo únicamente tokens del diseño, y actualiza el import en new-hero.astro. Depende de la feature 2 (design-tokens). La navbar se moverá al layout en la feature 8; aquí solo se extraen sus estilos.",
+      "acceptance": [
+        "src/styles/hero-section.css existe y new-hero.astro lo importa (REQ-03-01)",
+        "tests/hero-section-styles.test.mjs verifica que hero-section.css no supera 100 líneas y no contiene valores hex ni rgba hardcodeados (REQ-03-04, REQ-03-05)",
+        "hero-section.css usa var() para colores radios y sombras y sus selectores cubren fondo navbar y cuadrícula (REQ-03-02, REQ-03-03)",
+        "El hero se ve idéntico en el dev server tras la extracción (REQ-03-02)"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 4,
+      "name": "hero-cards-styles",
+      "title": "Extraer estilos de tarjetas y perfil del hero con tokens y data-color-token",
+      "description": "hero.css aún conserva los estilos de tarjetas y perfil, y hero-card.astro aplica estilos inline con --card-bg (viola 'Estilos separados de la UI'). Esta feature extrae src/styles/hero-card.css y src/styles/profile-card.css consumiendo tokens, define el mapeo de fondos de tarjeta mediante el atributo data-color-token y elimina src/styles/hero.css. Depende de la feature 2 (design-tokens). El JSON de tarjetas guardará colorToken (feature 6) y la UI lo aplicará (feature 9).",
+      "acceptance": [
+        "src/styles/hero-card.css y src/styles/profile-card.css existen y se importan desde los componentes correspondientes (REQ-04-01)",
+        "tests/hero-cards-styles.test.mjs verifica que ambas hojas no superan 100 líneas y no contienen valores sueltos (REQ-04-03, REQ-04-04)",
+        "hero-card.css define reglas data-color-token para cada token de marca de las tarjetas (REQ-04-02)",
+        "src/styles/hero.css ya no existe tras la migración (REQ-04-05)"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 5,
+      "name": "hero-profile-domain",
+      "title": "Dominio del perfil del hero: JSON, entidad HeroProfile y HeroProfileRepository",
+      "description": "src/data/hero.data.ts mezcla tipos, perfil y tarjetas en 284 líneas (viola el límite de 100) y no es JSON (viola 'src/data = JSON'). Esta feature migra el perfil a src/data/hero.json y crea la entidad HeroProfile (src/domain/entities/hero-profile.ts) y el repositorio HeroProfileRepository (src/domain/repositories/hero-profile-repository.ts) que entrega la entidad leyendo el JSON, con error nombrado HeroProfileDataError y tests node:test. NO borra hero.data.ts: lo hará la feature 9 cuando la UI deje de importarlo.",
+      "acceptance": [
+        "src/data/hero.json existe con name username verified image y description del perfil actual (REQ-05-01, REQ-05-02)",
+        "tests/hero-profile-repository.test.mjs pasa en verde y cubre la lectura exitosa del perfil (REQ-05-03)",
+        "El test verifica que con un hero.json malformado el repositorio lanza HeroProfileDataError (REQ-05-04)",
+        "La entidad y el repositorio no superan 100 líneas cada uno (REQ-05-05)"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 6,
+      "name": "hero-cards-domain",
+      "title": "Dominio de tarjetas del hero: JSON con colorToken, entidad HeroCard y HeroCardsRepository",
+      "description": "Las 12 tarjetas del hero viven en hero.data.ts con colores hex hardcodeados en los datos (viola 'Tokens, no valores sueltos'). Esta feature migra las tarjetas a src/data/hero-cards.json referenciando su color mediante el campo colorToken, crea la entidad HeroCard (src/domain/entities/hero-card.ts) y el repositorio HeroCardsRepository (src/domain/repositories/hero-cards-repository.ts) con error nombrado HeroCardsDataError y tests node:test. Depende de la feature 5 (mismo dominio).",
+      "acceptance": [
+        "src/data/hero-cards.json existe con las 12 tarjetas actuales y sin valores hex en los fondos (REQ-06-01, REQ-06-04)",
+        "tests/hero-cards-repository.test.mjs pasa en verde y entrega 12 entidades HeroCard (REQ-06-02, REQ-06-03)",
+        "El test verifica que con un hero-cards.json malformado el repositorio lanza HeroCardsDataError (REQ-06-05)",
+        "La entidad y el repositorio no superan 100 líneas cada uno (REQ-06-06)"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 7,
+      "name": "posts-domain",
+      "title": "Dominio de artículos: entidad Post y PostsRepository sobre la colección architecture",
+      "description": "latest-articles.astro llama a getCollection('architecture') directamente en la UI (acceso a datos desde un componente, viola 'Datos vía repositorio'). Esta feature crea la entidad Post (src/domain/entities/post.ts) y el repositorio PostsRepository (src/domain/repositories/posts-repository.ts) que envuelve la colección de contenido, valida cada artículo y entrega Post[] con error nombrado PostsDataError, con tests node:test. La UI se conectará en la feature 10.",
+      "acceptance": [
+        "src/domain/entities/post.ts define Post con title author img readtime description tags created y updated (REQ-07-01)",
+        "tests/posts-repository.test.mjs pasa en verde y entrega los artículos de la colección architecture como Post[] (REQ-07-02)",
+        "El test verifica que un artículo inválido hace lanzar PostsDataError (REQ-07-03)",
+        "La entidad y el repositorio no superan 100 líneas cada uno (REQ-07-05)"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 8,
+      "name": "layout-refactor",
+      "status": "done",
+      "title": "Layout único personalizado: idioma es, título real, estilos separados y navbar compartida",
+      "description": "Layout.astro es la plantilla del starter: lang='en', título 'Astro Basics', <style> embebido (viola 'Estilos separados') y sin chrome, mientras new-hero.astro duplica la navbar (Home/About/X) como chrome compartido (viola 'Un solo layout'). Esta feature personaliza el layout: idioma es, título moibaldenegro.com con título por página, estilos separados en src/styles/layout.css con tokens, y barra de navegación movida desde new-hero.astro al layout único. Depende de la feature 2 (design-tokens).",
+      "acceptance": [
+        "Layout.astro declara lang=\"es\" y el título por defecto moibaldenegro.com (REQ-08-01, REQ-08-02)",
+        "Una página puede pasar un título propio al layout (REQ-08-03)",
+        "Layout.astro no contiene bloques <style> y src/styles/layout.css existe importada desde el layout (REQ-08-04)",
+        "La navbar con Home About y @moibaldenegro se renderiza desde el layout (REQ-08-05)",
+        "tests/layout-refactor.test.mjs verifica layout.css con un máximo de 100 líneas y sin valores sueltos (REQ-08-06)"
+      ]
+    },
+    {
+      "id": 9,
+      "name": "hero-ui-refactor",
+      "title": "Conectar NewHero y HeroCard a los repositorios y eliminar estilos inline",
+      "description": "new-hero.astro y hero-card.astro importan datos directamente de src/data/hero.data.ts (viola 'Datos vía repositorio') y hero-card.astro aplica estilos inline con --card-bg (viola 'Estilos separados'). Esta feature conecta ambos componentes a HeroProfileRepository y HeroCardsRepository (features 5 y 6), sustituye los inline styles por el atributo data-color-token con clases (feature 4) y borra src/data/hero.data.ts, ya migrado. Depende de las features 4, 5, 6 y 8.",
+      "acceptance": [
+        "new-hero.astro obtiene perfil y tarjetas desde los repositorios y no importa de src/data (REQ-09-01)",
+        "hero-card.astro recibe la tarjeta tipada como prop y no contiene atributos style (REQ-09-02, REQ-09-03)",
+        "tests/hero-ui-refactor.test.mjs verifica que src/data/hero.data.ts ya no existe (REQ-09-05)",
+        "El build genera el hero con el perfil y las 12 tarjetas sin errores (REQ-09-04)"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 10,
+      "name": "articles-ui-refactor",
+      "title": "Conectar LatestArticles al PostsRepository con estilos propios",
+      "description": "latest-articles.astro llama a astro:content en la UI (viola 'Datos vía repositorio') y no tiene hoja de estilos propia. Esta feature conecta el componente al PostsRepository (feature 7) y crea src/styles/latest-articles.css consumiendo tokens, con test node:test. Depende de las features 2 (tokens) y 7 (dominio de artículos).",
+      "acceptance": [
+        "latest-articles.astro importa PostsRepository y no importa astro:content (REQ-10-01, REQ-10-04)",
+        "src/styles/latest-articles.css existe y es importada por el componente (REQ-10-02)",
+        "tests/articles-ui-refactor.test.mjs verifica latest-articles.css con un máximo de 100 líneas y sin valores sueltos (REQ-10-03)",
+        "El build renderiza los artículos con título autor tiempo descripción y tags (REQ-10-01)"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 11,
+      "name": "about-page",
+      "title": "Crear la página /about con el perfil del autor",
+      "description": "La navbar enlaza /about pero la ruta no existe (404 actual). Decisión: crear la página src/pages/about.astro con el layout único (feature 8) y el perfil del autor obtenido de HeroProfileRepository (feature 5), sin inventar contenido: nombre, username y descripción. Depende de las features 5 y 8.",
+      "acceptance": [
+        "src/pages/about.astro existe y el build genera la ruta /about (REQ-11-01, REQ-11-05)",
+        "La página about usa el layout único del sitio (REQ-11-02)",
+        "La página muestra el nombre el username y la descripción del perfil obtenidos del repositorio (REQ-11-03)",
+        "src/styles/about.css existe con tokens y un máximo de 100 líneas verificado por tests/about-page.test.mjs (REQ-11-04)"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 12,
+      "name": "cleanup-dead-code",
+      "title": "Eliminar código muerto y añadir el guardián de tokens",
+      "description": "Quedan restos del starter y código muerto: src/config.ts (definición de colecciones en ubicación que Astro no reconoce y nada importa), src/application/*.ts vacíos, context.md en src/entities, src/repositories y src/services, Welcome.astro del starter (no importado, con imports a assets inexistentes) y src/ui vacía. Esta feature elimina esos archivos y carpetas y añade el script guardián scripts/audit-design-tokens.mjs (prefijo de verbo admitido: audit-) que falla cuando una hoja de src/styles usa valores fuera de tokens.css. Se ejecuta al final del refactor para no romper features en curso.",
+      "acceptance": [
+        "src/config.ts ya no existe (REQ-12-01)",
+        "src/application ya no existe y ningún context.md permanece en src/entities src/repositories ni src/services (REQ-12-02, REQ-12-03)",
+        "src/components/Welcome.astro y src/ui ya no existen (REQ-12-04, REQ-12-05)",
+        "scripts/audit-design-tokens.mjs existe y termina en verde cuando el sitio está limpio (REQ-12-06)",
+        "`pnpm build` y `pnpm test` terminan sin errores tras la limpieza (REQ-12-07)"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 13,
+      "name": "project-readme",
+      "title": "Reescribir README.md con la descripción real del proyecto",
+      "description": "README.md es el del starter kit de Astro (estructura de carpetas falsa, comandos incompletos) y no describe el proyecto real. Esta feature reescribe README.md con el propósito del sitio moibaldenegro.com, la estructura real de carpetas, los comandos (dev, build, preview, test, init.sh) y los enlaces a la documentación del arnés. Se ejecuta al final para documentar el estado final del refactor.",
+      "acceptance": [
+        "README.md menciona moibaldenegro.com y su propósito (REQ-13-01)",
+        "README.md documenta src/pages src/components src/domain src/data src/styles y public (REQ-13-02)",
+        "README.md lista pnpm dev pnpm build pnpm preview pnpm test y ./init.sh (REQ-13-03)",
+        "README.md enlaza docs/architecture.md docs/conventions.md y docs/verification.md y no menciona el starter kit de Astro (REQ-13-04, REQ-13-05)"
+      ],
+      "status": "done"
+    }
+  ]
+}

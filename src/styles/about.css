@@ -1,0 +1,43 @@
+/* about.css — Estilos de la página /about (about.astro, feature 11 about-page).
+   Solo tokens de tokens.css. Patrón BEM ligero: bloque about. */
+
+.about {
+  width: min(var(--container-max), 95%);
+  margin: auto;
+  padding: 48px 0 64px;
+  background: var(--color-background);
+}
+
+.about__profile {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 40px 48px;
+  display: grid;
+  gap: var(--gap-card);
+}
+
+.about__name {
+  color: var(--color-text);
+  font-size: 2rem;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.about__username {
+  color: var(--color-text-secondary);
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.about__description {
+  color: var(--color-text);
+  line-height: 1.6;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .about { padding: 32px 0 48px; }
+  .about__profile { padding: 28px 20px; }
+  .about__name { font-size: 1.5rem; }
+}

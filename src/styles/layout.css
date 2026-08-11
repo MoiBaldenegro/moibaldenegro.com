@@ -1,0 +1,53 @@
+/* layout.css — Estilos del layout único (reset global y navbar compartida).
+   Solo tokens de tokens.css. Migrada de new-hero.astro y hero-section.css (feature 8). */
+
+/* Reset global */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; width: 100%; height: 100%; }
+body {
+  background: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+}
+
+/* Navbar compartida (chrome del layout único) */
+.site-navbar {
+  position: sticky; top: 0; z-index: 100;
+  backdrop-filter: blur(18px);
+  background: var(--color-navbar);
+  border-bottom: 1px solid var(--color-border-strong);
+}
+.site-navbar nav {
+  width: min(var(--container-max), 95%);
+  margin: auto;
+  height: 74px;
+  display: flex; align-items: center; gap: 42px;
+}
+.site-navbar a {
+  color: var(--color-text);
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: var(--transition-default);
+  position: relative;
+}
+.site-navbar a::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: -6px;
+  width: 0; height: 2px;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+  transition: var(--transition-default);
+}
+.site-navbar a:hover { color: var(--color-accent-hover); }
+.site-navbar a:hover::after { width: 100%; }
+
+/* Scrollbar global (migrada del hero, feature 8) */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-thumb { background: var(--color-scrollbar-thumb); border-radius: var(--radius-pill); }
+::-webkit-scrollbar-track { background: var(--color-scrollbar-track); }
+
+@media (max-width: 768px) {
+  .site-navbar nav { justify-content: center; gap: 24px; }
+  .site-navbar a { font-size: 0.85rem; }
+}

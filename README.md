@@ -1,46 +1,48 @@
-# Astro Starter Kit: Basics
+# moibaldenegro.com
 
-```sh
-pnpm create astro@latest -- --template basics
-```
+Sitio personal de **Moisés Baldenegro Melendez** (@moibaldenegro). La portada
+muestra su perfil y las tecnologías con las que trabaja, y el sitio publica
+artículos sobre **arquitectura de software** y una página `/about` con la
+descripción del autor. Es un sitio estático generado con Astro 7 y TypeScript,
+sin JavaScript de runtime.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
+## Estructura del proyecto
 
 ```text
 /
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
+├── public/                     # archivos estáticos servidos tal cual (favicons, svg)
+├── src/
+│   ├── src/pages/              # rutas: una página por URL (/, /about)
+│   ├── src/layouts/            # layout único con el chrome compartido del sitio
+│   ├── src/components/         # componentes de UI (portada, tarjetas, artículos)
+│   ├── src/domain/
+│   │   ├── src/domain/entities/     # entidades del dominio: modelos tipados
+│   │   └── src/domain/repositories/ # repositorios: única vía de acceso a los datos
+│   ├── src/data/               # datos estructurados en JSON (perfil, tarjetas)
+│   ├── src/content/            # artículos en Markdown + src/content.config.ts
+│   └── src/styles/             # tokens del diseño + una hoja por componente
+├── scripts/                    # scripts del arnés (node scripts/<slug>.mjs)
+├── tests/                      # tests automáticos (node:test)
+├── specs/                      # specs EARS por feature
+├── progress/                   # bitácora de sesiones del arnés
+├── templates/                  # plantillas del arnés
 └── package.json
 ```
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+## Comandos
 
-## 🧞 Commands
+Todos los comandos se ejecutan desde la raíz del proyecto:
 
-All commands are run from the root of the project, from a terminal:
+| Comando        | Acción                                                |
+| :------------- | :---------------------------------------------------- |
+| `pnpm dev`     | Dev server local en `localhost:4321`                  |
+| `pnpm build`   | Build de producción a `./dist/`                       |
+| `pnpm preview` | Previsualiza el build de producción localmente        |
+| `pnpm test`    | Ejecuta los tests automáticos (node:test sobre `tests/`) |
+| `./init.sh`    | Verifica entorno, formato, tests y build (Git Bash en Windows) |
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
+## Documentación del arnés
 
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- [docs/architecture.md](docs/architecture.md) — qué significa hacer un buen trabajo en este proyecto.
+- [docs/conventions.md](docs/conventions.md) — reglas de estilo, nombres y estructura.
+- [docs/verification.md](docs/verification.md) — cómo comprobar que el trabajo funciona.

@@ -1,0 +1,134 @@
+[
+  {
+    "id": "react",
+    "title": "REACT",
+    "colorToken": "react",
+    "icon": "/assets/svg/sprite.svg#react",
+    "gridColumn": "6 / span 5",
+    "gridRow": "1 / span 2",
+    "rotate": -8,
+    "scale": 5,
+    "iconWidth": "165px"
+  },
+  {
+    "id": "html",
+    "title": "HTML",
+    "colorToken": "html",
+    "icon": "/assets/svg/sprite.svg#html",
+    "gridColumn": "11 / span 2",
+    "gridRow": "1 / span 2",
+    "rotate": -7,
+    "scale": 5,
+    "iconWidth": "115px"
+  },
+  {
+    "id": "node",
+    "title": "NODE JS",
+    "colorToken": "node",
+    "icon": "/assets/svg/sprite.svg#node",
+    "gridColumn": "6 / span 2",
+    "gridRow": "3 / span 2",
+    "rotate": -10,
+    "scale": 5,
+    "iconWidth": "120px"
+  },
+  {
+    "id": "github",
+    "title": "GITHUB ACTIONS",
+    "colorToken": "github",
+    "icon": "/assets/svg/sprite.svg#github",
+    "gridColumn": "8 / span 5",
+    "gridRow": "3 / span 2",
+    "rotate": -12,
+    "scale": 5,
+    "iconWidth": "190px"
+  },
+  {
+    "id": "youtube",
+    "title": "YOUTUBE",
+    "colorToken": "youtube",
+    "icon": "/assets/svg/sprite.svg#youtube",
+    "gridColumn": "6 / span 5",
+    "gridRow": "5 / span 2",
+    "rotate": -8,
+    "scale": 5,
+    "iconWidth": "170px"
+  },
+  {
+    "id": "twitch",
+    "title": "TWITCH",
+    "colorToken": "twitch",
+    "icon": "/assets/svg/sprite.svg#twitch",
+    "gridColumn": "11 / span 2",
+    "gridRow": "5 / span 2",
+    "rotate": -8,
+    "scale": 5,
+    "iconWidth": "115px"
+  },
+  {
+    "id": "typescript",
+    "title": "TYPESCRIPT",
+    "colorToken": "typescript",
+    "icon": "/assets/svg/sprite.svg#typescript",
+    "gridColumn": "1 / span 2",
+    "gridRow": "7 / span 2",
+    "rotate": -10,
+    "scale": 5,
+    "iconWidth": "110px"
+  },
+  {
+    "id": "css",
+    "title": "CSS",
+    "colorToken": "css",
+    "icon": "/assets/svg/sprite.svg#css",
+    "gridColumn": "3 / span 2",
+    "gridRow": "7 / span 2",
+    "rotate": -8,
+    "scale": 5,
+    "iconWidth": "105px"
+  },
+  {
+    "id": "node-bottom",
+    "title": "NODE JS",
+    "colorToken": "node-bottom",
+    "icon": "/assets/svg/sprite.svg#node",
+    "gridColumn": "5 / span 2",
+    "gridRow": "7 / span 2",
+    "rotate": -6,
+    "scale": 5,
+    "iconWidth": "120px"
+  },
+  {
+    "id": "github-bottom",
+    "title": "GITHUB ACTIONS",
+    "colorToken": "github-bottom",
+    "icon": "/assets/svg/sprite.svg#github",
+    "gridColumn": "7 / span 4",
+    "gridRow": "7 / span 2",
+    "rotate": 0,
+    "scale": 5,
+    "iconWidth": "165px"
+  },
+  {
+    "id": "youtube-bottom",
+    "title": "YOUTUBE",
+    "colorToken": "youtube-bottom",
+    "icon": "/assets/svg/sprite.svg#youtube",
+    "gridColumn": "11 / span 2",
+    "gridRow": "7 / span 2",
+    "rotate": -5,
+    "scale": 5,
+    "iconWidth": "120px"
+  },
+  {
+    "id": "twitch-bottom",
+    "title": "TWITCH",
+    "colorToken": "twitch-bottom",
+    "icon": "/assets/svg/sprite.svg#twitch",
+    "gridColumn": "1 / span 8",
+    "gridRow": "9 / span 2",
+    "rotate": -6,
+    "scale": 5,
+    "iconWidth": "170px"
+  }
+]

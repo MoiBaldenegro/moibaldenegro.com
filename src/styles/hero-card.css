@@ -1,0 +1,77 @@
+/* hero-card.css — Estilos de las tarjetas del hero (hero-card.astro).
+   Solo tokens de tokens.css. Fondos y posiciones por data-color-token. */
+
+/* Base */
+.hero-card {
+  --icon-rotation: 12deg; --icon-scale: 5; --icon-width: 150px;
+  position: relative; overflow: hidden; isolation: isolate;
+  border-radius: var(--radius-card);
+  background: var(--card-bg);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card-rest);
+  transition: var(--transition-default);
+  grid-column: var(--card-column);
+  grid-row: var(--card-row);
+}
+
+.hero-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card-hover);
+  filter: contrast(1.4);
+}
+
+/* Degradado superior */
+.hero-card::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, var(--color-border), transparent 45%);
+  pointer-events: none;
+}
+
+/* Glow inferior */
+.hero-card::after {
+  content: "";
+  position: absolute; right: -45px; bottom: -45px;
+  width: 180px; height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(var(--color-border), transparent 70%);
+}
+
+/* Header */
+.card-header { position: absolute; left: 22px; top: 18px; z-index: 4; }
+.card-header h3 { margin: 0; font-size: 0.95rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* Icono */
+.card-icon { position: absolute; inset: 0; overflow: hidden; }
+.card-icon svg {
+  position: absolute; right: 4px; bottom: 32px;
+  width: var(--icon-width);
+  transform: rotate(var(--icon-rotation)) scale(var(--icon-scale));
+  transform-origin: center; pointer-events: none; user-select: none;
+  transition: var(--transition-default);
+}
+.hero-card:hover .card-icon svg { transform: rotate(2deg) scale(calc(var(--icon-scale) * 1.12)); }
+
+/* Fondos por token y posiciones de grid (Decisiones 1 y 2 del design.md) */
+[data-color-token="react"] { --card-bg: var(--color-marca-react); --card-column: 6 / span 5; --card-row: 1 / span 2; --icon-width: 165px; --icon-rotation: -8deg; }
+[data-color-token="html"] { --card-bg: var(--color-marca-html); --card-column: 11 / span 2; --card-row: 1 / span 2; --icon-width: 115px; --icon-rotation: -7deg; }
+[data-color-token="node"] { --card-bg: var(--color-marca-node); --card-column: 6 / span 2; --card-row: 3 / span 2; --icon-width: 120px; --icon-rotation: -10deg; }
+[data-color-token="github"] { --card-bg: var(--color-marca-github); --card-column: 8 / span 5; --card-row: 3 / span 2; --icon-width: 190px; --icon-rotation: -12deg; }
+[data-color-token="youtube"] { --card-bg: var(--color-marca-youtube); --card-column: 6 / span 5; --card-row: 5 / span 2; --icon-width: 170px; --icon-rotation: -8deg; }
+[data-color-token="twitch"] { --card-bg: var(--color-marca-twitch); --card-column: 11 / span 2; --card-row: 5 / span 2; --icon-width: 115px; --icon-rotation: -8deg; }
+[data-color-token="typescript"] { --card-bg: var(--color-marca-typescript); --card-column: 1 / span 2; --card-row: 7 / span 2; --icon-width: 110px; --icon-rotation: -10deg; }
+[data-color-token="css"] { --card-bg: var(--color-marca-css); --card-column: 3 / span 2; --card-row: 7 / span 2; --icon-width: 105px; --icon-rotation: -8deg; }
+[data-color-token="node-bottom"] { --card-bg: var(--color-marca-node-bottom); --card-column: 5 / span 2; --card-row: 7 / span 2; --icon-width: 120px; --icon-rotation: -6deg; }
+[data-color-token="github-bottom"] { --card-bg: var(--color-marca-github-bottom); --card-column: 7 / span 4; --card-row: 7 / span 2; --icon-width: 165px; --icon-rotation: 0deg; }
+[data-color-token="youtube-bottom"] { --card-bg: var(--color-marca-youtube-bottom); --card-column: 11 / span 2; --card-row: 7 / span 2; --icon-width: 120px; --icon-rotation: -5deg; }
+[data-color-token="twitch-bottom"] { --card-bg: var(--color-marca-twitch-bottom); --card-column: 1 / span 8; --card-row: 9 / span 2; --icon-width: 170px; --icon-rotation: -6deg; }
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .hero-card { grid-column: auto !important; grid-row: auto !important; }
+}
+@media (max-width: 768px) {
+  .hero-card { grid-column: auto !important; grid-row: auto !important; min-height: 190px; }
+  .card-header h3 { font-size: 0.82rem; }
+  .card-icon svg { width: 110px !important; }
+}
