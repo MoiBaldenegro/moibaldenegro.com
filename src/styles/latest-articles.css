@@ -41,6 +41,19 @@
   line-height: 1.55;
 }
 
+/* Imagen de la card (feature 17): bloque uniforme — ancho del contenido,
+   proporción 16:9 (valor propio del componente, design.md), recorte cover,
+   radio/borde/margen con los tokens de la card. */
+.latest-articles__image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border);
+  margin: var(--gap-card) 0;
+}
+
 .latest-articles__tags {
   display: flex;
   flex-wrap: wrap;

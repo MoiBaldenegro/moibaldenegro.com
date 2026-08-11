@@ -1,7 +1,7 @@
 ---
 title:  Agilismo, diseño y fragilidad
 author: Moises Baldenegro Melendez
-img: arch00.jpg
+img: arch00.webp
 readtime: 15
 description: En este capitulo aprenderemos los conceptos fundamentales de la arquitectura de software.
 tags: "#arquitectura #agilismo #software-design"

@@ -9,16 +9,17 @@ const posts = await new PostsRepository().getPosts();
 <section class="latest-articles">
   <div class="latest-articles__list">
     {posts.map((post) => (
-      <article class="latest-articles__card">
+      <a  class="latest-articles__card">
         <h2 class="latest-articles__title">{post.title}</h2>
         <p class="latest-articles__meta">Por {post.author} • {post.readtime} min de lectura</p>
         <p class="latest-articles__description">{post.description}</p>
+        <img src={`/assets/content/${post.img}`} alt=""/>
         <div class="latest-articles__tags">
           {post.tags.map((tag) => (
             <span class="latest-articles__tag">#{tag}</span>
           ))}
         </div>
-      </article>
+      </a>
     ))}
   </div>
 </section>

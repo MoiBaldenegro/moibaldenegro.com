@@ -1,0 +1,19 @@
+/* game-of-life.css — Fondo sutil del Juego de la Vida (feature 15).
+   El lienzo queda fijo detrás del contenido con un índice z inferior
+   (REQ-15-01), con la opacidad del token --opacity-gol (REQ-15-04) y sin
+   capturar eventos de puntero (REQ-15-10). Solo consume tokens del diseño
+   (REQ-15-12); sin hex ni rgba sueltos. */
+
+.gol-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  /* El lienzo nunca colapsa a 0 aunque el layout aún no esté listo:
+     consume el token de celda del diseño (REQ-15-08). */
+  min-width: var(--size-gol-cell);
+  min-height: var(--size-gol-cell);
+  opacity: var(--opacity-gol);
+  pointer-events: none;
+}

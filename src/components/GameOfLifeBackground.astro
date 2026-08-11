@@ -1,0 +1,10 @@
+---
+import '../styles/game-of-life.css';
+---
+
+<canvas class="gol-canvas" aria-hidden="true"></canvas>
+
+<script>
+  import { mountGameOfLife } from '../utils/game-of-life-canvas.ts';
+  mountGameOfLife(document.querySelector<HTMLCanvasElement>('.gol-canvas')!);
+</script>

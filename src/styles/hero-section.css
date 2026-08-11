@@ -7,23 +7,32 @@
   position: relative;
   overflow: hidden;
   min-height: 100vh;
-  background: radial-gradient(circle at top right, var(--color-hero-top) 0%, var(--color-hero-mid) 35%, var(--color-hero-bottom) 100%);
   color: var(--color-text);
   font-family: var(--font-sans);
 }
 
-/* Fondo */
-.hero-background { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+/* Fondo — translúcido para que el GOL del layout se vea tras él (Decisión 6,
+   design.md feature 15): la opacidad vive SOLO aquí, nunca en .new-hero, y
+   sale del token --opacity-hero. El gradiente quedó atrás del contenido
+   (z-index -1) y encima del canvas global del GOL. will-change: opacity
+   promueve la capa a composición propia (REQ-16-05, feature 16): el
+   gradiente se rasteriza una sola vez y los repintados del canvas solo
+   re-blendean la capa. El grano de .hero-noise se integra como primer
+   background con alfa derivado del token --color-text (REQ-16-06): una capa
+   full-screen menos por repintado. */
+.hero-background {
+  position: absolute; inset: 0; overflow: hidden; pointer-events: none;
+  z-index: -1;
+  background: radial-gradient(color-mix(in srgb, var(--color-text) 3%, transparent) 1px, transparent 1px), radial-gradient(circle at top right, var(--color-hero-top) 0%, var(--color-hero-mid) 35%, var(--color-hero-bottom) 100%);
+  background-size: 14px 14px, auto;
+  opacity: var(--opacity-hero);
+  will-change: opacity;
+}
 .hero-gradient {
   position: absolute; width: 900px; height: 900px; right: -300px; top: -200px;
   border-radius: var(--radius-pill);
   background: radial-gradient(circle, var(--color-glow), transparent 70%);
   animation: float 10s ease-in-out infinite;
-}
-.hero-noise {
-  position: absolute; inset: 0; opacity: 0.03;
-  background-image: radial-gradient(var(--color-text) 1px, transparent 1px);
-  background-size: 14px 14px;
 }
 
 /* Cuadrícula */

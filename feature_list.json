@@ -177,6 +177,69 @@
         "README.md enlaza docs/architecture.md docs/conventions.md y docs/verification.md y no menciona el starter kit de Astro (REQ-13-04, REQ-13-05)"
       ],
       "status": "done"
+    },
+    {
+      "id": 14,
+      "name": "game-of-life-engine",
+      "title": "Motor del Juego de la Vida: cuadrícula y reglas de Conway en src/utils",
+      "description": "Petición del usuario: \"metele el juego de la vida sutilmente en el background del portfolio\". Esta feature es la base: el motor puro del Juego de la Vida de Conway en src/utils/game-of-life.ts (createGrid, randomizeGrid con densidad y stepGrid con las 4 reglas: subpoblación, supervivencia, sobrepoblación y reproducción; cuadrícula envolvente/toroidal e inmutabilidad: cada generación devuelve una nueva cuadrícula). Sigue el patrón del refactor de separar primero la capa de lógica testeable con node:test (como las features 5-7) y la UI después (feature 15). Sin dependencias externas (docs/architecture.md regla 2), límite de 100 líneas (regla 12) y lógica fuera de la UI (regla 8). Es la base de la feature 15 game-of-life-background.",
+      "acceptance": [
+        "tests/game-of-life-engine.test.mjs se escribe en rojo antes de crear src/utils/game-of-life.ts y queda en verde al final (REQ-14-01, REQ-14-02)",
+        "El test cubre subpoblación: una célula viva con menos de 2 vecinas muere en la siguiente generación (REQ-14-03)",
+        "El test cubre supervivencia con 2 o 3 vecinas y sobrepoblación con más de 3 vecinas (REQ-14-04, REQ-14-05)",
+        "El test cubre reproducción: una célula muerta con exactamente 3 vecinas nace en la siguiente generación (REQ-14-06)",
+        "El test verifica que los bordes de la cuadrícula se comportan como envolventes (REQ-14-07)",
+        "El test verifica que una cuadrícula vacía permanece vacía tras calcular la siguiente generación (REQ-14-08)",
+        "src/utils/game-of-life.ts no supera las 100 líneas (REQ-14-09)"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 15,
+      "name": "game-of-life-background",
+      "title": "Fondo sutil del Juego de la Vida en el layout único con canvas vanilla",
+      "description": "La feature 14 aporta el motor; esta feature integra el Juego de la Vida como fondo sutil del portfolio: tokens nuevos en src/styles/tokens.css (--opacity-gol < 0.25 y --size-gol-cell, patrón --grupo-nombre), driver de canvas vanilla en src/utils/game-of-life-canvas.ts (lee --color-accent vía getComputedStyle, ajusta la cuadrícula al viewport, bucle requestAnimationFrame, pausa con document.hidden y fotograma estático con prefers-reduced-motion, siembra con densidad <= 0.15), componente src/components/GameOfLifeBackground.astro, hoja src/styles/game-of-life.css (canvas fijo detrás del contenido, opacity por token y pointer-events none) y una sola importación en el layout único (regla 'Un solo layout'). Justificación explícita de JS de runtime (regla 'Estático por defecto'): el Juego de la Vida es computación iterativa que CSS no puede calcular; un canvas vanilla sin dependencias es la única vía para la animación real, y su coste se controla (pausa con documento oculto, densidad baja, opacidad token). Depende de la feature 14 game-of-life-engine y de la feature 8 layout-refactor.",
+      "acceptance": [
+        "tests/game-of-life-background.test.mjs se escribe en rojo antes de la implementación y queda en verde al final (REQ-15-01..REQ-15-12)",
+        "src/components/GameOfLifeBackground.astro existe y se importa desde Layout.astro exactamente una sola vez (REQ-15-01, REQ-15-09)",
+        "El driver src/utils/game-of-life-canvas.ts importa el engine de la feature 14 y no declara dependencias externas (REQ-15-02)",
+        "tokens.css define --opacity-gol con valor inferior a 0.25 y --size-gol-cell, y game-of-life.css aplica var() de ambos sin hex ni rgba sueltos (REQ-15-04, REQ-15-11, REQ-15-12)",
+        "El driver lee el color de --color-accent y escucha prefers-reduced-motion (fotograma estático) y document.hidden (pausa) (REQ-15-03, REQ-15-05, REQ-15-06)",
+        "El driver siembra con densidad no superior a 0.15 y dimensiona la cuadrícula según viewport y --size-gol-cell (REQ-15-07, REQ-15-08)",
+        "game-of-life.css declara pointer-events none para el canvas y todos los archivos de la feature no superan las 100 líneas (REQ-15-10, REQ-15-08)"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 16,
+      "name": "gol-performance",
+      "title": "Eliminar el lag del fondo GOL con opacity en el hero sin cambiar el look",
+      "description": "Petición del usuario: con `opacity: var(--opacity-hero)` en `.hero-background` el look le gusta pero el rendimiento cae (lag confirmado con Lighthouse), sobre todo en la portada. Objetivo: ELIMINAR el lag sin cambiar el aspecto aprobado (Decisión 6 de la feature 15: gradiente del hero translúcido vía --opacity-hero 0.80 sobre el canvas GOL al --opacity-gol 0.15). Diagnóstico: (A) el driver de la feature 15 dibuja un fillRect por célula viva (~8.600/frame a 1080p con densidad 0.15), hace stepGrid completo por frame y avanza 1 generación por frame (60 gen/seg, excesivo para fondo decorativo); (B) en la portada el canvas animado queda bajo capas semitransparentes a pantalla completa (.hero-background 100vh al 0.80, .hero-noise al 0.03 y .hero-gradient animado) que obligan a recomponer/re-rasterizar el viewport completo en cada repintado. Decisiones con el usuario (D1-D3, innegociables): pausar el autómata a ~10-15 gen/seg con función pura de throttle (shouldTick), canalizar todo por la feature (spec + design + tests node:test de estructura/contrato sin navegador + revisión, sin ediciones manuales) y no cambiar el look (--opacity-hero 0.80, --opacity-gol 0.15, accesibilidad intacta: prefers-reduced-motion, document.hidden, pointer-events none). Direcciones técnicas decididas (detalle en specs/16_gol-performance/design.md): dibujo con ImageData/putImageData (una escritura por frame, sin fillRect), escala interna del canvas a la mitad (RENDER_SCALE 2, 4x menos píxeles, escalado CSS existente), promoción de .hero-background a capa propia con will-change: opacity (el gradiente se rasteriza una vez) e integración de .hero-noise como primer background-image de .hero-background con alfa derivado del token --color-text vía color-mix (una capa full-screen menos; sin literales de color). Sin tokens nuevos: el intervalo de generación TICK_INTERVAL_MS = 80 (12,5 gen/seg) es constante interna del driver, no token CSS (parámetro de comportamiento que CSS no consume; tokens.css queda intacto en 96 líneas). NO se toca el motor src/utils/game-of-life.ts (feature 14, aprobada) ni tokens.css, game-of-life.css, el componente ni el layout. Depende de las features 14 (engine) y 15 (background, Decisión 6). Reglas del arnés aplicadas: tests primero (node:test, estructura/contrato, sin navegador), ≤100 líneas por archivo (si el driver lo supera se extrae el dibujo a src/utils/gol-render.ts; el test de ≤100 escanea driver + imports relativos), sin dependencias externas, tokens sin valores sueltos.",
+      "acceptance": [
+        "tests/gol-performance.test.mjs se escribe en rojo antes de la implementación y queda en verde al final (REQ-16-01..REQ-16-10)",
+        "El driver expone shouldTick como función pura que devuelve true solo al alcanzar el intervalo sin mutar argumentos, y el bucle la usa para avanzar generaciones con TICK_INTERVAL_MS entre 66.67 y 100 ms (10-15 gen/seg) (REQ-16-01, REQ-16-02)",
+        "El fotograma se dibuja con una única llamada putImageData sobre un ImageData y no queda fillRect en el driver ni en sus módulos de dibujo (REQ-16-03)",
+        "El canvas usa RENDER_SCALE 2 (4x menos píxeles) y el escalado al viewport queda en la hoja de estilos (REQ-16-04)",
+        ".hero-background declara will-change opacity y conserva opacity var(--opacity-hero); .hero-noise ya no existe como capa propia y su patrón se pinta como segundo fondo con alfa derivado del token --color-text (REQ-16-05, REQ-16-06)",
+        "tokens.css conserva --opacity-hero 0.80, --opacity-gol 0.15 y --size-gol-cell 6px (look aprobado intacto) (REQ-16-07)",
+        "El fondo conserva prefers-reduced-motion, la pausa con document.hidden y pointer-events none en el lienzo, y el driver sigue importando el motor con imports relativos sin dependencias nuevas (REQ-16-08, REQ-16-09)",
+        "tests/gol-performance.test.mjs verifica que game-of-life-canvas.ts, sus imports relativos y hero-section.css no superan las 100 líneas (REQ-16-10)"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 17,
+      "name": "article-card-images",
+      "title": "Imagen de artículo consistente en las cards de latest-articles",
+      "description": "Petición del usuario: \"si agregué imagen válida en el post, mete feature para que estas cards tengan siempre consistencia con la imagen, porque salió una imagen gigante\". El usuario añadió una imagen real (arch00.webp en public/assets/content/, edición concurrente ya documentada) al artículo 00-agilismo.md (img: arch00.webp) y las cards de src/components/latest-articles.astro:16 renderizan `<img src={`/assets/content/${post.img}`} alt=\"\"/>` sin clase ni reglas CSS en src/styles/latest-articles.css (62 líneas, BEM latest-articles__*, sin regla para la imagen) → la imagen sale a tamaño natural (gigante) y rompe la consistencia de las cards. Esta feature estiliza la imagen como bloque uniforme dentro de la card: clase BEM latest-articles__image, width 100% del contenido, aspect-ratio 16:9, object-fit cover (recorta sin deformar), radio/borde/margen con los tokens existentes (--radius-card, --color-border, --gap-card), alt desde post.title (sin tocar el dominio: el texto alternativo de una cubierta es el título del artículo) y loading=\"lazy\" (rendimiento, en línea con la feature 16). NO añade tokens nuevos (tokens.css está en 96/100 líneas, regla 12; precedente feature 16): 16:9 es valor propio del componente justificado en design.md y verificado por test. Depende de las features 7 (posts-domain: campo img validado con PostsDataError) y 10 (articles-ui-refactor: hoja latest-articles.css existente con contrato var() que la regla nueva respeta).",
+      "acceptance": [
+        "tests/article-card-images.test.mjs se escribe en rojo antes de la implementación y queda en verde al final (REQ-17-01..REQ-17-09)",
+        "latest-articles.astro renderiza la imagen con la clase latest-articles__image, el alt interpolado con post.title y el atributo loading=\"lazy\" (REQ-17-01, REQ-17-06, REQ-17-07)",
+        "latest-articles.css declara width 100%, aspect-ratio 16:9 y object-fit cover en la regla latest-articles__image (REQ-17-02, REQ-17-03, REQ-17-04)",
+        "latest-articles.css usa var(--radius-card), var(--color-border) y var(--gap-card) en la regla de la imagen, sin hex ni rgba sueltos y con un máximo de 100 líneas (REQ-17-05, REQ-17-08)",
+        "tokens.css no añade tokens: conserva 96 líneas y no define tokens del grupo aspect (REQ-17-09)"
+      ],
+      "status": "in_progress"
     }
   ]
 }
