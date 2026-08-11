@@ -1,25 +1,26 @@
 ---
 import "../styles/latest-articles.css";
 
-import { PostsRepository } from "../domain/repositories/posts-repository.ts";
+import {  markdownPostRepository } from "../domain/repositories/posts-repository.ts";
 
-const posts = await new PostsRepository().getPosts();
+const posts = await markdownPostRepository().getPosts();
+console.log('LatestArticles: posts', posts);
 ---
 
 <section class="latest-articles">
   <div class="latest-articles__list">
     {posts.map((post) => (
-      <a  class="latest-articles__card">
-        <h2 class="latest-articles__title">{post.title}</h2>
-        <p class="latest-articles__meta">Por {post.author} • {post.readtime} min de lectura</p>
-        <p class="latest-articles__description">{post.description}</p>
-        <img src={`/assets/content/${post.img}`} alt=""/>
-        <div class="latest-articles__tags">
-          {post.tags.map((tag) => (
-            <span class="latest-articles__tag">#{tag}</span>
-          ))}
-        </div>
-      </a>
+      <article  class="latest-articles__card">
+        <a href={`/posts/${post.id}`} class="latest-articles__link">
+          <img
+            src={`/assets/content/${post.img}`}
+            alt={post.title}
+            class="latest-articles__image"
+          />
+          <h2 class="latest-articles__title">{post.title}</h2>
+          <p class="latest-articles__description">{post.description}</p>
+        </a>
+      </article>
     ))}
   </div>
 </section>

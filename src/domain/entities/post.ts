@@ -4,6 +4,8 @@
 // arreglo de texto por el schema de src/content.config.ts.
 
 export interface Post {
+  readonly id: string;
+  readonly slug: string;
   readonly title: string;
   readonly author: string;
   readonly img: string;

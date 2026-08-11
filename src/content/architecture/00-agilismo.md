@@ -1,4 +1,5 @@
 ---
+slug: 00-agilismo
 title:  Agilismo, diseño y fragilidad
 author: Moises Baldenegro Melendez
 img: arch00.webp

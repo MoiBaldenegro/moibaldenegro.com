@@ -8,6 +8,7 @@ const architecture = defineCollection({
     pattern: "**/*.md",
   }),
   schema: z.object({
+    slug: z.string(),
     title: z.string(),
     author: z.string(),
     img: z.string(),
