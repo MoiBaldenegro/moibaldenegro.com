@@ -3,10 +3,14 @@ import NewHero from '../components/new-hero/new-hero.astro';
 import Layout from '../layouts/Layout.astro';
 import LatestArticles from '../components/latest-articles.astro';
 import HtbStadistics from '../components/htb-stadistics.astro';
+
+export const prerender = true;
 ---
 
 <Layout>
 	<NewHero/>
 	<LatestArticles/>
-	<HtbStadistics/>
+	<HtbStadistics server:defer>
+		<p slot="fallback">Cargando estadísticas de HTB...</p>
+	</HtbStadistics>
 </Layout>

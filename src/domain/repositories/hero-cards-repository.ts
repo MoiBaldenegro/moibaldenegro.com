@@ -1,17 +1,9 @@
-// Repositorio del dominio: tarjetas del hero (REQ-06-03, feature 6 hero-cards-domain).
-// Única vía de acceso a src/data/hero-cards.json; entrega las entidades HeroCard.
-// Si el JSON no existe, no es JSON válido o no tiene la forma de las tarjetas,
-// lanza HeroCardsDataError (REQ-06-05): nunca falla en silencio.
+// src/domain/repositories/hero-cards-repository.ts
 
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
-import { pathToFileURL } from 'node:url';
+// 🟢 Importamos el contenido del JSON como string en tiempo de build via Vite.
+// Esto incrusta los datos en el bundle y elimina la dependencia de node:fs/node:path.
+import rawJsonData from '../../data/hero-cards.json?raw';
 import type { HeroCard } from '../entities/hero-card.ts';
-
-// Ruta por defecto contra la raíz del proyecto (no import.meta.url): en el
-// prerender de Astro el bundle vive en dist/.prerender y las rutas relativas
-// al módulo ya no resuelven a src/data (REQ-09-04, feature 9).
-const DEFAULT_DATA_URL = pathToFileURL(join(process.cwd(), 'src', 'data', 'hero-cards.json'));
 
 export class HeroCardsDataError extends Error {
   constructor(message: string) {
@@ -21,10 +13,10 @@ export class HeroCardsDataError extends Error {
 }
 
 export class HeroCardsRepository {
-  private readonly dataUrl: URL;
+  private readonly rawData: string;
 
-  constructor(dataUrl: URL = DEFAULT_DATA_URL) {
-    this.dataUrl = dataUrl;
+  constructor(rawData: string = rawJsonData) {
+    this.rawData = rawData;
   }
 
   getCards(): HeroCard[] {
@@ -32,16 +24,13 @@ export class HeroCardsRepository {
   }
 
   private readJson(): unknown {
-    let raw: string;
-    try {
-      raw = readFileSync(this.dataUrl, 'utf-8');
-    } catch {
+    if (!this.rawData || this.rawData.trim() === '') {
       throw new HeroCardsDataError(
-        `hero-cards.json: no se pudieron leer las tarjetas desde "${this.dataUrl.pathname}"`,
+        'hero-cards.json: no se pudieron leer las tarjetas (contenido vacío)',
       );
     }
     try {
-      return JSON.parse(raw);
+      return JSON.parse(this.rawData);
     } catch {
       throw new HeroCardsDataError('hero-cards.json: el archivo no es un JSON válido');
     }

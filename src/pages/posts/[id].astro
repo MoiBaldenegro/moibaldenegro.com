@@ -16,6 +16,9 @@ const { post } = Astro.props;
 const { data } = post;
 const { title, author, readtime, img } = data;
 const { Content }  = await render(post);
+
+export const prerender = true;
+
 ---
 
 <Layout title={title}>

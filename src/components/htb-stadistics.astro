@@ -1,6 +1,26 @@
 ---
 import { HTB_API_TOKEN, HTB_USER_ID } from 'astro:env/server';
-const url = `https://labs.hackthebox.com/api/v4/profile/activity/${HTB_USER_ID}`;
+
+type ProfileData = Record<string, unknown>;
+
+// ENDPÓIJT SINTERESANTES
+// const url = `https://labs.hackthebox.com/api/v5/user/profile/activity/${HTB_USER_ID}`;
+// https://gubarz.github.io/unofficial-htb-api/
+
+const getText = (item: ProfileData, key: string) => {
+  const value = item[key];
+
+  return typeof value === 'string' ? value : null;
+};
+
+const getNumber = (item: ProfileData, key: string) => {
+  const value = item[key];
+
+  return typeof value === 'number' ? value : null;
+};
+
+const url = `https://labs.hackthebox.com/api/v4/user/profile/basic/${HTB_USER_ID}`;
+let profile: ProfileData = {};
 
 try {
   const res = await fetch(url, {
@@ -16,16 +36,24 @@ try {
   }
 
   const data = await res.json();
-  console.log('HTB API Response:', data);
-
-  // Esto se imprime solo en la consola del servidor de Astro.
-  console.log('HTB user id:', HTB_USER_ID);
-
+  console.log('HTB profile response:', data);
+  profile = typeof data?.profile === 'object' && data?.profile !== null ? data.profile : {};
 } catch (error) {
   console.error('Error fetching HTB data:', error);
 }
 ---
 
-<div>
-  <h2>Progreso de Sistemas Operativos HTB</h2>
-</div>
+<section>
+  <h2>Perfil HTB</h2>
+  <p>Resumen rápido de tu cuenta en Hack The Box.</p>
+  <p>Usuario: {HTB_USER_ID}</p>
+
+  <ul>
+    <li><strong>Nombre:</strong> {getText(profile, 'full_name') ?? getText(profile, 'name') ?? 'HTB'}</li>
+    <li><strong>Nivel:</strong> {getText(profile, 'rank') ?? 'Sin rango'}</li>
+    <li><strong>Puntos:</strong> {getNumber(profile, 'points') ?? 0}</li>
+    <li><strong>Owns:</strong> {getNumber(profile, 'user_owns') ?? 0} user / {getNumber(profile, 'system_owns') ?? 0} root</li>
+    <li><strong>País:</strong> {getText(profile, 'country_name') ?? 'N/D'}</li>
+    <li><strong>Miembro desde:</strong> {getText(profile, 'joined_date') ?? 'N/D'}</li>
+  </ul>
+</section>

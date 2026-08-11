@@ -4,6 +4,9 @@ import '../styles/about.css';
 import { HeroProfileRepository } from '../domain/repositories/hero-profile-repository.ts';
 
 const profile = new HeroProfileRepository().getProfile();
+
+export const prerender = true;
+
 ---
 
 <Layout title="About — moibaldenegro.com">

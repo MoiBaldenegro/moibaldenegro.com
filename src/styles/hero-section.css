@@ -25,8 +25,8 @@
   z-index: -1;
   background: radial-gradient(color-mix(in srgb, var(--color-text) 3%, transparent) 1px, transparent 1px), radial-gradient(circle at top right, var(--color-hero-top) 0%, var(--color-hero-mid) 35%, var(--color-hero-bottom) 100%);
   background-size: 14px 14px, auto;
-  opacity: var(--opacity-hero);
-  will-change: opacity;
+  /* opacity: var(--opacity-hero);
+  will-change: opacity; */
 }
 .hero-gradient {
   position: absolute; width: 900px; height: 900px; right: -300px; top: -200px;
