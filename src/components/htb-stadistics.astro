@@ -1,7 +1,6 @@
 ---
 import { HTB_API_TOKEN as ENV_TOKEN, HTB_USER_ID as ENV_ID } from 'astro:env/server';
 
-// @ts-ignore
 import { env } from 'cloudflare:workers';
 
 const HTB_API_TOKEN = ENV_TOKEN || env.HTB_API_TOKEN;

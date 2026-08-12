@@ -23,5 +23,8 @@
       "esbuild",
       "sharp"
     ]
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260812.1"
   }
 }
