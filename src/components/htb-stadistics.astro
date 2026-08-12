@@ -1,10 +1,12 @@
 ---
 import { HTB_API_TOKEN as ENV_TOKEN, HTB_USER_ID as ENV_ID } from 'astro:env/server';
-
 import { env } from 'cloudflare:workers';
 
 const HTB_API_TOKEN = ENV_TOKEN || env.HTB_API_TOKEN;
 const HTB_USER_ID = ENV_ID || env.HTB_USER_ID;
+
+console.log('HTB_API_TOKEN:', HTB_API_TOKEN.length > 0 ? '***' : 'Not set');
+console.log('HTB_USER_ID:', HTB_USER_ID);
 
 type ProfileData = Record<string, unknown>;
 
