@@ -15,10 +15,12 @@ export default defineConfig({
           HTB_API_TOKEN: envField.string({
               access: 'secret',
               context: 'server',
+              optional: true,
           }),
           HTB_USER_ID: envField.string({
               access: 'secret',
               context: 'server',
+            optional: true,
           }),
       },
 
