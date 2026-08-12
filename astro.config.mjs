@@ -1,4 +1,4 @@
-// @ts-check
+
 import { defineConfig, envField } from 'astro/config';
 
 import cloudflare from '@astrojs/cloudflare';
