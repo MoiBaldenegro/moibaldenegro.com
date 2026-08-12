@@ -1,11 +1,9 @@
 ---
-import { HTB_API_TOKEN, HTB_USER_ID } from 'astro:env/server';
-console.log('HTB_API_TOKEN:', HTB_API_TOKEN);
-console.log('HTB_USER_ID:', HTB_USER_ID);
-console.log("=====================================")
-console.log(process.env.HTB_API_TOKEN)
-console.log("=====================================")
+import { HTB_API_TOKEN as ENV_TOKEN, HTB_USER_ID as ENV_ID } from 'astro:env/server';
 
+const runtime = (Astro.locals as any).runtime;
+const HTB_API_TOKEN = ENV_TOKEN || runtime?.env?.HTB_API_TOKEN;
+const HTB_USER_ID = ENV_ID || runtime?.env?.HTB_USER_ID;
 
 type ProfileData = Record<string, unknown>;
 
