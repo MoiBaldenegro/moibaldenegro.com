@@ -7,10 +7,10 @@ import '../styles/htb-stadistics.css';
 const HTB_API_TOKEN = ENV_TOKEN || env.HTB_API_TOKEN;
 const HTB_USER_ID = ENV_ID || env.HTB_USER_ID;
 
+
 const profile = await new HtbProfileRepository(HTB_API_TOKEN, HTB_USER_ID).getProfileOrNull();
 ---
 
-{profile && (
 	<section class="htb-stadistics">
 		<h2 class="htb-stadistics__title">Estadísticas de Hack The Box</h2>
 		<p class="htb-stadistics__intro">Resumen de mi cuenta en la plataforma.</p>
@@ -18,28 +18,27 @@ const profile = await new HtbProfileRepository(HTB_API_TOKEN, HTB_USER_ID).getPr
 		<ul class="htb-stadistics__list">
 			<li class="htb-stadistics__item">
 				<span class="htb-stadistics__label">Nombre</span>
-				<span class="htb-stadistics__value">{profile.name ?? 'N/D'}</span>
+				<span class="htb-stadistics__value">{profile?.name ?? 'N/D'}</span>
 			</li>
 			<li class="htb-stadistics__item">
 				<span class="htb-stadistics__label">Nivel</span>
-				<span class="htb-stadistics__value">{profile.rank ?? 'N/D'}</span>
+				<span class="htb-stadistics__value">{profile?.rank ?? 'N/D'}</span>
 			</li>
 			<li class="htb-stadistics__item">
 				<span class="htb-stadistics__label">Puntos</span>
-				<span class="htb-stadistics__value">{profile.points ?? 'N/D'}</span>
+				<span class="htb-stadistics__value">{profile?.points ?? 'N/D'}</span>
 			</li>
 			<li class="htb-stadistics__item">
 				<span class="htb-stadistics__label">Owns</span>
-				<span class="htb-stadistics__value">{profile.userOwns ?? 'N/D'} user / {profile.systemOwns ?? 'N/D'} root</span>
+				<span class="htb-stadistics__value">{profile?.userOwns ?? 'N/D'} user / {profile?.systemOwns ?? 'N/D'} root</span>
 			</li>
 			<li class="htb-stadistics__item">
 				<span class="htb-stadistics__label">País</span>
-				<span class="htb-stadistics__value">{profile.countryName ?? 'N/D'}</span>
+				<span class="htb-stadistics__value">{profile?.countryName ?? 'N/D'}</span>
 			</li>
 			<li class="htb-stadistics__item">
 				<span class="htb-stadistics__label">Miembro desde</span>
-				<span class="htb-stadistics__value">{profile.joinedDate ?? 'N/D'}</span>
+				<span class="htb-stadistics__value">{profile?.joinedDate ?? 'N/D'}</span>
 			</li>
 		</ul>
 	</section>
-)}
