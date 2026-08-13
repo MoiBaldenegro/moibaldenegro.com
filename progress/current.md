@@ -4,81 +4,61 @@
 
 ### Feature en curso
 
-**30 — cloudflare-types-install** — CERRADA (status `done` en
-`feature_list.json`, 2026-08-13). Veredicto del reviewer:
-`progress/review_30_cloudflare-types-install.md` **APPROVED** (verificado en
-disco, sin cambios requeridos). `./init.sh` en "El entorno está perfecto"
-(formato OK, tests al 100 %, build OK). Resumen en `progress/history.md`
-(Sesión 2026-08-13 — feature 30) y ciclo completo en
-`progress/impl_30_cloudflare-types-install.md`:
+**Ciclo 29 CERRADO (2026-08-13).** Backlog completo: **features 1-32 `done`
+conservadas en el array, 0 pendientes, 0 en progreso** — no hay feature
+implementable en este momento. `./init.sh` en "El entorno está perfecto"
+(formato OK, tests 206/206 al 100 %, build de producción en workerd OK).
 
-- Test red-first `tests/cloudflare-types-install.test.mjs` (7 tests contra
-  REQ-30-01..06, ROJO 3 fail → VERDE 7/7).
-- `worker-configuration.d.ts` (551.093 bytes) generado con wrangler 4.121.0 vía
-  `wrangler types` (= `pnpm generate-types`, sin red ni auth en Windows):
-  cabecera de generación + `Env`/`Cloudflare.Env`/`ProcessEnv` (ASSETS,
-  HTB_API_TOKEN, IN_MAINTENANCE, HTB_USER_ID) + runtime types de
-  workerd@1.20260804.1. Staged con `git add` (git ls-files lo rastrea,
-  REQ-30-03), sin commit (los orquesta el líder). Idempotencia confirmada
-  byte a byte (hash sha256 estable en 2 corridas).
-- Nada más tocado: tsconfig/.gitignore/package.json/wrangler.jsonc/
-  astro.config.mjs intactos; `docs/dependencies.md` ya amparaba
-  `@cloudflare/workers-types` y `wrangler` aprobadas 2026-08-13 (REQ-30-06).
+**Estado final del sitio (ciclo 29, dirección del humano):**
+- Prerender en **workerd** (`prerenderEnvironment: 'workerd'`, default del
+  adapter 14.2.1) — `astro.config.mjs` solo cambió esa línea; el bloque vite
+  (optimizeDeps.include, server.watch.ignored) intacto.
+- Fallback `cloudflare:workers` **restaurado** en `htb-stadistics.astro`
+  (alias ENV_TOKEN/ENV_ID de astro:env/server + `env.HTB_*` con `||`), con la
+  degradación elegante de la feature 27 intacta (getProfileOrNull +
+  `{profile && ...}`); el crash `setInternals` del camino node ya no existe.
+- `src/` **sin módulos node**: repositorios JSON con loader inyectable +
+  `with { type: 'json' }` (feature 31); `wrangler.jsonc` sin cambios
+  (`nodejs_compat` y `global_fetch_strictly_public` conservados, REQ-32-07).
+- Registro de dependencias aprobadas operativo en el arnés (features 29/30):
+  docs/dependencies.md validado por check-format; `worker-configuration.d.ts`
+  versionado.
 
-**Estado final del backlog: 30 features `done` conservadas en el array (1-30);
-0 pending, 0 in_progress, 0 blocked. Ciclo 28 cerrado**: features 28
-(prerender fix), 29 (registro de dependencias aprobadas operativo en el arnés)
-y 30 (tipos de Cloudflare Workers instalados) — `./init.sh` verde con build OK.
-Pendiente real del líder: decidir si abre re-review de features 19/21 por el
-fix de adapter (`nodejs_compat` + `prerenderEnvironment: 'node'`) documentado
-en el ciclo 18-24.
+**Siguiente paso del líder:** cuando el humano pida nueva feature, darla de
+alta vía spec_author; el arnés está en verde total esperando.
 
 ### Última sesión
 
-**2026-08-13 — feature 30 cerrada (tipos de Cloudflare Workers instalados).**
-Ver `progress/history.md` (Sesiones 2026-08-13). `./init.sh` en "El entorno
-está perfecto" (formato OK, tests al 100 %, build OK). Veredicto del reviewer:
-APPROVED (`progress/review_30_cloudflare-types-install.md`).
+**2026-08-13 — feature 32 cerrada (prerender en workerd con el fallback
+`cloudflare:workers` restaurado).** Veredicto del reviewer: **APPROVED**
+(`progress/review_32_prerender-workerd.md`, verificado en disco, sin cambios
+requeridos). Ciclo TDD: `tests/htb-stadistics-prerender-fix.test.mjs`
+reescrito en rojo (3 fail) contra REQ-32-01..07 → verde 6/6 tras implementar
+config + componente; suite completa 206/206; `./init.sh` en "El entorno está
+perfecto" (build real en workerd, sin ECONNREFUSED — contingencia REQ-32-06
+documentada, no aplicada); `astro preview` verificado (isla server:defer 200
+con degradación a null, sin `[object Object]` — riesgo PR #16720 no
+manifestado). Detalle completo en `progress/history.md` (Sesión 2026-08-13 —
+feature 32) y `progress/impl_32_prerender-workerd.md`.
 
-### Orden del humano (2026-08-13, ciclo 28)
+Antes (misma fecha): feature 31 cerrada (repositorios JSON al patrón loader
+sin `node:fs` + arnés a verde; `progress/review_31_json-repositories-loader.md`
+APPROVED).
 
-1. **Aprobación humana de dependencia**: @astrojs/cloudflare (adapter de despliegue)
-   + wrangler + @cloudflare/workers-types quedan APROBADAS por el humano para el
-   despliegue. Hay que instalar/verificar los tipos (worker-configuration.d.ts
-   referenciado en tsconfig.json no existe; script `generate-types` ya declarado).
-2. **Actualizar el arnés** para tener un registro de dependencias aprobadas
-   (infraestructura que quede operativa a partir de ahora).
-3. **Regla de aprobación**: NINGÚN agente aprueba dependencias. Los agentes solo
-   marcan la feature `blocked` (como hasta ahora). La aprobación es decisión
-   exclusiva del humano tras discusión. Debe quedar explícita en el arnés.
+### Artefactos permanentes (no se borran)
 
-### Diagnóstico del líder (init.sh en ROJO)
+- Informes de implementación: `progress/impl_31_json-repositories-loader.md`,
+  `progress/impl_32_prerender-workerd.md`.
+- Reviews: `progress/review_31_json-repositories-loader.md`,
+  `progress/review_32_prerender-workerd.md`.
+- Specs: `specs/31_json-repositories-loader/`, `specs/32_prerender-workerd/`.
+- Research del ciclo 29: `progress/research/prerender-workerd-adapter.md`,
+  `progress/research/lectura-json-sin-nodefs.md`,
+  `progress/research/nodejs-compat-prerender-workerd.md`,
+  `progress/research/ciclo-prerender-workerd.md`.
+- Historial append-only: `progress/history.md` (sesiones 2026-08-13,
+  features 25-32).
 
-- `./init.sh`: tests 181/181 → 180/181 y build roto. Estado commiteado: verde.
-- Causa raíz verificada en disco (stash → build OK → pop): la edición manual
-  SIN commitear en src/components/htb-stadistics.astro añade
-  `import { env } from 'cloudflare:workers'` + fallback de tokens en el
-  frontmatter; el prerender corre en entorno node (prerenderEnvironment: 'node')
-  donde el módulo virtual cloudflare:workers no existe → default-prerenderer.js
-  recibe prerenderEntry.app undefined → "Cannot read properties of undefined
-  (reading 'setInternals')" → REQ-11-05 (build real) falla.
-- tipografía de entorno: tsconfig.json incluye ./worker-configuration.d.ts que
-  no existe; @cloudflare/workers-types ^5.20260812.1 está en devDependencies y
-  en node_modules. Falta generar los tipos (wrangler types / pnpm generate-types).
-- Pendiente de canalizar como feature (spec_author ↓).
+### Plantilla (resto de sesión)
 
-### Análisis en curso: registro de dependencias aprobadas + tipos de Cloudflare + fix de prerender
-
-- Plan: (1) feature 28 revierte htb-stadistics.astro al estado canónico 22+27
-  (build a verde); (2) feature 29 crea el registro docs/dependencies.md con
-  validador en check-format (arnés operativo); (3) feature 30 genera y commitea
-  worker-configuration.d.ts bajo el registro (depende de 29).
-- Análisis completo en `progress/research/registro-dependencias-aprobadas.md`
-  (hechos verificados, decisiones y orden de implementación).
-- Features dadas de alta: **28 htb-stadistics-prerender-fix** (pending, sin
-  deps), **29 dependencies-registry** (pending, sin deps), **30
-  cloudflare-types-install** (pending, depends_on [29]). Specs creadas en
-  `specs/28_htb-stadistics-prerender-fix/requirements.md`,
-  `specs/29_dependencies-registry/requirements.md` y
-  `specs/30_cloudflare-types-install/requirements.md`. Sin design.md: ninguna
-  toca UI/presentación. `feature_list.json` validado con check-format.
+(Sin trabajo en curso: ciclo cerrado, backlog vacío de pendientes.)

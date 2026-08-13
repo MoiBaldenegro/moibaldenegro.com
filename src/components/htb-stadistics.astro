@@ -1,7 +1,11 @@
 ---
-import { HTB_API_TOKEN, HTB_USER_ID } from 'astro:env/server';
+import { HTB_API_TOKEN as ENV_TOKEN, HTB_USER_ID as ENV_ID } from 'astro:env/server';
+import { env } from 'cloudflare:workers';
 import { HtbProfileRepository } from '../domain/repositories/htb-profile-repository.ts';
 import '../styles/htb-stadistics.css';
+
+const HTB_API_TOKEN = ENV_TOKEN || env.HTB_API_TOKEN;
+const HTB_USER_ID = ENV_ID || env.HTB_USER_ID;
 
 const profile = await new HtbProfileRepository(HTB_API_TOKEN, HTB_USER_ID).getProfileOrNull();
 ---

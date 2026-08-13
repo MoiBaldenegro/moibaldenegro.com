@@ -463,6 +463,44 @@
         29
       ],
       "status": "done"
+    },
+    {
+      "id": 31,
+      "name": "json-repositories-loader",
+      "title": "Migrar repositorios JSON al patrón loader inyectable sin node:fs y reconciliar el test del workaround de dev",
+      "description": "Decisión del humano (ciclo 29): el fallback cloudflare:workers de htb-stadistics.astro ES NECESARIO y lo que se elimina es el USO DE MÓDULOS NODE — node:fs/node:path/node:url deben desaparecer de src/ porque el prerender debe pasar a workerd (prerenderEnvironment: 'workerd', default del adapter), donde NO hay filesystem (issue #15684). Patrón canónico VERIFICADO empíricamente (probe 5/5 node --test + build OK, informe progress/research/lectura-json-sin-nodefs.md): constructor con loader inyectable () => string (contenido crudo), default = `import heroJson from '../data/hero.json' with { type: 'json' }` + JSON.stringify; el repositorio conserva JSON.parse + validación y lanza HeroProfileDataError/HeroCardsDataError (REQ-05-04/REQ-06-05 intactas). `with { type: 'json' }` es estable en Node >=22.12.0 (engines del repo); ?raw PROHIBIDO en src/ (ERR_IMPORT_ATTRIBUTE_MISSING en node:test); NO parameter properties (strip-only de Node) ni import dinámico con atributos (rolldown). Los tests de repositorios (features 5/6/19) se reescriben al nuevo contrato de inyección de loader — sin URLs de archivos temporales — conservando los tres modos de fallo (loader que lanza = ausente; string inválido = malformado; objeto con forma mala = forma inválida); los tests SÍ pueden usar node:fs para leer los datos reales (la restricción es sobre src/). La feature 19 permanece done como historial (precedente feature 25): su contrato node:fs queda superado y su guard REQ-19-05 (no ?raw) se reemplaza por el guard 'los repositorios no importan módulos node ni ?raw'. ADEMÁS (requisito del primer implementable: hoy init.sh está EN ROJO): tests/astro-config-dev-workaround.test.mjs exige `disabled: false` que el humano quitó deliberadamente en su commit c2bbfa1 (edición canónica: Vite 8/rolldown retiró optimizeDeps.disabled) → el test se actualiza al nuevo estado canónico (optimizeDeps.include sin disabled); NO se restaura la línea en astro.config.mjs. Sin design.md: no toca UI/presentación.",
+      "acceptance": [
+        "tests/hero-profile-repository.test.mjs y tests/hero-cards-repository.test.mjs se reescriben en rojo al contrato de loader inyectable (sin URLs de archivos temporales) y quedan en verde al final (REQ-31-01, REQ-31-02, REQ-31-06)",
+        "Los repositorios no contienen imports de módulos node ni el sufijo ?raw, verificado por test (REQ-31-03)",
+        "new HeroProfileRepository() entrega el perfil real de src/data/hero.json (REQ-31-04)",
+        "new HeroCardsRepository() entrega las 12 tarjetas reales de src/data/hero-cards.json (REQ-31-05)",
+        "Con loader que lanza, contenido malformado o forma inválida los repositorios lanzan HeroProfileDataError y HeroCardsDataError (REQ-31-06, contrato REQ-05-04/REQ-06-05)",
+        "tests/astro-config-dev-workaround.test.mjs fija el estado canónico del humano (c2bbfa1): optimizeDeps.include sin disabled, y pasa en verde (REQ-31-07)",
+        "Los archivos de los repositorios no superan las 100 líneas cada uno (REQ-31-08)",
+        "La suite completa pasa en verde y ./init.sh termina con el entorno perfecto (REQ-31-08)"
+      ],
+      "depends_on": [],
+      "status": "done"
+    },
+    {
+      "id": 32,
+      "name": "prerender-workerd",
+      "title": "Prerender en workerd con el fallback cloudflare:workers restaurado en htb-stadistics",
+      "description": "Dirección del humano (ciclo 29): el fallback `import { env } from 'cloudflare:workers'` en htb-stadistics.astro ES NECESARIO (astro:env/server no entrega las envs del worker en runtime con el adapter) y se revierte tras la feature 31 (repositorios sin node:fs): el prerender pasa a prerenderEnvironment: 'workerd' (default del adapter 14.2.1, prerender en workerd real vía miniflare, offline y sin auth — ya probado en esta máquina en la feature 30). Con workerd, cloudflare:workers resuelve de forma nativa y el crash 'setInternals' del default-prerenderer (exclusivo del camino node) desaparece. Se restaura el fallback en el componente: import de astro:env/server con alias ENV_TOKEN/ENV_ID + `import { env } from 'cloudflare:workers'` + `const HTB_API_TOKEN = ENV_TOKEN || env.HTB_API_TOKEN;` (equivalente para HTB_USER_ID). Nota verificada: durante el prerender, env tendrá lo que defina el .env local; sin vars los valores son undefined → getProfileOrNull degrada a null → la sección no se renderiza sin romper la página (REQ-27-07/08 intactos). La feature 28 permanece done como historial (precedente feature 25) y su test (tests/htb-stadistics-prerender-fix.test.mjs, que fija la AUSENCIA de cloudflare:workers) se reescribe en rojo al nuevo estado canónico de PRESENCIA + guard de que wrangler.jsonc conserva los flags. astro.config.mjs SOLO cambia la línea prerenderEnvironment; optimizeDeps.include y server.watch.ignored NO se tocan. wrangler.jsonc sin cambios: MANTENER nodejs_compat (toolchain miniflare 5.20260804.1-alpha date-unaware: sin el flag el workerd local no arranca) y global_fetch_strictly_public (verificado: sin efecto sobre el fetch HTB) — informe progress/research/nodejs-compat-prerender-workerd.md. Contingencia documentada (REQ-32-06): bug IPv4/IPv6 del prerenderer 14.2.1 (#15525, sin fix) → posible ECONNREFUSED en el build real (REQ-11-05) → mitigar con NODE_OPTIONS=--dns-result-order=ipv4first y dejar constancia en progress/impl_32_*.md. Verificación post-cambio: isla server:defer en astro preview (riesgo PR #16720 isNode, ausente en astro 7.2.0). Depende de la feature 31 (sin node:fs en src/ el prerender workerd arranca; sin la 31 esta feature no puede cerrar su acceptance de build). Sin design.md: no toca UI/presentación (solo frontmatter y config).",
+      "acceptance": [
+        "astro.config.mjs declara prerenderEnvironment workerd y conserva optimizeDeps.include y server.watch.ignored sin cambios (REQ-32-01)",
+        "tests/htb-stadistics-prerender-fix.test.mjs se reescribe en rojo antes de la implementación fijando la presencia del fallback cloudflare:workers y queda en verde al final (REQ-32-03)",
+        "htb-stadistics.astro importa env desde cloudflare:workers y aplica los fallbacks ENV_TOKEN || env.HTB_API_TOKEN y ENV_ID || env.HTB_USER_ID (REQ-32-02)",
+        "El componente conserva getProfileOrNull() y {profile && ...} sin lógica de negocio, y tests/htb-stadistics-section.test.mjs y tests/htb-api-graceful-degradation.test.mjs pasan sin modificaciones (REQ-32-04)",
+        "El build de producción completa sin errores con el prerender en workerd (REQ-32-05, REQ-11-05)",
+        "Si el build falla con ECONNREFUSED del prerenderer, la mitigación NODE_OPTIONS=--dns-result-order=ipv4first queda documentada en la spec y aplicada en el informe de implementación (REQ-32-06)",
+        "wrangler.jsonc conserva nodejs_compat y global_fetch_strictly_public sin cambios, verificado por test (REQ-32-07)",
+        "La suite completa pasa en verde y ./init.sh termina con el entorno perfecto (REQ-32-05)"
+      ],
+      "depends_on": [
+        31
+      ],
+      "status": "done"
     }
   ]
 }

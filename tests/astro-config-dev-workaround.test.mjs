@@ -1,16 +1,18 @@
 // Test del workaround del dev config en astro.config.mjs (resolución del
-// CHANGES_REQUESTED de la feature 27, 2026-08-13).
+// CHANGES_REQUESTED de la feature 27, 2026-08-13; estado canónico REQ-31-07,
+// feature 31 json-repositories-loader).
 //
 // Contexto: tras el error de re-optimización de rolldown-vite en Windows
 // ("rolldown-runtime > file does not exist ... optimizeDeps"), el humano
 // estabilizó el dev server editando astro.config.mjs: el bloque
 // vite.optimizeDeps pasó de `exclude: ['@astrojs/internal-helpers']` a
-// `include: ['astro/assets/services/noop']` + `disabled: false` (sugerencia
-// del propio Vite: "Try adding it to optimizeDeps"), se retiró
+// `include: ['astro/assets/services/noop']` y se retiró
 // `ssr.noExternal: ['astro']` y se añadió `server.watch.ignored:
 // ['**/.vite/**']` (evitar loops de recarga en Windows). El humano decidió
-// DOCUMENTAR Y CONSERVAR el workaround: este test fija su estado canónico y
-// verifica que el esquema env de REQ-22-07/08 no sufre regresión.
+// DOCUMENTAR Y CONSERVAR el workaround; en su commit c2bbfa1 retiró además
+// `disabled: false` (Vite 8/rolldown retiró optimizeDeps.disabled): el estado
+// canónico conserva `include` y NO exige `disabled`. Este test fija ese estado
+// y verifica que el esquema env de REQ-22-07/08 no sufre regresión.
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -24,7 +26,7 @@ function readRel(relPath) {
   return readFileSync(url, 'utf8');
 }
 
-test('workaround: optimizeDeps.include fija astro/assets/services/noop con disabled false', () => {
+test('REQ-31-07: optimizeDeps.include fija astro/assets/services/noop sin exigir disabled', () => {
   const config = readRel('astro.config.mjs');
   assert.ok(
     config.includes('optimizeDeps'),
@@ -36,10 +38,10 @@ test('workaround: optimizeDeps.include fija astro/assets/services/noop con disab
     /include:\s*\[['"]astro\/assets\/services\/noop['"]\]/,
     'optimizeDeps.include no fija astro/assets/services/noop (workaround)',
   );
-  assert.match(
+  assert.doesNotMatch(
     optimizeDeps,
-    /disabled:\s*false/,
-    'optimizeDeps.disabled no es false (workaround)',
+    /disabled\s*:/,
+    'optimizeDeps.disabled ha vuelto: el humano lo retiró en c2bbfa1 (REQ-31-07)',
   );
 });
 

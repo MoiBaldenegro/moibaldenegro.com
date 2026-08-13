@@ -1,17 +1,20 @@
-// Repositorio del dominio: tarjetas del hero (REQ-06-03, feature 6 hero-cards-domain).
+// Repositorio del dominio: tarjetas del hero (REQ-31-01..08, feature 31).
 // Única vía de acceso a src/data/hero-cards.json; entrega las entidades HeroCard.
-// Si el JSON no existe, no es JSON válido o no tiene la forma de las tarjetas,
-// lanza HeroCardsDataError (REQ-06-05): nunca falla en silencio.
+// Lee el contenido crudo con un loader inyectable () => string cuyo default
+// materializa el JSON con un import con atributo (patrón canónico verificado
+// en progress/research/lectura-json-sin-nodefs.md): sin módulos node ni el
+// sufijo de raw de Vite, el prerender podrá ejecutarse en workerd (REQ-31-03).
+// Si el loader falla, el contenido no es JSON válido o no tiene la forma de
+// las tarjetas, lanza HeroCardsDataError (REQ-31-06): nunca falla en silencio.
 
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import heroCardsJson from '../../data/hero-cards.json' with { type: 'json' };
 import type { HeroCard } from '../entities/hero-card.ts';
 
-// Ruta por defecto contra la raíz del proyecto (no import.meta.url): en el
-// prerender de Astro el bundle vive en dist/.prerender y las rutas relativas
-// al módulo ya no resuelven a src/data (REQ-09-04, feature 9).
-const DEFAULT_DATA_URL = pathToFileURL(join(process.cwd(), 'src', 'data', 'hero-cards.json'));
+// Contrato del loader inyectable: entrega el contenido CRUDO como texto.
+export type HeroCardsJsonLoader = () => string;
+
+// Única materialización del import con atributo en el default del loader.
+const DEFAULT_RAW = JSON.stringify(heroCardsJson);
 
 export class HeroCardsDataError extends Error {
   constructor(message: string) {
@@ -21,10 +24,10 @@ export class HeroCardsDataError extends Error {
 }
 
 export class HeroCardsRepository {
-  private readonly dataUrl: URL;
+  private readonly load: HeroCardsJsonLoader;
 
-  constructor(dataUrl: URL = DEFAULT_DATA_URL) {
-    this.dataUrl = dataUrl;
+  constructor(load: HeroCardsJsonLoader = () => DEFAULT_RAW) {
+    this.load = load;
   }
 
   getCards(): HeroCard[] {
@@ -34,11 +37,9 @@ export class HeroCardsRepository {
   private readJson(): unknown {
     let raw: string;
     try {
-      raw = readFileSync(this.dataUrl, 'utf-8');
+      raw = this.load();
     } catch {
-      throw new HeroCardsDataError(
-        `hero-cards.json: no se pudieron leer las tarjetas desde "${this.dataUrl.pathname}"`,
-      );
+      throw new HeroCardsDataError('hero-cards.json: no se pudieron leer las tarjetas');
     }
     try {
       return JSON.parse(raw);

@@ -1,33 +1,42 @@
-// Test de la reversión del prerender de htb-stadistics (REQ-28-01..06, feature 28).
+// Test del prerender en workerd con el fallback cloudflare:workers (REQ-32-01..07,
+// feature 32 prerender-workerd). Esta reescritura SUPERA el test de la feature 28
+// (que fijaba la AUSENCIA de cloudflare:workers, estado canónico de aquel ciclo):
+// la feature 28 permanece done como historial (precedente feature 25) y la
+// dirección del humano (ciclo 29) la revierte: el fallback ES NECESARIO con el
+// adapter de Cloudflare (astro:env/server no entrega las envs del worker en
+// runtime) y el prerender pasa a prerenderEnvironment: 'workerd', donde el
+// módulo virtual cloudflare:workers resuelve de forma nativa.
 //
-// Verifica contra specs/28_htb-stadistics-prerender-fix/requirements.md:
-//   REQ-28-01 — el componente consume el token y el identificador exclusivamente
-//               desde astro:env/server (el esquema los declara secret/server).
-//   REQ-28-02 — el componente no importa el módulo cloudflare:workers: el
-//               prerender del sitio corre en entorno node (prerenderEnvironment:
-//               'node', feature 21) donde el módulo virtual no existe y el
-//               default-prerenderer crashea ('reading setInternals').
-//   REQ-28-03 — el frontmatter resuelve el perfil con getProfileOrNull
-//               (degradación elegante de la feature 27 intacta).
-//   REQ-28-04 — si la edición manual reintroduce cloudflare:workers o los
-//               fallbacks de entorno (env.HTB_* o alias ENV_* con ||), este
-//               test falla.
-//   REQ-28-06 — el componente conserva el marcado canónico de la feature 27:
-//               la sección se condiciona al perfil con {profile && ...}.
-// El build de producción (REQ-28-05) lo verifica tests/about-page.test.mjs
-// (REQ-11-05, build real) dentro de la suite: este test fija la condición
-// estructural que permite que ese build corra en node.
+// Verifica contra specs/32_prerender-workerd/requirements.md:
+//   REQ-32-01 — astro.config.mjs declara prerenderEnvironment 'workerd' y el
+//               resto del bloque vite (optimizeDeps.include, server.watch.ignored)
+//               permanece sin cambios.
+//   REQ-32-02 — el frontmatter define el token y el identificador con fallback
+//               entre astro:env/server (alias ENV_TOKEN/ENV_ID) y cloudflare:workers
+//               (env.HTB_API_TOKEN / env.HTB_USER_ID).
+//   REQ-32-03 — este test fija la PRESENCIA del fallback cloudflare:workers.
+//   REQ-32-04 — el componente conserva getProfileOrNull() y el marcado
+//               condicionado con {profile && ...} (degradación de la 27 intacta),
+//               sin lógica de negocio ni console.*.
+//   REQ-32-05 — el build real en workerd lo verifica tests/about-page.test.mjs
+//               (REQ-11-05) dentro de la suite.
+//   REQ-32-06 — contingencia ECONNREFUSED: se documenta en progress/impl_32_*;
+//               no es una aserción de código.
+//   REQ-32-07 — wrangler.jsonc conserva los compatibility_flags nodejs_compat y
+//               global_fetch_strictly_public sin cambios, verificado por test.
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
 
 const COMPONENT_PATH = new URL('../src/components/htb-stadistics.astro', import.meta.url);
+const CONFIG_PATH = new URL('../astro.config.mjs', import.meta.url);
+const WRANGLER_PATH = new URL('../wrangler.jsonc', import.meta.url);
 
 function readComponent() {
   assert.ok(
     existsSync(COMPONENT_PATH),
-    'src/components/htb-stadistics.astro no existe (REQ-28-01)',
+    'src/components/htb-stadistics.astro no existe (REQ-32-02)',
   );
   return readFileSync(COMPONENT_PATH, 'utf8');
 }
@@ -36,69 +45,109 @@ function readFrontmatter() {
   return readComponent().split('---')[1] ?? '';
 }
 
-test('REQ-28-01: el token y el id se consumen exclusivamente desde astro:env/server', () => {
-  assert.match(
-    readFrontmatter(),
-    /import\s*\{\s*HTB_API_TOKEN\s*,\s*HTB_USER_ID\s*\}\s*from\s*['"]astro:env\/server['"]/,
-    'el frontmatter no importa HTB_API_TOKEN y HTB_USER_ID juntos desde astro:env/server sin alias (REQ-28-01)',
-  );
-});
+function readConfig() {
+  assert.ok(existsSync(CONFIG_PATH), 'astro.config.mjs no existe (REQ-32-01)');
+  return readFileSync(CONFIG_PATH, 'utf8');
+}
 
-test('REQ-28-02: el componente no importa el módulo cloudflare:workers', () => {
+function readWrangler() {
+  assert.ok(existsSync(WRANGLER_PATH), 'wrangler.jsonc no existe (REQ-32-07)');
+  return readFileSync(WRANGLER_PATH, 'utf8');
+}
+
+test('REQ-32-01: el adapter declara prerenderEnvironment workerd y conserva el bloque vite', () => {
+  const config = readConfig();
+  assert.match(
+    config,
+    /prerenderEnvironment\s*:\s*'workerd'/,
+    'astro.config.mjs no declara prerenderEnvironment \'workerd\' (REQ-32-01)',
+  );
   assert.doesNotMatch(
-    readComponent(),
-    /cloudflare:workers/,
-    'htb-stadistics.astro importa cloudflare:workers, módulo virtual inexistente en el prerender de node (REQ-28-02)',
+    config,
+    /prerenderEnvironment\s*:\s*'node'/,
+    'astro.config.mjs vuelve a prerenderEnvironment \'node\' (REQ-32-01)',
+  );
+  const optimizeDeps = config.match(/optimizeDeps\s*:\s*\{[^}]*\}/)?.[0] ?? '';
+  assert.match(
+    optimizeDeps,
+    /include:\s*\[['"]astro\/assets\/services\/noop['"]\]/,
+    'optimizeDeps.include cambió: debe conservar astro/assets/services/noop (REQ-32-01)',
+  );
+  assert.match(
+    config,
+    /watch\s*:\s*\{[\s\S]*?ignored:\s*\[['"]\*\*\/\.vite\/\*\*['"]\]/,
+    'server.watch.ignored cambió: debe conservar **/.vite/** (REQ-32-01)',
   );
 });
 
-test('REQ-28-03: el frontmatter resuelve el perfil con getProfileOrNull', () => {
+test('REQ-32-02: el frontmatter importa env desde cloudflare:workers y los alias de astro:env/server', () => {
+  const frontmatter = readFrontmatter();
   assert.match(
-    readComponent(),
+    frontmatter,
+    /import\s*\{\s*env\s*\}\s*from\s*['"]cloudflare:workers['"]/,
+    'el frontmatter no importa env desde cloudflare:workers (REQ-32-02)',
+  );
+  assert.match(
+    frontmatter,
+    /import\s*\{\s*HTB_API_TOKEN\s+as\s+ENV_TOKEN\s*,\s*HTB_USER_ID\s+as\s+ENV_ID\s*\}\s*from\s*['"]astro:env\/server['"]/,
+    'el frontmatter no importa HTB_API_TOKEN/HTB_USER_ID con alias ENV_TOKEN/ENV_ID desde astro:env/server (REQ-32-02)',
+  );
+});
+
+test('REQ-32-02/03: el token y el identificador usan el fallback ENV_* || env.HTB_*', () => {
+  const frontmatter = readFrontmatter();
+  assert.match(
+    frontmatter,
+    /const\s+HTB_API_TOKEN\s*=\s*ENV_TOKEN\s*\|\|\s*env\.HTB_API_TOKEN\s*;/,
+    'falta el fallback const HTB_API_TOKEN = ENV_TOKEN || env.HTB_API_TOKEN (REQ-32-02/03)',
+  );
+  assert.match(
+    frontmatter,
+    /const\s+HTB_USER_ID\s*=\s*ENV_ID\s*\|\|\s*env\.HTB_USER_ID\s*;/,
+    'falta el fallback const HTB_USER_ID = ENV_ID || env.HTB_USER_ID (REQ-32-02/03)',
+  );
+});
+
+test('REQ-32-04: conserva getProfileOrNull() con los valores resueltos y {profile && ...}', () => {
+  const component = readComponent();
+  assert.match(
+    component,
     /getProfileOrNull\(\)/,
-    'htb-stadistics.astro no obtiene el perfil con getProfileOrNull() (REQ-28-03)',
+    'htb-stadistics.astro no obtiene el perfil con getProfileOrNull() (REQ-32-04)',
   );
   assert.match(
     readFrontmatter(),
     /new\s+HtbProfileRepository\(\s*HTB_API_TOKEN\s*,\s*HTB_USER_ID\s*\)/,
-    'el constructor no recibe los valores directos de astro:env/server (REQ-28-01/03)',
+    'el constructor no recibe HTB_API_TOKEN y HTB_USER_ID (REQ-32-04)',
   );
-});
-
-test('REQ-28-04: sin fallbacks de entorno en el frontmatter', () => {
-  const frontmatter = readFrontmatter();
-  assert.doesNotMatch(
-    frontmatter,
-    /env\.HTB_API_TOKEN|env\.HTB_USER_ID/,
-    'el frontmatter reintroduce un fallback con env.HTB_* (REQ-28-04)',
-  );
-  assert.doesNotMatch(
-    frontmatter,
-    /ENV_TOKEN|ENV_ID/,
-    'el frontmatter reintroduce los alias ENV_TOKEN/ENV_ID de la edición manual (REQ-28-04)',
-  );
-  assert.doesNotMatch(
-    frontmatter,
-    /\|\|/,
-    'el frontmatter contiene el operador || (fallback de entorno, REQ-28-04)',
-  );
-});
-
-test('REQ-28-06: conserva el marcado canónico con {profile && ...}', () => {
   assert.match(
-    readComponent(),
+    component,
     /\{profile\s*&&/,
-    'el template no condiciona la sección al perfil con {profile && ...} (REQ-28-06)',
+    'el template no condiciona la sección al perfil con {profile && ...} (REQ-32-04)',
+  );
+  assert.doesNotMatch(
+    component,
+    /console\.(log|error|warn|debug)/,
+    'el componente registra en consola (REQ-22-06)',
+  );
+  assert.doesNotMatch(
+    component,
+    /\bfunction\b|\bif\s*\(|\bfor\s*\(|\btry\s*\{/,
+    'el componente contiene lógica de negocio en el frontmatter (REQ-32-04)',
   );
 });
 
-test('Convención: el componente es <=100 líneas y el frontmatter solo importa y pasa datos', () => {
+test('REQ-32-07: wrangler.jsonc conserva nodejs_compat y global_fetch_strictly_public', () => {
+  const wrangler = readWrangler();
+  assert.match(
+    wrangler,
+    /"compatibility_flags"\s*:\s*\[[\s\S]*?"global_fetch_strictly_public"[\s\S]*?"nodejs_compat"[\s\S]*?\]/,
+    'wrangler.jsonc no conserva global_fetch_strictly_public y nodejs_compat juntos (REQ-32-07)',
+  );
+});
+
+test('Convención: el componente es <=100 líneas y el frontmatter solo importa, define consts y llama', () => {
   const astro = readComponent();
   const lineCount = astro.split('\n').length;
   assert.ok(lineCount <= 100, `htb-stadistics.astro tiene ${lineCount} líneas (máximo 100)`);
-  assert.doesNotMatch(
-    astro,
-    /\bfunction\b|\bif\s*\(|\bfor\s*\(|\btry\s*\{/,
-    'el componente contiene lógica de negocio en el frontmatter (convención)',
-  );
 });

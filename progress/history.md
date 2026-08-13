@@ -302,3 +302,118 @@ del proyecto, no caché como `.astro/`). Sin design.md (sin UI).
   **Backlog: 0 pendientes, 0 in_progress, 0 blocked — ciclo 28 cerrado**
   (features 28-30: prerender fix, registro de dependencias operativo y tipos de
   Cloudflare instalados; estado final: `./init.sh` verde con build OK).
+
+## Sesión 2026-08-13 — Feature 31 `json-repositories-loader` (repositorios JSON al patrón loader sin node:fs)
+
+**Petición (orden del humano, ciclo 29):** el fallback `cloudflare:workers` de
+`htb-stadistics.astro` ES NECESARIO; lo que se elimina es el USO DE MÓDULOS
+NODE en `src/` (`node:fs`/`node:path`/`node:url` de los repositorios JSON)
+porque el prerender debe pasar a `prerenderEnvironment: 'workerd'` (feature 32).
+Decisión del spec_author: `progress/research/ciclo-prerender-workerd.md`
+(2 features: 31 = repos sin node:* + reconciliar el workaround, devuelve el
+arnés a verde; 32 = switch a workerd + fallback restaurado). Patrón canónico
+verificado empíricamente: `progress/research/lectura-json-sin-nodefs.md`
+(probe 5/5 node --test + build OK). Sin design.md (sin UI).
+
+**Ciclo (implementer TDD → reviewer):**
+- Tests escritos PRIMERO contra la spec (REQ-31-01..08):
+  `tests/hero-profile-repository.test.mjs` y `tests/hero-cards-repository.test.mjs`
+  reescritos al contrato de loader inyectable `() => string` (sin URLs ni
+  archivos temporales; loader que lanza = ausente, string inválido = malformado,
+  objeto con forma mala = forma inválida; asserts de datos reales REQ-05-01/02 y
+  REQ-06-01/02/04 conservados con node:fs — permitido en tests; guard REQ-31-03
+  sin `node:` ni sufijo de raw) y `tests/astro-config-dev-workaround.test.mjs`
+  (REQ-31-07: estado canónico humano c2bbfa1 — optimizeDeps conserva `include`
+  y NO exige `disabled`; no se restaura la línea en astro.config.mjs).
+- ROJO capturado: 24 tests → 20 pass / 4 fail (loader inyectable de ambos repos
+  + guards REQ-31-03; los modos de error pasaban "por accidente" con el código
+  viejo, documentado en el informe).
+- `hero-profile-repository.ts` (84 líneas) y `hero-cards-repository.ts`
+  (94 líneas) migrados al patrón canónico: `import x from '../../data/x.json'
+  with { type: 'json' }` en el `.ts` del dominio + `DEFAULT_RAW =
+  JSON.stringify(x)` como default del loader; sin parameter properties
+  (strip-only de Node), sin `?raw`, errores nombrados
+  `HeroProfileDataError`/`HeroCardsDataError` y semántica REQ-05-04/REQ-06-05
+  preservadas 1:1. Consumidores sin argumentos intactos (about.astro,
+  new-hero.astro). Corrección en el ciclo: ruta `../../data/` (desde
+  `src/domain/repositories/`) y comentarios de cabecera sin la cadena literal
+  del sufijo prohibido (el guard la detecta).
+- VERDE: tests de la feature 24/24; suite completa al 100 %; `./init.sh` →
+  "El entorno está perfecto" (antes de la feature 31 estaba ROJO por el test
+  del workaround — la 31 devuelve el arnés a verde completo, REQ-31-08).
+  `grep 'from node:' / '?raw' src/` → 0.
+- **Reviewer:** `progress/review_31_json-repositories-loader.md` con Veredicto
+  **APPROVED** (verificado en disco, 2026-08-13; sin cambios requeridos; 8/8
+  comprobaciones y checkpoints C1-C3, C5 ✔; C4 no aplica — sin UI; `./init.sh`
+  re-ejecutado por el reviewer en verde). Alcance respetado: `git diff --`
+  sobre htb-stadistics.astro/astro.config.mjs/wrangler.jsonc vacío.
+- **Cierre:** status de feature 31 en `feature_list.json`: `done` (conservada
+  en el array — features 1-31 done). `check-format` en verde tras el cambio
+  (validado por `./init.sh`). Artefactos permanentes conservados:
+  `progress/impl_31_json-repositories-loader.md`, `progress/review_31_*`,
+  `specs/31_*` y los 4 informes de research del ciclo 29. **Backlog: 1
+  pendiente — 32 `prerender-workerd` (depends_on [31] done): siguiente
+  implementable.**
+
+## Sesión 2026-08-13 — Feature 32 `prerender-workerd` (prerender en workerd con el fallback `cloudflare:workers` restaurado)
+
+**Petición (orden del humano, ciclo 29):** el fallback `import { env } from
+'cloudflare:workers'` en `htb-stadistics.astro` ES NECESARIO (astro:env/server
+no entrega las envs del worker en runtime con el adapter) y lo que se elimina
+es el uso de módulos node: el prerender pasa a `prerenderEnvironment:
+'workerd'` (default del adapter 14.2.1, prerender en workerd real vía
+miniflare, offline y sin auth), donde `cloudflare:workers` resuelve de forma
+nativa y el crash `setInternals` del camino node (feature 28) desaparece.
+Base técnica: `progress/research/prerender-workerd-adapter.md`,
+`progress/research/nodejs-compat-prerender-workerd.md` y
+`progress/research/ciclo-prerender-workerd.md`. Depende de la feature 31
+(repositorios sin `node:*` — prerrequisito de workerd). La feature 28 permanece
+`done` como historial (precedente feature 25); su test se reescribe a PRESENCIA.
+Sin design.md (solo frontmatter y config; la presentación no cambia).
+
+**Ciclo (implementer TDD → reviewer):**
+- Tests escritos PRIMERO contra la spec (REQ-32-01..07):
+  `tests/htb-stadistics-prerender-fix.test.mjs` reescrito al nuevo estado
+  canónico: presencia del fallback `cloudflare:workers` + alias
+  `ENV_TOKEN`/`ENV_ID` + `const ... = ENV_* || env.HTB_*` (REQ-32-02/03),
+  `astro.config.mjs` con `prerenderEnvironment: 'workerd'` y bloque vite
+  intacto (REQ-32-01), `getProfileOrNull()` + `{profile && ...}` sin lógica
+  (REQ-32-04), guard de `wrangler.jsonc` con ambos flags (REQ-32-07) y
+  convención ≤100 líneas.
+- ROJO capturado: 6 tests → 3 pass / 3 fail (los asserts que fijan el nuevo
+  estado canónico: config `'node'`, ausencia de `cloudflare:workers` y de los
+  fallbacks); pasaban ya los guards de degradación 27, flags de wrangler y
+  convención.
+- `astro.config.mjs`: solo la línea `prerenderEnvironment: 'node'` →
+  `'workerd'` (diff git confirma 2 +/-1); `optimizeDeps.include` y
+  `server.watch.ignored` intactos. `htb-stadistics.astro` (45 líneas):
+  restauradas las 4 líneas del humano encima del import de `astro:env/server`,
+  sin `console.*` ni lógica extra; el marcado `{profile && ...}` NO cambia.
+  `wrangler.jsonc` sin cambios (mantener `nodejs_compat` — toolchain miniflare
+  date-unaware — y `global_fetch_strictly_public`; REQ-32-07).
+- VERDE: test de la feature 6/6; suite completa 206/206 al 100 %; `./init.sh`
+  → "El entorno está perfecto" con el build de producción en workerd
+  (REQ-32-05/REQ-11-05). Contingencia IPv4/IPv6 (REQ-32-06, #15525): NO fue
+  necesaria — build sin ECONNREFUSED; mitigación documentada en spec e informe
+  (`NODE_OPTIONS=--dns-result-order=ipv4first`).
+- Verificación de runtime (riesgo PR #16720 `isNode`, ausente en astro 7.2.0):
+  `astro preview` (workerd real) → `GET /` 200 con la isla server:defer
+  `/_server-islands/HtbStadistics`; el endpoint de la isla responde 200 con
+  body vacío (sin vars HTB locales → `getProfileOrNull()` degrada a `null` →
+  la sección no se renderiza): **sin 500, sin `[object Object]`**; `GET /about`
+  200 con el perfil real.
+- **Reviewer:** `progress/review_32_prerender-workerd.md` con Veredicto
+  **APPROVED** (verificado en disco, 2026-08-13; sin cambios requeridos; 9/9
+  comprobaciones con evidencia en código real, `./init.sh` re-ejecutado por el
+  reviewer en verde; observación no bloqueante: `/about` responde 307 →
+  `/about/` por trailing-slash del preview, imprecisión menor del informe, no
+  del código).
+- **Cierre:** status de feature 32 en `feature_list.json`: `done` (conservada
+  en el array — features 1-32 done, **0 pendientes**). `./init.sh` verde tras
+  el cierre. Artefactos permanentes conservados:
+  `progress/impl_32_prerender-workerd.md`, `progress/review_32_*`,
+  `specs/32_*` y los informes de research del ciclo 29. **Ciclo 29 CERRADO**:
+  estado final del sitio — prerender en workerd, fallback `cloudflare:workers`
+  restaurado en htb-stadistics, `src/` sin módulos node (repos con loader
+  inyectable + `with { type: 'json' }`), registro de dependencias aprobadas
+  operativo en el arnés, `worker-configuration.d.ts` versionado.

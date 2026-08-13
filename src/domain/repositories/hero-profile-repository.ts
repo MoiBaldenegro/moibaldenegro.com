@@ -1,17 +1,20 @@
-// Repositorio del dominio: perfil del hero (REQ-05-03, feature 5 hero-profile-domain).
+// Repositorio del dominio: perfil del hero (REQ-31-01..08, feature 31).
 // Única vía de acceso a src/data/hero.json; entrega la entidad HeroProfile.
-// Si el JSON no existe, no es JSON válido o no tiene la forma del perfil,
-// lanza HeroProfileDataError (REQ-05-04): nunca falla en silencio.
+// Lee el contenido crudo con un loader inyectable () => string cuyo default
+// materializa el JSON con un import con atributo (patrón canónico verificado
+// en progress/research/lectura-json-sin-nodefs.md): sin módulos node ni el
+// sufijo de raw de Vite, el prerender podrá ejecutarse en workerd (REQ-31-03).
+// Si el loader falla, el contenido no es JSON válido o no tiene la forma del
+// perfil, lanza HeroProfileDataError (REQ-31-06): nunca falla en silencio.
 
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import heroJson from '../../data/hero.json' with { type: 'json' };
 import type { HeroProfile } from '../entities/hero-profile.ts';
 
-// Ruta por defecto contra la raíz del proyecto (no import.meta.url): en el
-// prerender de Astro el bundle vive en dist/.prerender y las rutas relativas
-// al módulo ya no resuelven a src/data (REQ-09-04, feature 9).
-const DEFAULT_DATA_URL = pathToFileURL(join(process.cwd(), 'src', 'data', 'hero.json'));
+// Contrato del loader inyectable: entrega el contenido CRUDO como texto.
+export type HeroProfileJsonLoader = () => string;
+
+// Única materialización del import con atributo en el default del loader.
+const DEFAULT_RAW = JSON.stringify(heroJson);
 
 export class HeroProfileDataError extends Error {
   constructor(message: string) {
@@ -21,10 +24,10 @@ export class HeroProfileDataError extends Error {
 }
 
 export class HeroProfileRepository {
-  private readonly dataUrl: URL;
+  private readonly load: HeroProfileJsonLoader;
 
-  constructor(dataUrl: URL = DEFAULT_DATA_URL) {
-    this.dataUrl = dataUrl;
+  constructor(load: HeroProfileJsonLoader = () => DEFAULT_RAW) {
+    this.load = load;
   }
 
   getProfile(): HeroProfile {
@@ -34,11 +37,9 @@ export class HeroProfileRepository {
   private readJson(): unknown {
     let raw: string;
     try {
-      raw = readFileSync(this.dataUrl, 'utf-8');
+      raw = this.load();
     } catch {
-      throw new HeroProfileDataError(
-        `hero.json: no se pudo leer el perfil desde "${this.dataUrl.pathname}"`,
-      );
+      throw new HeroProfileDataError('hero.json: no se pudo leer el perfil');
     }
     try {
       return JSON.parse(raw);
