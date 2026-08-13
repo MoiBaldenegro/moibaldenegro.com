@@ -14,9 +14,11 @@ Comprueba, en orden:
 1. Herramientas disponibles (node, pnpm) y dependencias instaladas (`node_modules`).
 2. Existencia de los archivos del harness (`AGENTS.md`, `feature_list.json`,
    `progress/current.md`).
-3. Formato correcto de `feature_list.json`, `progress/current.md` y specs EARS
-   (`scripts/check-format.mjs`, que integra la validación de
-   `specs/<NN>_<name>/requirements.md` de toda feature no-done).
+3. Formato correcto de `feature_list.json`, `progress/current.md`, specs EARS
+   y registro de dependencias (`scripts/check-format.mjs`, que integra la
+   validación de `specs/<NN>_<name>/requirements.md` de toda feature no-done
+   y de `docs/dependencies.md` contra package.json vía
+   `scripts/validate-dependencies.mjs`).
 4. Tests automáticos al 100% (`pnpm test`, node:test).
 5. Build de producción (`pnpm build`).
 
@@ -96,3 +98,7 @@ Cualquier vaciado del array que no responda a esos dos casos es un
 - `progress/history.md` recibe el resumen al cerrar.
 - **Ninguna tarea se da por cerrada** sin `progress/review_<feature>.md`
   con veredicto `APPROVED` (lo lanza el líder, nunca el implementer).
+- **Dependencias**: ningún agente aprueba dependencias (la aprobación es
+  decisión exclusiva del humano tras discusión); si una feature necesita una
+  dependencia nueva, se marca `blocked` y la aprobación se materializa en
+  `docs/dependencies.md`, validada por `scripts/validate-dependencies.mjs`.

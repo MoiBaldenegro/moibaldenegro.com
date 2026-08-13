@@ -20,7 +20,7 @@
    | `src/pages/` | Rutas. Un archivo por URL (`index.astro` → `/`). |
    | `src/styles/` | CSS. `tokens.css` con el sistema de tokens del diseño + un archivo por componente (`layout.css`, `profile-card.css`, `latest-articles.css`…). |
 
-2. **Sin dependencias externas.** Si una feature requiere una dependencia, primero se discute (estado `blocked`).
+2. **Sin dependencias externas.** Si una feature requiere una dependencia, primero se discute (estado `blocked`): ningún agente aprueba dependencias; la aprobación es decisión exclusiva del humano tras discusión y se materializa en `docs/dependencies.md`, validado por `scripts/validate-dependencies.mjs` (integrado en `scripts/check-format.mjs`).
 
 3. **Errores explícitos.** Las funciones que pueden fallar (un JSON malformado, un id que no existe, un recurso ausente) lanzan errores nombrados, no devuelven valores falsy silenciosos. Un fallo silencioso es un bug disfrazado.
 

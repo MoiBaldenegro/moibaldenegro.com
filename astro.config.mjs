@@ -31,7 +31,6 @@ export default defineConfig({
   vite: {
     optimizeDeps: {
       include: ['astro/assets/services/noop'],
-      disabled: false,
     },
     server: {
       watch: {

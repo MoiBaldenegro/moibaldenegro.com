@@ -50,6 +50,7 @@ Procedimiento completo en `docs/verification.md`.
 | `docs/architecture.md`       | Qué significa "hacer un buen trabajo" en este proyecto    | Antes de implementar |
 | `docs/conventions.md`        | Reglas de estilo, nombres, estructura                     | Antes de escribir código |
 | `docs/verification.md`       | Cómo verificar que tu trabajo funciona                    | Antes de declarar una tarea como `done` |
+| `docs/dependencies.md`       | Registro de dependencias aprobadas por el humano (aprobación decisión exclusiva del humano) | Antes de necesitar una dependencia |
 | `CHECKPOINTS.md`             | Criterios objetivos de "estado final correcto"            | Para auto-evaluarte |
 | `.opencode/agents/` y `.claude/agents/` | Definiciones de subagentes (spec_author, leader, implementer, reviewer, explorer) en formato opencode y Claude Code | Si orquestas trabajo |
 | `scripts/check-format.mjs`   | Valida el formato de `feature_list.json` y `progress/`    | Invocado por `init.sh` |
@@ -123,7 +124,10 @@ agente la dispara por su cuenta.
 - **Máx. 100 líneas por archivo.** Si es extremadamente necesario superarlas, se
   discute primero (estado `blocked`).
 - **Sin dependencias externas.** Si una feature requiere una dependencia, primero
-  se discute (estado `blocked`).
+  se discute (estado `blocked`): ningún agente aprueba dependencias; la aprobación
+  es decisión exclusiva del humano tras discusión y se materializa en
+  `docs/dependencies.md` (validado por `scripts/validate-dependencies.mjs` vía
+  `scripts/check-format.mjs`).
 - **Estático por defecto.** Cero JavaScript de runtime salvo justificación.
 - **Un solo layout.** El chrome compartido vive solo en `src/layouts/Layout.astro`.
 - **Rutas explícitas.** Una página por archivo en `src/pages/`, una URL por página.

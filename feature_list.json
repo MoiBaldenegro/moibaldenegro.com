@@ -416,6 +416,53 @@
         22
       ],
       "status": "done"
+    },
+    {
+      "id": 28,
+      "name": "htb-stadistics-prerender-fix",
+      "title": "Canalizar la reversión de la edición manual de htb-stadistics.astro que rompe el build",
+      "description": "Diagnóstico del líder (2026-08-13, init.sh en ROJO): la edición manual SIN commitear de src/components/htb-stadistics.astro añade `import { env } from 'cloudflare:workers'` y los fallbacks `ENV_TOKEN || env.HTB_API_TOKEN` / `ENV_ID || env.HTB_USER_ID` en el frontmatter. Con prerenderEnvironment: 'node' (feature 21) el prerender de la portada corre en entorno node, donde el módulo virtual cloudflare:workers NO existe → default-prerenderer.js crashea ('reading setInternals') → tests/about-page.test.mjs REQ-11-05 (build real) falla. DECISIÓN (documentada en progress/research/registro-dependencias-aprobadas.md, sección 4): REVERTIR al estado canónico de las features 22+27. Justificación: (a) con el adapter Cloudflare y el esquema env (REQ-22-08), astro:env/server ya resuelve HTB_API_TOKEN/HTB_USER_ID desde las envs del worker en runtime: el fallback a cloudflare:workers es redundante; (b) la feature 27 ya cubre el caso de envs ausentes (REQ-27-02: getProfileOrNull → null → la sección no se renderiza); (c) la alternativa de fallback seguro exigiría un import dinámico del módulo virtual en una capa no evaluada en prerender (frágil, JS de runtime injustificado y contra la regla 8 de docs/architecture.md: el frontmatter solo importa y llama). La feature revierte el componente a: import de astro:env/server + HtbProfileRepository + hoja CSS + `const profile = await new HtbProfileRepository(...).getProfileOrNull()` y conserva el marcado {profile && ...} de la 27 (la presentación NO cambia; solo el frontmatter). El test tests/htb-stadistics-prerender-fix.test.mjs (red-first) fija la ausencia de cloudflare:workers y de fallbacks de entorno en el componente; la suite existente (htb-stadistics-section, htb-api-graceful-degradation, astro-config-dev-workaround) queda intacta y sin modificaciones.",
+      "acceptance": [
+        "tests/htb-stadistics-prerender-fix.test.mjs se escribe en rojo antes de la implementación y queda en verde al final (REQ-28-02, REQ-28-04)",
+        "htb-stadistics.astro no contiene la cadena cloudflare:workers ni los fallbacks env.HTB_API_TOKEN/env.HTB_USER_ID y consume el token y el identificador solo desde astro:env/server (REQ-28-01, REQ-28-02)",
+        "El componente obtiene el perfil con getProfileOrNull() y conserva el marcado condicionado con {profile && ...} de la feature 27 (REQ-28-03, REQ-28-06)",
+        "tests/htb-stadistics-section.test.mjs y tests/htb-api-graceful-degradation.test.mjs pasan en verde sin modificaciones (REQ-28-03)",
+        "La suite completa pasa en verde y el build de producción genera dist sin errores, de modo que REQ-11-05 queda verde con el prerender en node (REQ-28-05)"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 29,
+      "name": "dependencies-registry",
+      "title": "Registro de dependencias aprobadas por el humano integrado en el arnés",
+      "description": "Orden del humano (2026-08-13): 'aprovecha para actualizar el arnés para posteriormente tener un registro de dependencias aprobadas, ningún agente está autorizado para aprobar dependencias, solo pone blocked como hasta ahora, únicamente son autorizadas por humanos después de que sean discutidas'. Esta feature crea la infraestructura del registro: docs/dependencies.md con el formato de bloques (una entrada por dependencia con package, version, scope, approved y motivo; precedente de formato: specs/_template) que declara las dependencias YA aprobadas por el humano el 2026-08-13 — astro (^7.2.0, dependencies), @astrojs/cloudflare (^14.2.1, dependencies), wrangler (^4.121.0, dependencies) y @cloudflare/workers-types (^5.20260812.1, devDependencies) — y el validador scripts/validate-dependencies.mjs (prefijo de verbo admitido: validate-, Node stdlib, <=100 líneas objetivo, precedente validate-feature-list/validate-progress/validate-specs) integrado en scripts/check-format.mjs (REQ-29-06: init.sh lo ejecuta en cada arranque): falla si una dependencia de package.json (dependencies + devDependencies) no tiene entrada aprobada en el registro o si una entrada no declara todos los campos. Test red-first tests/dependencies-registry.test.mjs (fija el formato real + fixtures temporales de package.json sin registro y registro incompleto). Documentación del arnés actualizada: AGENTS.md §7 (regla de aprobación + resumen), docs/architecture.md regla 2 (ampliada: las dependencias aprobadas se registran; ningún agente aprueba, solo blocked), docs/conventions.md (subsección de dependencias) y docs/verification.md (comprobación 3: check-format integra el registro). Precedentes: features 23 (harness-docs-alignment) y 1 (harness-kit-mount) para el patrón de tocar el kit con tests. Sin UI: sin design.md.",
+      "acceptance": [
+        "tests/dependencies-registry.test.mjs se escribe en rojo antes de la implementación y queda en verde al final (REQ-29-02, REQ-29-03)",
+        "docs/dependencies.md existe con entradas aprobadas para astro @astrojs/cloudflare wrangler y @cloudflare/workers-types, cada una con paquete versión ámbito fecha y motivo (REQ-29-01)",
+        "scripts/validate-dependencies.mjs falla con una dependencia de package.json sin registro y con una entrada sin los campos obligatorios (REQ-29-02, REQ-29-03)",
+        "scripts/check-format.mjs incluye la validación del registro y ./init.sh la ejecuta en cada arranque (REQ-29-06)",
+        "AGENTS.md docs/architecture.md docs/conventions.md y docs/verification.md documentan que ningún agente aprueba dependencias y que la aprobación es decisión exclusiva del humano (REQ-29-04, REQ-29-05)",
+        "La suite completa pasa en verde y ./init.sh termina con el entorno perfecto (REQ-29-06)"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 30,
+      "name": "cloudflare-types-install",
+      "title": "Generar e instalar worker-configuration.d.ts con los tipos de Cloudflare Workers",
+      "description": "Parte del orden del humano (2026-08-13): 'hay que instalar los tipos también'. Verificado en disco: tsconfig.json incluye './worker-configuration.d.ts' en su lista de tipos pero el archivo NO existe en la raíz (glob vacío, git check-ignore exit 1: .gitignore NO lo excluye); @cloudflare/workers-types ^5.20260812.1 ya está en devDependencies y en node_modules; package.json ya declara el script 'generate-types': 'wrangler types' (REQ-21-02); wrangler.jsonc está versionado (compatibility nodejs_compat, main @astrojs/cloudflare/entrypoints/server). Esta feature materializa el artefacto: ejecutar `pnpm generate-types` (wrangler types) para generar worker-configuration.d.ts en la raíz y COMMITEARLO (decisión: el archivo queda bajo control de versiones porque tsconfig.json depende de él y .gitignore no lo excluye; precedente: .astro/ sí se ignora como generated types, pero worker-configuration.d.ts es contrato de tipos del proyecto, no caché). Test red-first tests/cloudflare-types-install.test.mjs que fija el contrato: el archivo existe, no está vacío, declara el contrato de tipos del runtime (referencia al paquete @cloudflare/workers-types o generación de wrangler), tsconfig.json lo incluye, .gitignore no lo excluye y git ls-files lo rastrea; verifica también que `pnpm generate-types` lo regenera sin modificar el contrato (idempotencia). Depende de la feature 29 (dependencies-registry): @cloudflare/workers-types y wrangler quedan amparadas por el registro de aprobadas antes de generar artefactos con ellas (coherencia del arnés: primero la regla, luego la operación bajo la regla). Sin UI: sin design.md.",
+      "acceptance": [
+        "tests/cloudflare-types-install.test.mjs se escribe en rojo antes de la implementación y queda en verde al final (REQ-30-01..REQ-30-05)",
+        "worker-configuration.d.ts existe en la raíz del proyecto, no está vacío y declara el contrato de tipos del runtime de Cloudflare Workers (REQ-30-01, REQ-30-02)",
+        "El archivo está referenciado por tsconfig.json, no está excluido en .gitignore y git ls-files lo rastrea (REQ-30-03)",
+        "`pnpm generate-types` (wrangler types) regenera el archivo de tipos sin modificar su contrato (REQ-30-04)",
+        "docs/dependencies.md registra @cloudflare/workers-types y wrangler como aprobadas por el humano el 2026-08-13 (REQ-30-06)",
+        "La suite completa pasa en verde y ./init.sh termina con el entorno perfecto (REQ-30-05)"
+      ],
+      "depends_on": [
+        29
+      ],
+      "status": "done"
     }
   ]
 }

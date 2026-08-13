@@ -167,3 +167,138 @@ CSS (`post.css` no existía) — canalizado como feature por el spec_author
   **Backlog: 0 pendientes, 0 in_progress** (pendiente real del líder: decidir
   si abre re-review de features 19/21 por el fix de adapter documentado en la
   feature 24; sin features nuevas canalizadas).
+
+## Sesión 2026-08-13 — Feature 28 `htb-stadistics-prerender-fix` (reversión de la edición manual que rompía el build)
+
+**Petición:** `./init.sh` en ROJO por una edición manual SIN commitear en
+`src/components/htb-stadistics.astro` (`import { env } from 'cloudflare:workers'`
++ fallbacks `ENV_TOKEN || env.HTB_*`). Con `prerenderEnvironment: 'node'`
+(feature 21) el prerender corre en node, donde el módulo virtual
+`cloudflare:workers` no existe → `default-prerenderer.js` crashea →
+`tests/about-page.test.mjs` REQ-11-05 (build real) fallaba. Decisión del
+spec_author (`progress/research/registro-dependencias-aprobadas.md` §4):
+REVERTIR al estado canónico 22+27 — el fallback es redundante (astro:env/server
+ya resuelve las envs del worker en runtime, REQ-22-08) y REQ-27-02 ya cubre las
+envs ausentes; sin fallback "seguro" (REQ-28-04 fija la ausencia con test).
+
+**Ciclo (implementer TDD → reviewer):**
+- Test escrito PRIMERO: `tests/htb-stadistics-prerender-fix.test.mjs` (6 tests)
+  contra REQ-28-01..06 → ROJO 3/6 (fallan exactamente REQ-28-01, REQ-28-02,
+  REQ-28-04: las aserciones que fijan la ausencia de la edición manual; pasan
+  REQ-28-03, REQ-28-06 y convención) → VERDE 6/6 tras la reversión.
+- `htb-stadistics.astro`: frontmatter revertido al estado canónico 22+27
+  (`import { HTB_API_TOKEN, HTB_USER_ID } from 'astro:env/server'` +
+  `HtbProfileRepository` + `getProfileOrNull()`); el marcado visible
+  `{profile && ...}` de la feature 27 NO cambia; `git diff` del componente
+  queda vacío (idéntico a HEAD). NO se tocaron `astro.config.mjs` ni el esquema
+  env (workaround de dev fijado por `tests/astro-config-dev-workaround.test.mjs`).
+- Ningún test vigente modificado (`git diff -- tests/` vacío): las suites de las
+  features 22 y 27 pasan intactas.
+- Verificación final: suite 187/187 (180 previos + 6 del test nuevo), build OK
+  con prerender en node (REQ-28-05, REQ-11-05 verde), `./init.sh` → "El entorno
+  está perfecto".
+- **Reviewer:** `progress/review_28_htb-stadistics-prerender-fix.md` con
+  Veredicto **APPROVED** (verificado en disco, 2026-08-13; sin cambios
+  requeridos; checkpoints C1-C9/C12 ✔, C10 visual no aplicable — marcado sin
+  cambios, C11 cierre).
+- **Cierre:** status de feature 28 en `feature_list.json`: `done` (conservada
+  en el array — features 1-28 done conservadas; pendientes: 29
+  `dependencies-registry` y 30 `cloudflare-types-install` (depends_on [29])).
+  `check-format` en verde tras el cambio. **Siguiente implementable: 29**.
+## Sesión 2026-08-13 — Feature 29 `dependencies-registry` (registro de dependencias aprobadas integrado en el arnés)
+
+**Petición (orden del humano, 2026-08-13):** "actualiza el arnés para tener un
+registro de dependencias aprobadas; NINGÚN agente está autorizado a aprobar
+dependencias, solo pone `blocked`; únicamente son autorizadas por humanos
+después de que sean discutidas". Aprobaciones humanas a materializar: astro
+^7.2.0, @astrojs/cloudflare ^14.2.1, wrangler ^4.121.0 (dependencies) y
+@cloudflare/workers-types ^5.20260812.1 (devDependencies), aprobadas el
+2026-08-13. Análisis previo: `progress/research/registro-dependencias-aprobadas.md`
+(Decisiones 3-5: el registro cubre dependencies + devDependencies incluyendo
+astro; worker-configuration.d.ts es de la feature 30; sin design.md — sin UI).
+
+**Ciclo (implementer TDD → reviewer):**
+- Test escrito PRIMERO: `tests/dependencies-registry.test.mjs` (8 tests) contra
+  REQ-29-01..06 → ROJO (`ERR_MODULE_NOT_FOUND: Cannot find module
+  'scripts/validate-dependencies.mjs'`, 0 pass / 1 fail: ni el validador ni el
+  registro ni la documentación existían) → VERDE 8/8 tras implementar.
+- `docs/dependencies.md` (nuevo): formato de bloques `### <package>` +
+  `- clave: valor` con `version`, `scope`, `approved` y `motivo`. 4 entradas
+  aprobadas por el humano el 2026-08-13 (astro framework del proyecto,
+  @astrojs/cloudflare adapter de despliegue en Cloudflare Workers, wrangler CLI
+  de despliegue y generación de tipos, @cloudflare/workers-types tipos del
+  runtime), versiones y ámbitos exactos de package.json.
+- `scripts/validate-dependencies.mjs` (67 líneas, Node stdlib, prefijo
+  `validate-`): exporta `parseRegistry` y `validateDependencies(packagePath,
+  registryPath)`; falla si una dependencia de package.json no tiene entrada
+  aprobada, si version/scope no coinciden, o si una entrada no declara los
+  campos obligatorios (verificado con fixtures temporales en el test).
+- `scripts/check-format.mjs` integra `validateDependencies()` (REQ-29-06);
+  `./init.sh` lo ejecuta en cada arranque (comprobación Formato).
+- Arnés documentado (REQ-29-04/05): AGENTS.md (fila del mapa §2 + bullet §7),
+  docs/architecture.md (regla 2 ampliada), docs/conventions.md (sección
+  «## Dependencias»), docs/verification.md (comprobación 3 + Estado del
+  harness): ningún agente aprueba dependencias; la aprobación es decisión
+  exclusiva del humano y se materializa en `docs/dependencies.md`.
+- Sin tokens prohibidos del kit (og-image/hero/tomatesoft/cards-data: 0 en los
+  archivos tocados; REQ-01-05 verde). Sin design.md. Feature 30 intacta.
+- Verificación final: `./init.sh` → "El entorno está perfecto" (formato OK,
+  tests al 100 % — 195 totales: 187 previos + 8 del test nuevo —, build OK).
+- **Reviewer:** `progress/review_29_dependencies-registry.md` con Veredicto
+  **APPROVED** (verificado en disco, 2026-08-13; sin cambios requeridos;
+  checkpoints C1-C3, C5 ✔; C4 no aplica — sin UI). Trazabilidad acceptance↔REQ
+  completa (8/8 comprobaciones).
+- **Cierre:** status de feature 29 en `feature_list.json`: `done` (conservada
+  en el array — features 1-29 done conservadas; pendiente: 30
+  `cloudflare-types-install` (depends_on [29] done)). `check-format` en verde
+  tras el cambio. **Siguiente implementable: 30** (genera y commitea
+  `worker-configuration.d.ts` vía `pnpm generate-types`; REQ-30-01..06).
+
+## Sesión 2026-08-13 — Feature 30 `cloudflare-types-install` (tipos de Cloudflare Workers instalados)
+
+**Petición (orden del humano, 2026-08-13):** "hay que instalar los tipos
+también" — materializar `worker-configuration.d.ts` bajo el registro de
+dependencias aprobadas. Decisión del spec_author:
+`progress/research/registro-dependencias-aprobadas.md` (Decisión 3: el archivo
+se commitea — tsconfig.json lo incluye, .gitignore no lo excluye y
+wrangler.jsonc versionado lo genera de forma idempotente; es contrato de tipos
+del proyecto, no caché como `.astro/`). Sin design.md (sin UI).
+
+**Ciclo (implementer TDD → reviewer):**
+- Hechos verificados en disco antes de tocar nada: `worker-configuration.d.ts`
+  NO existía (tsconfig.json línea 6 lo incluye), `git check-ignore` exit 1
+  (no excluido), script `generate-types: wrangler types` declarado (REQ-21-02),
+  `@cloudflare/workers-types` ^5.20260812.1 en devDependencies, `wrangler.jsonc`
+  versionado y registro de la feature 29 con ambos paquetes aprobados
+  2026-08-13.
+- Test escrito PRIMERO: `tests/cloudflare-types-install.test.mjs` (7 tests,
+  REQ-30-01..06) → ROJO 3 fail (REQ-30-01/05 archivo ausente, REQ-30-02 sin
+  contrato, REQ-30-03/05 sin rastrear en git; rojo estable — el test de
+  regeneración restaura el estado si el archivo no existía) → VERDE 7/7.
+  Contrato fijado con la marca real del generador v4 (`Generated by Wrangler`)
+  tras inspeccionar el output (el intento inicial en minúscula falló; el test
+  fija la marca estable del generador, que es lo que REQ-30-02 pide).
+- `worker-configuration.d.ts` generado (551.093 bytes) con `wrangler types`
+  (wrangler 4.121.0, `node node_modules/wrangler/bin/wrangler.js types` =
+  `pnpm generate-types`; sin red ni auth en Windows, verificado): cabecera de
+  generación + `interface __BaseEnv_Env` (ASSETS, HTB_API_TOKEN,
+  IN_MAINTENANCE, HTB_USER_ID) + `Cloudflare.Env`/`Env`/`NodeJS.ProcessEnv` +
+  runtime types de workerd@1.20260804.1. Staged con `git add` (git ls-files lo
+  rastrea, REQ-30-03) sin commit (los commits los orquesta el líder). Nada más
+  tocado: tsconfig/.gitignore/package.json/wrangler.jsonc/astro.config.mjs
+  intactos; docs/dependencies.md ya amparaba los paquetes (REQ-30-06).
+- Idempotencia verificada: hash sha256 `e74176bb…dcabc` estable en 2 corridas
+  seguidas de `wrangler types` (por el reviewer) + test REQ-30-04 byte a byte.
+- Verificación final: test 7/7, suite completa al 100 % (202 totales: 195
+  previos + 7 del test nuevo), build OK consumiendo `worker-configuration.d.ts`
+  vía el include de tsconfig sin errores de tipos, `./init.sh` → "El entorno
+  está perfecto".
+- **Reviewer:** `progress/review_30_cloudflare-types-install.md` con Veredicto
+  **APPROVED** (verificado en disco, 2026-08-13; sin cambios requeridos;
+  checkpoints C1-C3, C5 ✔; C4 no aplica — sin UI; nota no bloqueante: el test
+  tiene 135 líneas, dentro del precedente aprobado del arnés para tests).
+- **Cierre:** status de feature 30 en `feature_list.json`: `done` (conservada
+  en el array — features 1-30 done). `check-format` en verde tras el cambio.
+  **Backlog: 0 pendientes, 0 in_progress, 0 blocked — ciclo 28 cerrado**
+  (features 28-30: prerender fix, registro de dependencias operativo y tipos de
+  Cloudflare instalados; estado final: `./init.sh` verde con build OK).

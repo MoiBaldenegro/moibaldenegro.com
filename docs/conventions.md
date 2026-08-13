@@ -39,6 +39,18 @@
   `<name>` = slug kebab-case del `name` de la feature. Las plantillas viven
   en `specs/_template/`.
 
+## Dependencias
+
+- **Ningún agente aprueba dependencias**: la aprobación es decisión exclusiva del humano,
+  tras discusión, y queda materializada en el registro. Si una feature necesita una
+  dependencia nueva, el agente marca la feature `blocked` y espera la decisión.
+- La aprobación se materializa en `docs/dependencies.md` con formato de
+  bloques: `### <package>` seguido de líneas `- clave: valor` con `version`,
+  `scope`, `approved` y `motivo`.
+- El validador `scripts/validate-dependencies.mjs` (integrado en
+  `scripts/check-format.mjs`) falla si una dependencia de package.json no
+  tiene su entrada aprobada en el registro.
+
 ## Orden dentro de un archivo `.astro`
 
 1. Frontmatter: imports de estilos, imports de dominio, `const` de datos.
