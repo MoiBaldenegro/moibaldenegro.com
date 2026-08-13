@@ -25,10 +25,18 @@ export default defineConfig({
       },
 
   },
-
   adapter: cloudflare({
     imageService: 'cloudflare',
     prerenderEnvironment: 'node',
   }),
+
+  vite: {
+    optimizeDeps: {
+      exclude: ['@astrojs/internal-helpers'] 
+    },
+    ssr: {
+      noExternal: ['astro']
+    }
+  }
 });
 
