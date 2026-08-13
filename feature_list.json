@@ -397,6 +397,25 @@
         "La suite completa pasa en verde y ./init.sh termina con el entorno perfecto (REQ-26-08)"
       ],
       "status": "done"
+    },
+    {
+      "id": 27,
+      "name": "htb-api-graceful-degradation",
+      "title": "Degradación elegante de la sección HTB cuando la API falla",
+      "description": "Bug reportado por el humano: la app se rompe cuando la API de Hack The Box falla (stack trace: HtbProfileRepository.requestProfile:49 → getProfile:29 → htb-stadistics.astro:6 → server-islands/endpoint.js:153). La portada renderiza <HtbStadistics server:defer> (isla diferida); cuando getProfile() lanza HtbProfileDataError el endpoint de la isla responde 500 y la página se ve rota. Es aceptable que la API falle, NO que la página se rompa. Causa raíz: el frontmatter llama a getProfile() sin manejo de error y la contención no existe en ninguna capa (la feature 22 no cumplió REQ-22-07 en la práctica). Solución (decisión de diseño en specs/27_htb-api-graceful-degradation/design.md): la degradación vive en el dominio — nuevo método getProfileOrNull(): Promise<HtbProfile | null> en HtbProfileRepository (misma fuente de datos, contrato aditivo; getProfile() conserva el lanzamiento de HtbProfileDataError y sus tests REQ-22-02..04 quedan intactos) — captura los cinco modos de fallo (envs ausentes, red caída, HTTP no-ok, JSON inválido, perfil inválido) como null; el componente pasa a llamar getProfileOrNull() y el template condiciona la sección con {profile && ...} (sin try/if en la UI: test de convención de la feature 22). Estado visual elegido: si el perfil es null la sección NO se renderiza (sin CSS ni tokens nuevos; tokens.css al límite); el slot de fallback ya comunica la carga. Tests vigentes afectados: 1 aserción de tests/htb-stadistics-section.test.mjs (exige la subcadena getProfile() en el componente) se actualiza a /getProfileOrNull()/ con justificación en la spec; tests/htb-profile-repository.test.mjs no se toca (el repositorio debe comprimirse a <=100 líneas: comentario de cabecera y líneas en blanco). Tests nuevos red-first: tests/htb-api-graceful-degradation.test.mjs cubre los cinco modos de fallo a nivel de dominio. Depende de la feature 22 htb-stadistics-section.",
+      "acceptance": [
+        "tests/htb-api-graceful-degradation.test.mjs se escribe en rojo antes de la implementación y queda en verde al final (REQ-27-01..REQ-27-06, REQ-27-10)",
+        "El método getProfileOrNull devuelve null en los cinco modos de fallo (envs ausentes, red caída, HTTP no-ok, JSON inválido y perfil inválido) y devuelve el perfil cuando la API responde (REQ-27-01..06)",
+        "El componente htb-stadistics.astro obtiene el perfil con getProfileOrNull y no contiene try if for ni function en su contenido (REQ-27-07)",
+        "El template condiciona la sección al perfil con {profile && ...}: con perfil null la sección no se renderiza, sin estilos ni tokens nuevos (REQ-27-08)",
+        "El método getProfile conserva el lanzamiento de HtbProfileDataError, tests/htb-profile-repository.test.mjs pasa en verde sin cambios de comportamiento y el repositorio no supera 100 líneas (REQ-27-09)",
+        "tests/htb-stadistics-section.test.mjs se actualiza solo en la aserción getProfile() → getProfileOrNull() y pasa en verde con el resto de sus aserciones intactas (contrato REQ-22-01..08)",
+        "La suite completa pasa en verde y pnpm build termina sin errores, de modo que ninguna vía de fallo de la API puede producir un 500 en el endpoint de la isla (REQ-27-10)"
+      ],
+      "depends_on": [
+        22
+      ],
+      "status": "done"
     }
   ]
 }

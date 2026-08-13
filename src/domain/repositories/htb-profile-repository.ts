@@ -1,7 +1,4 @@
-// Repositorio del dominio: perfil de Hack The Box (REQ-22-02..04, feature 22).
-// Fetch a la API v4 con token e id SOLO en la cabecera Authorization (Decisión
-// 2). Si el fetch falla o la respuesta no es válida, lanza HtbProfileDataError.
-
+// Repositorio HTB: getProfile lanza HtbProfileDataError (feature 22); getProfileOrNull devuelve null (feature 27).
 import type { HtbProfile } from '../entities/htb-profile.ts';
 
 const HTB_API_URL = 'https://labs.hackthebox.com/api/v4/user/profile/basic';
@@ -12,7 +9,6 @@ export class HtbProfileDataError extends Error {
     this.name = 'HtbProfileDataError';
   }
 }
-
 export class HtbProfileRepository {
   private readonly token: string | undefined;
   private readonly userId: string | undefined;
@@ -28,6 +24,15 @@ export class HtbProfileRepository {
     this.assertCredentials();
     const response = await this.requestProfile();
     return parseHtbProfile(await this.readJson(response));
+  }
+
+  // Vía degradada (REQ-27-01..06): cualquier modo de fallo resuelve a null.
+  async getProfileOrNull(): Promise<HtbProfile | null> {
+    try {
+      return await this.getProfile();
+    } catch {
+      return null;
+    }
   }
 
   private assertCredentials(): void {

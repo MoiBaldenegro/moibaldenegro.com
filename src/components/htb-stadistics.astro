@@ -3,37 +3,39 @@ import { HTB_API_TOKEN, HTB_USER_ID } from 'astro:env/server';
 import { HtbProfileRepository } from '../domain/repositories/htb-profile-repository.ts';
 import '../styles/htb-stadistics.css';
 
-const profile = await new HtbProfileRepository(HTB_API_TOKEN, HTB_USER_ID).getProfile();
+const profile = await new HtbProfileRepository(HTB_API_TOKEN, HTB_USER_ID).getProfileOrNull();
 ---
 
-<section class="htb-stadistics">
-	<h2 class="htb-stadistics__title">Estadísticas de Hack The Box</h2>
-	<p class="htb-stadistics__intro">Resumen de mi cuenta en la plataforma.</p>
+{profile && (
+	<section class="htb-stadistics">
+		<h2 class="htb-stadistics__title">Estadísticas de Hack The Box</h2>
+		<p class="htb-stadistics__intro">Resumen de mi cuenta en la plataforma.</p>
 
-	<ul class="htb-stadistics__list">
-		<li class="htb-stadistics__item">
-			<span class="htb-stadistics__label">Nombre</span>
-			<span class="htb-stadistics__value">{profile.name ?? 'N/D'}</span>
-		</li>
-		<li class="htb-stadistics__item">
-			<span class="htb-stadistics__label">Nivel</span>
-			<span class="htb-stadistics__value">{profile.rank ?? 'N/D'}</span>
-		</li>
-		<li class="htb-stadistics__item">
-			<span class="htb-stadistics__label">Puntos</span>
-			<span class="htb-stadistics__value">{profile.points ?? 'N/D'}</span>
-		</li>
-		<li class="htb-stadistics__item">
-			<span class="htb-stadistics__label">Owns</span>
-			<span class="htb-stadistics__value">{profile.userOwns ?? 'N/D'} user / {profile.systemOwns ?? 'N/D'} root</span>
-		</li>
-		<li class="htb-stadistics__item">
-			<span class="htb-stadistics__label">País</span>
-			<span class="htb-stadistics__value">{profile.countryName ?? 'N/D'}</span>
-		</li>
-		<li class="htb-stadistics__item">
-			<span class="htb-stadistics__label">Miembro desde</span>
-			<span class="htb-stadistics__value">{profile.joinedDate ?? 'N/D'}</span>
-		</li>
-	</ul>
-</section>
+		<ul class="htb-stadistics__list">
+			<li class="htb-stadistics__item">
+				<span class="htb-stadistics__label">Nombre</span>
+				<span class="htb-stadistics__value">{profile.name ?? 'N/D'}</span>
+			</li>
+			<li class="htb-stadistics__item">
+				<span class="htb-stadistics__label">Nivel</span>
+				<span class="htb-stadistics__value">{profile.rank ?? 'N/D'}</span>
+			</li>
+			<li class="htb-stadistics__item">
+				<span class="htb-stadistics__label">Puntos</span>
+				<span class="htb-stadistics__value">{profile.points ?? 'N/D'}</span>
+			</li>
+			<li class="htb-stadistics__item">
+				<span class="htb-stadistics__label">Owns</span>
+				<span class="htb-stadistics__value">{profile.userOwns ?? 'N/D'} user / {profile.systemOwns ?? 'N/D'} root</span>
+			</li>
+			<li class="htb-stadistics__item">
+				<span class="htb-stadistics__label">País</span>
+				<span class="htb-stadistics__value">{profile.countryName ?? 'N/D'}</span>
+			</li>
+			<li class="htb-stadistics__item">
+				<span class="htb-stadistics__label">Miembro desde</span>
+				<span class="htb-stadistics__value">{profile.joinedDate ?? 'N/D'}</span>
+			</li>
+		</ul>
+	</section>
+)}

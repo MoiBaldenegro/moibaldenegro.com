@@ -86,8 +86,8 @@ test('REQ-22-01: el componente importa el repositorio de dominio (no hace fetch)
   );
   assert.match(
     astro,
-    /getProfile\(\)/,
-    'htb-stadistics.astro no obtiene el perfil con getProfile() (REQ-22-02)',
+    /getProfileOrNull\(\)/,
+    'htb-stadistics.astro no obtiene el perfil con getProfileOrNull() (REQ-22-02, feature 27)',
   );
   assert.doesNotMatch(
     astro,

@@ -4,24 +4,31 @@
 
 ### Feature en curso
 
-**26 — post-page-styles** — CERRADA (status `done` en `feature_list.json`,
-2026-08-13). `progress/review_26_post-page-styles.md` con Veredicto APPROVED
-verificado en disco; `node scripts/check-format.mjs` en verde tras el cambio.
-Resumen del ciclo en `progress/impl_26_post-page-styles.md` y en
-`progress/history.md` (Sesión 2026-08-13):
+**27 — htb-api-graceful-degradation** — CERRADA (status `done` en
+`feature_list.json`, 2026-08-13). `./init.sh` en "El entorno está perfecto"
+(suite 177/177, build OK, formato OK). Resumen del ciclo en
+`progress/impl_27_htb-api-graceful-degradation.md`:
 
-- `src/styles/post.css` nueva (99 líneas, BEM `.post__*`, solo tokens):
-  contenedor, título, meta, imagen 16:9 (precedente REQ-17) y tipografía del
-  markdown bajo `.post__content`; consume los 10 tokens de la tabla del design.
-- `[id].astro` (38 → 39): solo `import "../../styles/post.css";` (incidencia
-  de ruta `../` resuelta en el ciclo, detectada por REQ-11-05).
-- Sin cambios en tokens.css (87 líneas, REQ-26-07), layout.css, Layout.astro
-  ni latest-articles (enlace /posts FUERA, REQ-20-06).
-- ROJO 2/11 → VERDE 11/11 en `tests/post-page-styles.test.mjs`; suite
-  169/169, build OK, `./init.sh` "El entorno está perfecto".
+- Test nuevo red-first `tests/htb-api-graceful-degradation.test.mjs` (8 tests,
+  ROJO 1/8 → VERDE 8/8): REQ-27-01..06 (éxito → perfil; 5 modos de fallo →
+  null), REQ-27-09 (getProfile sigue lanzando), REQ-27-07/10 estructural.
+- `htb-profile-repository.ts` (95 → 100 líneas): `getProfileOrNull()` añadido
+  (delega en getProfile + try/catch → null); `getProfile()` intacto; cabecera
+  comprimida 3→1 y una línea en blanco eliminada.
+- `htb-stadistics.astro` (39 → 40): obtiene el perfil con `getProfileOrNull()` y
+  condiciona la sección con `{profile && ...}` (sin if/try/for/function ni
+  console.*). La isla ya no puede responder 500 por datos de HTB (REQ-27-10).
+- `tests/htb-stadistics-section.test.mjs`: ÚNICA aserción actualizada
+  `/getProfile\(\)/` → `/getProfileOrNull\(\)/` (Decisión 5 del design);
+  `tests/htb-profile-repository.test.mjs` sin tocar; entidad, tokens.css,
+  htb-stadistics.css e index.astro sin cambios.
+- Sin desviaciones de la spec (REQ-27-01..10, Decisiones 1-6 del design.md).
+- Resolución CHANGES_REQUESTED: delta de `astro.config.mjs` (mtime 10:26,
+  edición del humano lider, no de agentes) DOCUMENTADO Y CONSERVADO por
+  decision explicita del humano — fijado por `tests/astro-config-dev-workaround.test.mjs` (4/4 verde).
 
 **Estado final del backlog: 0 pendientes, 0 in_progress, 0 blocked — features
-1-26 `done` conservadas en el array.** Pendiente real del líder: decidir si
+1-27 `done` conservadas en el array.** Pendiente real del líder: decidir si
 abre re-review de features 19/21 por el fix de adapter (`nodejs_compat` +
 `prerenderEnvironment: 'node'`) documentado en el ciclo 18-24. No hay
 features nuevas canalizadas; si el usuario pide la reincorporación del enlace
@@ -30,6 +37,6 @@ documentada en `specs/26_post-page-styles/design.md`, Decisión 4).
 
 ### Última sesión
 
-**2026-08-13 — features 25 y 26 cerradas (GOL eliminado + hoja post.css).**
+**2026-08-13 — feature 27 cerrada (degradación elegante de la sección HTB).**
 Ver `progress/history.md` (Sesiones 2026-08-13). `./init.sh` en "El entorno
-está perfecto" (suite 169/169, build OK).
+está perfecto" (suite 177/177, build OK).
