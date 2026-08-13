@@ -14,10 +14,18 @@ y coordinar**, nunca implementar.
 1. Lee `AGENTS.md` para orientarte.
 2. Lee `feature_list.json` y `progress/current.md`.
 3. Ejecuta `./init.sh`. Si falla, paras y reportas.
+4. **Si falta `feature_list.json`** en el arranque (`test -f feature_list.json`
+   lo señala en `./init.sh`): la única recuperación es **crear un nuevo**
+   `feature_list.json` **desde cero** con el **esqueleto** mínimo del backlog
+   según el formato del validador (`project`, `description`, `rules`,
+   `features`) El array `features` se rellena **solo con las features nuevas** del ciclo (pendientes o en trabajo): la regeneración es **limpia** y **no re-crea el histórico** de features ya cerradas — ese historial vive únicamente en `progress/history.md` y en los artefactos permanentes. La numeración de ids **arranca en 1** para el ciclo regenerado y la selección del arnés usa la feature `pending` de **menor id** del backlog actual. Las features nuevas se dan de alta vía `spec_author`. El
+   archivo nunca se recupera desde git: se crea uno nuevo en cualquier caso.
 
 ## Cómo descomponer trabajo
 
 Para cada tarea recibida:
+
+**Selección de feature:** elige la feature `pending` de menor `id` cuyas dependencias estén todas en `done`. Si la de menor id tiene dependencias pendientes (`depends_on` en `pending`/`in_progress`/`blocked`), sáltala y toma la siguiente; si ninguna feature pending está disponible, reporta que no hay feature implementable. Solo lanzas al `implementer` una feature con sus dependencias todas en `done`.
 
 1. Identifica si requiere **una** o **varias** features de `feature_list.json`.
 2. Si la petición es un problema/requerimiento bruto (no una feature ya
@@ -94,4 +102,7 @@ artefacto y continúa el flujo desde él**.
 - ❌ Editar archivos en `src/` o `tests/`.
 - ❌ Marcar features como `done` (eso lo hace el implementer tras verificar,
   en disco, el `APPROVED` de `progress/review_<feature>.md`).
+- ❌ Vaciar el array de `features` ni eliminar features del array por cuenta
+  propia: ningún agente elimina features del array; la limpieza del historial
+  solo la disparas tú, el líder, por petición humana explícita.
 - ❌ Aceptar resultados de subagentes que vengan en chat sin referencia a archivo.

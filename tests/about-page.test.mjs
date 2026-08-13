@@ -18,13 +18,16 @@ import { fileURLToPath } from 'node:url';
 //               colores/radios/bordes y consume los 8 tokens de la tabla del
 //               design.md.
 //   REQ-11-05 — si el build no genera la ruta /about, este test falla: ejecuta
-//               un build real y comprueba dist/about/index.html con los datos
-//               reales del perfil (src/data/hero.json).
+//               un build real y comprueba dist/client/about/index.html con los
+//               datos reales del perfil (src/data/hero.json). Adaptado por la
+//               feature 21 (REQ-21-04/05): con SSR + adapter Cloudflare el
+//               build emite el HTML en dist/client/ y el server en dist/server/;
+//               la semántica se conserva (falla si la ruta no se genera).
 
 const PAGE_PATH = new URL('../src/pages/about.astro', import.meta.url);
 const CSS_PATH = new URL('../src/styles/about.css', import.meta.url);
 const PROFILE_JSON = new URL('../src/data/hero.json', import.meta.url);
-const DIST_ABOUT_PATH = new URL('../dist/about/index.html', import.meta.url);
+const DIST_ABOUT_PATH = new URL('../dist/client/about/index.html', import.meta.url);
 const ASTRO_BIN = fileURLToPath(new URL('../node_modules/astro/bin/astro.mjs', import.meta.url));
 
 // Propiedades cuyo valor debe salir de var() (colores, radios, transiciones).
@@ -223,7 +226,7 @@ test('REQ-11-05: el build genera la ruta /about con los datos reales del perfil'
   );
   assert.ok(
     existsSync(DIST_ABOUT_PATH),
-    'el build no generó dist/about/index.html (REQ-11-05)'
+    'el build no generó dist/client/about/index.html (REQ-11-05/REQ-21-04)'
   );
   const html = readFileSync(DIST_ABOUT_PATH, 'utf8');
   assert.ok(

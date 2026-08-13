@@ -1,26 +1,30 @@
 ---
 import "../styles/latest-articles.css";
 
-import {  markdownPostRepository } from "../domain/repositories/posts-repository.ts";
+import { PostsRepository } from "../domain/repositories/posts-repository.ts";
 
-const repository = await markdownPostRepository()
-const posts = await repository.getPosts();
+const posts = await new PostsRepository().getPosts();
 ---
 
 <section class="latest-articles">
   <div class="latest-articles__list">
     {posts.map((post) => (
-      <article  class="latest-articles__card">
-        <a href={`/posts/${post.id}`} class="latest-articles__link">
-          <img
-            transition:name={`img-${post.id}`}
-            src={`/assets/content/${post.data.img}`}
-            alt={post.data.title}
-            class="latest-articles__image"
-          />
-          <h2 transition:name={`title-${post.id}`} class="latest-articles__title">{post.data.title}</h2>
-          <p class="latest-articles__description">{post.data.description}</p>
-        </a>
+      <article class="latest-articles__card">
+        <img
+          class="latest-articles__image"
+          src={`/assets/content/${post.img}`}
+          alt={post.title}
+          loading="lazy"
+          transition:name={`img-${post.id}`}
+        />
+        <h2 transition:name={`title-${post.id}`} class="latest-articles__title">{post.title}</h2>
+        <p class="latest-articles__meta">Por {post.author} • {post.readtime} min de lectura</p>
+        <p class="latest-articles__description">{post.description}</p>
+        <div class="latest-articles__tags">
+          {post.tags.map((tag) => (
+            <span class="latest-articles__tag">#{tag}</span>
+          ))}
+        </div>
       </article>
     ))}
   </div>

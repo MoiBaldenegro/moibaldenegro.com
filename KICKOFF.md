@@ -2,7 +2,10 @@
 
 > Pega este prompt al agente `leader` (`@leader`) para iniciar una sesión con
 > el harness. Si quieres una tarea concreta, completa `<tema o feature>`; si
-> lo dejas vacío, el líder elige la feature `pending` de menor `id`.
+> lo dejas vacío, el líder elige la feature `pending` de menor `id` cuyas dependencias estén todas en `done`.
+> Los `id` se refieren SIEMPRE al backlog actual (no al histórico): tras una
+> regeneración limpia (esqueleto + solo features nuevas, sin histórico) la
+> numeración **arranca en 1**, así que la primera feature del ciclo nuevo es la id 1.
 
 ---
 
@@ -14,7 +17,7 @@ Arranca la secuencia de trabajo siguiendo tu protocolo:
 1. Ejecuta ./init.sh y confirma que el entorno está perfecto. Si falla, para
    y reporta qué hay que resolver.
 2. Lee progress/current.md y feature_list.json.
-3. Elige la feature pending de menor id (<tema o feature>).
+3. Elige la feature pending de menor id cuyas dependencias estén todas en done (<tema o feature>).
 4. Si requiere investigación previa, lanza 2-3 explorers en paralelo y espera
    sus informes en progress/research/.
 5. Lanza el implementer con la instrucción estándar (informe en

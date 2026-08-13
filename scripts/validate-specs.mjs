@@ -50,6 +50,12 @@ export function validateRequirements(text, expectedNn) {
 
 export function validateSpecs({ featureListPath = FEATURE_LIST_PATH, specsRoot = SPECS_ROOT } = {}) {
   const errors = [];
+  // Guard de la feature 16 (REQ-16-03): sin este check, check-format.mjs
+  // crashearía con ENOENT cuando feature_list.json no existe.
+  if (!existsSync(featureListPath)) {
+    errors.push('feature_list.json no existe: se omite la validación de specs');
+    return errors;
+  }
   const data = JSON.parse(readFileSync(featureListPath, 'utf8'));
   const features = Array.isArray(data.features) ? data.features : [];
   for (const feature of features) {

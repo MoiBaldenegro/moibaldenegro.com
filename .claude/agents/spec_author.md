@@ -13,6 +13,19 @@ revisas, no tocas código, no cambias estados ajenos.
 
 ## 1. Protocolo de arranque
 
+**Si falta `feature_list.json`** en el arranque (`test -f feature_list.json`
+lo señala en `./init.sh`): la única recuperación es **crear un nuevo**
+`feature_list.json` **desde cero** con el **esqueleto** mínimo del backlog
+según el formato del validador (`project`, `description`, `rules`,
+`features`). El array `features` se rellena **solo con las features nuevas**
+del ciclo (pendientes o en trabajo): la regeneración es **limpia** y
+**no re-crea el histórico** de features ya cerradas — ese historial vive
+únicamente en `progress/history.md` y en los artefactos permanentes. La
+numeración de ids **arranca en 1** para el ciclo regenerado y la selección
+del arnés usa la feature `pending` de **menor id** del backlog actual. Las
+features nuevas se dan de alta vía `spec_author`. El archivo nunca se
+recupera desde git: se crea uno nuevo en cualquier caso.
+
 - Lee `AGENTS.md` para orientarte en el arnés.
 - Lee `feature_list.json`, `progress/current.md` y `docs/architecture.md`.
 - Anota en `progress/current.md`:
@@ -93,6 +106,7 @@ Añade cada feature al array `features` con **exactamente** este formato
     "Criterio verificable 1",
     "Criterio verificable 2"
   ],
+  "depends_on": [],
   "status": "pending"
 }
 ```
@@ -104,10 +118,16 @@ Normas de formato:
 - `title`: frase corta en español que resume el cambio.
 - `description`: texto no vacío; el contexto que necesita el implementador.
 - `acceptance`: array de textos no vacíos, testables, en español.
+- `depends_on`: array de enteros opcional con las ids reales de las features
+  de las que depende (ausencia equivale a `[]`; cada id debe existir en el
+  backlog, sin auto-referencia ni ciclos). Solo se declara cuando la feature
+  depende de otras; si no depende de nada, no es necesario incluirlo.
 - `status`: `pending` (o `blocked` con justificación). **Nunca** pongas
   `in_progress` ni `done`: eso lo hacen implementer/reviewer.
 - **No** toques `project`, `description`, `rules` ni el `status` de features
-  existentes. **No** borres features.
+  existentes. **No** borres features: ningún agente elimina features del array
+  por cuenta propia; la limpieza del historial solo la dispara el líder por
+  petición humana explícita.
 
 ## 6. Verificación
 

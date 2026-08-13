@@ -14,6 +14,19 @@ te vuelve a lanzar.
 
 ## Protocolo
 
+**Si falta `feature_list.json`** en el arranque (`test -f feature_list.json`
+lo señala en `./init.sh`): la única recuperación es **crear un nuevo**
+`feature_list.json` **desde cero** con el **esqueleto** mínimo del backlog
+según el formato del validador (`project`, `description`, `rules`,
+`features`). El array `features` se rellena **solo con las features nuevas**
+del ciclo (pendientes o en trabajo): la regeneración es **limpia** y
+**no re-crea el histórico** de features ya cerradas — ese historial vive
+únicamente en `progress/history.md` y en los artefactos permanentes. La
+numeración de ids **arranca en 1** para el ciclo regenerado y la selección
+del arnés usa la feature `pending` de **menor id** del backlog actual. Las
+features nuevas se dan de alta vía `spec_author`. El archivo nunca se
+recupera desde git: se crea uno nuevo en cualquier caso.
+
 1. Lee `docs/architecture.md`, `docs/conventions.md`, `CHECKPOINTS.md`.
 2. Identifica los archivos modificados/creados desde la última sesión
    (mira `progress/current.md` y `progress/impl_<feature>.md` para ver qué
@@ -23,9 +36,12 @@ te vuelve a lanzar.
    - ¿Respeta `docs/conventions.md`? (estilo, nombres, errores)
    - ¿Documenta `progress/impl_<feature>.md` la evidencia del ciclo
      rojo/verde (test en rojo antes del código y suite verde en `./init.sh`)?
+   - ¿La feature revisada tiene sus dependencias todas en `done` (según `depends_on` en `feature_list.json`)?
 4. Antes del veredicto, responde la pregunta de revisión: ¿el test de cada
    archivo se escribió antes del código y quedó en rojo, y la suite quedó en
    verde al final? Verifica esa evidencia en `progress/impl_<feature>.md`.
+   Verifica también que la feature revisada no se implementó saltando una
+   dependencia pendiente: todos sus `depends_on` están en `done`.
 5. Ejecuta `./init.sh`. Tiene que terminar verde.
 6. Recorre `CHECKPOINTS.md`. Marca `[x]` los que se cumplen, `[ ]` los que no.
 7. Emite veredicto.
@@ -75,4 +91,7 @@ disco.
 - ❌ Nunca apruebes con `./init.sh` en rojo.
 - ❌ Nunca edites el código del implementador. Tu trabajo es decir qué falla,
   no arreglarlo.
+- ❌ Nunca elimines features del array de `features`: ningún agente elimina
+  features del array por cuenta propia; la limpieza del historial solo la
+  dispara el líder por petición humana explícita.
 - ✅ Sé concreto: cita líneas y archivos. Nada de feedback genérico.

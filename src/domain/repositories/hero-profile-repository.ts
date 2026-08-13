@@ -3,8 +3,15 @@
 // Si el JSON no existe, no es JSON válido o no tiene la forma del perfil,
 // lanza HeroProfileDataError (REQ-05-04): nunca falla en silencio.
 
-import rawJsonData from '../../data/hero.json?raw';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import type { HeroProfile } from '../entities/hero-profile.ts';
+
+// Ruta por defecto contra la raíz del proyecto (no import.meta.url): en el
+// prerender de Astro el bundle vive en dist/.prerender y las rutas relativas
+// al módulo ya no resuelven a src/data (REQ-09-04, feature 9).
+const DEFAULT_DATA_URL = pathToFileURL(join(process.cwd(), 'src', 'data', 'hero.json'));
 
 export class HeroProfileDataError extends Error {
   constructor(message: string) {
@@ -14,10 +21,10 @@ export class HeroProfileDataError extends Error {
 }
 
 export class HeroProfileRepository {
-  private readonly rawData: string;
+  private readonly dataUrl: URL;
 
-  constructor(rawData: string = rawJsonData) {
-    this.rawData = rawData;
+  constructor(dataUrl: URL = DEFAULT_DATA_URL) {
+    this.dataUrl = dataUrl;
   }
 
   getProfile(): HeroProfile {
@@ -25,13 +32,16 @@ export class HeroProfileRepository {
   }
 
   private readJson(): unknown {
-    if (!this.rawData || this.rawData.trim() === '') {
+    let raw: string;
+    try {
+      raw = readFileSync(this.dataUrl, 'utf-8');
+    } catch {
       throw new HeroProfileDataError(
-        'hero.json: no se pudo leer el perfil (contenido vacío)',
+        `hero.json: no se pudo leer el perfil desde "${this.dataUrl.pathname}"`,
       );
     }
     try {
-      return JSON.parse(this.rawData);
+      return JSON.parse(raw);
     } catch {
       throw new HeroProfileDataError('hero.json: el archivo no es un JSON válido');
     }

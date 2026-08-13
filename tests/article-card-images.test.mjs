@@ -15,8 +15,11 @@
 //   REQ-17-07 — carga diferida (loading="lazy", atributo HTML nativo).
 //   REQ-17-08 — la hoja conserva un máximo de 100 líneas y la regla nueva no
 //               introduce colores sueltos (solo tokens).
-//   REQ-17-09 — tokens.css permanece sin cambios: conserva 96 líneas y no
-//               define tokens del grupo aspect ni --radius-image.
+//   REQ-17-09 — tokens.css no define tokens del grupo aspect ni --radius-image.
+//               Nota (feature 25): tokens.css bajó de 96 a 87 líneas porque la
+//               feature 25 eliminó los tokens de opacidad del fondo revocado
+//               (REQ-25-03); la aserción de conteo refleja el estado canónico
+//               posterior sin volver a añadir tokens.
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -164,12 +167,12 @@ test('REQ-17-08: latest-articles.css no supera las 100 líneas', () => {
   );
 });
 
-test('REQ-17-09: tokens.css conserva 96 líneas (sin tokens nuevos)', () => {
+test('REQ-17-09: tokens.css conserva 87 líneas (estado post-feature 25, sin tokens nuevos)', () => {
   const lineCount = countLines(readTokens());
   assert.equal(
     lineCount,
-    96,
-    `tokens.css tiene ${lineCount} líneas y debe conservar 96 (REQ-17-09)`
+    87,
+    `tokens.css tiene ${lineCount} líneas y debe conservar 87 (REQ-17-09, tras REQ-25-03)`
   );
 });
 

@@ -143,3 +143,49 @@ la clase, el `alt` con el título real ("Agilismo, diseño y fragilidad"),
 `./init.sh` → **"El entorno está perfecto"** (formato ✔, 144/144 tests ✔, build ✔).
 Feature 17 implementada en verde, sin tocar dominio ni tokens. Listo para que el
 líder lance al reviewer.
+
+## 7. Cierre tras feature 20 (re-review)
+
+**Fecha:** 2026-08-12 · **Estado real en disco tras la restauración de la feature 20**
+
+El review previo (`progress/review_17_article-card-images.md`, 2026-08-11) quedó en
+`CHANGES_REQUESTED` con 3 cambios. Estado de cada uno tras la feature 20
+(`latest-articles-restore`, veredicto APPROVED en `progress/review_20_latest-articles-restore.md`):
+
+1. **Aplicar en disco el cambio del `<img>`** (clase `latest-articles__image`,
+   `alt={post.title}`, `loading="lazy"`) — **RESUELTO**: la reescritura manual del
+   usuario (commit `a64d843`/"aasfdsaf" y posteriores) había deshecho el trabajo de
+   esta feature en `latest-articles.astro` (`post.data.img`, `alt={post.data.title}`,
+   sin `loading="lazy"`, rompiendo REQ-17-01/06/07). La feature 20 restauró el
+   componente al estado canónico features 10+17. Verificado en disco:
+   `<img class="latest-articles__image" src={`/assets/content/${post.img}`} alt={post.title} loading="lazy" />`.
+
+2. **Resolución de la regresión `<a>` vs `<article>`** — **RESUELTO**: el componente
+   manual envolvía cada card en `<a href={`/posts/${post.id}`}>` (enlace muerto, ruta
+   inexistente en `src/pages/`). El componente restaurado es `<article class="latest-articles__card">`
+   sin anchor (Decisión 3 del design.md de la feature 20; REQ-20-06 verifica la
+   ausencia de enlaces a `/posts` y de `transition:name`, que la feature 24
+   reincorporará según su design).
+
+3. **Actualizar `impl_17` y `current.md` al estado real** — **HECHO**: este apartado
+   documenta el estado en disco y `progress/current.md` incluye la nota de re-review.
+
+**Verificación de contrato (2026-08-12):**
+
+```
+$ node --test tests/article-card-images.test.mjs
+# tests 11
+# pass 11
+# fail 0
+```
+
+`tests/article-card-images.test.mjs` (REQ-17-01..09, 11 tests) está en verde —
+incluido dentro de los 28/28 de contratos de la feature 20 (verificados también por
+el reviewer en `progress/review_20_latest-articles-restore.md`, sección 2 y 4). La
+hoja `src/styles/latest-articles.css` no se tocó en ninguna de las dos features
+(75 líneas, regla `.latest-articles__image` con `width 100%`, `aspect-ratio 16/9`,
+`object-fit cover` y tokens `--radius-card`/`--color-border`/`--gap-card`); los
+REQ-17-02..09 no necesitaron cambios.
+
+La feature 17 sigue `in_progress`: el cierre a `done` es decisión del líder tras el
+re-review del reviewer.

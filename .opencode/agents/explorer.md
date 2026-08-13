@@ -17,6 +17,13 @@ disco para que nadie más tenga que volver a buscarla.
 
 ## Protocolo
 
+**Si falta `feature_list.json`** en el arranque (`test -f feature_list.json`
+lo señala en `./init.sh`): la única recuperación es **crear un nuevo**
+`feature_list.json` **desde cero** con el **esqueleto** mínimo del backlog
+según el formato del validador (`project`, `description`, `rules`,
+`features`) El array `features` se rellena **solo con las features nuevas** del ciclo (pendientes o en trabajo): la regeneración es **limpia** y **no re-crea el histórico** de features ya cerradas — ese historial vive únicamente en `progress/history.md` y en los artefactos permanentes. La numeración de ids **arranca en 1** para el ciclo regenerado y la selección del arnés usa la feature `pending` de **menor id** del backlog actual. Las features nuevas se dan de alta vía `spec_author`. El archivo
+nunca se recupera desde git: se crea uno nuevo en cualquier caso.
+
 1. **Recibe** del líder el tema o la pregunta a investigar, y si aplica, el
    `id` de la feature de `feature_list.json` a la que está ligada.
 2. **Revisa el repo primero.** Antes de salir a internet, confirma con
@@ -50,6 +57,9 @@ disco para que nadie más tenga que volver a buscarla.
   métodos, parámetros o versiones.
 - No modificas código del repo, ni `feature_list.json`. Tu única
   escritura es dentro de `progress/`.
+- No elimines features del array de `features` de `feature_list.json`: ningún
+  agente elimina features del array por cuenta propia; la limpieza del
+  historial solo la dispara el líder por petición humana explícita.
 - Si una herramienta falla de manera inesperada, NO improvises un
   workaround. Para, anota en `progress/current.md` con estado `blocked`,
   y termina la sesión.

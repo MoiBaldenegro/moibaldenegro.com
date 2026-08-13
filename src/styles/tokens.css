@@ -84,13 +84,4 @@
   /* Tipografía */
   --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
 
-  /* Opacidad — fondo del Juego de la Vida (feature 15) */
-  --opacity-gol: 0.15;
-  /* Opacidad del fondo del hero: translúcido para que el GOL se vea tras él
-     sin atenuar el contenido (Decisión 6 del design.md, feature 15) */
-  --opacity-hero: 0.80;
-
-  /* Tamaño — celda del Juego de la Vida (feature 15) */
-  --size-gol-cell: 6px;
-
 }

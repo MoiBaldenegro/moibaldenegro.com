@@ -4,7 +4,12 @@
   "rules": {
     "one_feature_at_a_time": true,
     "require_tests_to_close": true,
-    "valid_status": ["pending", "in_progress", "done", "blocked"]
+    "valid_status": [
+      "pending",
+      "in_progress",
+      "done",
+      "blocked"
+    ]
   },
   "features": [
     {
@@ -239,7 +244,159 @@
         "latest-articles.css usa var(--radius-card), var(--color-border) y var(--gap-card) en la regla de la imagen, sin hex ni rgba sueltos y con un máximo de 100 líneas (REQ-17-05, REQ-17-08)",
         "tokens.css no añade tokens: conserva 96 líneas y no define tokens del grupo aspect (REQ-17-09)"
       ],
-      "status": "in_progress"
+      "status": "done"
+    },
+    {
+      "id": 18,
+      "name": "posts-domain-restore",
+      "title": "Restaurar el dominio de artículos: entidad Post y clase PostsRepository",
+      "description": "Restauración del dominio de artículos (features 7/10/17) tras las modificaciones manuales del usuario: src/domain/entities/post.ts quedó VACÍO (0 líneas) y posts-repository.ts fue reescrito como función markdownPostRepository() que devuelve las entradas crudas de getCollection('architecture') SIN validar ni mapear. El contrato (specs/07_posts-domain + tests/posts-repository.test.mjs, REQ-07-01..05) exige: interface Post con readonly title author img readtime description tags created updated en post.ts; clase PostsRepository con loader inyectable cuyo default envuelve astro:content; validación que lanza PostsDataError y mapeo a Post[]. Base de la restauración: sin ella tests/posts-repository.test.mjs crashea (no export PostsRepository) y la feature 20 no puede consumir la entidad. El estado canónico de la feature 7 existe en git (ae2597b) como referencia de implementación.",
+      "acceptance": [
+        "tests/posts-repository.test.mjs pasa en verde con todos sus tests (REQ-18-01..06, contrato REQ-07-01..05)",
+        "src/domain/entities/post.ts no está vacío y declara interface Post con los 8 campos readonly (REQ-18-01)",
+        "posts-repository.ts exporta la clase PostsRepository con constructor que acepta un loader inyectable (REQ-18-02)",
+        "Un artículo que no cumple el esquema o una lectura fallida hacen lanzar PostsDataError (REQ-18-03, REQ-18-04)",
+        "posts-repository.ts ya no exporta la función markdownPostRepository (REQ-18-05)",
+        "Entidad y repositorio no superan las 100 líneas cada uno (REQ-18-06)"
+      ],
+      "depends_on": [],
+      "status": "done"
+    },
+    {
+      "id": 19,
+      "name": "json-repositories-restore",
+      "title": "Restaurar HeroProfileRepository y HeroCardsRepository a lectura fs con URL inyectable",
+      "description": "Restauración de los repositorios JSON (features 5 y 6) tras la migración manual a imports ?raw sin atributo: `import rawJsonData from '../../data/hero.json?raw'` sin `with { type: 'json' }` crashea en Node 22 con ERR_IMPORT_ATTRIBUTE_MISSING al ejecutar node:test (verificado en disco con node v22.22.2), y el constructor reescrito espera un string incrustado mientras los tests inyectan URLs de archivos temporales (firma divergente). Decisión (tomada tras leer specs 05/06 y tests): restaurar la lectura vía node:fs con constructor que acepta una URL inyectable cuyo default resuelve al archivo real (patrón original de las features 5/6 en git ae2597b, REQ-05-03/04 y REQ-06-03/05). Nota de alcance: index.astro y about.astro son prerender, así que node:fs se ejecuta solo en build; si una ruta servida en el worker usara estos repositorios sería otra feature.",
+      "acceptance": [
+        "tests/hero-profile-repository.test.mjs y tests/hero-cards-repository.test.mjs pasan en verde (REQ-19-01..06, contrato REQ-05-03/04 y REQ-06-03/05)",
+        "Los repositorios leen los datos con node:fs y no contienen imports con sufijo ?raw (REQ-19-05)",
+        "new HeroProfileRepository() entrega el perfil real de src/data/hero.json (REQ-19-01)",
+        "new HeroCardsRepository() entrega las 12 tarjetas reales de src/data/hero-cards.json (REQ-19-03)",
+        "Con archivos temporales ausentes o malformados los repositorios lanzan HeroProfileDataError y HeroCardsDataError (REQ-19-02, REQ-19-04)",
+        "Cada archivo de repositorio no supera las 100 líneas (REQ-19-06)"
+      ],
+      "depends_on": [],
+      "status": "done"
+    },
+    {
+      "id": 20,
+      "name": "latest-articles-restore",
+      "title": "Restaurar latest-articles.astro al contrato de la entidad Post (features 10 y 17)",
+      "description": "Restauración de src/components/latest-articles.astro al contrato de las features 10 y 17 tras la reescritura manual: el componente consume entradas crudas (post.data.img, post.data.title) en vez de la entidad Post, sin marcado semántico (span con post.author, post.readtime, post.tags y 'min de lectura', REQ-10-01 Decisión 1), sin alt={post.title} ni loading=\"lazy\" (REQ-17-06/07), con un enlace muerto a /posts/${post.id} (ruta inexistente en src/pages: 404) y atributos transition:name sin amparo (mecanismo canalizado en la feature 24). Restaura el estado canónico features 10+17: new PostsRepository().getPosts(), marcado article/h2/p/span con los 5 campos, img con clase latest-articles__image + post.img + alt={post.title} + loading=\"lazy\"; la hoja latest-articles.css (75 líneas, regla de imagen incluida) NO se toca. Depende de la feature 18 (PostsRepository). Cierre de la feature 17: tras esta restauración tests/article-card-images.test.mjs (REQ-17-01..09) vuelve a verde y el líder puede cerrar la 17 con revisión; esta feature NO toca su status.",
+      "acceptance": [
+        "tests/articles-ui-refactor.test.mjs pasa en verde (REQ-20-01..07, contrato REQ-10-01..04)",
+        "tests/article-card-images.test.mjs pasa en verde (REQ-20-05, contrato REQ-17-01..09) — habilita el cierre de la feature 17",
+        "El componente obtiene los artículos con new PostsRepository().getPosts() y no importa astro:content ni getCollection (REQ-20-01, REQ-20-02)",
+        "El marcado incluye article h2 p y span con post.title post.author post.readtime post.description y post.tags y el texto 'min de lectura' (REQ-20-03, REQ-20-04)",
+        "El img lleva la clase latest-articles__image, src con post.img, alt={post.title} y loading=\"lazy\" (REQ-20-05)",
+        "El componente no contiene enlaces a la ruta /posts ni atributos transition:name (REQ-20-06)",
+        "Componente y hoja no superan las 100 líneas y la hoja conserva las reglas de la feature 17 con tokens del diseño sin colores sueltos (REQ-20-07)"
+      ],
+      "depends_on": [
+        18
+      ],
+      "status": "done"
+    },
+    {
+      "id": 21,
+      "name": "ssr-cloudflare-align",
+      "title": "Canalizar la decisión SSR + adapter Cloudflare al arnés y adaptar REQ-11-05",
+      "description": "Decisión de arquitectura: MANTENER el modo servidor (SSR) con el adapter de Cloudflare que el usuario configuró manualmente (cadena de commits de deploy; astro.config.mjs con output: 'server', adapter cloudflare e imageService cloudflare, esquema env con IN_MAINTENANCE/HTB_API_TOKEN/HTB_USER_ID; package.json con @astrojs/cloudflare ^14.2.1 y wrangler; script generate-types; build con salida dist/client y dist/server). La regla 2 (sin dependencias externas) se resuelve con discusión materializada: el deploy a Cloudflare Workers es objetivo declarado del usuario; la regla 9 (estático por defecto) se cumple porque las páginas siguen prerender (prerender: true) y solo el componente server:defer de la feature 22 renderiza en runtime. Esta feature canaliza al arnés lo que hoy es edición manual: mantiene la configuración canónica, limpia .wrangler (gitignore + dejar de rastrear .wrangler/state, hoy versionado con ficheros sqlite de miniflare), justifica las dependencias del adapter y ADAPTA tests/about-page.test.mjs REQ-11-05 al output real del adapter (dist/client/about/index.html en lugar de dist/about/index.html), conservando la semántica (fallar si la ruta no se genera).",
+      "acceptance": [
+        "astro.config.mjs declara output server y el adapter cloudflare con el esquema de entorno (REQ-21-01)",
+        "package.json define el script generate-types con wrangler types (REQ-21-02)",
+        ".gitignore excluye .wrangler/ y git ls-files no lista archivos de .wrangler (REQ-21-03)",
+        "tests/about-page.test.mjs pasa en verde y verifica dist/client/about/index.html con un build real (REQ-21-04, REQ-21-05)",
+        "pnpm build genera dist/client y dist/server sin errores (REQ-21-01)",
+        "La descripción y la spec documentan la justificación de @astrojs/cloudflare y wrangler como excepción a la regla de dependencias externas (REQ-21-06)"
+      ],
+      "depends_on": [],
+      "status": "done"
+    },
+    {
+      "id": 22,
+      "name": "htb-stadistics-section",
+      "title": "Canalizar la sección de estadísticas de Hack The Box conforme a convenciones",
+      "description": "Canalización de la sección añadida manualmente (src/components/htb-stadistics.astro) como feature con spec: hoy el componente hace fetch directo a labs.hackthebox.com con el token en cabecera, registra en consola el token y el id de usuario (fuga de secretos: HTB_USER_ID está clasificado secret en el esquema env), importa astro:env/server y cloudflare:workers, no tiene hoja CSS propia ni feature en backlog y toda la lógica vive en el frontmatter (viola capas y 'Datos vía repositorio'). Esta feature la adapta: repositorio de dominio HtbProfileRepository (src/domain/repositories/htb-profile-repository.ts) con fetch inyectable, URL de la API y validación con error nombrado HtbProfileDataError; componente sin lógica ni console con hoja src/styles/htb-stadistics.css consumiendo SOLO tokens existentes (tokens.css está en 96/100 líneas: sin tokens nuevos); render con server:defer y slot de fallback en la portada; HTB_API_TOKEN (secret/server/optional) y HTB_USER_ID (secret/server/optional) declaradas en el esquema env ya canonicalizado por la feature 21. Depende de la feature 21 (SSR + esquema de entorno).",
+      "acceptance": [
+        "tests/htb-profile-repository.test.mjs se escribe en rojo antes de la implementación y queda en verde al final (REQ-22-02..04, REQ-22-07)",
+        "src/domain/repositories/htb-profile-repository.ts existe con fetch inyectable y HtbProfileDataError y no supera 100 líneas (REQ-22-02, REQ-22-03, REQ-22-04)",
+        "La portada renderiza la sección con server:defer y un slot de fallback (REQ-22-01, REQ-22-07)",
+        "htb-stadistics.astro no contiene fetch ni console.* y no expone secretos en la salida (REQ-22-06)",
+        "src/styles/htb-stadistics.css existe, se importa desde el componente, usa var() de tokens existentes sin hex ni rgba sueltos y no supera 100 líneas (REQ-22-05)",
+        "El esquema env de astro.config.mjs declara HTB_API_TOKEN como secreta de contexto server (REQ-22-08)",
+        "Con variables de entorno ausentes la sección muestra el estado de fallback sin romper la página (REQ-22-07)"
+      ],
+      "depends_on": [
+        21
+      ],
+      "status": "done"
+    },
+    {
+      "id": 23,
+      "name": "harness-docs-alignment",
+      "title": "Alinear docs del kit con la realidad y eliminar fugas de tokens prohibidos",
+      "description": "Alineación de los documentos del kit con la realidad del repositorio y eliminación de las fugas del token prohibido 'og-image' que rompen REQ-01-05 (tests/harness-kit-integrity.test.mjs). Verificado en disco (3 puntos, no 2): docs/architecture.md §13 cita generate-og-image.mjs (script inexistente en scripts/) y contiene el token 'hero' en 3 líneas (referencias obsoletas a hero.css, hoja eliminada en la feature 4, y 'Navbar, Hero, Cards, Footer'); docs/conventions.md pone el script inexistente como ejemplo; scripts/validate-feature-list.mjs (dentro del alcance de getKitFiles) tiene el token en un comentario. Además docs/verification.md referencia tests/regeneracion-limpia.test.mjs, test que NO existe. Decisión (opción mínima del líder): alinear los docs con la realidad editando las menciones — NO crear el script (un script nuevo sería feature aparte con spec propia) — y actualizar los ejemplos a scripts reales: check-format.mjs, validate-feature-list.mjs, audit-design-tokens.mjs.",
+      "acceptance": [
+        "tests/harness-kit-integrity.test.mjs pasa en verde (REQ-23-01..05, contrato REQ-01-05)",
+        "docs/architecture.md y docs/conventions.md citan solo scripts reales de scripts/ (REQ-23-01)",
+        "El token og-image no aparece en docs/architecture.md ni docs/conventions.md ni scripts/validate-feature-list.mjs (REQ-23-02)",
+        "Ningún archivo del kit contiene los tokens og-image hero tomatesoft ni cards-data (REQ-23-03)",
+        "docs/architecture.md no menciona hero.css ni 'hero' como nombre de sección (REQ-23-03, REQ-23-04)",
+        "docs/verification.md no menciona tests/regeneracion-limpia.test.mjs (REQ-23-05)"
+      ],
+      "depends_on": [],
+      "status": "done"
+    },
+    {
+      "id": 24,
+      "name": "view-transitions",
+      "title": "Canalizar View Transitions (ClientRouter + transition:name) como feature con spec",
+      "description": "Canalización como feature con spec del mecanismo de transiciones de vista que el usuario añadió manualmente (ClientRouter de astro:transitions en Layout.astro y atributos transition:name en latest-articles.astro). Decisión del líder tras consulta: MANTENERLO canalizado con spec/design/tests (la feature 20 elimina primero los atributos sueltos del componente y esta feature los reincorpora según su design). El design define los pares transition:name de las cards (img-${post.id} y title-${post.id}) y la excepción a la regla 'Estático por defecto' (regla 9 de docs/architecture.md) aprobada y documentada: View Transitions es API declarativa del framework sin JS manual, limitada a las páginas que declaran atributos transition:*. Sin tokens nuevos (--transition-default existente; tokens.css en 96/100). Depende de la feature 20 (restauración de latest-articles.astro).",
+      "acceptance": [
+        "tests/view-transitions.test.mjs se escribe en rojo antes de la implementación y queda en verde al final (REQ-24-01..05)",
+        "Layout.astro importa de astro:transitions y renderiza ClientRouter en la cabecera (REQ-24-01)",
+        "latest-articles.astro lleva los atributos transition:name definidos en el design de esta feature (REQ-24-03)",
+        "El design de la feature documenta la excepción de JavaScript de runtime aprobada y su alcance (REQ-24-04)",
+        "El mecanismo queda respaldado por spec y tests sin ediciones manuales fuera del arnés (REQ-24-02, REQ-24-05)"
+      ],
+      "depends_on": [
+        20
+      ],
+      "status": "done"
+    },
+    {
+      "id": 25,
+      "name": "game-of-life-removal",
+      "title": "Eliminar el fondo del Juego de la Vida del proyecto (decisión de usuario)",
+      "description": "Decisión definitiva del usuario (2026-08-12): el fondo del Juego de la Vida se ELIMINA del proyecto, no se desactiva. Se eliminan: src/components/GameOfLifeBackground.astro, src/utils/game-of-life.ts (feature 14), src/utils/game-of-life-canvas.ts (feature 15), src/utils/gol-render.ts (feature 16), src/styles/game-of-life.css y los tokens GOL de tokens.css. Verificado en disco: --opacity-hero (0.80) solo lo usaba el look del hero translúcido sobre el canvas GOL (Decisión 6, feature 15) y hoy está inactivo (comentado en hero-section.css líneas 28-29) → se elimina también; sin GOL el hero queda a opacidad plena, que es el aspecto actual visible y aprobado (el look NO cambia). Los tests de las features 14-16 (game-of-life-engine.test.mjs, game-of-life-background.test.mjs, gol-performance.test.mjs) se eliminan; verificado que ninguna otra feature los referencia (solo hero-section-styles.test.mjs toca .hero-background, selector que permanece). Layout.astro pierde el import y la referencia comentada; docs/architecture.md (líneas 15 y 56) actualiza sus ejemplos de componentes sin introducir el token prohibido 'hero' del kit (REQ-01-05, precedente feature 23). Las features 14-16 PERMANECEN done en el backlog y sus specs/artefactos son historial permanente: esta feature revoca su código por decisión de usuario y el historial queda en progress/history.md y specs/.",
+      "acceptance": [
+        "tests/game-of-life-removal.test.mjs se escribe en rojo antes de la implementación y queda en verde al final (REQ-25-01, REQ-25-02, REQ-25-07)",
+        "Los archivos src/components/GameOfLifeBackground.astro src/utils/game-of-life.ts src/utils/game-of-life-canvas.ts src/utils/gol-render.ts y src/styles/game-of-life.css ya no existen (REQ-25-01)",
+        "Los tests tests/game-of-life-engine.test.mjs tests/game-of-life-background.test.mjs y tests/gol-performance.test.mjs ya no existen (REQ-25-02)",
+        "El grep de las cadenas game-of-life GameOfLife gol-canvas gol-render mountGameOfLife --opacity-gol --size-gol-cell y --opacity-hero devuelve 0 resultados en src/ y en tests/ solo tests/game-of-life-removal.test.mjs las contiene (REQ-25-07)",
+        "tokens.css no define --opacity-gol --size-gol-cell ni --opacity-hero y hero-section.css conserva el selector .hero-background sin menciones a tokens de opacidad (REQ-25-03, REQ-25-05)",
+        "Layout.astro no importa el componente del fondo ni contiene la referencia comentada (REQ-25-04)",
+        "docs/architecture.md no menciona el componente del fondo y no introduce el token prohibido hero del kit en sus ejemplos (REQ-25-06)",
+        "La suite completa pasa en verde pnpm build termina sin errores generando las rutas /posts y ./init.sh termina con el entorno perfecto (REQ-25-08)"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 26,
+      "name": "post-page-styles",
+      "title": "Hoja post.css para la página /posts/[id] con imagen y tipografía del contenido",
+      "description": "El reviewer de la feature 24 dejó como posible feature futura las clases post__image/post__title de src/pages/posts/[id].astro sin hoja CSS (post.css no existe; verificado: la página de 38 líneas renderiza main.post > article.post__content con h1.post__title, p.post__meta, img.post__image y section > Content sin importar ninguna hoja). Esta feature crea src/styles/post.css siguiendo el patrón de about.css/latest-articles.css (BEM ligero, solo tokens, <=100 líneas): contenedor .post, título, meta, imagen como bloque uniforme (width 100%, aspect-ratio 16/9, object-fit cover, radio y borde con tokens, precedente REQ-17-02..05) y tipografía del contenido markdown (h2/h3, p, listas, enlaces, code/pre) con scoping bajo .post__content sin tocar el marcado del Content. SIN tokens nuevos (tokens.css en 96/100 líneas, precedentes features 17 y 24): tamaños tipográficos, interlineados y ancho de lectura literales (precedente latest-articles.css/about.css); colores radios bordes y transiciones solo var(). Decisión documentada: el enlace a /posts desde latest-articles.astro queda FUERA de alcance — el contrato de la feature 20 lo eliminó (REQ-20-06, su test lo exige ausente) y la decisión de navegación no pertenece a una feature de estilos de la página de detalle; si el usuario lo pide será feature propia.",
+      "acceptance": [
+        "tests/post-page-styles.test.mjs se escribe en rojo antes de la implementación y queda en verde al final (REQ-26-01)",
+        "src/styles/post.css existe y src/pages/posts/[id].astro la importa manteniendo la página por debajo de 100 líneas (REQ-26-02)",
+        "post.css no supera 100 líneas y no contiene valores hex ni rgba sueltos; colores radios bordes y transiciones usan var() de tokens (REQ-26-05, REQ-26-06)",
+        "post.css cubre el contenedor el título la meta la imagen y la tipografía del contenido markdown bajo las clases existentes (REQ-26-03)",
+        "La imagen de la página declara width 100 por ciento aspect-ratio 16/9 object-fit cover var(--radius-card) y var(--color-border) (REQ-26-04)",
+        "tokens.css conserva 96 líneas y no define tokens nuevos (REQ-26-07)",
+        "La suite completa pasa en verde y ./init.sh termina con el entorno perfecto (REQ-26-08)"
+      ],
+      "status": "done"
     }
   ]
 }

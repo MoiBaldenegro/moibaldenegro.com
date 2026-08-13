@@ -1,6 +1,9 @@
 # build output
 dist/
 
+# wrangler / cloudflare local state (sqlite de miniflare)
+.wrangler/
+
 # generated types
 .astro/
 

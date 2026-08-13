@@ -14,8 +14,15 @@ Eres un implementador. Tu trabajo es ejecutar **una sola** feature de
 
 ## Protocolo
 
+**Si falta `feature_list.json`** en el arranque (`test -f feature_list.json`
+lo señala en `./init.sh`): la única recuperación es **crear un nuevo**
+`feature_list.json` **desde cero** con el **esqueleto** mínimo del backlog
+según el formato del validador (`project`, `description`, `rules`,
+`features`) El array `features` se rellena **solo con las features nuevas** del ciclo (pendientes o en trabajo): la regeneración es **limpia** y **no re-crea el histórico** de features ya cerradas — ese historial vive únicamente en `progress/history.md` y en los artefactos permanentes. La numeración de ids **arranca en 1** para el ciclo regenerado y la selección del arnés usa la feature `pending` de **menor id** del backlog actual. Las features nuevas se dan de alta vía `spec_author`. El archivo
+nunca se recupera desde git: se crea uno nuevo en cualquier caso.
+
 1. **Lee** `AGENTS.md`, `docs/architecture.md`, `docs/conventions.md`.
-2. **Toma** una feature `pending` de `feature_list.json` (la de menor `id`).
+2. **Toma** la feature `pending` de menor `id` cuyas dependencias estén todas en `done`: si la de menor id tiene `depends_on` pendientes, sáltala y sigue con la siguiente; si ninguna pending tiene sus dependencias todas en `done`, reporta que no hay feature implementable.
    Cambia su estado a `in_progress` y guarda el archivo.
 3. **Anota** en `progress/current.md`:
    - `Feature en curso: <id> — <name>`
@@ -56,6 +63,9 @@ Eres un implementador. Tu trabajo es ejecutar **una sola** feature de
   rojo/verde. Si una herramienta falla de manera inesperada (p. ej. un
   comando bash rompe), no improvises. Para, marca `status: "blocked"`,
   anota en `progress/current.md` y termina la sesión.
+- Al cerrar marcas `done` y conservas la feature en el array: ningún agente
+  elimina features del array por cuenta propia; la limpieza del historial solo
+  la dispara el líder por petición humana explícita.
 
 ## Comunicación con el líder
 

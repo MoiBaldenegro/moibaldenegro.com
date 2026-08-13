@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 # init.sh — Verifica que el entorno está listo para trabajar.
 # Si falla algo, reporta y NO se debe continuar.
-# En Windows ejecutar con Git Bash (cmd no ejecuta scripts .sh).
 
 set -uo pipefail
 
@@ -15,18 +14,6 @@ NC=$'\033[0m'
 
 ok() { printf '%s✔ %s%s\n' "$GREEN" "$1" "$NC"; }
 fail() { printf '%s✘ %s%s\n' "$RED" "$1" "$NC"; }
-
-# Detección del gestor de paquetes del destino (pnpm / npm / yarn)
-# Se adapta en el proyecto sustituyendo PM por el gestor real si es necesario.
-if [ -f pnpm-lock.yaml ]; then
-  PM="pnpm"
-elif [ -f package-lock.json ]; then
-  PM="npm"
-elif [ -f yarn.lock ]; then
-  PM="yarn"
-else
-  PM="pnpm"
-fi
 
 FAILURES=0
 run_check() {
@@ -45,26 +32,37 @@ echo "=== init.sh: verificando entorno ==="
 echo ""
 echo "--- Herramientas y dependencias ---"
 run_check "node instalado" command -v node
-run_check "gestor de paquetes instalado ($PM)" command -v "$PM"
+run_check "pnpm instalado" command -v pnpm
 run_check "dependencias instaladas (node_modules)" test -d node_modules
 
 echo ""
 echo "--- Archivos del harness ---"
 run_check "AGENTS.md existe" test -f AGENTS.md
-run_check "feature_list.json existe" test -f feature_list.json
+
+if [ ! -f feature_list.json ]; then
+  fail "feature_list.json ausente: crea un nuevo feature_list.json desde cero (esqueleto { project, description, rules, features } según el validador) y da de alta las features vía spec_author"
+  FAILURES=$((FAILURES + 1))
+else
+  ok "feature_list.json existe"
+fi
+
 run_check "progress/current.md existe" test -f progress/current.md
 
 echo ""
 echo "--- Formato ---"
-run_check "formato de feature_list.json y progress/current.md" node scripts/check-format.mjs
+if [ ! -f feature_list.json ]; then
+  run_check "formato con guard (feature_list.json ausente)" node scripts/check-format.mjs
+else
+  run_check "formato de feature_list.json y progress/current.md" node scripts/check-format.mjs
+fi
 
 echo ""
 echo "--- Tests ---"
-run_check "tests al 100% (node:test)" "$PM" test
+run_check "tests al 100% (node:test)" pnpm test
 
 echo ""
 echo "--- Build ---"
-run_check "build de producción" "$PM" build
+run_check "build de producción (pnpm build)" pnpm build
 
 echo ""
 if [ "$FAILURES" -eq 0 ]; then
