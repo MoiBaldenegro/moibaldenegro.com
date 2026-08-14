@@ -12,12 +12,10 @@ export class HtbProfileDataError extends Error {
 export class HtbProfileRepository {
   private readonly token: string | undefined;
   private readonly userId: string | undefined;
-  private readonly fetchFn: typeof fetch;
 
-  constructor(token: string | undefined, userId: string | undefined, fetchFn: typeof fetch = fetch) {
+  constructor(token: string | undefined, userId: string | undefined) {
     this.token = token;
     this.userId = userId;
-    this.fetchFn = fetchFn;
   }
 
   async getProfile(): Promise<HtbProfile> {
@@ -43,7 +41,7 @@ export class HtbProfileRepository {
 
   private async requestProfile(): Promise<Response> {
     try {
-      return await this.fetchFn(`${HTB_API_URL}/${this.userId}`, {
+      return await fetch(`${HTB_API_URL}/${this.userId}`, {
         headers: {
           Authorization: `Bearer ${this.token}`,
           Accept: 'application/json',

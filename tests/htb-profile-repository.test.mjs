@@ -1,8 +1,8 @@
 // Test del dominio del perfil de Hack The Box (REQ-22-02..04, feature 22 htb-stadistics-section).
 //
 // Verifica contra specs/22_htb-stadistics-section/requirements.md y design.md:
-//   REQ-22-02 — HtbProfileRepository entrega los datos del perfil con un fetch
-//               inyectable; el token y el id se usan SOLO en la cabecera
+//   REQ-22-02 — HtbProfileRepository entrega los datos del perfil con fetch
+//               directo; el token y el id se usan SOLO en la cabecera
 //               Authorization (Decisión 2: nunca se registran ni se muestran).
 //   REQ-22-03 — respuesta no válida (HTTP no-ok, JSON inválido, sin objeto
 //               profile) → lanza HtbProfileDataError.
@@ -44,6 +44,8 @@ function profileResponse() {
   };
 }
 
+const originalFetch = globalThis.fetch;
+
 // Crea un fetch de prueba que registra su llamada y responde según el behavior.
 function fakeFetch(behavior, calls) {
   return async (url, init) => {
@@ -65,98 +67,128 @@ function fakeFetch(behavior, calls) {
   };
 }
 
+function withFakeFetch(behavior, calls = []) {
+  globalThis.fetch = fakeFetch(behavior, calls);
+  return calls;
+}
+
+function restoreFetch() {
+  globalThis.fetch = originalFetch;
+}
+
 test('REQ-22-02: entrega el perfil esperado mapeando los campos de la API v4', async () => {
-  const calls = [];
-  const repository = new HtbProfileRepository(
-    'TOK',
-    '42',
-    fakeFetch({ body: profileResponse() }, calls),
-  );
-  const profile = await repository.getProfile();
-  assert.equal(profile.name, 'Moisés Baldenegro');
-  assert.equal(profile.rank, 'Hacker');
-  assert.equal(profile.points, 2049);
-  assert.equal(profile.userOwns, 12);
-  assert.equal(profile.systemOwns, 30);
-  assert.equal(profile.countryName, 'México');
-  assert.equal(profile.joinedDate, '2021-01-15T00:00:00.000Z');
+  try {
+    withFakeFetch({ body: profileResponse() });
+    const repository = new HtbProfileRepository('TOK', '42');
+    const profile = await repository.getProfile();
+    assert.equal(profile.name, 'Moisés Baldenegro');
+    assert.equal(profile.rank, 'Hacker');
+    assert.equal(profile.points, 2049);
+    assert.equal(profile.userOwns, 12);
+    assert.equal(profile.systemOwns, 30);
+    assert.equal(profile.countryName, 'México');
+    assert.equal(profile.joinedDate, '2021-01-15T00:00:00.000Z');
+  } finally {
+    restoreFetch();
+  }
 });
 
 test('REQ-22-02/Decisión 2: el token y el id se usan solo en la cabecera de autorización', async () => {
   const calls = [];
-  const repository = new HtbProfileRepository(
-    'TOK',
-    '42',
-    fakeFetch({ body: profileResponse() }, calls),
-  );
-  await repository.getProfile();
-  assert.equal(calls[0].url, `${API_URL}/42`, 'la URL no apunta al endpoint con el id');
-  assert.equal(
-    calls[0].init.headers.Authorization,
-    'Bearer TOK',
-    'el token no va en la cabecera Authorization',
-  );
+  try {
+    withFakeFetch({ body: profileResponse() }, calls);
+    const repository = new HtbProfileRepository('TOK', '42');
+    await repository.getProfile();
+    assert.equal(calls[0].url, `${API_URL}/42`, 'la URL no apunta al endpoint con el id');
+    assert.equal(
+      calls[0].init.headers.Authorization,
+      'Bearer TOK',
+      'el token no va en la cabecera Authorization',
+    );
+  } finally {
+    restoreFetch();
+  }
 });
 
 test('Decisión 6: si falta full_name usa el campo name', async () => {
-  const calls = [];
-  const body = { profile: { name: 'moibaldenegro' } };
-  const repository = new HtbProfileRepository('TOK', '42', fakeFetch({ body }, calls));
-  const profile = await repository.getProfile();
-  assert.equal(profile.name, 'moibaldenegro');
+  try {
+    const body = { profile: { name: 'moibaldenegro' } };
+    withFakeFetch({ body });
+    const repository = new HtbProfileRepository('TOK', '42');
+    const profile = await repository.getProfile();
+    assert.equal(profile.name, 'moibaldenegro');
+  } finally {
+    restoreFetch();
+  }
 });
 
 test('Decisión 6: los campos ausentes llegan a null para mostrar "N/D" sin lanzar', async () => {
-  const calls = [];
-  const body = { profile: { name: 'moibaldenegro' } };
-  const repository = new HtbProfileRepository('TOK', '42', fakeFetch({ body }, calls));
-  const profile = await repository.getProfile();
-  assert.equal(profile.rank, null);
-  assert.equal(profile.points, null);
-  assert.equal(profile.userOwns, null);
-  assert.equal(profile.systemOwns, null);
-  assert.equal(profile.countryName, null);
-  assert.equal(profile.joinedDate, null);
+  try {
+    const body = { profile: { name: 'moibaldenegro' } };
+    withFakeFetch({ body });
+    const repository = new HtbProfileRepository('TOK', '42');
+    const profile = await repository.getProfile();
+    assert.equal(profile.rank, null);
+    assert.equal(profile.points, null);
+    assert.equal(profile.userOwns, null);
+    assert.equal(profile.systemOwns, null);
+    assert.equal(profile.countryName, null);
+    assert.equal(profile.joinedDate, null);
+  } finally {
+    restoreFetch();
+  }
 });
 
 test('REQ-22-03: respuesta HTTP no-ok lanza HtbProfileDataError', async () => {
-  const calls = [];
-  const repository = new HtbProfileRepository('TOK', '42', fakeFetch({ status: 401, body: {} }, calls));
-  await assert.rejects(() => repository.getProfile(), HtbProfileDataError);
+  try {
+    withFakeFetch({ status: 401, body: {} });
+    const repository = new HtbProfileRepository('TOK', '42');
+    await assert.rejects(() => repository.getProfile(), HtbProfileDataError);
+  } finally {
+    restoreFetch();
+  }
 });
 
 test('REQ-22-03: JSON inválido lanza HtbProfileDataError', async () => {
-  const calls = [];
-  const repository = new HtbProfileRepository(
-    'TOK',
-    '42',
-    fakeFetch({ invalidJson: true, body: null }, calls),
-  );
-  await assert.rejects(() => repository.getProfile(), HtbProfileDataError);
+  try {
+    withFakeFetch({ invalidJson: true, body: null });
+    const repository = new HtbProfileRepository('TOK', '42');
+    await assert.rejects(() => repository.getProfile(), HtbProfileDataError);
+  } finally {
+    restoreFetch();
+  }
 });
 
 test('REQ-22-03: respuesta sin objeto profile lanza HtbProfileDataError', async () => {
-  const calls = [];
-  const repository = new HtbProfileRepository('TOK', '42', fakeFetch({ body: {} }, calls));
-  await assert.rejects(() => repository.getProfile(), HtbProfileDataError);
+  try {
+    withFakeFetch({ body: {} });
+    const repository = new HtbProfileRepository('TOK', '42');
+    await assert.rejects(() => repository.getProfile(), HtbProfileDataError);
+  } finally {
+    restoreFetch();
+  }
 });
 
 test('REQ-22-04: fetch que falla lanza HtbProfileDataError', async () => {
-  const calls = [];
-  const repository = new HtbProfileRepository(
-    'TOK',
-    '42',
-    fakeFetch({ reject: true }, calls),
-  );
-  await assert.rejects(() => repository.getProfile(), HtbProfileDataError);
+  try {
+    withFakeFetch({ reject: true });
+    const repository = new HtbProfileRepository('TOK', '42');
+    await assert.rejects(() => repository.getProfile(), HtbProfileDataError);
+  } finally {
+    restoreFetch();
+  }
 });
 
 test('REQ-22-07: sin token o sin id la repositorio lanza HtbProfileDataError (fallback)', async () => {
-  const calls = [];
-  const noToken = new HtbProfileRepository(undefined, '42', fakeFetch({ body: profileResponse() }, calls));
-  await assert.rejects(() => noToken.getProfile(), HtbProfileDataError);
-  const noId = new HtbProfileRepository('TOK', undefined, fakeFetch({ body: profileResponse() }, calls));
-  await assert.rejects(() => noId.getProfile(), HtbProfileDataError);
+  try {
+    withFakeFetch({ body: profileResponse() });
+    const noToken = new HtbProfileRepository(undefined, '42');
+    await assert.rejects(() => noToken.getProfile(), HtbProfileDataError);
+    const noId = new HtbProfileRepository('TOK', undefined);
+    await assert.rejects(() => noId.getProfile(), HtbProfileDataError);
+  } finally {
+    restoreFetch();
+  }
 });
 
 test('REQ-22-02/Decisión 2: el repositorio no registra secretos en consola', () => {

@@ -38,6 +38,8 @@ function profileResponse() {
   };
 }
 
+const originalFetch = globalThis.fetch;
+
 // Crea un fetch de prueba que responde según el behavior (mismo patrón que el
 // test del repositorio de la feature 22, REQ-22-02..04).
 function fakeFetch(behavior) {
@@ -66,74 +68,108 @@ function fakeFetch(behavior) {
 }
 
 function repositoryWith(behavior) {
-  return new HtbProfileRepository('TOK', '42', fakeFetch(behavior));
+  globalThis.fetch = fakeFetch(behavior);
+  return new HtbProfileRepository('TOK', '42');
+}
+
+function restoreFetch() {
+  globalThis.fetch = originalFetch;
 }
 
 test('REQ-27-01: getProfileOrNull devuelve el perfil mapeado cuando la API responde', async () => {
-  const profile = await repositoryWith({ body: profileResponse() }).getProfileOrNull();
-  assert.ok(profile, 'getProfileOrNull devolvió null con una respuesta válida (REQ-27-01)');
-  assert.equal(profile.name, 'Moisés Baldenegro');
-  assert.equal(profile.rank, 'Hacker');
-  assert.equal(profile.points, 2049);
-  assert.equal(profile.userOwns, 12);
-  assert.equal(profile.systemOwns, 30);
-  assert.equal(profile.countryName, 'México');
-  assert.equal(profile.joinedDate, '2021-01-15T00:00:00.000Z');
+  try {
+    const profile = await repositoryWith({ body: profileResponse() }).getProfileOrNull();
+    assert.ok(profile, 'getProfileOrNull devolvió null con una respuesta válida (REQ-27-01)');
+    assert.equal(profile.name, 'Moisés Baldenegro');
+    assert.equal(profile.rank, 'Hacker');
+    assert.equal(profile.points, 2049);
+    assert.equal(profile.userOwns, 12);
+    assert.equal(profile.systemOwns, 30);
+    assert.equal(profile.countryName, 'México');
+    assert.equal(profile.joinedDate, '2021-01-15T00:00:00.000Z');
+  } finally {
+    restoreFetch();
+  }
 });
 
 test('REQ-27-02: sin token o sin id getProfileOrNull devuelve null', async () => {
   const calls = [];
-  const fetchFn = (url, init) => {
-    calls.push({ url, init });
-    return Promise.resolve({ ok: true, status: 200, json: async () => profileResponse() });
-  };
-  const noToken = new HtbProfileRepository(undefined, '42', fetchFn);
-  assert.equal(await noToken.getProfileOrNull(), null, 'sin token no devuelve null (REQ-27-02)');
-  const noId = new HtbProfileRepository('TOK', undefined, fetchFn);
-  assert.equal(await noId.getProfileOrNull(), null, 'sin id no devuelve null (REQ-27-02)');
-  assert.equal(calls.length, 0, 'sin credenciales no debe contactar la API (REQ-27-02)');
+  try {
+    globalThis.fetch = (url, init) => {
+      calls.push({ url, init });
+      return Promise.resolve({ ok: true, status: 200, json: async () => profileResponse() });
+    };
+    const noToken = new HtbProfileRepository(undefined, '42');
+    assert.equal(await noToken.getProfileOrNull(), null, 'sin token no devuelve null (REQ-27-02)');
+    const noId = new HtbProfileRepository('TOK', undefined);
+    assert.equal(await noId.getProfileOrNull(), null, 'sin id no devuelve null (REQ-27-02)');
+    assert.equal(calls.length, 0, 'sin credenciales no debe contactar la API (REQ-27-02)');
+  } finally {
+    restoreFetch();
+  }
 });
 
 test('REQ-27-03: fetch que no puede contactar la API devuelve null', async () => {
-  const profile = await repositoryWith({ reject: true }).getProfileOrNull();
-  assert.equal(profile, null, 'red caída no devuelve null (REQ-27-03)');
+  try {
+    const profile = await repositoryWith({ reject: true }).getProfileOrNull();
+    assert.equal(profile, null, 'red caída no devuelve null (REQ-27-03)');
+  } finally {
+    restoreFetch();
+  }
 });
 
 test('REQ-27-04: estado HTTP no válido devuelve null', async () => {
-  const profile = await repositoryWith({ status: 401, body: {} }).getProfileOrNull();
-  assert.equal(profile, null, 'HTTP no-ok no devuelve null (REQ-27-04)');
+  try {
+    const profile = await repositoryWith({ status: 401, body: {} }).getProfileOrNull();
+    assert.equal(profile, null, 'HTTP no-ok no devuelve null (REQ-27-04)');
+  } finally {
+    restoreFetch();
+  }
 });
 
 test('REQ-27-05: respuesta que no es JSON válido devuelve null', async () => {
-  const profile = await repositoryWith({ invalidJson: true, body: null }).getProfileOrNull();
-  assert.equal(profile, null, 'JSON inválido no devuelve null (REQ-27-05)');
+  try {
+    const profile = await repositoryWith({ invalidJson: true, body: null }).getProfileOrNull();
+    assert.equal(profile, null, 'JSON inválido no devuelve null (REQ-27-05)');
+  } finally {
+    restoreFetch();
+  }
 });
 
 test('REQ-27-06: respuesta sin perfil válido devuelve null', async () => {
-  const sinProfile = await repositoryWith({ body: {} }).getProfileOrNull();
-  assert.equal(sinProfile, null, 'respuesta sin profile no devuelve null (REQ-27-06)');
-  const profileNoObjeto = await repositoryWith({ body: { profile: 'nope' } }).getProfileOrNull();
-  assert.equal(profileNoObjeto, null, 'profile no objeto no devuelve null (REQ-27-06)');
-  const responseNula = await repositoryWith({ body: null }).getProfileOrNull();
-  assert.equal(responseNula, null, 'respuesta nula no devuelve null (REQ-27-06)');
+  try {
+    const sinProfile = await repositoryWith({ body: {} }).getProfileOrNull();
+    assert.equal(sinProfile, null, 'respuesta sin profile no devuelve null (REQ-27-06)');
+    const profileNoObjeto = await repositoryWith({ body: { profile: 'nope' } }).getProfileOrNull();
+    assert.equal(profileNoObjeto, null, 'profile no objeto no devuelve null (REQ-27-06)');
+    const responseNula = await repositoryWith({ body: null }).getProfileOrNull();
+    assert.equal(responseNula, null, 'respuesta nula no devuelve null (REQ-27-06)');
+  } finally {
+    restoreFetch();
+  }
 });
 
 test('REQ-27-09: getProfile conserva el contrato de lanzar HtbProfileDataError', async () => {
-  await assert.rejects(
-    () => repositoryWith({ reject: true }).getProfile(),
-    HtbProfileDataError,
-    'getProfile ya no lanza con red caída (REQ-27-09)',
-  );
-  await assert.rejects(
-    () => new HtbProfileRepository(undefined, '42', fakeFetch({ body: profileResponse() })).getProfile(),
-    HtbProfileDataError,
-    'getProfile ya no lanza sin token (REQ-27-09)',
-  );
-  await assert.rejects(
-    () => repositoryWith({ status: 401, body: {} }).getProfile(),
-    HtbProfileDataError,
-    'getProfile ya no lanza con HTTP no-ok (REQ-27-09)',
-  );
+  try {
+    await assert.rejects(
+      () => repositoryWith({ reject: true }).getProfile(),
+      HtbProfileDataError,
+      'getProfile ya no lanza con red caída (REQ-27-09)',
+    );
+    globalThis.fetch = fakeFetch({ body: profileResponse() });
+    await assert.rejects(
+      () => new HtbProfileRepository(undefined, '42').getProfile(),
+      HtbProfileDataError,
+      'getProfile ya no lanza sin token (REQ-27-09)',
+    );
+    await assert.rejects(
+      () => repositoryWith({ status: 401, body: {} }).getProfile(),
+      HtbProfileDataError,
+      'getProfile ya no lanza con HTTP no-ok (REQ-27-09)',
+    );
+  } finally {
+    restoreFetch();
+  }
 });
 
 test('REQ-27-07/10: el componente usa getProfileOrNull y no invoca la vía que lanza', () => {
