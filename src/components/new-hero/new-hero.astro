@@ -24,6 +24,7 @@ const profile = new HeroProfileRepository().getProfile();
     <section class="profile-card">
       <div class="profile-image">
         <img
+          transition:persist="hero-profile"
           src={profile.image}
           alt={profile.name}
         />

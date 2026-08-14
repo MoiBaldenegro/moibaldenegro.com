@@ -802,3 +802,49 @@ pendientes, 0 en progreso. Artefactos permanentes conservados:
 `specs/42_post-header-horizontal-card/` y el research
 `progress/research/header-horizontal-posts-ciclo34.md`. El arnés queda en
 verde total esperando la siguiente petición del humano.
+
+## Feature 43 — hero-back-navigation-fix (CERRADA, 2026-08-14)
+
+Fix del hero perdido al volver del detalle (`/posts/[id]` → `/`): la imagen del
+hero de la portada se perdía (404 `GET /posts/assets/moises-hero.jpg`) porque
+`src/data/hero.json` declaraba la ruta RELATIVA `assets/moises-hero.jpg` y el
+`<ClientRouter />` re-parsea la portada con DOMParser antes de cambiar la URL
+(resuelve contra `/posts/`). Cambios (REQ-43-01..07, spec
+`specs/43_hero-back-navigation-fix/`): (1) `hero.json` pasa a la ruta absoluta
+`/assets/moises-hero.jpg` (REQ-43-01); (2) `transition:persist="hero-profile"`
+en el `<img>` del hero de la portada (`new-hero.astro`, REQ-43-02); (3) copia
+OCULTA del hero en `[id].astro` dentro de `.post__hero`, DESPUÉS de
+`img.post__image` y de `.post__hero-copy`, SIN `transition:name`, mismo src vía
+`HeroProfileRepository` (REQ-43-03/07 — el persist de Astro exige el elemento
+en AMBAS páginas y el nodo viejo sobrevive al swap); (4) preload del hero en el
+head del layout (`<link rel="preload" as="image" href={heroProfile.image}>`,
+REQ-43-04); (5) regla de ocultación estructural
+`.post__hero [data-astro-transition-persist="hero-profile"] { display: none; }`
+en `layout.css` (REQ-43-05; sigue al atributo que viaja con el nodo, acotada a
+`.post__hero` que solo existe en el detalle; sin `hidden`/`aria-hidden` que
+viajarían con el nodo). Cambio de test existente AUTORIZADO (REQ-43-06):
+`tests/hero-profile-repository.test.mjs` `EXPECTED_PROFILE.image` →
+`'/assets/moises-hero.jpg'` (el fixture sigue al dato real; resto del test
+intacto). Nuevo test test-first `tests/hero-back-navigation.test.mjs` (6
+tests). Ciclo rojo/verde: ROJO 7 fail (6 REQ-43 + REQ-31-01/04 por el fixture ya
+actualizado) → VERDE 15/15 en la feature; suite completa **264/264** (258 + 6
+nuevos); `node scripts/audit-design-tokens.mjs` → `AUDIT ✔`; `./init.sh` →
+«El entorno está perfecto». Build verificado en `dist/`: portada con persist +
+preload; detalle con preload + copia persistida tras `img.post__image` y
+`.post__hero-copy`; regla `display:none` en el CSS compilado. `tokens.css`
+intacto (87 líneas). Sin cambios visuales en el diseño aprobado (se conservan
+los pares `transition:name` img/title, REQ-24-03/05/42-08).
+
+Reviewer: `progress/review_43_hero-back-navigation-fix.md` con Veredicto
+**APPROVED** (verificado en disco 2026-08-14; 37/37 en feature + contratos,
+suite 264/264, audit ✔, formato ✔ y `./init.sh` re-ejecutados por el reviewer;
+checkpoints C1-C5 ✔; riesgo residual no bloqueante documentado: morph de
+imágenes en back sigue expuesto al bug upstream de Chromium 331926174/#10595,
+mitigado con persist + preload y pendiente de la feature 44). Cierre: feature
+43 `done` en `feature_list.json` (cambiado de `in_progress`; la feature se
+conserva en el array), `check-format` e `./init.sh` en verde tras el cambio.
+Artefactos permanentes conservados: `progress/impl_43_hero-back-navigation-fix.md`,
+`progress/review_43_hero-back-navigation-fix.md`, `specs/43_hero-back-navigation-fix/`
+y los research `progress/research/fix-imagen-hero-y-rendimiento-ciclo36.md` y
+`progress/research/view-transitions-imagen-perdida.md`. Backlog: 1 pendiente
+(feature 44 performance-jank-reduction), 0 en progreso.

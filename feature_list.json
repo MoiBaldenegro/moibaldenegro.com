@@ -180,6 +180,42 @@
       ],
       "depends_on": [],
       "status": "done"
+    },
+    {
+      "id": 43,
+      "name": "hero-back-navigation-fix",
+      "title": "Arreglar la imagen del hero perdida al volver del detalle (ruta absoluta + persist + preload)",
+      "description": "Petición del humano (ciclo 36): 'al regresar de la página del detalle se pierde la imagen del hero'. Causa raíz verificada: src/data/hero.json declara image con ruta RELATIVA (assets/moises-hero.jpg); el <ClientRouter /> re-fetchea y re-parsea la portada con DOMParser en cada navegación y la ruta resuelve contra /posts/ -> 404 (GET /posts/assets/moises-hero.jpg) -> hero sin imagen (agravado por el bug de Chromium 331926174 / astro#10595). Fix de menor riesgo visual (se conserva el morph de imágenes y títulos aprobado): (a) hero.json pasa a ruta absoluta /assets/moises-hero.jpg; (b) persist del hero en AMBAS páginas (transition:persist=\"hero-profile\" en el img del hero de new-hero.astro + copia oculta en [id].astro dentro de .post__hero DESPUÉS de img.post__image y .post__hero-copy, sin transition:name, misma src vía HeroProfileRepository) — verificado en swap-functions.js de Astro 7.2.0: el persist solo funciona si el elemento existe en ambas páginas y el nodo viejo sobrevive con sus atributos, por eso la ocultación es estructural por atributo: .post__hero [data-astro-transition-persist=\"hero-profile\"] { display: none } en layout.css; (c) preload del hero en el head del Layout (el router solo pre-carga stylesheets). CAMBIO DE TEST EXISTENTE AUTORIZADO en specs/43_hero-back-navigation-fix/ (REQ-43-06): tests/hero-profile-repository.test.mjs REQ-31-04 actualiza EXPECTED_PROFILE.image de 'assets/moises-hero.jpg' a '/assets/moises-hero.jpg' (el fixture sigue al dato real). Tests view-transitions (REQ-24-03/05), post-header-horizontal (REQ-42-01/08) y post-page-styles (REQ-26-03) pasan sin modificación (la copia va después del primer img y no lleva transition:name). Nuevo test test-first tests/hero-back-navigation.test.mjs. Análisis: progress/research/fix-imagen-hero-y-rendimiento-ciclo36.md.",
+      "acceptance": [
+        "src/data/hero.json declara image con la ruta absoluta /assets/moises-hero.jpg y el archivo real existe en public/assets/moises-hero.jpg (REQ-43-01)",
+        "El img del hero en new-hero.astro declara transition:persist=\"hero-profile\" y conserva src={profile.image} y alt={profile.name} (REQ-43-02)",
+        "[id].astro incluye una copia del hero con transition:persist=\"hero-profile\" y el mismo src del perfil, SIN transition:name, situada dentro de .post__hero después de img.post__image y de .post__hero-copy (REQ-43-03/07)",
+        "layout.css declara la regla .post__hero [data-astro-transition-persist=\"hero-profile\"] con display none y no supera las 100 líneas (REQ-43-05)",
+        "El head de Layout.astro pre-carga la imagen del hero con <link rel=\"preload\" as=\"image\"> usando el perfil del repositorio (REQ-43-04)",
+        "tests/hero-profile-repository.test.mjs pasa con el fixture EXPECTED_PROFILE.image actualizado al valor absoluto (cambio autorizado REQ-43-06) y el resto del test queda intacto",
+        "tests/view-transitions.test.mjs (REQ-24-03/05), post-header-horizontal.test.mjs (REQ-42-01/08) y post-page-styles.test.mjs (REQ-26-03) pasan SIN modificarse (el primer img de la página conserva img-${entry.id})",
+        "tests/hero-back-navigation.test.mjs existe y pasa en verde (test-first REQ-43), y node scripts/check-format.mjs junto con la suite completa quedan en verde"
+      ],
+      "depends_on": [],
+      "status": "done"
+    },
+    {
+      "id": 44,
+      "name": "performance-jank-reduction",
+      "title": "Reducir el jank de scroll y navegación (navbar sin blur, hovers baratos, transition:animate none, preload del post)",
+      "description": "Petición del humano (ciclo 36): 'tenemos problemas de rendimiento, se nota un lagueo'. Causas priorizadas en progress/research/rendimiento-jank-ciclo35.md: (1) backdrop-filter: blur(18px) en la navbar sticky full-width = jank de scroll (sospechoso nº 1; se elimina y el fondo sube de opacidad con color-mix(in srgb, var(--color-background) 92%, transparent) SIN tocar tokens.css, que queda en 87 líneas — REQ-26-07/40-11/42-09); (2) hovers de cards con box-shadow + filter: contrast(1.4) + transform (paint por frame; quedan solo transform + border-color); (3) crossfade del snapshot de página completa en las view transitions (transition:animate=\"none\" en <html> del layout: conserva los morphs nombrados y elimina la rasterización del grupo root); (4) preload de la imagen del post (link slot=\"head\" en el head del Layout + <link rel=\"preload\" as=\"image\" fetchpriority=\"high\"> en [id].astro) para que el morph de imagen llegue con imagen decodificada. Sin cambios visuales pedidos: se conservan los pares transition:name img-${id}/title-${id} (REQ-24-03/05, REQ-42-08) y la transición base var(--transition-default) de latest-articles.css (REQ-10-03). NINGÚN test existente se modifica. Nuevo test test-first tests/performance-jank-cycle36.test.mjs. Análisis: progress/research/fix-imagen-hero-y-rendimiento-ciclo36.md.",
+      "acceptance": [
+        "El <html> de Layout.astro declara transition:animate=\"none\" y tests/layout-refactor.test.mjs REQ-08-01 pasa sin modificarse (REQ-44-01)",
+        "Layout.astro declara <slot name=\"head\" /> en la cabecera y [id].astro inyecta <link slot=\"head\" rel=\"preload\" as=\"image\" fetchpriority=\"high\"> con la imagen del artículo (REQ-44-02/03)",
+        "layout.css no declara backdrop-filter y el fondo de .site-navbar usa color-mix con var(--color-background); layout.css no supera las 100 líneas y sigue pasando REQ-08-06 (REQ-44-04/05)",
+        "El hover de .hero-card en hero-card.css no declara box-shadow ni filter y conserva transform con border-color usando var(--color-accent) (REQ-44-06)",
+        "El hover de .latest-articles__card en latest-articles.css no declara box-shadow y conserva border-color con var(--color-accent) y transform; la hoja conserva var(--transition-default) (REQ-44-07, REQ-10-03 en verde)",
+        "Los pares transition:name img-${post.id}/img-${entry.id} y title-${post.id}/title-${entry.id} de cards y detalle se conservan y tests/view-transitions.test.mjs REQ-24-03/05 y post-header-horizontal.test.mjs REQ-42-08 pasan sin modificarse (REQ-44-08)",
+        "tokens.css conserva 87 líneas sin tokens nuevos (REQ-26-07/40-11/42-09 en verde)",
+        "tests/performance-jank-cycle36.test.mjs existe y pasa en verde (test-first REQ-44), y node scripts/check-format.mjs junto con la suite completa quedan en verde"
+      ],
+      "depends_on": [],
+      "status": "in_progress"
     }
   ]
 }
