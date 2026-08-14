@@ -7,17 +7,20 @@ const posts = await new PostsRepository().getPosts();
 ---
 
 <section class="latest-articles">
+  <h2 class="latest-articles__heading">Últimos artículos</h2>
   <div class="latest-articles__list">
     {posts.map((post) => (
       <article class="latest-articles__card">
-        <img
-          class="latest-articles__image"
-          src={`/assets/content/${post.img}`}
-          alt={post.title}
-          loading="lazy"
-          transition:name={`img-${post.id}`}
-        />
-        <h2 transition:name={`title-${post.id}`} class="latest-articles__title">{post.title}</h2>
+        <a class="latest-articles__link" href={`/posts/${post.id}`}>
+          <img
+            class="latest-articles__image"
+            src={`/assets/content/${post.img}`}
+            alt={post.title}
+            loading="lazy"
+            transition:name={`img-${post.id}`}
+          />
+          <h2 transition:name={`title-${post.id}`} class="latest-articles__title">{post.title}</h2>
+        </a>
         <p class="latest-articles__meta">Por {post.author} • {post.readtime} min de lectura</p>
         <p class="latest-articles__description">{post.description}</p>
         <div class="latest-articles__tags">

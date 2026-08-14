@@ -9,25 +9,14 @@ interface Props {
 const { card } = Astro.props;
 ---
 
-<article
-  class="hero-card"
-  data-color-token={card.colorToken}
->
+<article class="hero-card" data-color-token={card.colorToken}>
+  <header class="card-header">
+    <h3>{card.title}</h3>
+  </header>
 
-    <header class="card-header">
-
-        <h3>{card.title}</h3>
-
-    </header>
-
-    <div class="card-icon">
-
-        <a href="">
-            <svg width="32px" height="32px">
-                 <use xlink:href={card.icon} href={card.icon}/>
-            </svg>
-        </a>
-
-    </div>
-
+  <div class="card-icon">
+    <svg width="32px" height="32px">
+      <use xlink:href={card.icon} href={card.icon}/>
+    </svg>
+  </div>
 </article>

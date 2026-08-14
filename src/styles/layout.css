@@ -42,6 +42,22 @@ body {
 .site-navbar a:hover { color: var(--color-accent-hover); }
 .site-navbar a:hover::after { width: 100%; }
 
+/* Estado activo de la navbar (REQ-37-03, feature 37): el enlace de la página
+   actual conserva el acento y el subrayado (aria-current). */
+.site-navbar a[aria-current="page"] {
+  color: var(--color-accent);
+}
+.site-navbar a[aria-current="page"]::after {
+  width: 100%;
+}
+
+/* Foco visible global (REQ-37-04, feature 37): anillo de acento con tokens
+   para enlaces y elementos interactivos (Decisión 2 del design). */
+a:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
 /* Scrollbar global (migrada del hero, feature 8) */
 ::-webkit-scrollbar { width: 10px; }
 ::-webkit-scrollbar-thumb { background: var(--color-scrollbar-thumb); border-radius: var(--radius-pill); }

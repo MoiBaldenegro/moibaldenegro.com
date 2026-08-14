@@ -9,7 +9,10 @@
 //               se verifica aquí por inspección (REQ-24-05).
 //   REQ-24-03 — las cards de LatestArticles llevan los pares transition:name
 //               del design (Decisión 2): img-${post.id} en la imagen y
-//               title-${post.id} en el título.
+//               title-${post.id} en el título. Actualizado por la feature 37
+//               (visual-polish-refactor, Decisión 3): el primer h2 del archivo
+//               es ahora el encabezado de sección, la aserción localiza la
+//               card por h2.latest-articles__title.
 //   REQ-24-04 — el design documenta la excepción a "Estático por defecto".
 //   REQ-24-05 — el test verifica el estado final por inspección, incluida la
 //               resolución de src/pages/posts/[id].astro (adaptada a
@@ -81,8 +84,12 @@ test('REQ-24-03: la imagen de la card lleva el par img-${post.id}', () => {
 
 test('REQ-24-03: el título de la card lleva el par title-${post.id}', () => {
   const astro = readComponent();
-  const h2 = astro.match(/<h2[\s\S]*?>/)?.[0] ?? '';
-  assert.ok(h2.length > 0, 'latest-articles.astro no renderiza <h2> (REQ-24-03)');
+  // Selector preciso (feature 37 visual-polish-refactor, design Decisión 3):
+  // el primer <h2> del archivo es ahora el encabezado de sección
+  // (h2.latest-articles__heading), así que la aserción localiza la card con
+  // su clase latest-articles__title (mismo contrato, selector más preciso).
+  const h2 = astro.match(/<h2[^>]*class="latest-articles__title"[^>]*>/)?.[0] ?? '';
+  assert.ok(h2.length > 0, 'latest-articles.astro no renderiza <h2 class="latest-articles__title"> (REQ-24-03, feature 37)');
   assert.match(
     h2,
     /transition:name=\{`title-\$\{post\.id\}`\}/,

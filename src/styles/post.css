@@ -1,6 +1,7 @@
 /* post.css — Estilos de la página de detalle de artículo
-   (src/pages/posts/[id].astro, feature 26 post-page-styles).
-   Solo tokens de tokens.css. Patrón BEM ligero: bloque post. */
+   (src/pages/posts/[id].astro, features 26 y 39).
+   Solo tokens de tokens.css. Patrón BEM ligero: bloque post.
+   El panel hero vive en post-header.css (feature 39). */
 
 .post {
   width: min(var(--container-max), 95%);
@@ -8,9 +9,9 @@
   padding: 48px 0 64px;
 }
 
+/* Ancho completo del contenedor del sitio (REQ-39-01, feature 39): sin
+   max-width, el artículo ocupa el mismo ancho que la página. */
 .post__content {
-  max-width: 760px;
-  margin: auto;
   font-family: var(--font-sans);
 }
 
@@ -24,7 +25,7 @@
 .post__meta {
   color: var(--color-text-secondary);
   font-size: 0.9rem;
-  margin: 0 0 24px;
+  margin: 0;
 }
 
 /* Imagen del artículo — bloque uniforme (precedente REQ-17-02..05

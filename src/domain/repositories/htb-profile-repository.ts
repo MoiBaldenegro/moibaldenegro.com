@@ -12,14 +12,15 @@ export class HtbProfileDataError extends Error {
 export class HtbProfileRepository {
   private readonly token: string | undefined;
   private readonly userId: string | undefined;
+  private readonly fetchFn: typeof fetch;
 
-  constructor(token: string | undefined, userId: string | undefined) {
+  constructor(token: string | undefined, userId: string | undefined, fetchFn: typeof fetch = fetch) {
     this.token = token;
     this.userId = userId;
+    this.fetchFn = fetchFn;
   }
 
   async getProfile(): Promise<HtbProfile> {
-    console.log("LOG NUMERO DOS");
     this.assertCredentials();
     const response = await this.requestProfile();
     return parseHtbProfile(await this.readJson(response));
@@ -27,11 +28,8 @@ export class HtbProfileRepository {
 
   // Vía degradada (REQ-27-01..06): cualquier modo de fallo resuelve a null.
   async getProfileOrNull(): Promise<HtbProfile | null> {
-    console.log("LOG NUMERO UNO");
     try {
-      const profile = await this.getProfile();
-      console.log(profile);
-      return profile;
+      return await this.getProfile();
     } catch {
       return null;
     }
@@ -44,18 +42,14 @@ export class HtbProfileRepository {
   }
 
   private async requestProfile(): Promise<Response> {
-    console.log("LOG NUMERO TRES");
     try {
-      const res = await fetch(`${HTB_API_URL}/${this.userId}`, {
+      return await this.fetchFn(`${HTB_API_URL}/${this.userId}`, {
         headers: {
           Authorization: `Bearer ${this.token}`,
           Accept: 'application/json',
           'User-Agent': 'moibaldenegro.com',
         },
       });
-
-      console.log(res);
-      return  res;
     } catch {
       throw new HtbProfileDataError('HTB API: no se pudo contactar con la API');
     }

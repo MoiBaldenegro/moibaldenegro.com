@@ -8,6 +8,14 @@
   padding: 48px 0 64px;
 }
 
+/* Encabezado de sección (REQ-37-06, feature 37): jerarquía H1→H2, tokens. */
+.latest-articles__heading {
+  color: var(--color-text);
+  font-size: 1.75rem;
+  line-height: 1.2;
+  margin: 0 0 var(--gap-card);
+}
+
 .latest-articles__list {
   display: grid;
   gap: var(--gap-card);
@@ -23,6 +31,14 @@
 
 .latest-articles__card:hover {
   border-color: var(--color-accent);
+  box-shadow: var(--shadow-card-hover);
+}
+
+/* Enlace de la card (REQ-36-08, feature 36): envuelve imagen + título. */
+.latest-articles__link {
+  display: block;
+  border-radius: var(--radius-card);
+  text-decoration: none;
 }
 
 .latest-articles__title {
@@ -41,9 +57,7 @@
   line-height: 1.55;
 }
 
-/* Imagen de la card (feature 17): bloque uniforme — ancho del contenido,
-   proporción 16:9 (valor propio del componente, design.md), recorte cover,
-   radio/borde/margen con los tokens de la card. */
+/* Imagen de la card (feature 17): bloque uniforme 16:9 con tokens. */
 .latest-articles__image {
   display: block;
   width: 100%;
@@ -67,6 +81,14 @@
   padding: 4px 12px;
   font-size: 0.85rem;
 }
+
+/* Estados hover/focus del enlace (REQ-36-08) con tokens (feature 37). */
+.latest-articles__link:hover .latest-articles__title,
+.latest-articles__link:focus-visible .latest-articles__title {
+  color: var(--color-accent-hover);
+}
+
+.latest-articles__link:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 4px; }
 
 @media (max-width: 768px) {
   .latest-articles { padding: 32px 0 48px; }

@@ -1,21 +1,30 @@
 ---
 import "../../styles/post.css";
+import "../../styles/post-header.css";
+import "../../styles/post-readability.css";
 import Layout from "../../layouts/Layout.astro";
-import { PostsRepository } from "../../domain/repositories/posts-repository.ts";
+import { PostsDataError, PostsRepository } from "../../domain/repositories/posts-repository.ts";
 import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
   const posts = await new PostsRepository().getPosts();
   const entries = await getCollection("architecture");
   if (entries.length !== posts.length) {
-    throw new Error(
+    throw new PostsDataError(
       "posts: la colección y el repositorio no coinciden en número de artículos",
     );
   }
-  return entries.map((entry, index) => ({
-    params: { id: entry.id },
-    props: { post: posts[index], entry },
-  }));
+  const postById = new Map(posts.map((post) => [post.id, post]));
+  return entries.map((entry) => {
+    const post = postById.get(entry.id);
+    if (!post) {
+      throw new PostsDataError(`posts: no existe un post con id ${entry.id}`);
+    }
+    return {
+      params: { id: entry.id },
+      props: { post, entry },
+    };
+  });
 }
 
 const { post, entry } = Astro.props;
@@ -27,11 +36,16 @@ export const prerender = true;
 
 <Layout title={title}>
   <main class="post">
-    <article class="post__content">
-      <h1 transition:name={`title-${entry.id}`} class="post__title">{title}</h1>
-      <p class="post__meta">Por {author} • {readtime} min de lectura</p>
+    <header class="post__hero">
       <img transition:name={`img-${entry.id}`} src={`/assets/content/${img}`} alt={title} class="post__image" />
-      <section>
+      <div class="post__hero-copy">
+        <p class="post__kicker">#{post.tags[0]}</p>
+        <h1 transition:name={`title-${entry.id}`} class="post__title">{title}</h1>
+        <p class="post__meta">Por {author} • {readtime} min de lectura</p>
+      </div>
+    </header>
+    <article class="post__content">
+      <section class="post__body">
         <Content />
       </section>
     </article>

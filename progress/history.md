@@ -417,3 +417,388 @@ Sin design.md (solo frontmatter y config; la presentación no cambia).
   restaurado en htb-stadistics, `src/` sin módulos node (repos con loader
   inyectable + `with { type: 'json' }`), registro de dependencias aprobadas
   operativo en el arnés, `worker-configuration.d.ts` versionado.
+
+## Sesión 2026-08-14 — features 33-38 (ciclo 30, cierre)
+
+**Ciclo 30 CERRADO (2026-08-14).** Revisión general del proyecto (petición del
+humano: navegaciones a los detalles del content rotas + revisión/refactor
+completa) descompuesta en 6 features (research:
+`progress/research/revision-general-ciclo30.md`). Todas cerradas con reviewer
+APPROVED en disco (`progress/review_33..38_*.md`):
+
+- **33 `htb-profile-repository-restore`** (dominio, deps []): restaurado el
+  contrato canónico de `htb-profile-repository.ts` (fetch inyectable como 3er
+  argumento, sin console.*, ≤100 líneas, HtbProfileDataError en los 4 modos,
+  getProfileOrNull → null). **Causa raíz de 8 de los 11 fallos de la suite.**
+  APPROVED.
+- **34 `htb-section-degradation-restore`** (UI, deps [33]): restaurado
+  `{profile && ...}` en `htb-stadistics.astro` (REQ-27-08/REQ-32-04; campos con
+  `?? 'N/D'`, frontmatter solo imports). APPROVED.
+- **35 `specs-historico-restore`** (arnés, deps []): restauradas las specs
+  21/24 desde git (`0b7f359^`) — las únicas leídas en runtime — + REQ-21-06
+  ajustado contra la spec restaurada + docs/dependencies.md. Suite 206/206.
+  APPROVED.
+- **36 `posts-navigation-fix`** (dominio+UI, deps []) — **fix principal del
+  humano**: entidad `Post` con `id`+`slug` readonly, el repositorio entrega
+  id/slug con guard `PostsDataError` (sin slug → error), las cards enlazan a
+  `/posts/${post.id}` (antes href ausente e `img-undefined` en los
+  transition:name) y `[id].astro` empareja por id con Map (sin `posts[index]`).
+  Navegación a los detalles del content funcional. Suite 207/207. APPROVED.
+- **37 `visual-polish-refactor`** (UI, deps [34, 36], A1-A6): markup muerto
+  eliminado (.hero-noise/.hero-flower), `<a href="">` vacío de hero-card
+  eliminado, `aria-current="page"` en navbar, `:focus-visible` con tokens,
+  viewport con `initial-scale`, indentación 2 espacios, encabezado «Últimos
+  artículos», margen HTB con token; REQ-24-03 actualizado al selector
+  `h2.latest-articles__title` (autorizado). Suite 218/218. APPROVED.
+- **38 `docs-harness-alignment`** (docs, deps [], A7): `docs/architecture.md`
+  regla 6 → `src/styles/tokens.css` (sin global.css/DESIGN.md; además
+  tomateLogo.svg → favicon.svg y entidades Card/Feature/Plan → HtbProfile/Post
+  reales, sin el token «hero») y `CHECKPOINTS.md` a la realidad actual
+  (features 1-38 done, sin conteos/features congelados, sin 158/158 ni
+  features en progreso). Test nuevo `tests/docs-harness-alignment.test.mjs`
+  (REQ-38-01..03), ciclo rojo 2 fail → verde. Suite 221/221. APPROVED.
+
+**Incidente de integridad resuelto:** estados de las features 33/34 revertidos
+a `pending` por agente externo (probablemente al regenerar
+`feature_list.json`), pese a tener `Veredicto: APPROVED` en disco
+(`progress/review_33_...md`, `progress/review_34_...md`); corregidos a `done`
+tras verificar el APPROVED en disco, sin tocar el resto del backlog.
+
+**Estado final:** suite completa **221/221** al 100 % (218 baseline de la 37 +
+3 nuevos de la 38); `./init.sh` en «El entorno está perfecto» (formato ✔,
+tests ✔, build ✔); `feature_list.json` con features 33-38 `done` conservadas
+en el array (0 pendientes, 0 en progreso). Artefactos permanentes del ciclo:
+`progress/impl_33..38_*.md`, `progress/review_33..38_*.md`,
+`specs/33_*..38_*` (+ `specs/21_*`, `specs/24_*` restauradas) y research
+`progress/research/revision-general-ciclo30.md`. Siguiente paso del líder:
+cuando el humano pida nueva feature, darla de alta vía spec_author; el arnés
+está en verde total esperando.
+
+## Sesión 2026-08-14 — Feature 39 `post-page-redesign` (rediseño del detalle de posts: ancho completo + header hero)
+
+**Petición (orden del humano, ciclo 31):** sobre `src/pages/posts/[id].astro` —
+(1) el contenido debe ocupar el mismo ancho de la página (se elimina el
+`max-width: 760px` de `.post__content` dentro del contenedor de
+`min(var(--container-max), 95%)`); (2) un header más vistoso (hoy h1 + meta +
+imagen apilados) → panel hero con degradado y resplandor de los tokens del
+hero. Análisis previo del spec_author:
+`progress/research/rediseno-detalle-post-ciclo31.md` (decisión de ancho
+opción A: ancho completo del contenedor, trade-off de legibilidad documentado;
+propuesta de panel «imagen + título dentro del panel», sin overlay, para
+conservar el contrato REQ-26-04 de la imagen; autorización: CERO cambios en
+tests existentes y un test nuevo `tests/post-header.test.mjs`). Spec EARS
+`specs/39_post-page-redesign/requirements.md` (REQ-39-01..09) + design.md
+(toca UI → design.md obligatorio).
+
+**Ciclo (implementer TDD → reviewer):**
+- Test escrito PRIMERO: `tests/post-header.test.mjs` (12 tests, REQ-39-01..09
+  + convención) → **ROJO** 8 fail / 4 pass (falla todo lo dependiente del
+  marcado/hoja nuevos; pasan los contratos que el estado actual ya cumplía:
+  pares de transición, main/article, tokens.css en 87, límite de líneas) →
+  **VERDE** 12/12.
+- `src/pages/posts/[id].astro` (46 → 51 líneas): nuevo marcado
+  `header.post__hero` (img.post__image → div.post__hero-copy con
+  h1.post__title y p.post__meta) + import de `src/styles/post-header.css`. El
+  primer `<h1>` y el primer `<img>` conservan los pares `title-${entry.id}` /
+  `img-${entry.id}` (REQ-39-05; `view-transitions` REQ-24-03/05 verdes sin
+  modificar).
+- `src/styles/post.css` (99 → 100 líneas, límite exacto ≤100 REQ-26-06):
+  `.post__content` pierde `max-width: 760px` y `margin: auto` → el contenido
+  ocupa el ancho completo del contenedor del sitio (REQ-39-01); `.post__meta`
+  pasa a `margin: 0` (el espaciado lo aporta el panel). Resto del contrato
+  REQ-26-03 (`.post`, `.post__title`, `.post__meta`, `.post__image`, scoping
+  de tipografía) intacto.
+- `src/styles/post-header.css` (**NUEVO**, 48 líneas): panel hero con
+  `linear-gradient(160deg, var(--color-hero-top) 0%, var(--color-hero-mid)
+  45%, var(--color-hero-bottom) 100%)`, glow en `.post__hero::before` con
+  `radial-gradient(circle, var(--color-glow), transparent 70%)`, radio
+  `--radius-card`, borde `--color-border-strong`, sombra `--shadow-card`;
+  píldora `.post__meta` (inline-flex, `--radius-pill`, `color-mix(in srgb,
+  var(--color-surface) 70%, transparent)`, `--color-border-strong`) y media
+  query `(max-width: 768px)` con paddings reducidos (REQ-39-02/03/04/06/07).
+- Sin cambios: `tokens.css` (87 líneas, REQ-39-09), `Layout.astro`, cards y
+  los tests existentes (`post-page-styles` REQ-26-02..07,
+  `view-transitions` REQ-24-03/05, `articles-ui-refactor`) — verificados en
+  verde sin modificación alguna.
+- Verificación final: test 12/12; suite completa **233/233** al 100 % (221
+  baseline del cierre de la 38 + 12 nuevos); `node scripts/audit-design-tokens.mjs`
+  → `AUDIT ✔`; build OK con el header hero renderizado en
+  `dist/client/posts/*/index.html` (`.post__content{font-family:...}` sin
+  max-width en el bundle y `.post__hero` con gradiente/glow/píldora);
+  `./init.sh` → «El entorno está perfecto».
+- **Reviewer:** `progress/review_39_post-page-redesign.md` con Veredicto
+  **APPROVED** (verificado en disco, 2026-08-14; «Cambios requeridos:
+  Ninguno»; 9/9 REQ en verde con evidencia en código real, `./init.sh`
+  re-ejecutado por el reviewer; checkpoints C1-C9/C12 ✔, C10 inspección
+  visual no bloqueante, C11 cierre; observación no bloqueante: post.css está
+  en 100 líneas — límite exacto —, no en 96 como declaraba el informe del
+  implementer; REQ-26-06 verde igualmente).
+- **Cierre:** status de feature 39 en `feature_list.json`: `done` (cambiado
+  de `in_progress`; la feature se conserva en el array — features 1-39 done).
+  `check-format` e `./init.sh` en verde tras el cambio. **Ciclo 31 CERRADO**:
+  backlog 0 pendientes, 0 en progreso. Artefactos permanentes conservados:
+  `progress/impl_39_post-page-redesign.md`,
+  `progress/review_39_post-page-redesign.md`, `specs/39_post-page-redesign/`
+  y el research `progress/research/rediseno-detalle-post-ciclo31.md`. El
+  arnés queda en verde total esperando la siguiente petición del humano.
+
+## Feature 40 — post-readability (CERRADA, ciclo 32)
+
+**Petición del humano:** «hazle mejoras para lectura; creo que hay una prop
+pretty o algo así; buenas prácticas para mejorar la lectura; en desktop la
+fuente se ve muy pequeña» sobre `src/pages/posts/[id].astro`. La «prop
+pretty» = `text-wrap: pretty`. Dos research previos
+(`progress/research/text-wrap-pretty-legibilidad.md` y
+`legibilidad-contenido-articulos.md`): la causa dominante es la medida
+(~140-190 caracteres por línea en el contenedor de 1500px vs. óptimo
+45-75ch), no el contraste (10.18:1, cumple AA/AAA); el cuerpo 16px está en
+el mínimo para lectura larga (18-20px recomendado). Análisis del spec_author:
+`progress/research/legibilidad-detalle-post-ciclo32.md` (resolución de la
+tensión con REQ-39-01: ancho completo estructural conservado, medida acotada
+SOLO en la columna de texto `post__body`). Spec EARS
+`specs/40_post-readability/requirements.md` (REQ-40-01..12) + design.md.
+
+**Ciclo (implementer TDD → reviewer):**
+- Test escrito PRIMERO: `tests/post-readability.test.mjs` (13 tests,
+  REQ-40-01..12 + convención) → **ROJO** 13/13 (fallos por ausencia de
+  implementación: sin `post__body`, sin import, sin hoja nueva) → **VERDE**
+  13/13.
+- `src/pages/posts/[id].astro` (51 → 52 líneas): import de
+  `../../styles/post-readability.css` DESPUÉS de post.css y post-header.css
+  (el orden de import fija la cascada, design Decisión 7) y el `<section>`
+  del Content pasa a `<section class="post__body">` (REQ-40-01). Pares
+  `title-${entry.id}`/`img-${entry.id}` intactos (REQ-24-03/05).
+- `src/styles/post-readability.css` (**NUEVO**, 44 líneas): `.post__body`
+  con `max-inline-size: 70ch; margin-inline: auto` (REQ-40-02) y `font-size:
+  clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem)` (REQ-40-03, fluido 17→19px);
+  `.post__content p` con `text-wrap: pretty`, `letter-spacing: 0.01em` y
+  `margin-block-end: 1lh` (REQ-40-04/05/06); grupo `h1, h2, h3` con
+  `text-wrap: balance` (REQ-40-07); h2 `1.75rem` / h3 `1.4rem` con márgenes
+  en `lh` (REQ-40-08); media query 768px con h2 1.4rem / h3 1.2rem
+  (REQ-40-09). Solo unidades relativas (rem/ch/lh/em), sin tokens nuevos,
+  sin hex/rgba (REQ-40-10/11).
+- Sin cambios: `tokens.css` (87 líneas, REQ-40-11), `post.css` y
+  `post-header.css` (contratos REQ-26/REQ-39 intactos) y los tests
+  existentes (`post-header` REQ-39-01..09, `post-page-styles` REQ-26-02..07,
+  `view-transitions` REQ-24-03/05, `design-tokens`) — verificados en verde
+  sin modificación alguna (REQ-40-12: `.post__content` conserva el ancho
+  completo sin max-width).
+- Verificación final: test 13/13; suite completa **246/246** al 100 % (233
+  baseline del cierre de la 39 + 13 nuevos); `node scripts/audit-design-tokens.mjs`
+  → `AUDIT ✔`; build OK: en `dist/client/posts/*/index.html` la columna
+  `.post__body` (70ch centrada + clamp) envuelve el markdown y el CSS
+  inlined confirma la cascada (overrides de p/h2/h3 después de post.css) y
+  el full-width de `.post`/`.post__content`; `./init.sh` → «El entorno está
+  perfecto».
+- **Reviewer:** `progress/review_40_post-readability.md` con Veredicto
+  **APPROVED** (verificado en disco, 2026-08-14; «Cambios requeridos:
+  Ninguno»; 12/12 REQ en verde con evidencia en código real, suite 246/246
+  y `./init.sh` re-ejecutados por el reviewer; checkpoints C1-C9/C12/C13 ✔,
+  C10 inspección visual no bloqueante, C11 cierre; observaciones no
+  bloqueantes: 44 líneas reales de post-readability.css (el informe
+  declaraba 37) y `pretty` sin `@supports` — degradación silenciosa por
+  diseño).
+- **Cierre:** status de feature 40 en `feature_list.json`: `done` (cambiado
+  de `in_progress`; la feature se conserva en el array — features 1-40 done).
+  `check-format` e `./init.sh` en verde tras el cambio. **Ciclo 32
+  CERRADO**: backlog 0 pendientes, 0 en progreso. Artefactos permanentes
+  conservados: `progress/impl_40_post-readability.md`,
+  `progress/review_40_post-readability.md`, `specs/40_post-readability/` y
+  los research `progress/research/text-wrap-pretty-legibilidad.md`,
+  `legibilidad-contenido-articulos.md` y `legibilidad-detalle-post-ciclo32.md`.
+  El arnés queda en verde total esperando la siguiente petición del humano.
+
+## Sesión 2026-08-14 — Feature 40 `post-readability` (mejoras de legibilidad del detalle de posts, ciclo 32 — cierre)
+
+Petición del humano: «hazle mejoras para lectura; creo que hay una prop pretty
+o algo así; buenas prácticas para mejorar la lectura; en desktop la fuente se
+ve muy pequeña» sobre `src/pages/posts/[id].astro` (la «prop pretty» =
+`text-wrap: pretty`). La investigación previa (2 explorers:
+`progress/research/text-wrap-pretty-legibilidad.md` y
+`legibilidad-contenido-articulos.md`) concluyó que la causa dominante es la
+medida (~140-190 caracteres por línea en el contenedor de 1500px vs. óptimo
+45-75ch), no el contraste (10.18:1 cumple AA/AAA), y que el cuerpo 16px está
+en el mínimo para lectura larga (18-20px recomendado).
+
+Implementación (TDD, test-first en rojo 13/13 → verde 13/13):
+- Columna de lectura `post__body` de 70ch centrada (`max-inline-size: 70ch;
+  margin-inline: auto`), respetando el full-width estructural de la feature
+  39 (contenedor `.post`, header `.post__hero` y regla `.post__content`
+  conservan el ancho completo; REQ-39-01 literal, REQ-40-12).
+- Cuerpo `font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem)` (fluido
+  17→19px, unidades rem para WCAG 1.4.4).
+- `text-wrap: pretty` en p (la «prop pretty» que mencionó el humano) +
+  `text-wrap: balance` en h1-h3 (mejora progresiva; Firefox degrada
+  silenciosamente sin `@supports`, riesgo documentado y aceptado).
+- `margin-block-end: 1lh` y `letter-spacing: 0.01em` en p; jerarquía h2
+  1.75rem / h3 1.4rem con márgenes asimétricos en `lh`; media query 768px
+  (h2 1.4rem / h3 1.2rem).
+- Hoja nueva `src/styles/post-readability.css` (44 líneas) consumiendo solo
+  tokens existentes (literales de tipografía/layout con unidades relativas
+  rem/ch/lh/em; tokens.css intacto en 87 líneas, REQ-40-11);
+  `src/pages/posts/[id].astro` pasa a 52 líneas con el import de la hoja
+  DESPUÉS de post.css y post-header.css (el orden de import fija la cascada)
+  y `section.post__body` envolviendo el `<Content />` (REQ-40-01).
+- Sin cambios en tests existentes (post-header REQ-39-01..09,
+  post-page-styles REQ-26-02..07, view-transitions REQ-24-03/05,
+  design-tokens REQ-02): todos en verde sin modificación alguna. Test nuevo
+  `tests/post-readability.test.mjs` (13 tests, contrato REQ-40-01..12).
+
+Verificación final: suite completa **246/246** al 100 % (233 baseline del
+cierre de la 39 + 13 nuevos); `node scripts/audit-design-tokens.mjs` →
+`AUDIT ✔`; build OK (verificado en `dist/client/posts/*/index.html`: columna
+`.post__body` centrada con el markdown, `.post`/`.post__content` full-width
+conservados y overrides ganando la cascada en el CSS inlined);
+`./init.sh` → «El entorno está perfecto».
+
+Reviewer: `progress/review_40_post-readability.md` con Veredicto **APPROVED**
+(«Cambios requeridos: Ninguno»; 12/12 REQ en verde con evidencia en código
+real, suite 246/246 y `./init.sh` re-ejecutados por el reviewer;
+observaciones no bloqueantes: 44 líneas reales de la hoja nueva frente a las
+37 declaradas en el informe, y `pretty` sin `@supports` — degradación
+silenciosa por diseño). Cierre: feature 40 `done` en `feature_list.json`
+(conservada en el array; features 1-40 done), `check-format` e `./init.sh`
+en verde tras el cambio. **Ciclo 32 CERRADO**: backlog 0 pendientes, 0 en
+progreso. Artefactos permanentes conservados:
+`progress/impl_40_post-readability.md`,
+`progress/review_40_post-readability.md`, `specs/40_post-readability/` y los
+research `progress/research/text-wrap-pretty-legibilidad.md`,
+`legibilidad-contenido-articulos.md` y `legibilidad-detalle-post-ciclo32.md`.
+El arnés queda en verde total esperando la siguiente petición del humano.
+
+## Sesión 2026-08-14 — Feature 41 `post-reading-width-restore` (ancho completo de lectura restaurado, ciclo 33 — cierre)
+
+Petición del humano (rechazo de la feature 40): «no compa lo volvieron a
+poner muy angosto». La columna de lectura de `max-inline-size: 70ch` de la
+feature 40 (medida óptima de la investigación) se elimina: la decisión del
+humano manda y el contenido del detalle de posts vuelve al **ancho completo
+del contenedor del sitio** (REQ-39-01 literal, como pedía la feature 39).
+Análisis previo del spec_author:
+`progress/research/ancho-lectura-fullwidth-ciclo33.md` (decisión estructural:
+conservar `section.post__body` como contenedor tipográfico SIN acotación;
+trade-off de líneas largas documentado y acatado — el humano prioriza el
+ancho completo sobre la medida óptima de línea). Spec EARS
+`specs/41_post-reading-width-restore/requirements.md` (REQ-41-01..13) +
+design.md.
+
+Implementación (TDD, test actualizado primero en rojo 2 fail → verde 13/13):
+- `src/styles/post-readability.css` (44 → 42 líneas): eliminadas
+  `max-inline-size: 70ch` y `margin-inline: auto` de `.post__body` (la regla
+  queda solo con `font-size: clamp(...)`; REQ-41-01/02). Conservadas TODAS
+  las mejoras tipográficas de la 40 que no estrechan: clamp 17→19px
+  (`1.0625rem`–`1.1875rem`), `text-wrap: pretty` en p, `text-wrap: balance`
+  en h1-h3, `margin-block-end: 1lh`, `letter-spacing: 0.01em`, h2 1.75rem /
+  h3 1.4rem con márgenes en lh y media query 768px (REQ-41-03..09). Sin
+  hex/rgba, sin tokens nuevos (REQ-41-11/12).
+- `tests/post-readability.test.mjs` actualizado con la autorización de la
+  spec (REQ-41-10): el test REQ-40-02 pasa de verificar 70ch a verificar la
+  AUSENCIA de `max-width`/`max-inline-size` en `.post__body`, y el test
+  REQ-40-12 se refuerza con el guard de que NINGUNA regla de la hoja acota
+  el ancho (patrón que distingue el contexto `@media (max-width: 768px)` y
+  no descarta comentarios — riesgo 1 del research §8). REQ-40-01, 03..11 y
+  convenciones intactos. Ciclo rojo: 2 fallos acotados a las aserciones de
+  la medida (11 tipográficas pasando ya en rojo).
+- Sin cambios: `src/pages/posts/[id].astro` (52 líneas, `section.post__body`
+  conservada envolviendo el `<Content />`, REQ-41-02), `post.css` (100
+  líneas, `.post__content` sin max-width, REQ-41-13), `post-header.css` (48
+  líneas) y `tokens.css` (87 líneas, REQ-41-12). Contratos post-header
+  (REQ-39), post-page-styles (REQ-26), view-transitions (REQ-24) y
+  design-tokens en verde sin modificación.
+
+Verificación final: test de la feature 13/13; suite completa **246/246** al
+100 %; `node scripts/audit-design-tokens.mjs` → `AUDIT ✔`; build OK —
+verificado en `dist/client/posts/*/index.html`: `section.post__body`/
+`header.post__hero`/`article.post__content` presentes, `.post__body` sin
+acotación (0 ocurrencias de 70ch/max-inline-size) y `.post__content` sin
+max-width → el cuerpo ocupa el mismo ancho que el header hero (full-width),
+que es exactamente la decisión del humano; `./init.sh` → «El entorno está
+perfecto».
+
+Reviewer: `progress/review_41_post-reading-width-restore.md` con Veredicto
+**APPROVED** (verificado en disco, 2026-08-14; «Cambios requeridos: Ninguno»;
+37/37 en feature + contratos, suite 246/246 y `./init.sh` re-ejecutados por
+el reviewer; checkpoints C1-C9/C12/C13 ✔, C10 inspección visual en navegador
+no bloqueante, C11 cierre; observaciones no bloqueantes: `wc -l` 41 vs.
+countLines 42 por la ausencia de salto de línea final, y la inspección
+visual en navegador queda pendiente del humano como en ciclos anteriores).
+Cierre: feature 41 `done` en `feature_list.json` (cambiado de `in_progress`;
+la feature se conserva en el array — features 1-41 done), `check-format` e
+`./init.sh` en verde tras el cambio. **Ciclo 33 CERRADO**: backlog 0
+pendientes, 0 en progreso. Artefactos permanentes conservados:
+`progress/impl_41_post-reading-width-restore.md`,
+`progress/review_41_post-reading-width-restore.md`,
+`specs/41_post-reading-width-restore/` y el research
+`progress/research/ancho-lectura-fullwidth-ciclo33.md`. El arnés queda en
+verde total esperando la siguiente petición del humano.
+
+---
+
+### Ciclo 34 — Feature 42 `post-header-horizontal-card` (cerrada, APPROVED)
+
+Petición del humano sobre el header de los posts: «la imagen con el título,
+pon aquí la tarjeta como en horizontal, un diseño más atrevido». El header
+vertical de la feature 39 (imagen full-width + copia debajo, «prácticamente
+igual» a las cards de la portada) pasa a una tarjeta HORIZONTAL con acentos
+de la identidad dark/glow, solo con tokens existentes (tokens.css en 87
+líneas, REQ-42-09).
+
+Cambios (alcance exacto, verificado por el reviewer contra el baseline de la
+review 41):
+- `src/pages/posts/[id].astro`: 52 → 53 líneas; solo se añade el kicker
+  `<p class="post__kicker">#{post.tags[0]}</p>` dentro de `.post__hero-copy`
+  ANTES de `h1.post__title` (REQ-42-03). Orden DOM imagen → copia intacto
+  (REQ-39-02), pares `transition:name` `img-${entry.id}`/`title-${entry.id}`
+  en el primer img y el primer h1 (REQ-42-08), imports en orden REQ-40-01.
+- `src/styles/post-header.css`: reescrito a 99 líneas (≤100 ✓). `.post__hero`
+  pasa a `display: grid` con `grid-template-columns: 1fr 1fr`,
+  `align-items: center` y `gap: 32px` (REQ-42-01/02), conservando el
+  degradado hero con `var(--color-hero-*)` (primer layer, contrato
+  REQ-39-02/03) + wash radial de acento como segundo layer (`color-mix` con
+  `var(--color-accent)`), radio/borde/sombra de tokens y glow de `::before`.
+  `::after` = acento inferior degradado con `var(--color-accent)` (REQ-42-06).
+  `.post__hero .post__image` con `margin: 0`, `aspect-ratio: 4 / 3` y
+  `box-shadow: 0 0 48px var(--color-glow)` (REQ-42-05); la base
+  `.post__image` de post.css NO se toca (REQ-26-04: el grid acota el ancho).
+  `.post__kicker` = píldora de acento (color/borde `var(--color-accent)`,
+  fondo `color-mix` al 12%). `.post__hero .post__title` =
+  `clamp(2.2rem, 4.5vw, 3.6rem)` + `text-wrap: balance` + glow (REQ-42-04).
+  `.post__meta` conservada íntegra (REQ-39-04). Media query 768px: apilado
+  `grid-template-columns: 1fr` con imagen 16:9 arriba y copia debajo
+  (REQ-42-07, conserva `.post__hero` → REQ-39-07). Sin hex/rgba sueltos y
+  toda declaración de color/borde/sombra con `var(--` (guard REQ-39-09).
+- `tests/post-header-horizontal.test.mjs`: NUEVO (test-first, 12 tests,
+  REQ-42-01..09 + convenciones).
+- Sin cambios: `post.css` (100 líneas), `tokens.css` (87 líneas) y los tests
+  existentes (post-header REQ-39, post-page-styles REQ-26, view-transitions
+  REQ-24, post-readability REQ-40/41, design-tokens).
+
+Ciclo rojo/verde: test nuevo en ROJO 7 fail / 5 pass antes de implementar
+(fallos acotados a REQ-42-01..07; REQ-42-08/09 y convenciones pasando ya en
+rojo) → VERDE 12/12. Suite completa **258/258** (246 + 12 nuevos);
+`node scripts/audit-design-tokens.mjs` → `AUDIT ✔`;
+`node scripts/check-format.mjs` → `FORMATO ✔`; build OK — verificado en
+`dist/client/posts/*/index.html`: `.post__hero` con
+`grid-template-columns: 1fr 1fr` (desktop) y `grid-template-columns: 1fr` +
+imagen `aspect-ratio: 16/9` en la media query `(width<=768px)` (móvil);
+kicker `<p class="post__kicker">#arquitectura</p>` en ambos posts; imagen
+`aspect-ratio: 4/3` con `box-shadow` glow; título `clamp(2.2rem,4.5vw,3.6rem)`;
+acento `::after` con `var(--color-accent)`; `./init.sh` → «El entorno está
+perfecto».
+
+Reviewer: `progress/review_42_post-header-horizontal-card.md` con Veredicto
+**APPROVED** (verificado en disco, 2026-08-14; «Cambios requeridos: Ninguno»;
+57/57 en feature + contratos, suite 258/258, audit ✔, formato ✔ y
+`./init.sh` re-ejecutados por el reviewer; checkpoints C1-C9/C12/C13 ✔, C10
+inspección visual en navegador pendiente del humano como en ciclos
+anteriores, C11 cierre; observaciones no bloqueantes: `wc -l` 98 vs.
+countLines 99 por la ausencia de salto de línea final y el tamaño del test
+nuevo (242 líneas) siguiendo el precedente aprobado de los tests del arnés).
+Cierre: feature 42 `done` en `feature_list.json` (cambiado de `in_progress`;
+la feature se conserva en el array — features 1-42 done), `check-format` e
+`./init.sh` en verde tras el cambio. **Ciclo 34 CERRADO**: backlog 0
+pendientes, 0 en progreso. Artefactos permanentes conservados:
+`progress/impl_42_post-header-horizontal-card.md`,
+`progress/review_42_post-header-horizontal-card.md`,
+`specs/42_post-header-horizontal-card/` y el research
+`progress/research/header-horizontal-posts-ciclo34.md`. El arnés queda en
+verde total esperando la siguiente petición del humano.

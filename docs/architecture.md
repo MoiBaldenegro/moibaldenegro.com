@@ -9,13 +9,13 @@
 
    | Carpeta | Rol |
    |---------|-----|
-   | `public/` | Archivos que se sirven tal cual en la raíz (SVG, favicons, logos). Ej: `tomateLogo.svg`. Nunca procesados ni hasheados por el build. |
+   | `public/` | Archivos que se sirven tal cual en la raíz (SVG, favicons, logos). Ej: `favicon.svg`. Nunca procesados ni hasheados por el build. |
    | `scripts/` | Scripts del arnés: validación, generación y orquestación (`check-format.mjs`). Se ejecutan con Node y nunca se importan desde `src/`. |
    | `src/assets/` | Imágenes y recursos importados desde el código. Astro los optimiza y hashea en build (`astro:assets`). Lo que se sirve tal cual va en `public/`, no aquí. |
    | `src/components/` | Componentes `.astro` de interfaz de usuario que no son layouts ni vistas de ruta (`LatestArticles`, `HtbStadistics`…). Cada uno importa su propia hoja de estilos de `src/styles/`. |
-   | `src/domain/entities/` | Entidades del dominio: modelos tipados que mapean el contenido estructurado (ej: `Card`, `Feature`, `Plan`). |
+   | `src/domain/entities/` | Entidades del dominio: modelos tipados que mapean el contenido estructurado (ej: `HtbProfile`, `Post`). |
    | `src/domain/repositories/` | Repositorios: única vía de acceso a los datos. Entregan entidades leyendo desde archivos JSON. |
-   | `src/data/` | Archivos JSON: única fuente de contenido estructurado (cards, features, etc.). Los componentes jamás leen JSON directamente. |
+   | `src/data/` | Archivos JSON: única fuente de contenido estructurado (cards de tecnologías, perfil, etc.). Los componentes jamás leen JSON directamente. |
    | `src/layouts/` | Componentes de página (`Layout.astro`). Todo el chrome compartido vive aquí. |
    | `src/pages/` | Rutas. Un archivo por URL (`index.astro` → `/`). |
    | `src/styles/` | CSS. `tokens.css` con el sistema de tokens del diseño + un archivo por componente (`layout.css`, `profile-card.css`, `latest-articles.css`…). |
@@ -28,7 +28,7 @@
 
 5. **Atomicidad en disco.** `dist/` es un artefacto generado por `astro build`: nunca se edita, ni se crea contenido en él a mano, ni se repara a medias. El build siempre regenera el directorio completo.
 
-6. **Tokens, no valores sueltos.** Colores, espaciados, radios, sombras y tipografías solo desde las custom properties de `global.css` (definidas en `DESIGN.md`). Queda prohibido hardcodear valores en componentes o estilos.
+6. **Tokens, no valores sueltos.** Colores, espaciados, radios, sombras y tipografías solo desde las custom properties de `src/styles/tokens.css`. Queda prohibido hardcodear valores en componentes o estilos.
 
 7. **Estilos separados de la UI.** Nunca combinar estilos y HTML/UI en el mismo archivo. Un `.astro` solo contiene marcado; sus estilos viven en un archivo `.css` dentro de `src/styles/` que el componente importa. Tampoco CSS global para lo que pertenece a un componente.
 

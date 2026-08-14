@@ -1,0 +1,42 @@
+/* post-readability.css — Tipografía de lectura del detalle de artículo
+   (src/pages/posts/[id].astro, features 40 y 41).
+   Solo unidades relativas (rem/lh/em): sin tokens nuevos y sin colores
+   (el contexto visual lo gobiernan post.css y post-header.css).
+   Se importa DESPUÉS de post.css y post-header.css: el orden de import fija
+   la cascada a igual especificidad (design, Decisión 7). */
+
+/* Cuerpo de lectura a ancho completo del contenedor (REQ-41-01/02): sin
+   acotación de medida, con tamaño de fuente fluido 17→19px (REQ-41-03). */
+.post__body {
+  font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem);
+}
+
+/* Párrafos: pretty (sin huérfanas), ritmo vertical en lh y confort de
+   tema oscuro (REQ-41-04/05/06). */
+.post__content p {
+  text-wrap: pretty;
+  letter-spacing: 0.01em;
+  margin-block-end: 1lh;
+}
+
+/* Encabezados: balance en títulos (REQ-41-07, seguro ~92%). */
+.post__content h1, .post__content h2, .post__content h3 {
+  text-wrap: balance;
+}
+
+/* Jerarquía escalada con márgenes asimétricos en lh (REQ-41-08). */
+.post__content h2 {
+  font-size: 1.75rem;
+  margin-block: 1.5lh 0.5lh;
+}
+
+.post__content h3 {
+  font-size: 1.4rem;
+  margin-block: 1.25lh 0.375lh;
+}
+
+/* Móvil (REQ-41-09): 768px o menos. */
+@media (max-width: 768px) {
+  .post__content h2 { font-size: 1.4rem; }
+  .post__content h3 { font-size: 1.2rem; }
+}

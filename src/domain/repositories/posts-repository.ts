@@ -40,7 +40,13 @@ async function loadArchitectureEntries(): Promise<unknown[]> {
 
 function parsePost(entry: unknown, index: number): Post {
   const data = asData(entry, index);
+  const id = (entry as Record<string, unknown>).id;
+  if (typeof id !== 'string') {
+    throw new PostsDataError(`architecture: el artículo ${index} no tiene id de texto`);
+  }
   return {
+    id,
+    slug: expectString(data, 'slug', index),
     title: expectString(data, 'title', index),
     author: expectString(data, 'author', index),
     img: expectString(data, 'img', index),

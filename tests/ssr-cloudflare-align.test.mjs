@@ -13,6 +13,11 @@ import { spawnSync } from 'node:child_process';
 // regla 9 (estático por defecto) se cumple porque las páginas siguen
 // prerender (prerender: true) y solo el componente server:defer de la
 // feature 22 renderiza en runtime.
+//
+// REQ-21-06 verifica la excepción contra la spec restaurada
+// (specs/21_ssr-cloudflare-align/requirements.md) y el registro de
+// dependencias (docs/dependencies.md) — REQ-35-03: el backlog del ciclo
+// nuevo no contiene la feature 21, así que el test no la busca allí.
 
 const ROOT = new URL('../', import.meta.url);
 
@@ -110,12 +115,13 @@ test('REQ-21-06: la excepción de dependencias externas queda documentada', () =
     spec.includes('REQ-21-06'),
     'la spec 21 no declara REQ-21-06 (justificación de dependencias)'
   );
-  const description = JSON.parse(readRel('feature_list.json')).features.find(
-    (feature) => feature.id === 21
-  );
-  assert.ok(description, 'feature 21 no existe en feature_list.json');
+  const dependencies = readRel('docs/dependencies.md');
   assert.ok(
-    description.description.includes('Cloudflare Workers'),
-    'la descripción de la feature 21 no documenta la excepción a la regla de dependencias (REQ-21-06)'
+    dependencies.includes('@astrojs/cloudflare'),
+    'docs/dependencies.md no documenta la aprobación de @astrojs/cloudflare (REQ-21-06)'
+  );
+  assert.ok(
+    dependencies.includes('wrangler'),
+    'docs/dependencies.md no documenta la aprobación de wrangler (REQ-21-06)'
   );
 });

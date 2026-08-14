@@ -10,11 +10,12 @@
 //   REQ-20-04 — el texto "min de lectura" se muestra junto al autor.
 //   REQ-20-05 — el <img> lleva la clase latest-articles__image,
 //               src con post.img, alt={post.title} y loading="lazy".
-//   REQ-20-06 — sin enlaces a la ruta /posts (Decisión 3 del design.md). La
-//               prohibición de atributos transition:name de REQ-20-06 era
-//               transitoria ("WHERE ... se canaliza en la feature 24"): la
-//               feature 24 los reincorpora según su design (Decisión 2/4), por
-//               lo que esta verificación se limita al enlace /posts.
+//   REQ-20-06 — la card enlaza a la ruta /posts/{id}. La prohibición original
+//               de enlaces /posts (Decisión 3 del design.md de la feature 20)
+//               era transitoria: la petición del humano (ciclo 30, feature 36
+//               posts-navigation-fix) restaura la navegación, por lo que esta
+//               verificación pasa de «ausencia» a «presencia» del enlace
+//               /posts/${post.id} (REQ-36-04).
 //   REQ-20-07 — componente y hoja ≤100 líneas; la hoja conserva la regla de
 //               la feature 17 con tokens, sin colores sueltos.
 
@@ -130,12 +131,16 @@ test('REQ-20-05: el <img> lleva la clase, src con post.img, alt={post.title} y l
   );
 });
 
-test('REQ-20-06: sin enlaces a la ruta /posts (la feature 24 reincorpora los transition:name)', () => {
+test('REQ-20-06: cada card enlaza a la ruta /posts/{id} con el id real (REQ-36-04)', () => {
   const astro = readComponent();
-  assert.doesNotMatch(
+  assert.match(
     astro,
-    /href=\{?`?\/posts\//,
-    'el componente conserva un enlace a la ruta /posts (REQ-20-06)'
+    /href=\{`\/posts\/\$\{post\.id\}`\}/,
+    'la card no enlaza a /posts/${post.id} (REQ-36-04, REQ-20-06 actualizado)'
+  );
+  assert.ok(
+    astro.includes('latest-articles__link'),
+    'el enlace de la card no lleva la clase latest-articles__link (REQ-36-04)'
   );
 });
 

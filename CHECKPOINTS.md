@@ -24,16 +24,16 @@
 ## Verificación
 
 - [x] `./init.sh` termina en verde (entorno, formato, tests al 100%, build).
-      ← verificado por el reviewer de la feature 25 (2026-08-13): suite
-      158/158, harness-kit 7/7, build OK con rutas /posts.
+      ← verificado al cierre del ciclo 30 (2026-08-14): suite 221/221,
+      harness-kit 7/7, build OK.
 - [ ] La página se ve correcta en desktop y móvil (≤768px) sin errores en consola.
       ← pendiente inspección visual en navegador (no verificada por el reviewer).
 
 ## Harness
 
 - [ ] `feature_list.json` tiene la tarea en `done` (y ninguna otra a medias).
-      ← features 22-24 `done`; feature 25 `in_progress` a la espera de que el
-      líder la marque `done` tras la revisión APPROVED.
+      ← features 1-38 `done`, conservadas en el array (historial completo del
+      ciclo 30; ninguna a medias).
 - [x] `progress/current.md` documenta la sesión y `progress/history.md` está
       al día.
 - [x] No quedan archivos temporales, `print()` de debug ni TODOs sin contexto.

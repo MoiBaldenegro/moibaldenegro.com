@@ -13,79 +13,43 @@ const profile = new HeroProfileRepository().getProfile();
 ---
 
 <section class="new-hero">
+  <!-- Fondo -->
+  <div class="hero-background">
+    <div class="hero-gradient"></div>
+  </div>
 
-    <!-- Fondo -->
-    <div class="hero-background">
-        <div class="hero-gradient"></div>
-        <div class="hero-noise"></div>
-        <div class="hero-flower"></div>
-    </div>
+  <!-- Contenido -->
+  <main class="hero-grid">
+    <!-- HERO -->
+    <section class="profile-card">
+      <div class="profile-image">
+        <img
+          src={profile.image}
+          alt={profile.name}
+        />
+        <div class="profile-overlay"></div>
+        <div class="profile-username">
+          <span>{profile.username}</span>
+          {
+            profile.verified && (
+              <span class="verified">
+                ✓
+              </span>
+            )
+          }
+        </div>
+      </div>
+      <div class="profile-content">
+        <h1>{profile.name}</h1>
+        <p>{profile.description}</p>
+      </div>
+    </section>
 
-    <!-- Contenido -->
-
-    <main class="hero-grid">
-
-        <!-- HERO -->
-
-        <section class="profile-card">
-
-            <div class="profile-image">
-
-                <img
-                    src={profile.image}
-                    alt={profile.name}
-                />
-
-                <div class="profile-overlay"></div>
-
-                <div class="profile-username">
-
-                    <span>{profile.username}</span>
-
-                    {
-                        profile.verified && (
-                            <span class="verified">
-                                ✓
-                            </span>
-                        )
-                    }
-
-                </div>
-
-            </div>
-
-            <div class="profile-content">
-
-                <h1>
-
-                    {profile.name}
-
-                </h1>
-
-                <p>
-
-                    {profile.description}
-
-                </p>
-
-            </div>
-
-        </section>
-
-        <!-- Tarjetas -->
-
-        {
-
-            heroCards.map(card => (
-
-                <HeroCard
-                    card={card}
-                />
-
-            ))
-
-        }
-
-    </main>
-
+    <!-- Tarjetas -->
+    {
+      heroCards.map(card => (
+        <HeroCard card={card} />
+      ))
+    }
+  </main>
 </section>

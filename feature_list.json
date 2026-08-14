@@ -12,6 +12,174 @@
     ]
   },
   "features": [
-    
+    {
+      "id": 33,
+      "name": "htb-profile-repository-restore",
+      "title": "Restaurar el contrato del repositorio HTB (fetch inyectable, sin console, 100 líneas)",
+      "description": "El repo fue modificado manualmente (commit 8078975): perdió el tercer argumento de constructor con fetch inyectable (default = fetch global), ganó 5 console.log con el Response y supera las 100 líneas. Es la causa raíz de 8 de los 11 fallos de la suite (tests 1,2,3,4,10,11 de htb-profile-repository y REQ-27-01). Restaurar el contrato canónico de la feature 22: URL del endpoint con el id, token solo en Authorization, HtbProfileDataError en los 4 modos de fallo (incluido sin credenciales, sin contactar la red), getProfileOrNull degradando a null, sin console.* y ≤100 líneas. Los tests ya inyectan fakeFetch: no se tocan.",
+      "acceptance": [
+        "La suite pasa en verde los 6 tests de tests/htb-profile-repository.test.mjs y REQ-27-01 de tests/htb-api-graceful-degradation.test.mjs sin modificar los tests",
+        "Un test con fakeFetch que registra la llamada confirma que la URL incluye el id del usuario y que el token viaja solo en Authorization (REQ-33-01/02/03)",
+        "Un test con fakeFetch que rechaza la promesa y otro que responde sin perfil confirman que se lanza HtbProfileDataError (REQ-33-04)",
+        "Una prueba automática confirma que htb-profile-repository.ts no contiene console.* y no supera las 100 líneas (REQ-33-05/06)",
+        "Un test con token o id ausentes confirma que se lanza HtbProfileDataError sin contactar la red (REQ-33-08)",
+        "getProfileOrNull sigue resolviendo null ante cualquier modo de fallo en los tests de degradación REQ-27-02..06 (REQ-33-07)"
+      ],
+      "depends_on": [],
+      "status": "done"
+    },
+    {
+      "id": 34,
+      "name": "htb-section-degradation-restore",
+      "title": "Restaurar la degradación elegante de la sección HTB ({profile && ...})",
+      "description": "htb-stadistics.astro fue modificado manualmente: renderiza la sección siempre con profile?.x ?? 'N/D' en lugar del contrato canónico {profile && ...} (REQ-27-08 y REQ-32-04). Causa de 2 fallos de la suite (REQ-27-07/10 y REQ-32-04). Restaurar: sin perfil la sección no renderiza su contenido; con perfil, los campos ausentes individuales muestran N/D; frontmatter solo con imports, alias de envs y getProfileOrNull; ≤100 líneas. La indentación tabs→2 espacios de este componente se canaliza en la feature 37.",
+      "acceptance": [
+        "tests/htb-stadistics-prerender-fix.test.mjs REQ-32-04 pasa en verde sin modificar el test",
+        "tests/htb-api-graceful-degradation.test.mjs REQ-27-07/10 pasan en verde sin modificar los tests",
+        "Con getProfileOrNull resolviendo null, la sección de estadísticas no renderiza su contenido en el marcado de la portada",
+        "Con un perfil presente, los seis campos se muestran y los valores ausentes individuales aparecen como N/D",
+        "El frontmatter de htb-stadistics.astro no contiene llamadas a console ni lógica de negocio",
+        "htb-stadistics.astro no supera las 100 líneas y consume el perfil únicamente vía getProfileOrNull"
+      ],
+      "depends_on": [33],
+      "status": "done"
+    },
+    {
+      "id": 35,
+      "name": "specs-historico-restore",
+      "title": "Restaurar las specs históricas 21 y 24 (únicas leídas en runtime)",
+      "description": "La limpieza manual del humano borró specs/ entera (commit 0b7f359). Solo dos tests leen specs en runtime: tests/view-transitions.test.mjs REQ-24-04 (specs/24_view-transitions/design.md) y tests/ssr-cloudflare-align.test.mjs REQ-21-06 (specs/21_ssr-cloudflare-align/requirements.md Y feature 21 en feature_list.json). Restaurar esas dos specs con formato EARS (REQ-21-01..06, REQ-24-01..05) y actualizar REQ-21-06 para verificar la excepción de dependencias contra la spec restaurada + docs/dependencies.md (el backlog nuevo no puede contener la feature 21). El resto de specs históricas (01-20, 22-23, 25-32) no se restauran: viven en git y en progress/impl_*.",
+      "acceptance": [
+        "specs/21_ssr-cloudflare-align/requirements.md existe y declara REQ-21-01..06 con formato EARS",
+        "specs/24_view-transitions/requirements.md y design.md existen y declaran REQ-24-01..05 con la justificación de la excepción de JavaScript",
+        "tests/ssr-cloudflare-align.test.mjs REQ-21-06 pasa en verde sin leer feature 21 del backlog (lee la spec restaurada y docs/dependencies.md)",
+        "tests/view-transitions.test.mjs REQ-24-04 pasa en verde sin modificar el test",
+        "node scripts/check-format.mjs valida las specs restauradas y la suite completa pasa al 100 %"
+      ],
+      "depends_on": [],
+      "status": "done"
+    },
+    {
+      "id": 36,
+      "name": "posts-navigation-fix",
+      "title": "Arreglar la navegación a los detalles de los artículos (id + slug en Post)",
+      "description": "Petición principal del humano: las navegaciones a los detalles del content no funcionan. Causas verificadas: (1) latest-articles.astro no renderiza ningún enlace; (2) la entidad Post no expone id ni slug, por eso post.id es undefined y los transition:name renderizan img-undefined/title-undefined; (3) posts/[id].astro empareja por índice (posts[index]) en vez de por id, desalineación silenciosa; (4) el slug existe en content.config.ts y en los frontmatters pero no se expone (exponerlo para uso futuro, la ruta sigue /posts/[id] con id=entry.id, contrato REQ-24-05). Requiere actualizar tests autorizados: posts-repository.test.mjs (fixture con slug y EXPECTED_POST con id/slug) y latest-articles-restore.test.mjs REQ-20-06 (la prohibición de enlaces /posts era transitoria: pasa de ausencia a presencia).",
+      "acceptance": [
+        "La entidad Post expone los campos readonly id y slug (REQ-36-01)",
+        "El repositorio entrega id desde entry.id y slug desde data.slug, y lanza PostsDataError si una entrada no declara slug (REQ-36-02/03)",
+        "Cada card de la portada enlaza a /posts/${post.id} con el id real y el enlace conserva imagen con alt y loading lazy",
+        "El primer h2 de la card conserva transition:name={`title-${post.id}`} y la primera imagen transition:name={`img-${post.id}`}, y casan con los del detalle (REQ-24-03/05 en verde)",
+        "posts/[id].astro empareja por id sin posts[index], lanza un error nombrado si falta la entrada y conserva params { id: entry.id } (REQ-24-05)",
+        "tests/posts-repository.test.mjs pasa con el fixture actualizado (slug en REAL_ENTRY, id/slug en EXPECTED_POST) y tests/latest-articles-restore.test.mjs REQ-20-06 pasa verificando la presencia del enlace /posts/{id}",
+        "El enlace de la card muestra estados hover y focus estilados con tokens del diseño"
+      ],
+      "depends_on": [],
+      "status": "done"
+    },
+    {
+      "id": 37,
+      "name": "visual-polish-refactor",
+      "title": "Pulido estético del sitio: markup muerto, accesibilidad, indentación y encabezados",
+      "description": "Revisión general del ciclo 30 (hallazgos A1-A6): (1) new-hero.astro renderiza .hero-noise y .hero-flower sin reglas CSS; (2) hero-card.astro tiene un <a href=\"\"> vacío; (3) navbar sin aria-current ni estados de foco visible, viewport sin initial-scale; (4) htb-stadistics.astro con tabs y new-hero/hero-card con sangrado extra (unificar a 2 espacios); (5) sección de artículos sin encabezado (jerarquía H1→H2 rota); (6) la tarjeta HTB sin espaciado vertical. Efecto colateral autorizado: REQ-24-03 de tests/view-transitions.test.mjs se actualiza para localizar el h2.latest-articles__title (el encabezado pasa a ser el primer h2 del archivo).",
+      "acceptance": [
+        "new-hero.astro no contiene los contenedores .hero-noise ni .hero-flower (REQ-37-01)",
+        "hero-card.astro no contiene ningún <a href=\"\"> (REQ-37-02)",
+        "La navbar del layout marca con aria-current=\"page\" el enlace de la página actual y layout.css define estados :focus-visible con tokens (REQ-37-03/04)",
+        "Ningún .astro del sitio contiene tabs de indentación (REQ-37-05)",
+        "La sección de artículos muestra el encabezado «Últimos artículos» estilado con tokens y tests/view-transitions.test.mjs REQ-24-03 pasa con el selector actualizado",
+        "La sección de estadísticas conserva el espaciado vertical del contenedor (margen con token) (REQ-37-07)",
+        "Los archivos modificados no superan las 100 líneas, no contienen hex/rgba sueltos y la suite completa pasa en verde"
+      ],
+      "depends_on": [34, 36],
+      "status": "done"
+    },
+    {
+      "id": 38,
+      "name": "docs-harness-alignment",
+      "title": "Alinear docs/architecture.md y CHECKPOINTS.md con el estado real del arnés",
+      "description": "Revisión del ciclo 30 (hallazgo A7): docs/architecture.md regla 6 referencia custom properties de global.css definidas en DESIGN.md, pero el archivo real es src/styles/tokens.css (global.css y DESIGN.md no existen); CHECKPOINTS.md está congelado en el estado de las features 22-25 (suite 158/158, feature 25 in_progress) que ya no reflejan el historial. Alinear ambos sin introducir los tokens prohibidos del kit (tomatesoft/cards-data/og-image/hero, REQ-01-05) ni el token «hero» en architecture.md (REQ-25-06). Resto de docs (conventions, verification, dependencies, README) ya están alineados: no tocar.",
+      "acceptance": [
+        "docs/architecture.md regla 6 nombra src/styles/tokens.css y no menciona global.css ni DESIGN.md",
+        "CHECKPOINTS.md no menciona features del historial como en progreso ni conteos de suite de ciclos previos (p. ej. 158/158)",
+        "Los archivos del kit (incluido docs/architecture.md) no contienen los tokens prohibidos tomatesoft, cards-data, og-image ni hero",
+        "node scripts/check-format.mjs y la suite completa pasan en verde tras la alineación"
+      ],
+      "depends_on": [],
+      "status": "done"
+    },
+    {
+      "id": 39,
+      "name": "post-page-redesign",
+      "title": "Rediseñar el detalle de artículo: contenido a ancho completo y header hero vistoso",
+      "description": "Petición del humano (ciclo 31) sobre src/pages/posts/[id].astro: (1) el contenido está limitado a max-width 760px dentro del contenedor de min(1500px, 95%) y debe ocupar el mismo ancho de la página (se elimina el tope de .post__content; trade-off de legibilidad documentado en progress/research/rediseno-detalle-post-ciclo31.md §2); (2) el header (h1 + meta + imagen apilados) pasa a un panel hero con degradado y glow de los tokens del hero que integra la imagen destacada, el título grande y la meta como píldora. Sin tokens nuevos (tokens.css queda en 87 líneas, REQ-26-07); los estilos del panel van en una hoja nueva src/styles/post-header.css (post.css está en 99 líneas); se conservan las clases del contrato post__title/post__meta/post__image/post__content y los pares transition:name del primer h1 y el primer img (REQ-24-03/05), por lo que los tests existentes no se modifican; se añade tests/post-header.test.mjs (test-first).",
+      "acceptance": [
+        "La regla .post__content de post.css no declara max-width y el contenido ocupa el ancho completo del contenedor del sitio (REQ-39-01)",
+        "El marcado de [id].astro declara header.post__hero con img.post__image seguida de .post__hero-copy que contiene h1.post__title y p.post__meta (REQ-39-02/08)",
+        "post-header.css estiliza .post__hero con degradado y resplandor usando solo var(--color-hero-*), var(--color-glow) y tokens existentes, sin hex/rgba sueltos y sin superar 100 líneas (REQ-39-02/03/06/09)",
+        "La regla .post__meta estiliza la meta como píldora con var(--radius-pill) y tokens (REQ-39-04)",
+        "tests/view-transitions.test.mjs REQ-24-05 pasa sin modificarse: el primer h1 y el primer img del detalle conservan title-${entry.id} e img-${entry.id} (REQ-39-05)",
+        "tests/post-page-styles.test.mjs REQ-26-02..07 pasa sin modificarse (clases, regla de imagen, tokens y 87 líneas de tokens.css intactos) (REQ-39-08/09)",
+        "post-header.css declara el ajuste responsive para 768px o menos (REQ-39-07)",
+        "tests/post-header.test.mjs existe y pasa en verde, y node scripts/check-format.mjs junto con la suite completa quedan en verde"
+      ],
+      "depends_on": [],
+      "status": "done"
+    },
+    {
+      "id": 40,
+      "name": "post-readability",
+      "title": "Mejoras de legibilidad del detalle de artículo: medida, tamaño, pretty/balance y ritmo",
+      "description": "Petición del humano (ciclo 32) sobre src/pages/posts/[id].astro: 'la fuente se ve muy pequeña' en desktop y pide buenas prácticas de lectura (la 'prop pretty' = text-wrap: pretty). Dos research previos (progress/research/text-wrap-pretty-legibilidad.md y legibilidad-contenido-articulos.md) concluyen: la causa dominante es la medida (~140-190 caracteres por línea en el contenedor de 1500px vs. óptimo 45-75ch), no el contraste (10.18:1, cumple AA/AAA); el cuerpo 16px está en el mínimo. Resolución de la tensión con REQ-39-01: el contenedor, el header hero y la regla .post__content conservan el ancho completo (REQ-39-01 literal, zero cambios de tests existentes); la medida se acota SOLO en la columna de texto: el <section> del Content recibe la clase post__body con max-inline-size 70ch centrada. Nueva hoja src/styles/post-readability.css (post.css está en 100 líneas): cuerpo clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem), text-wrap pretty solo en p, text-wrap balance en h1-h3, margin-block-end 1lh en p, letter-spacing 0.01em (tema oscuro), h2 1.75rem y h3 1.4rem con márgenes en lh, media query 768px. Sin tokens nuevos (tokens.css queda en 87 líneas, REQ-26-07/39-09); unidades relativas (rem/ch/lh) para WCAG 1.4.4/1.4.12. Se añade tests/post-readability.test.mjs (test-first, REQ-40-01..12); los tests existentes (post-header REQ-39, post-page-styles REQ-26, view-transitions REQ-24, design-tokens) NO se modifican.",
+      "acceptance": [
+        "tests/post-readability.test.mjs existe y pasa en verde: verifica que [id].astro importa ../../styles/post-readability.css después de post-header.css y que el <section> del Content declara class=\"post__body\" (REQ-40-01/10)",
+        "La regla .post__body declara max-inline-size con 70ch y margin-inline auto, y el cuerpo declara font-size clamp() con unidades rem entre 1.0625rem y 1.1875rem (REQ-40-02/03)",
+        "La regla .post__content p declara text-wrap pretty, letter-spacing 0.01em y el espaciado final de bloque con la unidad 1lh (REQ-40-04/05/06)",
+        "Las reglas .post__content h2 y h3 declaran text-wrap balance y tamaños 1.75rem y 1.4rem respectivamente (REQ-40-07/08)",
+        "post-readability.css declara una media query de 768px que adapta los tamaños de h2 y h3 (REQ-40-09)",
+        "post-readability.css no supera las 100 líneas y no contiene hex/rgba sueltos (REQ-40-10)",
+        "tokens.css conserva 87 líneas y no define tokens de los grupos post, reading ni font-size (REQ-40-11)",
+        "La regla .post__content de post.css conserva el ancho completo sin max-width y los tests existentes (post-header REQ-39-01..09, post-page-styles REQ-26-02..07, view-transitions REQ-24-03/05, design-tokens) pasan sin modificarse (REQ-40-12)",
+        "node scripts/check-format.mjs y la suite completa quedan en verde"
+      ],
+      "depends_on": [],
+      "status": "done"
+    },
+    {
+      "id": 41,
+      "name": "post-reading-width-restore",
+      "title": "Restaurar el ancho completo de lectura del detalle de artículo (rechazo del humano a la medida 70ch)",
+      "description": "El humano rechazó el resultado de la feature 40: 'no compa lo volvieron a poner muy angosto'. La 40 acotó la columna de lectura a max-inline-size 70ch centrada en section.post__body (medida óptima 45-75ch de la investigación), pero el humano ya había pedido en la 39 que el contenido ocupara el mismo ancho de la página (REQ-39-01) y la decisión humana manda: el cuerpo del detalle vuelve al ancho completo del contenedor del sitio. Se elimina TODA acotación de medida (max-width/max-inline-size) de post-readability.css; se CONSERVAN las mejoras tipográficas de la 40 que no estrechan: font-size clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem), text-wrap pretty en p, text-wrap balance en h1-h3, margin-block-end 1lh, letter-spacing 0.01em, h2 1.75rem/h3 1.4rem con márgenes en lh y media query 768px. El markup section.post__body se conserva como contenedor tipográfico sin acotación ([id].astro no cambia). Cambio mínimo: se toca solo post-readability.css y se actualiza tests/post-readability.test.mjs ÚNICAMENTE en lo autorizado por la spec (test REQ-40-02 pasa de verificar 70ch a verificar la ausencia de acotación; test REQ-40-12 se refuerza con el guard de la hoja completa; REQ-40-01/03..11 intactos). post.css, post-header.css y tokens.css no se tocan (REQ-39-01/26-02..07/40-11 intactos). Análisis en progress/research/ancho-lectura-fullwidth-ciclo33.md.",
+      "acceptance": [
+        "La regla .post__body de post-readability.css no declara max-width ni max-inline-size y el cuerpo de lectura ocupa el ancho completo del contenedor del sitio (REQ-41-01/02/13)",
+        "tests/post-readability.test.mjs se actualiza según lo autorizado en la spec: el test REQ-40-02 pasa de verificar 70ch a verificar la ausencia de acotación y el test REQ-40-12 se refuerza con el guard de que ninguna regla de la hoja acota el ancho; los tests REQ-40-01/03..11 y convenciones se conservan sin cambios (REQ-41-10)",
+        "El cuerpo de lectura conserva font-size clamp() con límites 1.0625rem y 1.1875rem (REQ-41-03)",
+        "Los párrafos del contenido conservan text-wrap pretty, el espaciado final de bloque con 1lh y letter-spacing 0.01em (REQ-41-04/05/06)",
+        "Los encabezados del contenido conservan text-wrap balance, h2 a 1.75rem y h3 a 1.4rem, y la media query de 768px adapta los tamaños de h2 y h3 (REQ-41-07/08/09)",
+        "post-readability.css no supera las 100 líneas y no contiene hex/rgba sueltos; tokens.css conserva 87 líneas sin tokens nuevos (REQ-41-11/12)",
+        "tests/post-header.test.mjs (REQ-39-01..09), post-page-styles.test.mjs (REQ-26-02..07), view-transitions.test.mjs (REQ-24-03/05) y design-tokens.test.mjs pasan sin modificarse (REQ-41-13)",
+        "node scripts/check-format.mjs y la suite completa quedan en verde"
+      ],
+      "depends_on": [],
+      "status": "done"
+    },
+    {
+      "id": 42,
+      "name": "post-header-horizontal-card",
+      "title": "Header de post como tarjeta horizontal con acentos atrevidos",
+      "description": "Petición del humano (ciclo 34) sobre src/pages/posts/[id].astro: 'cambies los estilos del header de los post porque los hiciste prácticamente igual, la imagen con el título; pon aquí la tarjeta como en horizontal, un diseño más atrevido'. El header actual (feature 39) es un panel hero VERTICAL: imagen full-width arriba y copia debajo, estructuralmente igual a las cards de la portada. Se rediseña post-header.css como tarjeta HORIZONTAL (grid de 2 columnas: imagen izquierda ~50%, copia derecha) con acentos de la identidad dark/glow solo con tokens existentes: kicker de la primera tag del post como píldora de acento (p.post__kicker con post.tags[0], el schema ya entrega tags como array sin #), título gigante clamp(2.2rem, 4.5vw, 3.6rem) con text-wrap balance y glow, imagen 4:3 con halo var(--color-glow), wash radial de acento como segundo layer del background del panel, acento inferior degradado en ::after, y media query 768px que apila la tarjeta (imagen 16:9 arriba, copia abajo). No se toca post.css (contrato REQ-26-04 intacto: el grid acota el ancho y .post__hero .post__image con especificidad mayor ajusta margen/proporción/acentos), ni tokens.css (87 líneas), ni el orden de imports (REQ-40-01). El marcado conserva el orden imagen → copia (REQ-39-02 literal) y el kicker es <p> (nunca <div> anidado: rompería el regex lazy del test). Guard REQ-39-09: ninguna declaración de color/borde/sombra sin var(--) en la hoja (prohibido box-shadow: none). Se añade tests/post-header-horizontal.test.mjs (test-first); los tests existentes (post-header REQ-39, post-page-styles REQ-26, view-transitions REQ-24, post-readability REQ-40/41) NO se modifican. Análisis en progress/research/header-horizontal-posts-ciclo34.md.",
+      "acceptance": [
+        "El marcado de [id].astro conserva img.post__image antes de .post__hero-copy y declara p.post__kicker con {post.tags[0]} dentro de la copia antes de h1.post__title, sin superar las 100 líneas ni estilos embebidos (REQ-42-01/03/08)",
+        "El primer h1 y el primer img de la página conservan los pares title-${entry.id} e img-${entry.id} y tests/view-transitions.test.mjs REQ-24-05 pasa sin modificarse (REQ-42-08)",
+        "La regla .post__hero de post-header.css declara display grid con grid-template-columns de dos columnas y gap, conservando el degradado con var(--color-hero-*), var(--radius-card), var(--color-border-strong), var(--shadow-card) y el glow de ::before (REQ-42-01/02)",
+        "La regla .post__hero::after declara un acento inferior con background que usa var(--color-accent) (REQ-42-06)",
+        "La regla .post__hero .post__image declara margin 0, aspect-ratio 4/3 y box-shadow con var(--color-glow), y la regla base .post__image de post.css permanece intacta (REQ-26-04, REQ-42-05)",
+        "La regla .post__kicker declara color y border con var(--color-accent) y background con color-mix de tokens, y la regla .post__hero .post__title declara font-size clamp(2.2rem, 4.5vw, 3.6rem) (REQ-42-03/04)",
+        "La media query de 768px de post-header.css apila la tarjeta con grid-template-columns 1fr en .post__hero y conserva el ajuste responsive con .post__hero (REQ-42-07 y REQ-39-07 en verde)",
+        "post-header.css no supera las 100 líneas y no contiene hex/rgba sueltos; tokens.css conserva 87 líneas sin tokens nuevos; toda declaración de color/borde/sombra de la hoja usa var(--) (REQ-42-09, REQ-39-09 en verde)",
+        "tests/post-header-horizontal.test.mjs existe y pasa en verde, los tests existentes (post-header REQ-39-01..09, post-page-styles REQ-26-02..07, view-transitions REQ-24-03/05, post-readability REQ-40/41, design-tokens) pasan sin modificarse, y node scripts/check-format.mjs junto con la suite completa quedan en verde"
+      ],
+      "depends_on": [],
+      "status": "done"
+    }
   ]
 }
