@@ -1,0 +1,31 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SearchResults from '../components/search-results/search-results.astro';
+import { PostsRepository } from '../domain/repositories/posts-repository.ts';
+import { buildSearchIndex } from '../domain/search/index.ts';
+import { termFromPathname } from '../components/search-results/term-route.ts';
+import { getCollection } from 'astro:content';
+
+export const prerender = false;
+
+// On-demand (REQ-07-02): términos arbitrarios no enumerables, precedente
+// HTB stats. El documento no depende del término (design.md D3): el índice
+// se construye como en search.astro y el cliente filtra por el término del
+// pathname (REQ-07-03); el título usa la misma normalización (REQ-07-07).
+const posts = await new PostsRepository().getPosts();
+const entries = await getCollection('architecture');
+const bodies = Object.fromEntries(entries.map((entry) => [entry.id, entry.body]));
+const indexJson = JSON.stringify(buildSearchIndex(posts, bodies)).replace(
+  /<\/script/gi,
+  '<\\/script',
+);
+const term = termFromPathname(`/${Astro.params.term ?? ''}`);
+---
+
+<Layout title={`Búsqueda: ${term}`}>
+  <main class="search-page">
+    <h1 class="search-page__heading">Búsqueda por término</h1>
+    <script type="application/json" id="search-index" is:inline set:html={indexJson}></script>
+    <SearchResults />
+  </main>
+</Layout>

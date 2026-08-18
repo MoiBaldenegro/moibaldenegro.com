@@ -70,6 +70,7 @@
 @media (max-width: 1200px) {
   .hero-card { grid-column: auto !important; grid-row: auto !important; }
 }
+
 @media (max-width: 768px) {
   .hero-card { grid-column: auto !important; grid-row: auto !important; min-height: 190px; }
   .card-header h3 { font-size: 0.82rem; }

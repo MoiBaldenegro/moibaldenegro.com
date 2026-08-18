@@ -31,7 +31,7 @@ const EXPECTED_PROFILE = {
   name: 'Moisés Baldenegro Melendez',
   username: '@moibaldenegro',
   verified: true,
-  image: 'assets/moises-hero.jpg',
+  image: '/assets/moises-hero.jpg',
   description:
     'AI Engineering • Rust • WebAssembly • Full Stack • DevOps • AWS • Azure • Security First • OWASP • Rustacean 🦀',
 };

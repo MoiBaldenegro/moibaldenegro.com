@@ -3,14 +3,33 @@ import NewHero from '../components/new-hero/new-hero.astro';
 import Layout from '../layouts/Layout.astro';
 import LatestArticles from '../components/latest-articles.astro';
 import HtbStadistics from '../components/htb-stadistics.astro';
+import SearchLive from '../components/search-live/search-live.astro';
+import { PostsRepository } from '../domain/repositories/posts-repository.ts';
+import { buildSearchIndex } from '../domain/search/index.ts';
+import { getCollection } from 'astro:content';
 
 export const prerender = true;
+
+// Índice embebido (REQ-05-04/REQ-03-07): catálogo + cuerpos markdown (solo en
+// build, precedente posts/[id].astro), serializado con JSON.stringify y
+// escape de </script (<\/script) para no romper el HTML.
+const posts = await new PostsRepository().getPosts();
+const entries = await getCollection('architecture');
+const bodies = Object.fromEntries(entries.map((entry) => [entry.id, entry.body]));
+const indexJson = JSON.stringify(buildSearchIndex(posts, bodies)).replace(
+  /<\/script/gi,
+  '<\\/script',
+);
 ---
 
 <Layout>
-  <NewHero/>
-  <LatestArticles/>
-  <HtbStadistics server:defer>
-    <p slot="fallback">Cargando estadísticas de HTB...</p>
-  </HtbStadistics>
+  <div class="home__landing" data-landing-sections>
+    <NewHero/>
+    <LatestArticles/>
+    <HtbStadistics server:defer>
+      <p slot="fallback">Cargando estadísticas de HTB...</p>
+    </HtbStadistics>
+  </div>
+  <script type="application/json" id="search-index" is:inline set:html={indexJson}></script>
+  <SearchLive />
 </Layout>

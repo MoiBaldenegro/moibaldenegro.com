@@ -1,0 +1,127 @@
+{
+  "project": "moibaldenegro.com — sitio personal de Moisés Baldenegro",
+  "description": "Backlog regenerado desde cero (ciclo de búsqueda global): feature_list.json estuvo ausente, se regenera limpio con solo las features nuevas del ciclo. El historial de features cerradas vive en progress/history.md y en los artefactos permanentes (specs/, progress/impl_*.md, progress/review_*.md, progress/research/).",
+  "rules": {
+    "one_feature_at_a_time": true,
+    "require_tests_to_close": true,
+    "valid_status": ["pending", "in_progress", "done", "blocked"]
+  },
+  "features": [
+    {
+      "id": 1,
+      "name": "hero-test-fixture-align",
+      "title": "Alinear el fixture del test del hero con la ruta absoluta real",
+      "description": "La feature 43 aprobó la ruta absoluta /assets/moises-hero.jpg en src/data/hero.json con el precedente REQ-43-06 (el fixture sigue al dato real). Un revert manual dejó el fixture EXPECTED_PROFILE de tests/hero-profile-repository.test.mjs (línea 34) con la ruta relativa obsoleta 'assets/moises-hero.jpg', manteniendo la suite en rojo (257/258). Esta feature alinea el fixture al dato real sin tocar src/ (el humano confirmó que el código es correcto): el ajuste es de test, no de código.",
+      "acceptance": [
+        "El fixture EXPECTED_PROFILE en tests/hero-profile-repository.test.mjs declara image con el valor exacto '/assets/moises-hero.jpg', idéntico al campo image de src/data/hero.json (REQ-01-01, REQ-01-02)",
+        "La suite pasa en verde: node --test tests/hero-profile-repository.test.mjs sin errores y sin modificar src/ (REQ-01-03, REQ-01-04)"
+      ],
+      "depends_on": [],
+      "status": "done"
+    },
+    {
+      "id": 2,
+      "name": "search-domain",
+      "title": "Dominio de búsqueda: coincidencias, orden por fecha y paginación en TS puro",
+      "description": "Base de datos/lógica de la búsqueda global: módulos TS puros (src/domain/search/) para normalizar el término (minúsculas, sin diacríticos), evaluar coincidencias en título/descripción/tags/cuerpo del artículo, ordenar por fecha de publicación descendente (parseando el formato español '10 Agosto 2026' a YYYY-MM-DD), paginar con tamaño fijo y construir el índice que la UI serializa en el cliente. Es la capa que consumen la vista /search y la portada; testeable con node:test sin UI.",
+      "acceptance": [
+        "Un test node:test verifica que 'Agilismo' y 'agilismo' se normalizan al mismo valor y que 'diseño' y 'diseno' también (REQ-02-01)",
+        "Un test node:test verifica que un artículo coincide cuando el término aparece en el título, la descripción, un tag o el cuerpo (REQ-02-02, REQ-02-03)",
+        "Un test node:test verifica que los resultados se ordenan de forma descendente por fecha parseando el formato español '10 Agosto 2026' a YYYY-MM-DD (REQ-02-04, REQ-02-05)",
+        "Un test node:test verifica que la paginación devuelve la página solicitada con el tamaño fijo (REQ-02-06)",
+        "Un test node:test verifica que el índice incorpora título, descripción, tags y cuerpo de cada artículo (REQ-02-07)",
+        "Un test node:test verifica que un artículo sin algún campo evaluable no rompe la coincidencia (REQ-02-08)"
+      ],
+      "depends_on": [],
+      "status": "done"
+    },
+    {
+      "id": 3,
+      "name": "search-dedicated-view",
+      "title": "Vista dedicada /search con deep linking, resultados, empty state y paginación",
+      "description": "Vista dedicada /search?q=<término> (forma elegida sobre /search/:arg; ver análisis en progress/research/global-search-landing.md, D1/D2): página prerendered con el índice del catálogo embebido y filtrado en el cliente, lo que hace la URL 100% compartible con deep linking. Incluye cuadrícula de tarjetas con vista previa, empty state con mensaje y acción de limpiar, paginación sin recarga y título del documento con el término. Reutiliza Layout.astro y la presentación la reutiliza la portada (feature 5).",
+      "acceptance": [
+        "Un test de inspección verifica que src/pages/search.astro declara prerender true y que la página serializa el índice de búsqueda en el documento (REQ-03-01, REQ-03-07)",
+        "Un test de inspección verifica que la vista lee el parámetro de URL q y lo aplica como filtro inicial al cargar el enlace (deep linking) y al título del documento (REQ-03-02, REQ-03-10)",
+        "Un test de inspección verifica el estado inicial sin q: la vista no lista el catálogo completo y muestra la guía de búsqueda (REQ-03-03)",
+        "Un test de inspección verifica que las tarjetas de resultados enlazan a /posts/[id] y usan la paginación del dominio sin recargar el documento (REQ-03-04, REQ-03-06, REQ-03-09)",
+        "Un test de inspección verifica el empty state con el mensaje 'No se encontraron resultados para' y una acción que elimina el parámetro q (REQ-03-05, REQ-03-08)"
+      ],
+      "depends_on": [2],
+      "status": "done"
+    },
+    {
+      "id": 4,
+      "name": "search-bar-header",
+      "title": "Barra de búsqueda en el header con limpieza X, foco y navegación Enter",
+      "description": "Barra de búsqueda en el header del Layout (el header de la Landing): input prominente con aria-label, botón de limpieza X visible solo con texto que vacía y devuelve el foco, Enter navega a /search?q=<consulta> (y no navega si está vacío), y evento de cambio de consulta que la portada escucha para el live search (feature 5). JS de runtime justificado (excepción a estático por defecto, precedentes 24/43/44).",
+      "acceptance": [
+        "Un test de inspección verifica que Layout.astro incluye el componente de la barra con un input que declara aria-label (REQ-04-01, REQ-04-08)",
+        "Un test unitario del control verifica que el botón X se muestra solo con consulta no vacía y que al activarlo vacía la consulta y devuelve el foco (REQ-04-03, REQ-04-04)",
+        "Un test unitario del control verifica que Enter con consulta no vacía navega a /search?q=<consulta> y que Enter con consulta vacía no navega (REQ-04-05, REQ-04-06)",
+        "Un test de inspección verifica que el control emite el evento de cambio de consulta para la portada (REQ-04-07)"
+      ],
+      "depends_on": [2],
+      "status": "done"
+    },
+    {
+      "id": 5,
+      "name": "search-landing-live-transition",
+      "title": "Búsqueda en tiempo real en la Landing con transición dinámica del layout",
+      "description": "Transición dinámica del layout de la Landing: mientras la consulta de la barra tiene al menos un carácter, la portada oculta sus secciones habituales y muestra el panel de resultados en vivo (misma presentación que la vista dedicada, feature 3); al volver a vacío restaura las secciones de inmediato. El panel muestra los primeros PAGE_SIZE y enlaza a la vista dedicada cuando hay más; sin coincidencias muestra el estado vacío con el término. JS de runtime justificado (REQ-05-07).",
+      "acceptance": [
+        "Un test de inspección verifica que la portada escucha el evento de cambio de consulta de la barra (REQ-05-01, REQ-05-02, REQ-05-03)",
+        "Un test unitario verifica la función de estado del layout: consulta no vacía → modo resultados; consulta vacía → modo landing (REQ-05-01, REQ-05-02, REQ-05-03)",
+        "Un test de inspección verifica que el panel en vivo reutiliza el componente de resultados de la vista dedicada y muestra el estado vacío con el término actual (REQ-05-04, REQ-05-05)",
+        "Un test unitario verifica que con más coincidencias que el tamaño de página el panel muestra los primeros PAGE_SIZE con enlace a la vista dedicada (REQ-05-06)",
+        "Un test de inspección verifica que el controlador de la transición es un módulo .ts de cliente, excepción a estático por defecto documentada (REQ-05-07)"
+      ],
+      "depends_on": [3, 4],
+      "status": "done"
+    },
+    {
+      "id": 6,
+      "name": "search-keyboard-escape",
+      "title": "Soporte de teclado: Escape limpia o cierra la búsqueda activa",
+      "description": "Soporte de teclado de la búsqueda: Escape limpia o cierra la búsqueda activa. En la portada vacía la consulta y restaura las secciones habituales; en la vista /search limpia la consulta y muestra el estado inicial; con la consulta ya vacía no ejecuta ninguna acción. El manejador detiene la propagación del evento.",
+      "acceptance": [
+        "Un test unitario verifica que Escape con consulta activa en la portada vacía la consulta y restaura las secciones habituales (REQ-06-01)",
+        "Un test unitario verifica que Escape con consulta activa en la vista /search limpia la consulta y muestra el estado inicial (REQ-06-02)",
+        "Un test unitario verifica que Escape con consulta vacía no ejecuta ninguna acción (REQ-06-03)",
+        "Un test de inspección verifica que el manejador de Escape detiene la propagación del evento (REQ-06-04)"
+      ],
+      "depends_on": [3, 4, 5],
+      "status": "done"
+    },
+    {
+      "id": 7,
+      "name": "root-term-search",
+      "title": "Búsqueda por término en la raíz: /loquesea filtra el catálogo con deep linking",
+      "description": "El humano corrigió la interpretación inicial (índice estático /arquitectura): 'no es una ruta estática ... tiene que ser dinámica para filtrar por ese parámetro / es slash lo que se busque slash :argumento /loquesea'. Probó http://localhost:4321/arquitectura esperando que filtrara por 'arquitectura', no un 404. Esta feature crea el catch-all src/pages/[...term].astro on-demand (export const prerender = false; precedente on-demand HTB stats feature 20; output server ya configurado en astro.config.mjs) que sirve el documento con el índice embebido del catálogo (mismo patrón de search.astro) y el cliente filtra por el término del pathname (deep linking, mecanismo client-side de la feature 3). Sin coincidencias: empty state con el término (nunca 404). La prioridad de rutas de Astro garantiza que /, /about, /search y /posts/[id] no son capturadas por el catch-all (REQ-07-09). Coexiste con /search?q= (se conserva intacta, REQ-07-11); la barra de búsqueda no cambia (limitación documentada en progress/research/arquitectura-404-route.md, decisión D6).",
+      "acceptance": [
+        "Un test de inspección verifica que src/pages/[...term].astro sirve la ruta /<término> sin declarar prerender, WHERE el término de la URL es arbitrario y no enumerable (REQ-07-01, REQ-07-02)",
+        "Un test de inspección verifica que la página obtiene los artículos mediante PostsRepository y el índice de búsqueda del dominio (REQ-07-05)",
+        "Un test unitario verifica que el controlador de resultados deriva el término del pathname y presenta los resultados prefiltrados al cargar la ruta (deep linking) (REQ-07-03)",
+        "Un test unitario verifica que un término sin coincidencias muestra el estado vacío con el término consultado en lugar de un 404 (REQ-07-04)",
+        "Un test de inspección verifica que el documento declara el título con el término, reutiliza Layout.astro y la presentación de resultados de la vista /search, y que las tarjetas enlazan a /posts/[id] (REQ-07-06, REQ-07-07, REQ-07-08)",
+        "Un test de inspección verifica que las rutas estáticas existentes /, /about, /search y /posts/[id] no son capturadas por el catch-all (REQ-07-09)",
+        "Un test unitario verifica que la acción de limpiar en la ruta /<término> navega a la raíz del sitio y que la vista /search?q= existente queda sin cambios (REQ-07-10, REQ-07-11)"
+      ],
+      "depends_on": [],
+      "status": "done"
+    },
+    {
+      "id": 8,
+      "name": "architecture-nav-link",
+      "title": "Enlace Arquitectura en el navbar que navega a la búsqueda por término",
+      "description": "Con la ruta dinámica por término (feature 7), /arquitectura es una búsqueda del catálogo por el término 'arquitectura' (exactamente la URL que el humano probó y esperaba ver funcionando). El navbar del Layout solo enlaza Home, About y @moibaldenegro: esta feature añade el enlace interno Arquitectura junto a Home/About como atajo de búsqueda de la sección temática, con el mismo patrón de estado activo que About (aria-current page cuando la ruta activa es /arquitectura o /arquitectura/), heredando los estilos existentes del navbar sin añadir CSS (decisiones D2 en progress/research/arquitectura-404-route.md).",
+      "acceptance": [
+        "Un test de inspección verifica que Layout.astro incluye un enlace de texto Arquitectura con destino /arquitectura y conserva los enlaces Home, About y @moibaldenegro y la barra de búsqueda (REQ-08-01, REQ-08-04)",
+        "Un test de inspección verifica que el enlace declara aria-current page con la misma condición de ruta que el enlace About (/arquitectura y /arquitectura/) y lo omite en el resto de rutas (REQ-08-02, REQ-08-03)",
+        "Un test de inspección verifica que el enlace no añade estilos propios y hereda los estilos del navbar existente (REQ-08-05)"
+      ],
+      "depends_on": [7],
+      "status": "done"
+    }
+  ]
+}

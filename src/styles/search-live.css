@@ -1,0 +1,31 @@
+/* search-live.css — Panel de resultados en vivo de la portada (feature 5,
+   REQ-05-01..07). Solo tokens existentes de tokens.css (design.md). La
+   presentación de tarjetas/empty es la de search-results.css (REQ-05-04):
+   el wrapper importa la hoja canónica de la feature 3. */
+
+.search-live {
+  width: min(var(--container-max), 95%);
+  margin: auto;
+  padding: 32px 0 64px;
+}
+
+/* [hidden] gana al display propio (modo landing/resultados, REQ-05-01/02) */
+.search-live[hidden],
+.home__landing[hidden] { display: none; }
+
+.search-live__all {
+  display: inline-block;
+  margin-top: var(--gap-card);
+  color: var(--color-accent);
+  font-family: var(--font-sans);
+  text-decoration: none;
+  transition: var(--transition-default);
+}
+
+.search-live__all:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .search-live { padding: 24px 0 48px; }
+}

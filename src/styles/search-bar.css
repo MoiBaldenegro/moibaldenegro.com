@@ -1,0 +1,75 @@
+/* search-bar.css — Barra de búsqueda del header (feature 4, REQ-04-01..08).
+   Solo tokens existentes de tokens.css (design.md: navbar, surface, border,
+   border-strong, text, text-secondary, accent, radius-pill, transition,
+   font-sans). La hoja la importa el componente (sin <style> en el .astro). */
+
+.search-bar {
+  position: relative;
+  margin-left: auto;
+}
+
+.search-bar__input {
+  width: 240px;
+  padding: 10px 42px 10px 18px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  transition: var(--transition-default);
+}
+
+.search-bar__input::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.search-bar__input:focus {
+  border-color: var(--color-border-strong);
+  outline: none;
+}
+
+/* Botón X (REQ-04-03, Decisión 2): oculto por defecto (también para teclado,
+   visibility) y visible solo con la clase is-filled sobre la barra. */
+.search-bar__clear {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  transform: translateY(-50%);
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-text-secondary);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: var(--transition-default);
+}
+
+.search-bar.is-filled .search-bar__clear {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.search-bar__clear:hover {
+  color: var(--color-accent);
+}
+
+@media (max-width: 768px) {
+  .site-navbar nav {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .search-bar {
+    flex: 1 1 100%;
+    margin-left: 0;
+  }
+  .search-bar__input {
+    width: 100%;
+  }
+}

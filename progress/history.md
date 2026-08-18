@@ -848,3 +848,382 @@ Artefactos permanentes conservados: `progress/impl_43_hero-back-navigation-fix.m
 y los research `progress/research/fix-imagen-hero-y-rendimiento-ciclo36.md` y
 `progress/research/view-transitions-imagen-perdida.md`. Backlog: 1 pendiente
 (feature 44 performance-jank-reduction), 0 en progreso.
+
+## Sesión 2026-08-18 — Feature 1 `hero-test-fixture-align` (cierre, ciclo de búsqueda global)
+
+### Bitácora
+
+- 2026-08-18 (implementer, feature 1, cierre): CERRADA — progress/review_01_hero-test-fixture-align.md con Veredicto APPROVED y sin cambios requeridos (verificado en disco). Status de feature 1 en feature_list.json: done (cambiado de in_progress; la feature se conserva en el array). node scripts/check-format.mjs en verde tras el cambio. Resumen breve: fixture del test del hero alineado al dato real (ruta absoluta /assets/moises-hero.jpg, precedente REQ-43-06); suite 258/258, ./init.sh verde, src/ intacto. Siguiente pendiente: feature 2 search-domain (sin deps).
+
+## Sesión 2026-08-18 — Feature 2 `search-domain` (cierre, ciclo de búsqueda global)
+
+### Bitácora
+
+- 2026-08-18 (implementer, feature 2, cierre): CERRADA — progress/review_02_search-domain.md con Veredicto APPROVED y sin cambios requeridos (verificado en disco). Status de feature 2 en feature_list.json: done (cambiado de in_progress; la feature se conserva en el array). node scripts/check-format.mjs en verde tras el cambio. Resumen breve: dominio de búsqueda en src/domain/search/ (normalize.ts, parse-date.ts, index.ts, search.ts; PAGE_SIZE=6; coincidencia por subcadena normalizada en título/descripción/tags/cuerpo; fecha española → YYYY-MM-DD; orden desc; paginación 1-based; índice serializable para el cliente). ROJO ERR_MODULE_NOT_FOUND → VERDE 17/17 en la feature; suite 275/275; ./init.sh verde. Siguiente pendiente: feature 3 search-dedicated-view (depende de 2, done).
+
+## Sesión 2026-08-18 — Feature 3 \search-dedicated-view\ (cierre, ciclo de búsqueda global)
+
+### Bitácora
+
+- 2026-08-18 (implementer, feature 3, cierre): CERRADA — progress/review_03_search-dedicated-view.md con Veredicto APPROVED y sin cambios requeridos (verificado en disco). Status de feature 3 en feature_list.json: done (cambiado de in_progress; la feature se conserva en el array). node scripts/check-format.mjs en verde tras el cambio. Resumen breve: vista /search?q= prerendered con índice embebido (escape <\/script) y filtrado client-side; deep linking, guía sin q, empty state con limpiar, paginación sin recarga, tarjetas → /posts/[id]; componente canónico search-results reutilizable por la feature 5. ROJO ERR_MODULE_NOT_FOUND → VERDE 25/25; suite 300/300; audit tokens y ./init.sh verdes; build con ruta /search verificada. Siguiente pendiente: feature 4 search-bar-header (depende de 2, done).
+
+## Sesi�n 2026-08-18 � Feature 4 `search-bar-header` (cierre, ciclo de b�squeda global)
+
+### Bit�cora
+
+- 2026-08-18 (implementer, feature 4, cierre): CERRADA � progress/review_04_search-bar-header.md con Veredicto APPROVED y sin cambios requeridos (verificado en disco). Status de feature 4 en feature_list.json: done (cambiado de in_progress; la feature se conserva en el array). node scripts/check-format.mjs en verde tras el cambio. Resumen breve: barra de b�squeda en el header del Layout (search-bar.astro 21 l�neas + search-bar.ts 64 con funciones puras + search-bar.css 75 con tokens existentes); X visible solo con texto con retorno de foco; Enter ? /search?q= con navigate de astro:transitions/client (view transitions conservadas); CustomEvent search:change para la portada; aria-labels accesibles. ROJO ERR_MODULE_NOT_FOUND ? VERDE 20/20; suite 320/320; audit tokens e ./init.sh verdes. Siguiente pendiente: feature 5 search-landing-live-transition (depende de 3 y 4, done).
+
+## Sesión 2026-08-18 — Feature 5 `search-landing-live-transition` (cierre, ciclo de búsqueda global)
+
+### Bitácora
+
+- 2026-08-18 (implementer, feature 5, cierre): CERRADA — progress/review_05_search-landing-live-transition.md con Veredicto APPROVED y sin cambios requeridos (verificado en disco). Status de feature 5 en feature_list.json: done (cambiado de in_progress; la feature se conserva en el array). node scripts/check-format.mjs en verde tras el cambio. Resumen breve: live search en la portada con transición dinámica del layout (search-live.ts 99 líneas se suscribe a search:change y alterna hidden sobre data-landing-sections/data-search-live; index.astro 35 con índice embebido + wrapper; search-live.astro 17 reusa la presentación de la feature 3; empty state con término, primeros PAGE_SIZE + enlace /search?q=). ROJO ERR_MODULE_NOT_FOUND → VERDE 20/20; suite 340/340; audit tokens e ./init.sh verdes. Siguiente pendiente: feature 6 search-keyboard-escape (depende de 3, 4 y 5, done).
+
+## Sesión 2026-08-18 — Feature 6 `search-keyboard-escape` (cierre, ciclo de búsqueda global)
+
+### Bitácora
+
+- 2026-08-18 (implementer, feature 6, cierre): CERRADA — progress/review_06_search-keyboard-escape.md con Veredicto APPROVED y sin cambios requeridos (verificado en disco). Status de feature 6 en feature_list.json: done (cambiado de in_progress; la feature se conserva en el array). node scripts/check-format.mjs en verde tras el cambio. Resumen breve: Escape limpia/cierra la búsqueda activa (search-escape.ts 66 líneas con escapeContext/escapeAction/activeTerm + initSearchEscape; arranque en Layout vía search-escape.astro 9 líneas; reutiliza clearQuery/removeQueryParam/applyLive de las features 3/4/5; stopPropagation siempre; no-op con consulta vacía). ROJO ERR_MODULE_NOT_FOUND → VERDE 20/20; suite 360/360; audit tokens e ./init.sh verdes. **Ciclo de búsqueda global CERRADO: features 1-6 done, backlog 0 pendientes.**
+
+## Sesión 2026-08-18 — Búsqueda global (vista /search, live search en la Landing, Escape)
+
+### Resumen ejecutivo
+
+- Ciclo de búsqueda global CERRADO. El backlog se regeneró desde cero tras la
+  ausencia de feature_list.json (esqueleto del validador; ids 1-6 para las
+  features nuevas del ciclo; el histórico vive en history.md y en los
+  artefactos permanentes).
+- Features 1-6 implementadas (test-first, rojo→verde), revisadas por reviewer
+  (APPROVED en disco) y cerradas: 1 hero-test-fixture-align (fixture alineado
+  al dato real), 2 search-domain (dominio TS puro: normalización, coincidencia,
+  fecha española, paginación, índice), 3 search-dedicated-view (/search?q=
+  prerendered con deep linking, resultados, empty state y paginación), 4
+  search-bar-header (barra en el header con X, foco y Enter), 5
+  search-landing-live-transition (live search en la Landing con transición
+  dinámica del layout) y 6 search-keyboard-escape (Escape limpia/cierra la
+  búsqueda activa).
+- Suite final **360/360** (258 iniciales + 102 nuevos del ciclo); node
+  scripts/check-format.mjs ✔, audit-design-tokens ✔ y bash ./init.sh
+  "El entorno está perfecto" (incluye pnpm build) en cada cierre y al final.
+- Artefactos permanentes conservados: specs/01..06_* (requirements.md +
+  design.md donde aplica), progress/impl_01..06_*.md, progress/review_01..06_*.md,
+  progress/research/global-search-landing.md; backlog: 1-6 done, 0 pendientes.
+
+### Bitácora (movida de progress/current.md)
+
+# Progreso actual
+
+> Estado de la sesión actual. Mientras trabajas, documenta aquí lo que haces.
+
+### Feature en curso
+
+- Ninguna: TODAS las features del ciclo (1-6) están done; backlog sin
+  pendientes (ciclo de búsqueda global CERRADO, 2026-08-18).
+
+## Cierre feature 6 (2026-08-18, implementer)
+
+- 2026-08-18 (implementer, feature 6, cierre): CERRADA —
+  progress/review_06_search-keyboard-escape.md con Veredicto APPROVED y
+  "Cambios requeridos: Ninguno" (verificado en disco). Status de feature 6 en
+  feature_list.json: done (cambiado de in_progress; la feature se conserva en
+  el array). node scripts/check-format.mjs en verde tras el cambio y
+  bash ./init.sh "El entorno está perfecto" (suite 360/360 + build). Resumen:
+  Escape limpia/cierra la búsqueda activa (search-escape.ts 66 con
+  escapeContext/escapeAction/activeTerm + initSearchEscape; arranque en el
+  Layout vía search-escape.astro 9; reutiliza clearQuery/removeQueryParam/
+  applyLive de las features 3/4/5 por import; stopPropagation siempre;
+  no-op con consulta vacía). ROJO ERR_MODULE_NOT_FOUND → VERDE 20/20; suite
+  360/360; audit de tokens e ./init.sh verdes; build verificado para / y
+  /search. **Ciclo de búsqueda global CERRADO: features 1-6 done, backlog 0
+  pendientes.**
+
+### Evolución (implementer, 2026-08-18, feature 6 search-keyboard-escape)
+
+- Feature 6 marcada in_progress en feature_list.json (2026-08-18).
+- ROJO capturado: node --test tests/search-keyboard-escape.test.mjs → exit 1,
+  ERR_MODULE_NOT_FOUND (src/components/search-escape/search-escape.ts no
+  existe), 0 pass / 1 fail. Tests escritos primero (20 tests, REQ-06-01..04 +
+  restricciones del arnés). Fallo intermedio de test (fake con panel en modo
+  guía) corregido → 20/20.
+- Implementación: src/components/search-escape/{search-escape.ts 66,
+  search-escape.astro 9} (controlador puro: escapeContext, escapeAction,
+  activeTerm, initSearchEscape con guard anti-duplicado para view
+  transitions; componente script-only que importa y arranca) +
+  src/layouts/Layout.astro 38 (integra <SearchEscape /> tras </header>).
+  Reutiliza por import: clearQuery/activeQuery (f4), removeQueryParam/
+  queryTerm (f3) y applyLive (f5). Arranque en el Layout: Escape es
+  comportamiento global de la búsqueda; contexto detectado por DOM
+  ([data-search-live] → portada, [data-search-guide] → /search, resto →
+  none). Consulta activa: q de la URL en /search, memoria de la barra en la
+  portada. stopPropagation SIEMPRE (REQ-06-04). Sin CSS ni UI nueva.
+- VERDE: test feature 20/20; suite completa 360/360 (340 + 20);
+  check-format FORMATO ✔; audit-design-tokens AUDIT ✔; ./init.sh
+  "El entorno está perfecto" (incluye build). Build verificado: bundle
+  search-escape con stopPropagation/keydown/replaceState/data-*; index.html
+  y search/index.html referencian el bundle.
+- Informe: progress/impl_06_search-keyboard-escape.md. Sigue in_progress: el
+  APPROVED del reviewer la marca done.
+
+### Cierre feature 5 (2026-08-18, implementer)
+
+- 2026-08-18 (implementer, feature 5, cierre): CERRADA —
+  progress/review_05_search-landing-live-transition.md con Veredicto APPROVED
+  y "Cambios requeridos: Ninguno" (verificado en disco); status done en
+  feature_list.json (la feature se conserva en el array).
+
+### Análisis en curso
+
+- Búsqueda global: vista dedicada /search?q= compartible, live search en la
+  Landing con transición dinámica del layout, barra en el header, paginación y
+  soporte Escape. Análisis completo en
+  progress/research/global-search-landing.md.
+
+### Plan (feature 3 search-dedicated-view)
+
+- 1) Tests primero: tests/search-dedicated-view.test.mjs (inspección por regex
+  sobre search.astro, search-results.astro, controller .ts y search-results.css
+  + unitarios por import directo del controller: cardHtml, queryTerm,
+  removeQueryParam, paginationHtml). ROJO esperado: archivos inexistentes.
+- 2) Implementar: src/pages/search.astro (prerender, índice embebido con
+  JSON.stringify + escape <\/script, Layout title="Búsqueda") + componente
+  src/components/search-results/search-results.astro (guía, empty state con
+  mensaje exacto y botón limpiar, grid, paginación) + controller .ts
+  (URLSearchParams q, searchIndex/PAGE_SIZE del dominio, document.title con el
+  término, limpiar elimina q, paginación sin recarga) + hoja
+  src/styles/search-results.css (solo tokens de design.md).
+- 3) VERDE: test feature, suite completa (275 + nuevos), check-format,
+  audit-design-tokens, ./init.sh "El entorno está perfecto"; verificar
+  dist/client/search.html con el índice serializado y el escape.
+- 4) Informe: progress/impl_03_search-dedicated-view.md.
+
+### Plan (feature 5 search-landing-live-transition)
+
+- 1) Tests primero: tests/search-landing-live-transition.test.mjs (unitarios
+  por import directo del controlador search-live.ts: layoutMode, livePage,
+  seeAllUrl, applyLive con DOM fake + inspección por regex sobre index.astro,
+  search-live.astro, search-live.ts y search-live.css). ROJO esperado:
+  ERR_MODULE_NOT_FOUND.
+- 2) Implementar: src/components/search-live/search-live.ts (controlador:
+  suscripción a search:change, alterna hidden sobre data-landing-sections /
+  data-search-live, render con searchIndex+PAGE_SIZE del dominio y cardHtml
+  de feature 3, empty con término, enlace ver todos) + search-live.astro
+  (wrapper del panel que importa search-results.css, REQ-05-04) +
+  src/styles/search-live.css (solo tokens de design.md) + src/pages/index.astro
+  (índice embebido id="search-index" con escape <\/script, wrapper
+  data-landing-sections alrededor de hero/artículos/HTB, <SearchLive/>).
+- 3) VERDE: test feature; suite completa pnpm test (320 + nuevos); 
+  check-format; audit-design-tokens; ./init.sh "El entorno está perfecto";
+  verificar dist/client/index.html con el índice serializado y escape.
+- 4) Informe: progress/impl_05_search-landing-live-transition.md. NO marcar
+  done (el APPROVED del reviewer la cierra).
+
+### Evolución (implementer, 2026-08-18, feature 5 search-landing-live-transition)
+
+- Feature 5 marcada in_progress en feature_list.json (2026-08-18).
+- ROJO capturado: node --test tests/search-landing-live-transition.test.mjs →
+  exit 1, ERR_MODULE_NOT_FOUND (src/components/search-live/search-live.ts no
+  existe), 0 pass / 1 fail. Tests escritos primero (20 tests, REQ-05-01..07 +
+  restricciones del arnés).
+- Implementación: src/components/search-live/{search-live.ts 99,
+  search-live.astro 17} (controlador puro: layoutMode, livePage, seeAllUrl,
+  applyLive, initSearchLive; wrapper del panel que importa search-results.css
+  de la feature 3, REQ-05-04) + src/styles/search-live.css 31 (solo tokens de
+  design.md) + src/pages/index.astro 35 (índice embebido id="search-index"
+  con escape <\/script, wrapper data-landing-sections, <SearchLive />).
+- VERDE: test feature 20/20; suite completa 340/340 (320 + 20);
+  check-format FORMATO ✔; audit-design-tokens AUDIT ✔; ./init.sh
+  "El entorno está perfecto" (incluye build).
+- Build verificado: dist/client/index.html con data-landing-sections, panel
+  data-search-live hidden, empty state y "Ver todos los resultados"; índice
+  JSON.parse OK (2 entradas, sin </script crudo; escape <\/script en el
+  fuente); bundle search-live minificado con addEventListener(changeEventName)
+  + detail.term + toggleAttribute hidden + livePage(PAGE_SIZE=6) + seeAllUrl.
+- Informe: progress/impl_05_search-landing-live-transition.md. Sigue
+  in_progress: el APPROVED del reviewer la marca done.
+
+- Feature 3 marcada in_progress en feature_list.json.
+- ROJO capturado: node --test tests/search-dedicated-view.test.mjs → exit 1,
+  ERR_MODULE_NOT_FOUND (src/components/search-results/* no existen),
+  0 pass / 1 fail. Tests escritos primero (25 tests, REQ-03-01..10).
+- Implementación: src/pages/search.astro (prerender, índice embebido con
+  JSON.stringify + escape <\/script, Layout title="Búsqueda") +
+  src/components/search-results/{search-results.astro,search-results-controller.ts}
+  (guía/empty/grid/paginación por data-*, URLSearchParams q, searchIndex del
+  dominio, document.title con término, limpiar elimina q, paginación sin
+  recarga) + src/styles/search-results.css (solo tokens existentes).
+- VERDE: test feature 25/25; suite completa 300/300 (275 + 25);
+  check-format FORMATO ✔; audit-design-tokens AUDIT ✔; ./init.sh
+  "El entorno está perfecto" (incluye build).
+- Build verificado: dist/client/search/index.html (ruta /search) con el
+  índice serializado (JSON válido, sin </script sin escapar), el controlador
+  embebido inline (minificado) y el CSS inlined.
+- Líneas: search.astro 28, search-results.astro 28, controller 98,
+  search-results.css 54 (todas ≤100).
+- Informe: progress/impl_03_search-dedicated-view.md. Sigue in_progress: el
+  APPROVED del reviewer la marca done.
+
+## Cierre feature 3 (2026-08-18, implementer)
+
+- 2026-08-18 (implementer, feature 3, cierre): CERRADA —
+  progress/review_03_search-dedicated-view.md con Veredicto APPROVED y
+  "Cambios requeridos: Ninguno" (verificado en disco). Status de feature 3 en
+  feature_list.json: done (cambiado de in_progress; la feature se conserva en
+  el array). node scripts/check-format.mjs en verde tras el cambio y
+  bash ./init.sh "El entorno está perfecto" (suite 300/300 + build). Resumen:
+  vista /search?q= prerendered con índice embebido (escape <\/script) y
+  filtrado client-side; deep linking, guía sin q, empty state con limpiar,
+  paginación sin recarga, tarjetas → /posts/[id]; componente canónico
+  search-results reutilizable por la feature 5. ROJO ERR_MODULE_NOT_FOUND →
+  VERDE 25/25; suite 300/300; audit de tokens y ./init.sh verdes; build con
+  ruta /search verificada. Siguiente pendiente: feature 4 search-bar-header
+  (depende de 2, done).
+
+### Evolución (implementer, 2026-08-18)
+
+- ROJO capturado: node --test tests/hero-profile-repository.test.mjs →
+  exit 1, 8 pass / 1 fail (REQ-31-01/REQ-31-04; actual
+  '/assets/moises-hero.jpg' vs expected 'assets/moises-hero.jpg').
+- Ajuste aplicado (único cambio, línea 34 del fixture):
+  image: 'assets/moises-hero.jpg' → image: '/assets/moises-hero.jpg'
+  (idéntico a src/data/hero.json; REQ-01-01/02; src/ NO tocado, REQ-01-04).
+- VERDE: test individual 9/9 pass; suite completa pnpm test 258/258;
+  check-format FORMATO ✔; ./init.sh "El entorno está perfecto".
+- Informe: progress/impl_01_hero-test-fixture-align.md (rojo/verde, cambio
+  exacto, src/ intacto salvo la línea en blanco preexistente de
+  src/styles/hero-card.css de un ciclo abortado).
+- Feature 1 sigue in_progress: el APPROVED del reviewer lo marca done.
+
+### Evolución (implementer, 2026-08-18, feature 4 search-bar-header)
+
+- Feature 4 marcada in_progress en feature_list.json (2026-08-18).
+- ROJO capturado: node --test tests/search-bar-header.test.mjs → exit 1,
+  ERR_MODULE_NOT_FOUND (src/components/search-bar/search-bar.ts no existe),
+  0 pass / 1 fail. Tests escritos primero (20 tests, REQ-04-01..08 +
+  restricciones del arnés).
+- Implementación: src/components/search-bar/{search-bar.astro,
+  search-bar.ts} (UI sin lógica + control puro: isFilled, searchUrl,
+  submitQuery, changeEventName, activeQuery, emitChange, clearQuery,
+  initSearchBar) + src/styles/search-bar.css (solo tokens de design.md) +
+  Layout.astro integra <SearchBar /> en el <nav> (layout 34 → 36 líneas).
+  Navegación Enter con navigate() de astro:transitions/client (view
+  transitions, Decisión 3); evento search:change con detail { term } para
+  la portada (REQ-04-07); API clara para la feature 6 (clearQuery,
+  activeQuery).
+- VERDE: test feature 20/20; suite completa 320/320 (300 + 20);
+  check-format FORMATO ✔; audit-design-tokens AUDIT ✔; ./init.sh
+  "El entorno está perfecto" (incluye build).
+- Build verificado: barra en el header de TODAS las páginas (/, /about,
+  /search, /posts/*) con input aria-label y botón X aria-label; bundle del
+  control con search:change + is-filled + navigate del ClientRouter.
+- Líneas: search-bar.astro 21, search-bar.ts 64, search-bar.css 75,
+  Layout.astro 36 (todas ≤100).
+- Informe: progress/impl_04_search-bar-header.md. Sigue in_progress: el
+  APPROVED del reviewer la marca done.
+
+## Cierre feature 4 (2026-08-18, implementer)
+
+- 2026-08-18 (implementer, feature 4, cierre): CERRADA —
+  progress/review_04_search-bar-header.md con Veredicto APPROVED y "Cambios
+  requeridos: Ninguno" (verificado en disco). Status de feature 4 en
+  feature_list.json: done (cambiado de in_progress; la feature se conserva
+  en el array). node scripts/check-format.mjs en verde tras el cambio y
+  bash ./init.sh "El entorno está perfecto" (suite 320/320 + build).
+  Resumen: barra de búsqueda en el header del Layout (search-bar.astro 21 +
+  search-bar.ts 64 con funciones puras + search-bar.css 75 con tokens
+  existentes); X visible solo con texto con retorno de foco; Enter →
+  /search?q= con navigate de astro:transitions/client (view transitions
+  conservadas); CustomEvent search:change para la portada; aria-labels
+  accesibles. ROJO ERR_MODULE_NOT_FOUND → VERDE 20/20; suite 320/320; audit
+  de tokens e ./init.sh verdes. Siguiente pendiente: feature 5
+  search-landing-live-transition (depende de 3 y 4, done).
+
+## Cierre feature 1 (2026-08-18, implementer)
+
+- 2026-08-18 (implementer, feature 1, cierre): CERRADA —
+  progress/review_01_hero-test-fixture-align.md con Veredicto APPROVED y
+  "Cambios requeridos: Ninguno" (verificado en disco). Status de feature 1 en
+  feature_list.json: done (cambiado de in_progress; la feature se conserva en
+  el array). node scripts/check-format.mjs en verde tras el cambio. Siguiente
+  pendiente: feature 2 search-domain (sin deps).
+- Feature 2 search-domain: dominio TS puro (normalización, coincidencia,
+  orden por fecha, paginación, índice) testeable con node:test.
+- Feature 3 search-dedicated-view: /search?q= prerendered con deep linking,
+  resultados, empty state y paginación.
+- Feature 4 search-bar-header: barra en el header del Layout (X, foco, Enter).
+- Feature 5 search-landing-live-transition: live search en la portada.
+- Feature 6 search-keyboard-escape: Escape limpia/cierra la búsqueda.
+
+### Backlog y specs creadas (spec_author, 2026-08-18)
+
+- Features dadas de alta en feature_list.json (todas pending):
+  1 hero-test-fixture-align, 2 search-domain, 3 search-dedicated-view,
+  4 search-bar-header, 5 search-landing-live-transition, 6 search-keyboard-escape.
+- Specs creadas: specs/01_hero-test-fixture-align/requirements.md,
+  specs/02_search-domain/requirements.md, specs/03_search-dedicated-view/
+  (requirements.md + design.md), specs/04_search-bar-header/ (requirements.md
+  + design.md), specs/05_search-landing-live-transition/ (requirements.md +
+  design.md), specs/06_search-keyboard-escape/requirements.md.
+- Eliminadas las 9 carpetas vacías del intento abortado
+  (specs/01_vista-busqueda-dedicada, specs/01_vista-busqueda-dedida,
+  specs/02..08_*): no colisionan con las specs nuevas del ciclo.
+- Informe de análisis: progress/research/global-search-landing.md.
+- Nota: src/styles/hero-card.css conserva un cambio trivial en working tree
+  (línea en blanco) de un ciclo abortado; no genera feature (humano confirmó
+  que el código es correcto).
+
+## Evolución feature 2 (implementer, 2026-08-18)
+
+- Feature 2 search-domain marcada in_progress en feature_list.json.
+- ROJO capturado: node --test tests/search-domain.test.mjs → exit 1,
+  ERR_MODULE_NOT_FOUND (src/domain/search/*.ts no existen), 0 pass / 1 fail.
+- Tests escritos primero: tests/search-domain.test.mjs (17 tests,
+  REQ-02-01..09, fixtures con fechas españolas y diacríticos).
+- Implementación: src/domain/search/{normalize,parse-date,index,search}.ts
+  (TS puro; API: normalizeText, parseSpanishDate, buildSearchIndex,
+  SearchIndexEntry, PAGE_SIZE=6, searchIndex, searchPosts, SearchPage).
+- Decisiones: PAGE_SIZE=6; fecha inválida/ausente → '' (ordena al final en
+  desc); consulta vacía coincide con todo el catálogo; índice plano con
+  datos de tarjeta (img/readtime/author) para la UI (features 3/5).
+- VERDE: node --test tests/search-domain.test.mjs 17/17; suite completa
+  pnpm test 275/275 (258 + 17); check-format FORMATO ✔; ./init.sh
+  "El entorno está perfecto" (incluye pnpm build).
+- REQ-02-09: normalize.ts 12 líneas, parse-date.ts 36, index.ts 44,
+  search.ts 61 (todas ≤100).
+- Informe: progress/impl_02_search-domain.md. Sigue in_progress: el
+  APPROVED del reviewer la marca done.
+- 2026-08-18 (implementer, feature 7, cierre): CERRADA — progress/review_07_root-term-search.md con Veredicto APPROVED y sin cambios requeridos (verificado en disco). Status de feature 7 en feature_list.json: done (cambiado de in_progress; la feature se conserva en el array). node scripts/check-format.mjs en verde tras el cambio. Resumen breve: catch-all on-demand src/pages/[...term].astro (31 líneas, prerender=false) — /loquesea filtra el catálogo con deep linking y empty state (nunca 404); term-route.ts (33 líneas) con termFromPathname/clearDestination; controlador compartido con cambios aditivos (q gana, si no pathname; limpiar → raíz); reutiliza Layout + search-results; /search?q= y barra intactas. ROJO ERR_MODULE_NOT_FOUND → VERDE 21/21; suite 381/381; audit tokens e ./init.sh verdes. Siguiente pendiente: feature 8 architecture-nav-link (depende de 7, done).
+- 2026-08-18 (implementer, feature 8, cierre): CERRADA — progress/review_08_architecture-nav-link.md con Veredicto APPROVED y sin cambios requeridos (verificado en disco). Status de feature 8 en feature_list.json: done (cambiado de in_progress; la feature se conserva en el array). node scripts/check-format.mjs en verde tras el cambio. Resumen breve: enlace Arquitectura → /arquitectura en el navbar (Layout.astro 39 líneas, +1 línea; aria-current=page en /arquitectura y /arquitectura/ como patrón About; Home/About/@moibaldenegro/SearchBar conservados; sin CSS/JS nuevos). ROJO 3 fail/2 pass → VERDE 5/5; suite 386/386; audit tokens e ./init.sh verdes. **Ciclo de ruta dinámica CERRADO: features 7-8 done, backlog 0 pendientes.**
+
+---
+
+## Sesión 2026-08-18 — Ruta dinámica de búsqueda por término (/loquesea)
+
+### Resumen ejecutivo
+
+- El humano corrigió la interpretación inicial (índice estático /arquitectura):
+  la ruta debe ser dinámica slash+argumento — `/loquesea` filtra el catálogo por
+  ese término (nunca 404). El ciclo implementa y descubre esa ruta.
+- Feature 7 root-term-search: catch-all on-demand `src/pages/[...term].astro`
+  (prerender=false, SSR) con índice embebido, deep linking, empty state con el
+  término y coexistencia intacta con `/search?q=`; módulos `term-route.ts` y
+  controlador compartido con cambios aditivos.
+- Feature 8 architecture-nav-link: enlace `Arquitectura` → `/arquitectura` en el
+  navbar del Layout único (39 líneas, +1 línea), aria-current="page" con el
+  mismo patrón que About, sin CSS ni JS nuevos (hereda layout.css).
+- Ciclo test-first rojo/verde en ambas features: ROJO (f7 ERR_MODULE_NOT_FOUND;
+  f8 3 fail/2 pass) → VERDE (f7 21/21, f8 5/5); suite final 386/386; check-format,
+  audit-design-tokens y `./init.sh` ("El entorno está perfecto") en verde.
+- Artefactos permanentes: specs/07_root-term-search/, specs/08_architecture-nav-link/,
+  progress/impl_07_root-term-search.md, progress/impl_08_architecture-nav-link.md,
+  progress/review_07_root-term-search.md, progress/review_08_architecture-nav-link.md,
+  progress/research/arquitectura-404-route.md. Backlog: features 1-8 done, 0 pendientes.
+
+### Bitácora del ciclo (desde progress/current.md)
+
+- 2026-08-18: spec_author analizó la petición del 404 en /arquitectura. Features 7 (root-term-search) y 8 (architecture-nav-link) dadas de alta como pending con specs en specs/07_root-term-search/ y specs/08_architecture-nav-link/. Análisis en progress/research/arquitectura-404-route.md.
+- 2026-08-18: CORRECCIÓN del humano: la ruta debe ser dinámica (slash+argumento), no un índice estático. Reescritas features 7/8: catch-all src/pages/[...term].astro on-demand (SSR, verificado: prioridad de rutas Astro no colisiona con /, /about, /search, /posts/[id]; getCollection disponible en SSR; precedente HTB stats). Se eliminó la spec obsoleta specs/07_architecture-index-page/. Coexistencia con /search?q= conservada; barra de búsqueda sin cambios (decisión D6).
+- 2026-08-18 (implementer): feature 7 en curso. Tests escritos primero (tests/root-term-search.test.mjs) y ROJO capturado. Implementación en curso: term-route.ts, cambios aditivos en el controlador, [...term].astro.
+- 2026-08-18 (implementer): feature 7 implementada y VERDE — test feature 21/21, suite completa 381/381 (360 previos + 21 nuevos, sin romper search-dedicated-view ni search-landing-live-transition), check-format ✔, audit-design-tokens ✔, ./init.sh → "El entorno está perfecto" (build OK: la página on-demand vive en dist/server, sin dist/client/arquitectura/index.html). NO marcada done: espera reviewer. Informe en progress/impl_07_root-term-search.md.
+- 2026-08-18 (implementer, feature 7, cierre): CERRADA — progress/review_07_root-term-search.md con Veredicto APPROVED y sin cambios requeridos (verificado en disco). Status de feature 7 en feature_list.json: done (cambiado de in_progress; la feature se conserva en el array). node scripts/check-format.mjs y bash ./init.sh en verde tras el cambio. Siguiente pendiente: feature 8 architecture-nav-link (depende de 7, done).
+- 2026-08-18 (implementer): feature 8 en curso (status in_progress en feature_list.json). Test escrito PRIMERO (tests/architecture-nav-link.test.mjs, 5 tests de inspección por regex sobre Layout.astro/layout.css) y ROJO capturado: 3 fail (REQ-08-01, REQ-08-02/03, REQ-08-05 — el enlace no existe), 2 pass (REQ-08-04, ≤100 líneas). Implementación: +1 línea en src/layouts/Layout.astro (enlace Arquitectura → /arquitectura entre About y @moibaldenegro, aria-current con la misma condición que About: /arquitectura y /arquitectura/ → 'page', resto → undefined; design.md D1/D3). Layout.astro: 39 líneas. Informe en progress/impl_08_architecture-nav-link.md. NO marcada done: espera reviewer.
+- 2026-08-18 (implementer, feature 8, cierre): CERRADA — progress/review_08_architecture-nav-link.md con Veredicto APPROVED y sin cambios requeridos (verificado en disco). Status de feature 8 en feature_list.json: done (cambiado de in_progress; la feature se conserva en el array). node scripts/check-format.mjs y bash ./init.sh en verde tras el cambio. **TODAS las features del ciclo (7-8) done; backlog sin pendientes.**

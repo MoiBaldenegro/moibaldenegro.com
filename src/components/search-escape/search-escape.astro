@@ -1,0 +1,9 @@
+---
+// Sin UI: el componente solo arranca el soporte de teclado Escape de la
+// búsqueda (feature 6, REQ-06-01..04). La lógica vive en search-escape.ts
+// (regla 8); el script solo importa y arranca (precedente features 3/4/5).
+---
+<script>
+  import { initSearchEscape } from './search-escape.ts';
+  initSearchEscape();
+</script>

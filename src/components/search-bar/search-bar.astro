@@ -1,0 +1,21 @@
+---
+import '../../styles/search-bar.css';
+---
+
+<div class="search-bar" data-search-bar>
+  <input
+    class="search-bar__input"
+    type="text"
+    placeholder="Buscar artículos…"
+    aria-label="Buscar artículos"
+  />
+  <button type="button" class="search-bar__clear" data-search-clear aria-label="Limpiar búsqueda">
+    ×
+  </button>
+</div>
+
+<script>
+  import { initSearchBar } from './search-bar.ts';
+  import { navigate } from 'astro:transitions/client';
+  initSearchBar(navigate);
+</script>

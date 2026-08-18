@@ -1,0 +1,28 @@
+---
+import '../../styles/search-results.css';
+---
+
+<section class="search-results" aria-label="Resultados de búsqueda">
+  <div class="search-results__guide" data-search-guide>
+    <h2 class="search-results__heading">Buscar en el catálogo</h2>
+    <p class="search-results__guide-text">
+      Escribe un término en la barra de búsqueda o visita /search?q=término para
+      encontrar artículos por título, descripción, etiquetas o contenido.
+    </p>
+  </div>
+  <div class="search-results__empty" data-search-empty hidden>
+    <p class="search-results__empty-message">No se encontraron resultados para '<span data-search-term></span>'</p>
+    <button type="button" class="search-results__clear" data-search-clear>Limpiar búsqueda</button>
+  </div>
+  <div class="search-results__grid" data-search-grid hidden></div>
+  <nav class="search-results__pagination" data-search-pagination hidden aria-label="Paginación de resultados">
+    <button type="button" class="search-results__page-button" data-search-prev>Anterior</button>
+    <span class="search-results__page-label" data-search-page-label></span>
+    <button type="button" class="search-results__page-button" data-search-next>Siguiente</button>
+  </nav>
+</section>
+
+<script>
+  import { initSearchResults } from './search-results-controller.ts';
+  initSearchResults();
+</script>
