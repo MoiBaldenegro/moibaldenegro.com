@@ -17,5 +17,5 @@ import '../../styles/search-bar.css';
 <script>
   import { initSearchBar } from './search-bar.ts';
   import { navigate } from 'astro:transitions/client';
-  initSearchBar(navigate);
+  document.addEventListener('astro:page-load', () => initSearchBar(navigate));
 </script>

@@ -2,12 +2,14 @@
 // REQ-06-01..04). JS de runtime justificado (precedente features 3/4/5):
 // interacción de teclado nativa, sin frameworks ni dependencias. Lógica
 // separada de la UI (regla 8): el <script> del componente solo importa y
-// arranca. Funciones puras (escapeContext, escapeAction, activeTerm) +
-// wiring con DOM inyectado (initSearchEscape). Reutiliza por import las APIs
-// de la barra (clearQuery/activeQuery, feature 4), de la vista dedicada
-// (removeQueryParam/queryTerm, feature 3) y del panel en vivo (applyLive,
-// feature 5). El contexto se detecta por DOM: [data-search-live] → portada;
-// [data-search-guide] → vista /search.
+// arranca. Los módulos empaquetados de Astro se ejecutan una única vez por
+// sesión; la re-inicialización en cada navegación suave la dispara el evento
+// astro:page-load (feature 10). Funciones puras (escapeContext,
+// escapeAction, activeTerm) + wiring con DOM inyectado (initSearchEscape).
+// Reutiliza por import las APIs de la barra (clearQuery/activeQuery, feature
+// 4), de la vista dedicada (removeQueryParam/queryTerm, feature 3) y del
+// panel en vivo (applyLive, feature 5). El contexto se detecta por DOM:
+// [data-search-live] → portada; [data-search-guide] → vista /search.
 
 import { activeQuery, clearQuery } from '../search-bar/search-bar.ts';
 import { queryTerm, removeQueryParam } from '../search-results/search-results-controller.ts';
@@ -40,8 +42,8 @@ export function initSearchEscape(
   barRoot: Element | null = document.querySelector('[data-search-bar]'),
   baseTitle: string = document.title,
 ): void {
-  // View transitions re-ejecutan los scripts del layout en cada navegación:
-  // guard a nivel de módulo para no acumular manejadores en el documento.
+  // El módulo corre una vez por sesión y la re-init por astro:page-load repite
+  // la llamada: guard de módulo para no acumular manejadores en el documento.
   if (escapeHandler !== null) root.removeEventListener('keydown', escapeHandler);
   escapeHandler = (event: KeyboardEvent): void => {
     if (event.key !== 'Escape') return;
@@ -68,7 +70,7 @@ function clearSearchView(baseTitle: string): void {
   window.history.replaceState(null, '', `${window.location.pathname}${rest ? `?${rest}` : ''}`);
   document.title = baseTitle;
   toggle('guide', true);
-  for (const name of ['empty', 'grid', 'pagination']) toggle(name, false);
+  for (const name of ['empty', 'list', 'pagination']) toggle(name, false);
 }
 
 function toggle(name: string, visible: boolean): void {

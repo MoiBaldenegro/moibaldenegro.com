@@ -8,7 +8,7 @@
 //   REQ-03-02 — la vista lee q y lo aplica como filtro inicial (deep linking).
 //   REQ-03-03 — sin q o con q vacío muestra el estado inicial (guía), no el
 //               catálogo completo.
-//   REQ-03-04 — con coincidencias presenta una cuadrícula de tarjetas.
+//   REQ-03-04 — con coincidencias presenta una lista de items.
 //   REQ-03-05 — sin coincidencias muestra "No se encontraron resultados para
 //               el término" con acción de limpiar.
 //   REQ-03-06 — la paginación usa el dominio (searchIndex/PAGE_SIZE) sin
@@ -17,7 +17,7 @@
 //               escape de </script (<\/script).
 //   REQ-03-08 — la acción de limpiar elimina el parámetro q y muestra el
 //               estado inicial.
-//   REQ-03-09 — cada tarjeta enlaza a /posts/[id].
+//   REQ-03-09 — cada item enlaza a /posts/[id].
 //   REQ-03-10 — el título del documento declara el término consultado (prop
 //               title de Layout + document.title en el cliente).
 
@@ -25,7 +25,9 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
 import {
-  cardHtml,
+  itemHtml,
+} from '../src/components/search-results/item-html.ts';
+import {
   queryTerm,
   removeQueryParam,
   pageLabel,
@@ -38,6 +40,10 @@ const COMPONENT_URL = new URL(
 );
 const CONTROLLER_URL = new URL(
   '../src/components/search-results/search-results-controller.ts',
+  import.meta.url,
+);
+const ITEM_HTML_URL = new URL(
+  '../src/components/search-results/item-html.ts',
   import.meta.url,
 );
 const CSS_URL = new URL('../src/styles/search-results.css', import.meta.url);
@@ -77,7 +83,7 @@ function readCss() {
   return readFileSync(CSS_URL, 'utf8');
 }
 
-// Fixture de entrada para cardHtml (mismo shape que SearchIndexEntry).
+// Fixture de entrada para itemHtml (mismo shape que SearchIndexEntry).
 const ENTRY = {
   id: '00-agilismo',
   title: 'Agilismo, diseño y fragilidad',
@@ -143,8 +149,18 @@ test('REQ-03-02: el controlador se arranca desde el componente de resultados', (
   );
   assert.match(
     component,
-    /initSearchResults\(\)/,
-    'el componente no arranca initSearchResults()',
+    /document\.addEventListener\(['"]astro:page-load['"]/,
+    'el componente no registra la init como listener de astro:page-load (feature 10)',
+  );
+  assert.match(
+    component,
+    /=>\s*initSearchResults\(\)/,
+    'el listener no invoca initSearchResults (feature 10)',
+  );
+  assert.doesNotMatch(
+    component,
+    /^\s*initSearchResults\(\);?\s*$/m,
+    'el componente conserva la llamada directa (feature 10 la sustituye)',
   );
 });
 
@@ -165,14 +181,14 @@ test('REQ-03-10: el controlador actualiza document.title con el término consult
 
 // --- REQ-03-03: estado inicial sin q (guía, no catálogo) -------------------
 
-test('REQ-03-03: el componente muestra la guía de búsqueda por defecto y oculta la cuadrícula', () => {
+test('REQ-03-03: el componente muestra la guía de búsqueda por defecto y oculta la lista', () => {
   const component = readComponent();
   const guide = component.match(/<div[^>]*data-search-guide[^>]*>/)?.[0] ?? '';
   assert.ok(guide.includes('data-search-guide'), 'falta el bloque de guía data-search-guide');
   assert.ok(!guide.includes('hidden'), 'la guía no es visible por defecto (estado inicial)');
-  const grid = component.match(/<div[^>]*data-search-grid[^>]*>/)?.[0] ?? '';
-  assert.ok(grid.includes('data-search-grid'), 'falta la cuadrícula data-search-grid');
-  assert.ok(grid.includes('hidden'), 'la cuadrícula no empieza oculta (no lista el catálogo)');
+  const list = component.match(/<ul[^>]*data-search-list[^>]*>/)?.[0] ?? '';
+  assert.ok(list.includes('data-search-list'), 'falta la lista data-search-list');
+  assert.ok(list.includes('hidden'), 'la lista no empieza oculta (no lista el catálogo)');
 });
 
 test('REQ-03-03: la página no lista el catálogo completo en el HTML', () => {
@@ -193,47 +209,52 @@ test('REQ-03-03: q ausente o vacío ⇒ guía (queryTerm normaliza el parámetro
   assert.equal(queryTerm('?q=agilismo&x=1'), 'agilismo');
 });
 
-// --- REQ-03-04 / REQ-03-09: tarjetas de resultados -------------------------
+// --- REQ-03-04 / REQ-03-09: items de resultados ----------------------------
 
-test('REQ-03-04: el componente declara la cuadrícula de tarjetas (grid)', () => {
+test('REQ-03-04: el componente declara la lista de items (data-search-list)', () => {
   const component = readComponent();
-  assert.match(component, /data-search-grid/, 'no hay contenedor de la cuadrícula (REQ-03-04)');
+  assert.match(component, /data-search-list/, 'no hay contenedor de la lista (REQ-03-04)');
+  assert.doesNotMatch(
+    component,
+    /data-search-grid/,
+    'el contenedor viejo data-search-grid no debe persistir (feature 9, D5)',
+  );
 });
 
-test('REQ-03-09: cardHtml genera el enlace /posts/[id] de la tarjeta', () => {
-  const html = cardHtml(ENTRY);
+test('REQ-03-09: itemHtml genera el enlace /posts/[id] del item', () => {
+  const html = itemHtml(ENTRY);
   assert.match(
     html,
     /href="\/posts\/00-agilismo"/,
-    'la tarjeta no enlaza a /posts/[id] (REQ-03-09)',
+    'el item no enlaza a /posts/[id] (REQ-03-09)',
   );
 });
 
-test('REQ-03-04: cardHtml pinta la vista previa (imagen, título, meta, descripción, tags)', () => {
-  const html = cardHtml(ENTRY);
-  assert.match(html, /<article class="search-results__card">/, 'la tarjeta no abre como article');
+test('REQ-03-04: itemHtml pinta la vista previa (imagen, título, meta, descripción, tags)', () => {
+  const html = itemHtml(ENTRY);
+  assert.match(html, /<li class="search-results__item">/, 'el item no abre como li');
   assert.match(
     html,
     /src="\/assets\/content\/arch00\.jpg"/,
-    'la tarjeta no incluye la imagen de vista previa',
+    'el item no incluye la imagen de vista previa',
   );
-  assert.match(html, /Agilismo, diseño y fragilidad/, 'la tarjeta no incluye el título');
+  assert.match(html, /Agilismo, diseño y fragilidad/, 'el item no incluye el título');
   assert.match(
     html,
     /Por Moises Baldenegro Melendez • 15 min de lectura/,
-    'la tarjeta no incluye la meta (autor y lectura)',
+    'el item no incluye la meta (autor y lectura)',
   );
   assert.match(
     html,
     /Conceptos fundamentales de la arquitectura de software\./,
-    'la tarjeta no incluye la descripción',
+    'el item no incluye la descripción',
   );
-  assert.match(html, /#arquitectura/, 'la tarjeta no incluye los tags');
-  assert.match(html, /#agilismo/, 'la tarjeta no incluye todos los tags');
+  assert.match(html, /#arquitectura/, 'el item no incluye los tags');
+  assert.match(html, /#agilismo/, 'el item no incluye todos los tags');
 });
 
-test('REQ-03-04: cardHtml escapa HTML del catálogo (no rompe el marcado)', () => {
-  const html = cardHtml({ ...ENTRY, title: 'A <b>roto</b>', description: 'X & Y' });
+test('REQ-03-04: itemHtml escapa HTML del catálogo (no rompe el marcado)', () => {
+  const html = itemHtml({ ...ENTRY, title: 'A <b>roto</b>', description: 'X & Y' });
   assert.match(html, /A &lt;b&gt;roto&lt;\/b&gt;/, 'el título no se escapa');
   assert.match(html, /X &amp; Y/, 'la descripción no se escapa');
 });
@@ -305,11 +326,12 @@ test('REQ-03-08: removeQueryParam elimina q y deja el resto de la query', () => 
 
 // --- Restricciones del arnés ----------------------------------------------
 
-test('REQ-03-00: ≤100 líneas en página, componente, controlador y hoja', () => {
+test('REQ-03-00: ≤100 líneas en página, componente, controlador, generador y hoja', () => {
   for (const [name, url] of [
     ['src/pages/search.astro', PAGE_URL],
     ['src/components/search-results/search-results.astro', COMPONENT_URL],
     ['src/components/search-results/search-results-controller.ts', CONTROLLER_URL],
+    ['src/components/search-results/item-html.ts', ITEM_HTML_URL],
     ['src/styles/search-results.css', CSS_URL],
   ]) {
     const lines = countLines(readFileSync(url, 'utf8'));
@@ -328,6 +350,7 @@ test('REQ-03-00: search-results.css usa solo tokens existentes y sin colores sue
     '--color-accent',
     '--radius-card',
     '--radius-pill',
+    '--radius-thumb',
     '--gap-card',
     '--transition-default',
     '--font-sans',

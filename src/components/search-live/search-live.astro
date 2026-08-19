@@ -7,11 +7,11 @@ import '../../styles/search-live.css';
   <div class="search-results__empty" data-search-empty hidden>
     <p class="search-results__empty-message">No se encontraron resultados para '<span data-search-term></span>'</p>
   </div>
-  <div class="search-results__grid" data-search-grid hidden></div>
+  <ul class="search-results__list" data-search-list hidden></ul>
   <a class="search-live__all" data-search-all href="/search" hidden>Ver todos los resultados</a>
 </section>
 
 <script>
   import { initSearchLive } from './search-live.ts';
-  initSearchLive();
+  document.addEventListener('astro:page-load', () => initSearchLive());
 </script>

@@ -5,5 +5,5 @@
 ---
 <script>
   import { initSearchEscape } from './search-escape.ts';
-  initSearchEscape();
+  document.addEventListener('astro:page-load', () => initSearchEscape());
 </script>

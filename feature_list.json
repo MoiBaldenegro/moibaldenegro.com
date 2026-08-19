@@ -44,7 +44,7 @@
         "Un test de inspección verifica que src/pages/search.astro declara prerender true y que la página serializa el índice de búsqueda en el documento (REQ-03-01, REQ-03-07)",
         "Un test de inspección verifica que la vista lee el parámetro de URL q y lo aplica como filtro inicial al cargar el enlace (deep linking) y al título del documento (REQ-03-02, REQ-03-10)",
         "Un test de inspección verifica el estado inicial sin q: la vista no lista el catálogo completo y muestra la guía de búsqueda (REQ-03-03)",
-        "Un test de inspección verifica que las tarjetas de resultados enlazan a /posts/[id] y usan la paginación del dominio sin recargar el documento (REQ-03-04, REQ-03-06, REQ-03-09)",
+        "Un test de inspección verifica que los items de resultados enlazan a /posts/[id] y usan la paginación del dominio sin recargar el documento (REQ-03-04, REQ-03-06, REQ-03-09)",
         "Un test de inspección verifica el empty state con el mensaje 'No se encontraron resultados para' y una acción que elimina el parámetro q (REQ-03-05, REQ-03-08)"
       ],
       "depends_on": [2],
@@ -103,7 +103,7 @@
         "Un test de inspección verifica que la página obtiene los artículos mediante PostsRepository y el índice de búsqueda del dominio (REQ-07-05)",
         "Un test unitario verifica que el controlador de resultados deriva el término del pathname y presenta los resultados prefiltrados al cargar la ruta (deep linking) (REQ-07-03)",
         "Un test unitario verifica que un término sin coincidencias muestra el estado vacío con el término consultado en lugar de un 404 (REQ-07-04)",
-        "Un test de inspección verifica que el documento declara el título con el término, reutiliza Layout.astro y la presentación de resultados de la vista /search, y que las tarjetas enlazan a /posts/[id] (REQ-07-06, REQ-07-07, REQ-07-08)",
+        "Un test de inspección verifica que el documento declara el título con el término, reutiliza Layout.astro y la presentación de resultados de la vista /search, y que los items enlazan a /posts/[id] (REQ-07-06, REQ-07-07, REQ-07-08)",
         "Un test de inspección verifica que las rutas estáticas existentes /, /about, /search y /posts/[id] no son capturadas por el catch-all (REQ-07-09)",
         "Un test unitario verifica que la acción de limpiar en la ruta /<término> navega a la raíz del sitio y que la vista /search?q= existente queda sin cambios (REQ-07-10, REQ-07-11)"
       ],
@@ -122,6 +122,42 @@
       ],
       "depends_on": [7],
       "status": "done"
+    },
+    {
+      "id": 9,
+      "name": "search-results-list-mode",
+      "title": "Modo lista atractivo en los resultados de búsqueda en lugar de las tarjetas gigantes",
+      "description": "El humano pidió eliminar las tarjetas gigantes de los resultados de búsqueda y diseñar items nuevos para un modo lista atractivo que sigan navegando al detalle /posts/[id]. Rediseña la presentación canónica (search-results.astro con data-search-list, cardHtml → itemHtml extraído a item-html.ts porque el controlador está en 100/100 líneas, search-results.css con filas compactas separadas por hairline y hover con wash) y el panel en vivo de la portada (search-live.*), que reutiliza las mismas clases y el generador (REQ-05-04 exige la misma presentación; sin esta migración el panel quedaría roto). El contrato de comportamiento se conserva: resultados, guía, empty state, paginación sin recarga y enlaces /posts/[id] (REQ-03-05/06/08/09, REQ-05-04/05/06, REQ-07-04/06/10). Por eso la feature actualiza los tests de inspección de las features 3/5/7 (search-dedicated-view, search-landing-live-transition, root-term-search) y el wording de REQ-03-04/03-09 y REQ-07-06 (tarjeta/cuadrícula → item/lista), con justificación documentada en progress/research/search-results-list-mode.md (precedente REQ-43-06: el artefacto de test sigue a la presentación real). Un solo token nuevo: --radius-thumb 10px, justificado en design.md (los radios 22px/999px son desproporcionados para la miniatura 112x63). Resaltado del término y toggle grid/lista fuera de alcance.",
+      "acceptance": [
+        "Un test de inspección verifica que el componente de resultados declara el contenedor ul con data-search-list en lugar de data-search-grid y que el controlador pinta los resultados en ese contenedor (REQ-09-01, REQ-09-02)",
+        "Un test unitario verifica que itemHtml emite por cada artículo un item li con el título enlazado a /posts/[id] y con la miniatura de la imagen del artículo (REQ-09-03, REQ-09-04)",
+        "Un test unitario verifica que itemHtml incluye la meta del artículo y sus etiquetas junto al título (REQ-09-05)",
+        "Un test de inspección verifica que la hoja de estilos define el resaltado del fondo de la fila y el subrayado del título al pasar el puntero sobre un item, con separación entre items mediante var(--color-border) (REQ-09-06, REQ-09-07, REQ-09-08)",
+        "Un test de inspección verifica que la hoja de estilos oculta la miniatura y reduce el espaciado de los items en la media query de 768 píxeles o menos (REQ-09-09)",
+        "Un test de inspección verifica que el panel en vivo de la portada reutiliza el contenedor de lista y el generador itemHtml de la vista dedicada (REQ-09-10)",
+        "Un test de inspección verifica que el modo lista conserva la guía, el estado vacío con la acción de limpiar, la paginación sin recarga y los enlaces /posts/[id] de las features 3/5/7 (REQ-09-11, REQ-09-12)",
+        "Un test de inspección verifica que el módulo item-html.ts no supera 100 líneas y que la hoja de estilos usa solo tokens existentes o el nuevo --radius-thumb justificado, sin colores sueltos (restricciones del arnés)"
+      ],
+      "depends_on": [],
+      "status": "done"
+    },
+    {
+      "id": 10,
+      "name": "client-init-on-navigation",
+      "title": "Re-inicializar los controladores de búsqueda en cada navegación con astro:page-load",
+      "description": "Bug sistémico client-side con navegación suave (<ClientRouter />, feature 24): al navegar a /arquitectura (enlace del navbar, feature 8) la página se carga con el índice embebido válido pero no pinta resultados porque los <script> empaquetados de Astro se ejecutan UNA vez por sesión (módulos ya cargados ignorados tras el swap del ClientRouter; verificado en node_modules/astro/dist/transitions/router.js). Los 4 módulos cliente con el patrón 'import + init directo' quedan sin inicializar en la 2ª+ visita: search-results.astro → initSearchResults (features 3/7, el reportado), search-bar.astro → initSearchBar(navigate) (feature 4), search-live.astro → initSearchLive (feature 5) y search-escape.astro → initSearchEscape (feature 6, cuyo comentario de cabecera asume falsamente la re-ejecución de scripts). Fix oficial de Astro: re-inicializar con document.addEventListener('astro:page-load', () => initX()) en los 4 scripts — el evento cubre la carga inicial y cada navegación, después del swap y runScripts, con pathname y DOM frescos; los controladores .ts ya son re-parametrizables por llamada (default params evaluados en cada invocación). Se añade guard de idempotencia a nivel de módulo SOLO en initSearchLive (patrón de search-escape: removeEventListener del manejador 'search:change' anterior antes de añadir) para no acumular listeners por visita a la portada; initSearchEscape conserva su guard existente. Los no-op seguros en páginas sin el DOM se conservan sin guards nuevos. Los tests de inspección que asercionan la llamada directa (features 3/4/5/6) se ajustan al patrón listener con justificación documentada (precedente REQ-43-06); tests/root-term-search.test.mjs (llamada unitaria a la función exportada) no cambia. No toca UI: sin design.md.",
+      "acceptance": [
+        "Un test de inspección verifica que el <script> de search-results.astro registra la inicialización como listener del evento astro:page-load y no invoca initSearchResults() de forma directa (REQ-10-01, REQ-10-05)",
+        "Un test de inspección verifica que el <script> de search-bar.astro registra la inicialización de la barra como listener del evento astro:page-load conservando el import de navigate de astro:transitions/client (REQ-10-02, REQ-10-05)",
+        "Un test de inspección verifica que el <script> de search-live.astro registra la inicialización del panel en vivo como listener del evento astro:page-load (REQ-10-03, REQ-10-05)",
+        "Un test de inspección verifica que search-escape.astro registra la inicialización del manejador de Escape como listener del evento astro:page-load (REQ-10-04, REQ-10-05)",
+        "Un test unitario verifica que una segunda llamada a initSearchLive no acumula listeners del evento de cambio de consulta (REQ-10-06)",
+        "Un test unitario verifica que la re-inicialización es un no-op seguro cuando la página no contiene el DOM del controlador (REQ-10-07)",
+        "Un test de inspección verifica que los tests de las features 3/4/5/6 actualizan las aserciones de arranque al patrón astro:page-load con la justificación de cada ajuste y que ./init.sh termina en verde (REQ-10-08)",
+        "Un test de inspección verifica que el comentario de cabecera de search-escape.ts declara la ejecución única de los módulos empaquetados y la re-inicialización con el evento astro:page-load (REQ-10-09)"
+      ],
+      "depends_on": [3, 4, 5, 6, 7, 9],
+      "status": "in_progress"
     }
   ]
 }

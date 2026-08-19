@@ -10,7 +10,7 @@
 //               de resultados en vivo.
 //   REQ-05-03 — al volver a vacío, restaura las secciones de inmediato.
 //   REQ-05-04 — el panel en vivo usa la misma presentación que /search
-//               (reutiliza cardHtml y search-results.css de la feature 3).
+//               (reutiliza itemHtml y search-results.css de la feature 3).
 //   REQ-05-05 — sin coincidencias, estado vacío con el término actual
 //               (Decisión 3: sin acción de limpiar duplicada).
 //   REQ-05-06 — más coincidencias que PAGE_SIZE → primeros PAGE_SIZE + enlace
@@ -102,17 +102,17 @@ function fakePanel() {
     panelHidden: [],
     landingHidden: [],
     emptyHidden: [],
-    gridHidden: [],
-    gridHtml: [],
+    listHidden: [],
+    listHtml: [],
     term: [],
     href: [],
     allHidden: [],
   };
   const empty = { toggleAttribute: (_name, force) => calls.emptyHidden.push(force) };
-  const grid = {
-    toggleAttribute: (_name, force) => calls.gridHidden.push(force),
+  const list = {
+    toggleAttribute: (_name, force) => calls.listHidden.push(force),
     set innerHTML(value) {
-      calls.gridHtml.push(value);
+      calls.listHtml.push(value);
     },
   };
   const termNode = {
@@ -129,7 +129,7 @@ function fakePanel() {
     querySelector: (selector) =>
       ({
         '[data-search-empty]': empty,
-        '[data-search-grid]': grid,
+        '[data-search-list]': list,
         '[data-search-term]': termNode,
         '[data-search-all]': allLink,
       })[selector] ?? null,
@@ -152,7 +152,7 @@ test('REQ-05-01/02/03 (wiring): applyLive oculta secciones con consulta y restau
   applyLive('p', NINE, panel, landing);
   assert.equal(calls.panelHidden.at(-1), false, 'con consulta el panel no se muestra (REQ-05-02)');
   assert.equal(calls.landingHidden.at(-1), true, 'con consulta las secciones no se ocultan (REQ-05-02)');
-  assert.ok(calls.gridHtml.length > 0, 'con coincidencias no se pinta la cuadrícula');
+  assert.ok(calls.listHtml.length > 0, 'con coincidencias no se pinta la lista');
   applyLive('', NINE, panel, landing);
   assert.equal(calls.panelHidden.at(-1), true, 'al vaciar el panel no se oculta (REQ-05-03)');
   assert.equal(calls.landingHidden.at(-1), false, 'al vaciar las secciones no se restauran (REQ-05-03)');
@@ -205,10 +205,10 @@ test('REQ-05-04: el panel reutiliza la presentación de la vista dedicada (inspe
   const controller = readController();
   assert.match(
     controller,
-    /search-results-controller\.ts/,
-    'el controlador no importa la presentación de la feature 3 (REQ-05-04)',
+    /item-html\.ts/,
+    'el controlador no importa el generador de la feature 3 (REQ-05-04)',
   );
-  assert.match(controller, /cardHtml/, 'el controlador no reutiliza cardHtml de la feature 3');
+  assert.match(controller, /itemHtml/, 'el controlador no reutiliza itemHtml de la feature 3');
   const component = readComponent();
   assert.match(
     component,
@@ -216,7 +216,7 @@ test('REQ-05-04: el panel reutiliza la presentación de la vista dedicada (inspe
     'el panel no importa la hoja canónica de la vista dedicada (REQ-05-04)',
   );
   assert.match(component, /search-results__empty/, 'el panel no reutiliza el bloque empty canónico');
-  assert.match(component, /search-results__grid/, 'el panel no reutiliza el bloque grid canónico');
+  assert.match(component, /search-results__list/, 'el panel no reutiliza el bloque list canónico');
 });
 
 // --- REQ-05-05: estado vacío con el término actual --------------------------
@@ -240,7 +240,7 @@ test('REQ-05-05 (wiring): sin coincidencias el panel muestra el término actual'
   applyLive('zzz-no-existe', NINE, panel, landing);
   assert.equal(calls.term.at(-1), 'zzz-no-existe', 'el empty state no muestra el término actual');
   assert.equal(calls.emptyHidden.at(-1), false, 'el empty state no se muestra (REQ-05-05)');
-  assert.equal(calls.gridHidden.at(-1), true, 'la cuadrícula no se oculta sin coincidencias');
+  assert.equal(calls.listHidden.at(-1), true, 'la lista no se oculta sin coincidencias');
   assert.equal(calls.allHidden.at(-1), true, 'sin coincidencias no debe haber enlace ver todos');
 });
 
@@ -310,7 +310,21 @@ test('REQ-05-07: el componente arranca el controlador desde su script (inspecci�
     /import\s*\{[^}]*initSearchLive[^}]*\}\s*from\s*['"][^'"]*search-live\.ts['"]/,
     'el <script> no importa el controlador (regla 8)',
   );
-  assert.match(component, /initSearchLive\(\)/, 'el <script> no arranca el controlador');
+  assert.match(
+    component,
+    /document\.addEventListener\(['"]astro:page-load['"]/,
+    'el <script> no registra la init como listener de astro:page-load (feature 10)',
+  );
+  assert.match(
+    component,
+    /=>\s*initSearchLive\(\)/,
+    'el listener no invoca initSearchLive (feature 10)',
+  );
+  assert.doesNotMatch(
+    component,
+    /^\s*initSearchLive\(\);?\s*$/m,
+    'el <script> conserva la llamada directa (feature 10 la sustituye)',
+  );
 });
 
 test('REQ-05-01: el panel empieza oculto (modo landing por defecto)', () => {

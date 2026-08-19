@@ -14,7 +14,7 @@ import '../../styles/search-results.css';
     <p class="search-results__empty-message">No se encontraron resultados para '<span data-search-term></span>'</p>
     <button type="button" class="search-results__clear" data-search-clear>Limpiar búsqueda</button>
   </div>
-  <div class="search-results__grid" data-search-grid hidden></div>
+  <ul class="search-results__list" data-search-list hidden></ul>
   <nav class="search-results__pagination" data-search-pagination hidden aria-label="Paginación de resultados">
     <button type="button" class="search-results__page-button" data-search-prev>Anterior</button>
     <span class="search-results__page-label" data-search-page-label></span>
@@ -24,5 +24,5 @@ import '../../styles/search-results.css';
 
 <script>
   import { initSearchResults } from './search-results-controller.ts';
-  initSearchResults();
+  document.addEventListener('astro:page-load', () => initSearchResults());
 </script>

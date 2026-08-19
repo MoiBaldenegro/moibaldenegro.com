@@ -65,6 +65,10 @@
   /* Radio */
   --radius-card: 22px;
   --radius-pill: 999px;
+  /* Miniatura del modo lista de búsqueda (feature 9): 22px es un tercio del
+     alto de la miniatura 112×63 y 999px es inaplicable; 10px mantiene el
+     lenguaje redondeado a escala proporcional (design.md de la feature 9). */
+  --radius-thumb: 10px;
 
   /* Espaciado */
   --gap-card: 14px;

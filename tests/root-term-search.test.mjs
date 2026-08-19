@@ -13,7 +13,7 @@
 //               pathname y presenta los resultados prefiltrados.
 //   REQ-07-04 — sin coincidencias: empty state con el término (nunca 404).
 //   REQ-07-05 — la página obtiene artículos con PostsRepository + dominio.
-//   REQ-07-06 — cada tarjeta enlaza a /posts/[id].
+//   REQ-07-06 — cada item enlaza a /posts/[id].
 //   REQ-07-07 — el documento declara el título con el término.
 //   REQ-07-08 — reutiliza Layout.astro y la presentación de /search.
 //   REQ-07-09 — las rutas estáticas conservan sus archivos (la prioridad de
@@ -89,7 +89,7 @@ function fakeDom(index) {
   const calls = {
     toggle: [],
     term: [],
-    grid: [],
+    list: [],
     label: [],
     title: [],
     assign: [],
@@ -100,7 +100,7 @@ function fakeDom(index) {
   const selectors = [
     '[data-search-guide]',
     '[data-search-empty]',
-    '[data-search-grid]',
+    '[data-search-list]',
     '[data-search-pagination]',
     '[data-search-term]',
     '[data-search-page-label]',
@@ -121,7 +121,7 @@ function fakeDom(index) {
         if (selector === '[data-search-page-label]') calls.label.push(value);
       },
       set innerHTML(value) {
-        if (selector === '[data-search-grid]') calls.grid.push(value);
+        if (selector === '[data-search-list]') calls.list.push(value);
       },
     });
   }
@@ -266,11 +266,11 @@ test('REQ-07-10: clearDestination devuelve la raíz en /<término> y no-op en /s
 test('REQ-07-03 (wiring): init con pathname sin q presenta resultados prefiltrados', () => {
   const { calls, cleanup } = initWith('/arquitectura');
   try {
-    assert.ok(calls.grid.length > 0, 'no se pintaron tarjetas al cargar /<término> (REQ-07-03)');
+    assert.ok(calls.list.length > 0, 'no se pintaron items al cargar /<término> (REQ-07-03)');
     assert.match(
-      calls.grid[0],
+      calls.list[0],
       /href="\/posts\/00-agilismo"/,
-      'la tarjeta no enlaza a /posts/[id] (REQ-07-06)',
+      'el item no enlaza a /posts/[id] (REQ-07-06)',
     );
     assert.equal(
       calls.title.at(-1),
@@ -300,7 +300,7 @@ test('REQ-07-04 (wiring): sin coincidencias → empty state con el término (nun
       ['[data-search-empty]', 'hidden', false],
       'el empty state no se muestra (REQ-07-04)',
     );
-    assert.equal(calls.grid.length, 0, 'sin coincidencias no se pintan tarjetas');
+    assert.equal(calls.list.length, 0, 'sin coincidencias no se pintan items');
   } finally {
     cleanup();
   }
@@ -320,7 +320,7 @@ test('REQ-07-10 (wiring): limpiar en /<término> navega a la raíz', () => {
 test('REQ-07-03 (wiring): /search sin q muestra la guía (no deriva "search" como término)', () => {
   const { calls, cleanup } = initWith('/search');
   try {
-    assert.equal(calls.grid.length, 0, '/search sin q no debe listar resultados (REQ-03-03)');
+    assert.equal(calls.list.length, 0, '/search sin q no debe listar resultados (REQ-03-03)');
     assert.deepEqual(
       calls.toggle.find(([s]) => s === '[data-search-guide]'),
       ['[data-search-guide]', 'hidden', false],
@@ -336,7 +336,7 @@ test('REQ-07-03 (wiring): /search sin q muestra la guía (no deriva "search" com
 test('REQ-07-11 (wiring): /search?q= sigue leyendo q y limpiar conserva la vista', () => {
   const { calls, fireClear, cleanup } = initWith('/search', '?q=agilismo');
   try {
-    assert.ok(calls.grid.length > 0, 'con q no se presentan resultados (REQ-03-02)');
+    assert.ok(calls.list.length > 0, 'con q no se presentan resultados (REQ-03-02)');
     assert.equal(calls.title.at(-1), 'Búsqueda: agilismo', 'el título no usa el término de q');
     fireClear();
     assert.equal(calls.assign.length, 0, 'REQ-07-11: /search?q= no debe navegar a la raíz');

@@ -255,7 +255,21 @@ test('Decisión 1: el componente importa la hoja y arranca el control', () => {
     /import\s*\{[^}]*initSearchBar[^}]*\}\s*from\s*['"][^'"]*search-bar\.ts['"]/,
     'el <script> no importa el control (regla 8)',
   );
-  assert.match(component, /initSearchBar\(/, 'el <script> no arranca el control');
+  assert.match(
+    component,
+    /document\.addEventListener\(['"]astro:page-load['"]/,
+    'el <script> no registra la init como listener de astro:page-load (feature 10)',
+  );
+  assert.match(
+    component,
+    /=>\s*initSearchBar\(navigate\)/,
+    'el listener no invoca initSearchBar(navigate) (feature 10)',
+  );
+  assert.doesNotMatch(
+    component,
+    /^\s*initSearchBar\([^;]*\);?\s*$/m,
+    'el <script> conserva la llamada directa (feature 10 la sustituye)',
+  );
 });
 
 test('REQ-04-05 (Decisión 3): el script navega con navigate de astro:transitions/client', () => {

@@ -1,10 +1,11 @@
 // Controlador client-side de la búsqueda (features 3/7: /search?q= y
 // /<término>). Lógica separada de la UI (regla 8): lee el índice embebido
 // (#search-index), filtra con searchIndex del dominio (feature 2) y pinta
-// tarjetas, empty state, guía y paginación sin recargar (JS justificado,
-// término de ?q= o del pathname — REQ-07-03).
+// items de la lista (itemHtml, feature 9), empty state, guía y paginación
+// sin recargar (JS justificado, término de ?q= o del pathname — REQ-07-03).
 import { searchIndex } from '../../domain/search/search.ts';
 import type { SearchIndexEntry } from '../../domain/search/index.ts';
+import { itemHtml } from './item-html.ts';
 import { clearDestination, termFromPathname } from './term-route.ts';
 const INDEX_ID = 'search-index';
 export function queryTerm(search: string): string {
@@ -17,20 +18,6 @@ export function removeQueryParam(search: string, name: string): string {
 }
 export function pageLabel(page: number, totalPages: number): string {
   return `Página ${page} de ${totalPages}`;
-}
-export function cardHtml(entry: SearchIndexEntry): string {
-  const tags = entry.tags.map((t) => `<span class="search-results__tag">#${esc(t)}</span>`).join('');
-  return [
-    '<article class="search-results__card">',
-    `<a class="search-results__link" href="/posts/${esc(entry.id)}">`,
-    `<img class="search-results__image" src="/assets/content/${esc(entry.img)}" alt="${esc(entry.title)}" loading="lazy" />`,
-    `<h2 class="search-results__title">${esc(entry.title)}</h2>`,
-    '</a>',
-    `<p class="search-results__meta">Por ${esc(entry.author)} • ${entry.readtime} min de lectura</p>`,
-    `<p class="search-results__description">${esc(entry.description)}</p>`,
-    `<div class="search-results__tags">${tags}</div>`,
-    '</article>',
-  ].join('');
 }
 export function initSearchResults(): void {
   const index = readIndex();
@@ -60,10 +47,10 @@ function renderSearch(term: string, index: SearchIndexEntry[], page: number): vo
     return;
   }
   toggle('empty', false);
-  const grid = document.querySelector('[data-search-grid]');
-  if (grid !== null) {
-    grid.innerHTML = data.results.map(cardHtml).join('');
-    toggle('grid', true);
+  const list = document.querySelector('[data-search-list]');
+  if (list !== null) {
+    list.innerHTML = data.results.map(itemHtml).join('');
+    toggle('list', true);
   }
   const label = document.querySelector('[data-search-page-label]');
   if (label !== null) label.textContent = pageLabel(data.page, data.totalPages);
@@ -86,7 +73,7 @@ function wireClear(baseTitle: string, fromQuery: boolean): void {
     if (fromQuery) {
       const rest = removeQueryParam(window.location.search, 'q');
       window.history.replaceState(null, '', `${window.location.pathname}${rest ? `?${rest}` : ''}`);
-      document.title = baseTitle; toggle('empty', false); toggle('grid', false); toggle('pagination', false); toggle('guide', true);
+      document.title = baseTitle; toggle('empty', false); toggle('list', false); toggle('pagination', false); toggle('guide', true);
     } else {
       window.location.assign(clearDestination(window.location.pathname));
     }
@@ -94,7 +81,4 @@ function wireClear(baseTitle: string, fromQuery: boolean): void {
 }
 function toggle(name: string, visible: boolean): void {
   document.querySelector(`[data-search-${name}]`)?.toggleAttribute('hidden', !visible);
-}
-function esc(text: string): string {
-  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }

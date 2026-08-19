@@ -18,8 +18,10 @@
 //   REQ-17-09 — tokens.css no define tokens del grupo aspect ni --radius-image.
 //               Nota (feature 25): tokens.css bajó de 96 a 87 líneas porque la
 //               feature 25 eliminó los tokens de opacidad del fondo revocado
-//               (REQ-25-03); la aserción de conteo refleja el estado canónico
-//               posterior sin volver a añadir tokens.
+//               (REQ-25-03). La feature 9 añadió el token aprobado
+//               --radius-thumb (10px, miniatura del modo lista de búsqueda,
+//               design.md 09) y el estado canónico es 91 líneas; la aserción
+//               de conteo refleja ese estado sin volver a añadir tokens.
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -167,12 +169,12 @@ test('REQ-17-08: latest-articles.css no supera las 100 líneas', () => {
   );
 });
 
-test('REQ-17-09: tokens.css conserva 87 líneas (estado post-feature 25, sin tokens nuevos)', () => {
+test('REQ-17-09: tokens.css conserva 91 líneas (post-feature 25 + --radius-thumb de la feature 9, sin tokens nuevos de imagen)', () => {
   const lineCount = countLines(readTokens());
   assert.equal(
     lineCount,
-    87,
-    `tokens.css tiene ${lineCount} líneas y debe conservar 87 (REQ-17-09, tras REQ-25-03)`
+    91,
+    `tokens.css tiene ${lineCount} líneas y debe conservar 91 (REQ-17-09; 87 post-feature 25 + 4 del token --radius-thumb aprobado en la feature 9)`
   );
 });
 

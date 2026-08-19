@@ -112,12 +112,12 @@ function fakeBar() {
 
 // Document fake para la vista /search: título + toggles data-search-*.
 function fakeDoc(titleValue) {
-  const toggles = { guide: [], empty: [], grid: [], pagination: [] };
+  const toggles = { guide: [], empty: [], list: [], pagination: [] };
   const doc = {
     title: titleValue,
     dispatchEvent: (event) => dispatched.push(event),
     querySelector: (selector) => {
-      const match = selector.match(/data-search-(guide|empty|grid|pagination)/);
+      const match = selector.match(/data-search-(guide|empty|list|pagination)/);
       if (match === null) return null;
       const name = match[1];
       return { toggleAttribute: (_n, force) => toggles[name].push(force) };
@@ -212,7 +212,7 @@ test('REQ-06-02 (wiring): Escape en /search limpia la consulta y muestra el esta
   assert.deepEqual(replace, [[null, '', '/search']], 'Escape no eliminó q de la URL (REQ-06-02)');
   assert.equal(toggles.guide.at(-1), false, 'Escape no mostró la guía (estado inicial, REQ-06-02)');
   assert.equal(toggles.empty.at(-1), true, 'Escape no ocultó el empty state (REQ-06-02)');
-  assert.equal(toggles.grid.at(-1), true, 'Escape no ocultó la cuadrícula (REQ-06-02)');
+  assert.equal(toggles.list.at(-1), true, 'Escape no ocultó la lista (REQ-06-02)');
   assert.equal(toggles.pagination.at(-1), true, 'Escape no ocultó la paginación (REQ-06-02)');
   assert.equal(doc.title, 'Búsqueda', 'Escape no restauró el título base');
   assert.equal(calls.stop.length, 1, 'Escape no detuvo la propagación (REQ-06-04)');
@@ -310,7 +310,21 @@ test('REQ-06-00: el componente arranca el controlador desde su script (regla 8)'
     /import\s*\{[^}]*initSearchEscape[^}]*\}\s*from\s*['"][^'']*search-escape\.ts['"]/,
     'el <script> no importa el controlador (regla 8)',
   );
-  assert.match(component, /initSearchEscape\(\)/, 'el <script> no arranca el controlador');
+  assert.match(
+    component,
+    /document\.addEventListener\(['"]astro:page-load['"]/,
+    'el <script> no registra la init como listener de astro:page-load (feature 10)',
+  );
+  assert.match(
+    component,
+    /=>\s*initSearchEscape\(\)/,
+    'el listener no invoca initSearchEscape (feature 10)',
+  );
+  assert.doesNotMatch(
+    component,
+    /^\s*initSearchEscape\(\);?\s*$/m,
+    'el <script> conserva la llamada directa (feature 10 la sustituye)',
+  );
   assert.doesNotMatch(component, /<style/i, 'el componente contiene un bloque <style> embebido');
   assert.doesNotMatch(component, /\bstyle\s*=/, 'el componente conserva atributos style inline');
 });
