@@ -10,7 +10,7 @@ created: "19 Agosto 2026"
 updated: "19 Agosto 2026"
 ---
 
-# Niveles de Abstracción y Enfoques de Diseño en Arquitectura de Software
+# 01. Niveles de Abstracción y Enfoques de Diseño en Arquitectura de Software
 
 Existen dos niveles de abstracción: **alto nivel** y **bajo nivel**. Esta diferenciación, por alguna razón, normalmente tarda mucho en explicarse y, a mi parecer, es lo que haría a los profesionales entender mucho más fácilmente el rol de la Arquitectura de Software. Así que hablemos de ello desde ya.
 
