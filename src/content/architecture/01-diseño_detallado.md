@@ -2,7 +2,7 @@
 slug: 01-diseño-detallado
 title:  Diseño detallado
 author: Moises Baldenegro Melendez
-img: arch00.webp
+img: entry-01.webp
 readtime: 7
 description: En este capitulo hablamos sobre el contexto de arquitectura y diseño de software.
 tags: "#arquitectura #software-design" 
