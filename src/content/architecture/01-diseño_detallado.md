@@ -44,7 +44,7 @@ Entonces podemos entender que, para cada problema, tomaremos requerimientos y de
 
 ## La Analogía del Café y los Enfoques de Diseño
 
-Pongámonos en modo analogía y hablemos de café (me encanta el café). 
+Pongámonos en modo analogía y hablemos de café porque me encanta el café.
 
 Si me levanto en la mañana y necesito prepararme un café, puedo evaluar las diferentes maneras de resolver esa necesidad: 
 * Podría simplemente hacer un café soluble.
@@ -88,4 +88,4 @@ Todas estas son prácticas exitosas y validadas por la experiencia, lo cual es i
 
 
 
-**Tags:** `#arquitectura` `#software-design` `#agilismo`
+**Tags:** `#arquitectura` `#software-design`
