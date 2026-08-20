@@ -20,10 +20,12 @@
 //   REQ-42-08 — el primer h1 y el primer img conservan los pares
 //               title-${entry.id} / img-${entry.id} (REQ-24-03/05).
 //   REQ-42-09 — los estilos residen en post-header.css (≤100 líneas),
-//               tokens.css permanece en 91 líneas (87 + el token
-//               --radius-thumb aprobado en la feature 9), la página sigue ≤100
-//               líneas sin estilos embebidos y toda declaración de
-//               color/borde/sombra de la hoja usa var() (REQ-39-09).
+//               tokens.css permanece en 93 líneas (87 + el token
+//               --radius-thumb aprobado en la feature 9 + el token
+//               --video-max-width aprobado en la feature 16; ajuste
+//               REQ-43-06), la página sigue ≤100 líneas sin estilos
+//               embebidos y toda declaración de color/borde/sombra de la
+//               hoja usa var() (REQ-39-09).
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -192,10 +194,10 @@ test('REQ-42-09: post-header.css ≤100 líneas y sin hex/rgba sueltos', () => {
   assert.doesNotMatch(content, /rgba?\(/, 'post-header.css contiene rgb()/rgba() hardcodeado (REQ-42-09)');
 });
 
-test('REQ-42-09: tokens.css conserva 91 líneas (87 + --radius-thumb de la feature 9) sin tokens nuevos', () => {
+test('REQ-42-09: tokens.css conserva 93 líneas (87 + --radius-thumb de la feature 9 + --video-max-width de la feature 16) sin tokens nuevos', () => {
   const tokens = readTokens();
   const lineCount = countLines(tokens);
-  assert.equal(lineCount, 91, `tokens.css tiene ${lineCount} líneas y debe conservar 91 (REQ-42-09; 87 + 4 del token --radius-thumb aprobado en la feature 9)`);
+  assert.equal(lineCount, 93, `tokens.css tiene ${lineCount} líneas y debe conservar 93 (REQ-42-09; 87 + 4 del token --radius-thumb de la feature 9 + 2 del token --video-max-width de la feature 16; ajuste REQ-43-06)`);
   assert.doesNotMatch(tokens, /--post-/, 'tokens.css define un token del grupo post (REQ-42-09, sin tokens nuevos)');
 });
 

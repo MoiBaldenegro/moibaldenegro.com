@@ -267,6 +267,24 @@
         13
       ],
       "status": "done"
+    },
+    {
+      "id": 16,
+      "name": "video-desktop-width",
+      "title": "Ancho acotado y centrado del video embebido en desktop",
+      "description": "El humano reportó: «en la versión más grande en desktop, el iframe no quiero que se vea tan grande, un poco más pequeño y centrado, esto solo en desktop». Causa (verificada en progress/research/video-desktop-width.md): el contenedor .video-container de article.css (feature 11) es full-width (width 100%, max-width 100%) y la columna del detalle mide min(var(--container-max), 95%) con --container-max 1500px → el video ocupa ~1400px en desktop. Esta feature añade una media query de escritorio (min-width: 769px, complementaria del breakpoint móvil 768px existente) en article.css que acota el contenedor a var(--video-max-width) y lo centra con margin: var(--gap-card) auto; en ≤768px se conserva el full-width actual sin tocar la regla base (REQ-11-02/05 intactos, sin ajuste de tests REQ-11). Token nuevo --video-max-width: 640px en tokens.css (precedente --radius-thumb: la escala existente no aplica; 640px es el embed 16:9 estándar y ~46% de la columna desktop), lo que pasa tokens.css de 91 a 93 líneas y obliga a ajustar los 5 tests que fijan el conteo exacto (REQ-17-09/26-07/39-09/40-11/42-09) con justificación en el encabezado (precedente REQ-43-06). Sin JS (estático por defecto), sin tocar post.css (100 líneas exactas, REQ-26-06) ni [id].astro. depends_on [11]: modifica la hoja article.css y su contrato de tests creados en la feature 11 (la regla base que REQ-11-02/05 asercionan).",
+      "acceptance": [
+        "Un test de inspección verifica que article.css declara @media (min-width: 769px) y que en su interior el contenedor .post__content .video-container declara max-width con var(--video-max-width) y margin con var(--gap-card) auto (REQ-16-01, REQ-16-02, REQ-16-05)",
+        "Un test de inspección verifica que la regla base .post__content .video-container conserva width 100%, max-width 100% y margin var(--gap-card) sin cambios, de modo que en 768 píxeles o menos el video conserva el ancho completo (REQ-16-03, REQ-16-06)",
+        "Un test de inspección verifica que tokens.css declara el token --video-max-width con el valor 640px (REQ-16-04)",
+        "Un test de inspección verifica que article.css no supera las 100 líneas y que la media query usa solo tokens para el ancho máximo y el espaciado (REQ-16-05, REQ-16-07)",
+        "Un test de inspección verifica que los 5 tests que fijan tokens.css en 91 líneas (REQ-17-09, REQ-26-07, REQ-39-09, REQ-40-11, REQ-42-09) actualizan la aserción al nuevo estado canónico con la justificación del ajuste documentada en el encabezado (REQ-16-09, precedente REQ-43-06)",
+        "La suite completa del arnés pasa en verde al cierre de la feature (restricción require_tests_to_close)"
+      ],
+      "depends_on": [
+        11
+      ],
+      "status": "done"
     }
   ]
 }

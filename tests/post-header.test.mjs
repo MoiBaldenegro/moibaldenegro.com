@@ -18,9 +18,11 @@
 //   REQ-39-07 — media query 768px: el header (post-header.css) y la
 //               tipografía del detalle (post.css) adaptan tamaños/espaciados.
 //   REQ-39-08 — main.post y article.post__content siguen presentes.
-//   REQ-39-09 — solo tokens existentes: tokens.css en 91 líneas (87 + el
-//               token --radius-thumb aprobado en la feature 9), sin hex/rgba
-//               sueltos y colores/radios/sombras solo con var().
+//   REQ-39-09 — solo tokens existentes: tokens.css en 93 líneas (87 + el
+//               token --radius-thumb aprobado en la feature 9 + el token
+//               --video-max-width aprobado en la feature 16; ajuste
+//               REQ-43-06), sin hex/rgba sueltos y colores/radios/sombras
+//               solo con var().
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -172,10 +174,10 @@ test('REQ-39-08: se conservan main.post y article.post__content', () => {
   assert.match(page, /<article class="post__content">/, 'la página no conserva article.post__content (REQ-39-08)');
 });
 
-test('REQ-39-09: tokens.css conserva 91 líneas (87 + --radius-thumb de la feature 9) sin tokens nuevos de post', () => {
+test('REQ-39-09: tokens.css conserva 93 líneas (87 + --radius-thumb de la feature 9 + --video-max-width de la feature 16) sin tokens nuevos de post', () => {
   const tokens = readTokens();
   const lineCount = countLines(tokens);
-  assert.equal(lineCount, 91, `tokens.css tiene ${lineCount} líneas y debe conservar 91 (REQ-39-09; 87 + 4 del token --radius-thumb aprobado en la feature 9)`);
+  assert.equal(lineCount, 93, `tokens.css tiene ${lineCount} líneas y debe conservar 93 (REQ-39-09; 87 + 4 del token --radius-thumb de la feature 9 + 2 del token --video-max-width de la feature 16; ajuste REQ-43-06)`);
   assert.doesNotMatch(tokens, /--post-/, 'tokens.css define un token del grupo post (REQ-39-09, sin tokens nuevos)');
 });
 

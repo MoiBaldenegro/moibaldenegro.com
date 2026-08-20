@@ -20,8 +20,12 @@
 //               feature 25 eliminó los tokens de opacidad del fondo revocado
 //               (REQ-25-03). La feature 9 añadió el token aprobado
 //               --radius-thumb (10px, miniatura del modo lista de búsqueda,
-//               design.md 09) y el estado canónico es 91 líneas; la aserción
-//               de conteo refleja ese estado sin volver a añadir tokens.
+//               design.md 09) y el estado canónico es 91 líneas. La feature 16
+//               (video-desktop-width) añadió el token aprobado --video-max-width
+//               (640px, ancho del embed de video en desktop) y el estado
+//               canónico actual es 93 líneas; la aserción de conteo refleja ese
+//               estado sin volver a añadir tokens (justificación REQ-43-06,
+//               precedente feature 9: --radius-thumb 87→91).
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -169,12 +173,12 @@ test('REQ-17-08: latest-articles.css no supera las 100 líneas', () => {
   );
 });
 
-test('REQ-17-09: tokens.css conserva 91 líneas (post-feature 25 + --radius-thumb de la feature 9, sin tokens nuevos de imagen)', () => {
+test('REQ-17-09: tokens.css conserva 93 líneas (87 post-feature 25 + --radius-thumb de la feature 9 + --video-max-width de la feature 16, sin tokens nuevos de imagen)', () => {
   const lineCount = countLines(readTokens());
   assert.equal(
     lineCount,
-    91,
-    `tokens.css tiene ${lineCount} líneas y debe conservar 91 (REQ-17-09; 87 post-feature 25 + 4 del token --radius-thumb aprobado en la feature 9)`
+    93,
+    `tokens.css tiene ${lineCount} líneas y debe conservar 93 (REQ-17-09; 87 post-feature 25 + 4 del token --radius-thumb de la feature 9 + 2 del token --video-max-width aprobado en la feature 16; ajuste REQ-43-06)`
   );
 });
 

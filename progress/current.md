@@ -4,7 +4,7 @@
 
 ### Feature en curso
 
-_— (ninguna; sesión anterior cerrada: feature 15 done)_
+_— (ninguna; sesión anterior cerrada: feature 16 done)_
 
 ### Plan
 

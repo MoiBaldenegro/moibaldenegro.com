@@ -16,10 +16,10 @@
 //   REQ-26-05 — colores, radios, bordes y transiciones solo desde var();
 //               tipografía/layout literales del componente (design.md).
 //   REQ-26-06 — post.css respeta el máximo de 100 líneas sin hex/rgba sueltos.
-//   REQ-26-07 — tokens.css permanece sin cambios (91 líneas, estado canónico
+//   REQ-26-07 — tokens.css permanece sin cambios (93 líneas, estado canónico
 //               post-feature 25 + token --radius-thumb aprobado en la feature
-//               9 según tests/article-card-images.test.mjs REQ-17-09; sin
-//               tokens nuevos del grupo post/text).
+//               9 + token --video-max-width aprobado en la feature 16 — ajuste
+//               REQ-43-06; sin tokens nuevos del grupo post/text).
 //   REQ-26-08 — la suite completa y el build del proyecto siguen en verde
 //               (se verifica ejecutando pnpm test y ./init.sh, no desde un
 //               subtest: lanzar la suite dentro de la suite sería recursivo).
@@ -29,7 +29,9 @@
 // REQ-25-03 eliminó los tokens GOL y el estado canónico fue 87 líneas,
 // fijado por tests/article-card-images.test.mjs (REQ-17-09). La feature 9
 // (search-results-list-mode) añadió el token aprobado --radius-thumb y el
-// estado canónico actual es 91 líneas. El espíritu del REQ-26-07 es "sin
+// estado canónico fue 91 líneas. La feature 16 (video-desktop-width) añadió
+// el token aprobado --video-max-width (640px) y el estado canónico actual es
+// 93 líneas (ajuste REQ-43-06). El espíritu del REQ-26-07 es "sin
 // cambios y sin tokens nuevos".
 
 import { test } from 'node:test';
@@ -206,13 +208,13 @@ test('REQ-26-06: sin valores hex ni rgb()/rgba() hardcodeados', () => {
   );
 });
 
-test('REQ-26-07: tokens.css conserva 91 líneas (87 + --radius-thumb de la feature 9) sin tokens nuevos de post', () => {
+test('REQ-26-07: tokens.css conserva 93 líneas (87 + --radius-thumb de la feature 9 + --video-max-width de la feature 16) sin tokens nuevos de post', () => {
   const tokens = readTokens();
   const lineCount = countLines(tokens);
   assert.equal(
     lineCount,
-    91,
-    `tokens.css tiene ${lineCount} líneas y debe conservar 91 (REQ-26-07; 87 tras REQ-25-03 + 4 del token --radius-thumb aprobado en la feature 9)`
+    93,
+    `tokens.css tiene ${lineCount} líneas y debe conservar 93 (REQ-26-07; 87 tras REQ-25-03 + 4 del token --radius-thumb de la feature 9 + 2 del token --video-max-width de la feature 16; ajuste REQ-43-06)`
   );
   assert.doesNotMatch(
     tokens,

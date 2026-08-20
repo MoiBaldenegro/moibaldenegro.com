@@ -1277,3 +1277,12 @@ El humano corrigió la interpretación de la sesión anterior: «claro, el Logo 
 - **Feature 15 — navbar-logo-home (done, APPROVED)**: `Layout.astro` queda con el ancla del logo (`aria-current` de la portada) + About + Arquitectura + @moibaldenegro + SearchBar, sin texto Home (46 líneas). Ajustados con justificación REQ-43-06: `tests/architecture-nav-link.test.mjs` (REQ-08-04), `tests/layout-refactor.test.mjs` (REQ-08-05), `tests/restore-navbar-home-link.test.mjs` (REQ-12-03/04), `tests/remove-navbar-logo.test.mjs` (REQ-13-xx). Nuevo `tests/navbar-logo-home.test.mjs` (REQ-15-01..07). Visual-polish REQ-37-03 y feature 14 (scrollbar-gutter) intactos y verdes. Un intento de implementación terminó vacío sin artefacto → re-lanzado con protocolo anti-silencio (artefacto `progress/impl_15_navbar-logo-home.md` en disco). Artefactos: `progress/impl_15_navbar-logo-home.md`, `progress/review_15_navbar-logo-home.md`.
 - **Cierre**: suite completa en verde, `./init.sh` → «El entorno está perfecto» ✔.
 - Pendiente: feature 10 `client-init-on-navigation` sigue `in_progress` (sesión previa sin artefactos; no se tocó).
+
+## Sesión 2026-08-20 — Video del artículo más pequeño y centrado en desktop
+
+Petición humana: «en la versión más grande en desktop, el iframe no quiero que se vea tan grande, un poco más pequeño y centrado, esto solo en desktop».
+
+- **spec_author**: análisis en `progress/research/video-desktop-width.md`. Causa: `.post` llega a `min(1500px, 95%)` en desktop y `.video-container` es full-width → video ~1400px. Alta de la feature 16 + specs/16 (REQ-16-01..09).
+- **Feature 16 — video-desktop-width (done, APPROVED)**: `@media (min-width: 769px)` en `src/styles/article.css` acota el contenedor a `max-width: var(--video-max-width)` (token nuevo `--video-max-width: 640px` en tokens.css, grupo Contenedor, justificado — precedente --radius-thumb) y lo centra con `margin: var(--gap-card) auto`. En ≤768px se conserva el full-width (REQ-11 intactos). 5 tests con aserción de líneas de tokens.css actualizados (91→93) con justificación REQ-43-06. Test nuevo `tests/video-desktop-width.test.mjs`. Artefactos: `progress/impl_16_video-desktop-width.md`, `progress/review_16_video-desktop-width.md`.
+- **Cierre**: suite completa en verde, `./init.sh` → «El entorno está perfecto» ✔.
+- Pendiente: feature 10 `client-init-on-navigation` sigue `in_progress` (sesión previa sin artefactos; no se tocó).

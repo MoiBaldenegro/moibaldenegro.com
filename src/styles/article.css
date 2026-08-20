@@ -17,3 +17,13 @@
   height: 100%;
   border: 0;
 }
+
+/* Desktop (feature 16): el video acotado y centrado, «un poco más pequeño»
+   solo en escritorio. Breakpoint complementario de los max-width: 768px
+   existentes; en ≤768px la regla base conserva el full-width (REQ-11-02/05). */
+@media (min-width: 769px) {
+  .post__content .video-container {
+    max-width: var(--video-max-width);
+    margin: var(--gap-card) auto;
+  }
+}

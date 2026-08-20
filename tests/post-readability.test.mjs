@@ -30,9 +30,10 @@
 //               con .post__title, contrato REQ-39-07 intacto).
 //   REQ-40-10 — los estilos residen en src/styles/post-readability.css,
 //               ≤100 líneas y sin hex/rgba sueltos.
-//   REQ-40-11 — solo tokens existentes: tokens.css permanece en 91 líneas
-//               (87 + el token --radius-thumb aprobado en la feature 9)
-//               sin tokens de los grupos post/reading/font-size.
+//   REQ-40-11 — solo tokens existentes: tokens.css permanece en 93 líneas
+//               (87 + el token --radius-thumb aprobado en la feature 9 + el
+//               token --video-max-width aprobado en la feature 16; ajuste
+//               REQ-43-06) sin tokens de los grupos post/reading/font-size.
 //   REQ-40-12 — (ciclo 33, REQ-41-13) la regla .post__content de post.css
 //               conserva el ancho completo (sin max-width, REQ-39-01
 //               literal) y NINGUNA regla de post-readability.css declara
@@ -201,10 +202,10 @@ test('REQ-40-10: post-readability.css no contiene hex/rgba sueltos', () => {
   assert.doesNotMatch(content, /rgba?\(/, 'post-readability.css contiene rgb()/rgba() hardcodeado (REQ-40-10)');
 });
 
-test('REQ-40-11: tokens.css conserva 91 líneas (87 + --radius-thumb de la feature 9) sin tokens de post/reading/font-size', () => {
+test('REQ-40-11: tokens.css conserva 93 líneas (87 + --radius-thumb de la feature 9 + --video-max-width de la feature 16) sin tokens de post/reading/font-size', () => {
   const tokens = readTokens();
   const lineCount = countLines(tokens);
-  assert.equal(lineCount, 91, `tokens.css tiene ${lineCount} líneas y debe conservar 91 (REQ-40-11; 87 de REQ-26-07/39-09 + 4 del token --radius-thumb de la feature 9)`);
+  assert.equal(lineCount, 93, `tokens.css tiene ${lineCount} líneas y debe conservar 93 (REQ-40-11; 87 de REQ-26-07/39-09 + 4 del token --radius-thumb de la feature 9 + 2 del token --video-max-width de la feature 16; ajuste REQ-43-06)`);
   assert.doesNotMatch(tokens, /--post-/, 'tokens.css define un token del grupo post (REQ-40-11)');
   assert.doesNotMatch(tokens, /--reading-/, 'tokens.css define un token del grupo reading (REQ-40-11)');
   assert.doesNotMatch(tokens, /--font-size-|--line-height-/, 'tokens.css define tokens de tipografía del artículo (REQ-40-11, REQ-26-07)');
