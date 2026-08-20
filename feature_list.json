@@ -4,7 +4,12 @@
   "rules": {
     "one_feature_at_a_time": true,
     "require_tests_to_close": true,
-    "valid_status": ["pending", "in_progress", "done", "blocked"]
+    "valid_status": [
+      "pending",
+      "in_progress",
+      "done",
+      "blocked"
+    ]
   },
   "features": [
     {
@@ -47,7 +52,9 @@
         "Un test de inspección verifica que los items de resultados enlazan a /posts/[id] y usan la paginación del dominio sin recargar el documento (REQ-03-04, REQ-03-06, REQ-03-09)",
         "Un test de inspección verifica el empty state con el mensaje 'No se encontraron resultados para' y una acción que elimina el parámetro q (REQ-03-05, REQ-03-08)"
       ],
-      "depends_on": [2],
+      "depends_on": [
+        2
+      ],
       "status": "done"
     },
     {
@@ -61,7 +68,9 @@
         "Un test unitario del control verifica que Enter con consulta no vacía navega a /search?q=<consulta> y que Enter con consulta vacía no navega (REQ-04-05, REQ-04-06)",
         "Un test de inspección verifica que el control emite el evento de cambio de consulta para la portada (REQ-04-07)"
       ],
-      "depends_on": [2],
+      "depends_on": [
+        2
+      ],
       "status": "done"
     },
     {
@@ -76,7 +85,10 @@
         "Un test unitario verifica que con más coincidencias que el tamaño de página el panel muestra los primeros PAGE_SIZE con enlace a la vista dedicada (REQ-05-06)",
         "Un test de inspección verifica que el controlador de la transición es un módulo .ts de cliente, excepción a estático por defecto documentada (REQ-05-07)"
       ],
-      "depends_on": [3, 4],
+      "depends_on": [
+        3,
+        4
+      ],
       "status": "done"
     },
     {
@@ -90,7 +102,11 @@
         "Un test unitario verifica que Escape con consulta vacía no ejecuta ninguna acción (REQ-06-03)",
         "Un test de inspección verifica que el manejador de Escape detiene la propagación del evento (REQ-06-04)"
       ],
-      "depends_on": [3, 4, 5],
+      "depends_on": [
+        3,
+        4,
+        5
+      ],
       "status": "done"
     },
     {
@@ -120,7 +136,9 @@
         "Un test de inspección verifica que el enlace declara aria-current page con la misma condición de ruta que el enlace About (/arquitectura y /arquitectura/) y lo omite en el resto de rutas (REQ-08-02, REQ-08-03)",
         "Un test de inspección verifica que el enlace no añade estilos propios y hereda los estilos del navbar existente (REQ-08-05)"
       ],
-      "depends_on": [7],
+      "depends_on": [
+        7
+      ],
       "status": "done"
     },
     {
@@ -156,8 +174,47 @@
         "Un test de inspección verifica que los tests de las features 3/4/5/6 actualizan las aserciones de arranque al patrón astro:page-load con la justificación de cada ajuste y que ./init.sh termina en verde (REQ-10-08)",
         "Un test de inspección verifica que el comentario de cabecera de search-escape.ts declara la ejecución única de los módulos empaquetados y la re-inicialización con el evento astro:page-load (REQ-10-09)"
       ],
-      "depends_on": [3, 4, 5, 6, 7, 9],
+      "depends_on": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        9
+      ],
       "status": "in_progress"
+    },
+    {
+      "id": 11,
+      "name": "article-iframe-styles",
+      "title": "Estilos del iframe de video en la página de detalle de artículo",
+      "description": "El humano reportó: «el iframe no agarra los estilos, queremos que se vea bien presentable, por ejemplo del article 02». Causa raíz (verificada en progress/research/iframe-video-styles.md): src/styles/article.css (reglas .video-container para el iframe de YouTube de 02-principios.md) solo se importa desde src/pages/index.astro (commit 573fcef, destino equivocado), mientras la página que renderiza el cuerpo markdown (src/pages/posts/[id].astro) importa post.css/post-header.css/post-readability.css pero no article.css → el iframe queda sin estilos (~300x150, sin ratio ni radio). Además article.css viola convenciones: border-radius 12px y min-height 500px hardcodeados (tokens --radius-*), y las clases .article/.prose están muertas (la página usa BEM .post). Esta feature arregla la presentación: import de article.css en [id].astro, limpieza de la hoja (tokens var(--radius-card)/var(--gap-card), scoping .post__content, sin min-height forzado, sin clases muertas), retirada del import muerto de la portada y tests de inspección node:test (patrón de tests/post-page-styles.test.mjs). Sin JS de runtime (estático por defecto).",
+      "acceptance": [
+        "Un test de inspección verifica que src/pages/posts/[id].astro importa la hoja article.css (REQ-11-01)",
+        "Un test de inspección verifica que src/pages/index.astro ya no importa article.css (REQ-11-08)",
+        "Un test de inspección verifica que article.css declara .post__content .video-container con width 100%, aspect-ratio 16/9, overflow hidden, border-radius var(--radius-card) y margin con var(--gap-card) (REQ-11-02, REQ-11-04, REQ-11-05)",
+        "Un test de inspección verifica que article.css declara .post__content .video-container iframe con display block, width 100% y height 100%, sin min-height y sin border-radius numérico (REQ-11-03, REQ-11-06)",
+        "Un test de inspección verifica que article.css no contiene hex ni rgb()/rgba() ni valores sueltos de radio, y que no declara las clases muertas .article ni .prose (REQ-11-05, REQ-11-07)",
+        "Un test de inspección verifica que article.css no supera las 100 líneas (REQ-11-09)",
+        "La suite completa del arnés pasa en verde al cierre de la feature (restricción require_tests_to_close; los rojos preexistentes de la navbar los resuelve la feature 12)"
+      ],
+      "depends_on": [],
+      "status": "done"
+    },
+    {
+      "id": 12,
+      "name": "restore-navbar-home-link",
+      "title": "Restaurar el enlace de texto Home en el navbar del Layout",
+      "description": "Regresión preexistente que mantiene la suite en rojo: tests/architecture-nav-link.test.mjs (REQ-08-04: «el enlace Home se perdió al añadir Arquitectura») y tests/layout-refactor.test.mjs (REQ-08-05: «falta el enlace Home en la navbar del layout»). Causa raíz (verificada en progress/research/iframe-video-styles.md): el navbar de src/layouts/Layout.astro solo tiene el ancla del logo (img → /), About, Arquitectura y @moibaldenegro; el enlace de texto Home (href=\"/\") que exige el contrato REQ-08-04/REQ-08-05 y que existía en el commit 72e5c52 (<a href=\"/\">Home</a> plano) se perdió en reescrituras manuales (686a7cc/319bdcd). Los tests ya existen y están en rojo (test-first cumplido): esta feature restaura el enlace en el navbar, sin aria-current (el ancla del logo ya marca la portada, estado pre-regresión), heredando los estilos existentes, y deja la suite en verde. Sin CSS nuevo (hereda layout.css) y sin JS.",
+      "acceptance": [
+        "Los tests existentes pasan en verde: tests/architecture-nav-link.test.mjs (REQ-08-04) y tests/layout-refactor.test.mjs (REQ-08-05) verifican que el navbar incluye el enlace de texto Home con href=\"/\" y conserva About, Arquitectura, @moibaldenegro, el ancla del logo y la barra de búsqueda (REQ-12-01, REQ-12-03, REQ-12-06)",
+        "Un test de inspección verifica que el enlace Home no define clase ni estilo propios y hereda los estilos del navbar existente, sin <style> nuevo en Layout.astro (REQ-12-02)",
+        "Un test de inspección verifica que el enlace Home omite aria-current y que el ancla del logo conserva aria-current para la portada (REQ-12-04)",
+        "Un test de inspección verifica que Layout.astro no supera las 100 líneas tras la restauración (REQ-12-05)",
+        "La suite completa del arnés pasa en verde al cierre de la feature (restricción require_tests_to_close del arnés)"
+      ],
+      "depends_on": [],
+      "status": "done"
     }
   ]
 }

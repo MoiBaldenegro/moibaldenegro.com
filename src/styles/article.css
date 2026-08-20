@@ -1,25 +1,19 @@
-.video-container {
+/* article.css — Estilos del contenido embebido del cuerpo del artículo
+   (feature 11). El cuerpo markdown puede contener iframes de video
+   (02-principios.md). Scoping bajo .post__content (design.md Decisión 2). */
+
+.post__content .video-container {
   width: 100%;
   max-width: 100%;
   aspect-ratio: 16 / 9;
-  margin: 2rem 0;
+  margin: var(--gap-card);
   overflow: hidden;
-  border-radius: 12px;
+  border-radius: var(--radius-card);
 }
 
-.video-container iframe {
+.post__content .video-container iframe {
   display: block;
   width: 100%;
   height: 100%;
-  min-height: 500px;
   border: 0;
-  border-radius: 12px;
-}
-
-.article {
-  max-width: 700px;
-}
-
-.prose {
-  max-width: 65ch;
 }
