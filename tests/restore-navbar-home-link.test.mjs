@@ -1,16 +1,26 @@
-// Test de inspección de la restauración del enlace Home en el navbar
+// Test de inspección del enlace de la portada en el navbar
 // (feature 12 restore-navbar-home-link, REQ-12-01..06). Patrón de inspección
 // por regex sobre Layout.astro (precedente de architecture-nav-link.test.mjs
 // REQ-08-04/05 y layout-refactor.test.mjs REQ-08-05).
 //
-//   REQ-12-01 — el navbar incluye un enlace de texto Home con destino /.
-//   REQ-12-02 — el enlace Home hereda los estilos del navbar existente: sin
-//               clase ni style propios, sin <style> en Layout.astro.
-//   REQ-12-03 — la restauración conserva el ancla del logo, About,
-//               Arquitectura, @moibaldenegro y la barra de búsqueda.
-//   REQ-12-04 — el enlace Home omite aria-current; el ancla del logo conserva
-//               aria-current="page" para la portada.
+//   REQ-12-01 — el navbar enlaza la portada mediante el ancla del logo con
+//               destino /.
+//   REQ-12-02 — el enlace de la portada hereda los estilos del navbar
+//               existente: sin clase ni style propios, sin <style> en
+//               Layout.astro.
+//   REQ-12-03 — la restauración conserva About, Arquitectura, @moibaldenegro
+//               y la barra de búsqueda.
+//   REQ-12-04 — el ancla del logo declara aria-current="page" para la portada.
 //   REQ-12-05 — Layout.astro no supera las 100 líneas tras la restauración.
+//
+// Ajustado por la feature 13 remove-navbar-logo (REQ-13-01/03): el ancla del
+// logo quedó RETIRADA y la aserción pasó a exigir el Home de texto.
+// Ajustado de nuevo por la feature 15 navbar-logo-home (REQ-15-01/02/03): la
+// corrección del humano («el Logo reemplazaba al Home, el home se va»)
+// invierte la dirección de la 13 — el enlace de la portada vuelve a ser el
+// ancla del logo y el enlace de texto Home queda retirado del navbar.
+// Justificación del ajuste: precedente REQ-43-06 (el test de inspección sigue
+// a la presentación real confirmada por el humano).
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -39,42 +49,42 @@ function readNav(layout) {
   return layout.match(/<nav>[\s\S]*?<\/nav>/)?.[0] ?? '';
 }
 
-function homeAnchor(nav) {
-  return nav.match(/<a\b[^>]*href="\/"[^>]*>\s*Home\s*<\/a>/)?.[0] ?? '';
+function logoAnchor(nav) {
+  return nav.match(/<a\b[^>]*href="\/"[^>]*>\s*<img\b[^>]*src="\/assets\/mxvi_logo\.webp"/)?.[0] ?? '';
 }
 
-test('REQ-12-01: el navbar incluye un enlace de texto Home con destino / antes de About', () => {
+test('REQ-12-01: el navbar enlaza la portada con el ancla del logo (destino /) antes de About', () => {
   const layout = readLayout();
   const nav = readNav(layout);
   assert.ok(nav.length > 0, 'Layout.astro no declara <nav> (REQ-12-01)');
-  const anchor = homeAnchor(nav);
+  const anchor = logoAnchor(nav);
   assert.ok(
     anchor.length > 0,
-    'el navbar no incluye el enlace de texto Home hacia / (REQ-12-01)',
+    'el navbar no incluye el ancla del logo hacia / (REQ-12-01)',
   );
-  // Orden del navbar (design.md Decisión 3): Home → About → Arquitectura.
+  // Orden del navbar (design.md Decisión 3): Home (logo) → About → Arquitectura.
   const homeIndex = nav.indexOf(anchor);
   const aboutIndex = nav.indexOf('href="/about"');
   assert.ok(
     homeIndex >= 0 && aboutIndex > homeIndex,
-    'el enlace Home no precede a About en el navbar (design.md D3)',
+    'el ancla del logo no precede a About en el navbar (design.md D3)',
   );
 });
 
-test('REQ-12-02: el enlace Home no define clase ni estilo propios y hereda los estilos del navbar', () => {
+test('REQ-12-02: el enlace de la portada no define clase ni estilo propios y hereda los estilos del navbar', () => {
   const layout = readLayout();
   const nav = readNav(layout);
-  const anchor = homeAnchor(nav);
-  assert.ok(anchor.length > 0, 'no se encuentra el enlace Home (REQ-12-02)');
+  const anchor = logoAnchor(nav);
+  assert.ok(anchor.length > 0, 'no se encuentra el ancla del logo (REQ-12-02)');
   assert.doesNotMatch(
     anchor,
     /\bclass=/,
-    'el enlace Home define una clase propia en lugar de heredar (REQ-12-02)',
+    'el enlace de la portada define una clase propia en lugar de heredar (REQ-12-02)',
   );
   assert.doesNotMatch(
     anchor,
     /\bstyle=/,
-    'el enlace Home define estilos inline en lugar de heredar (REQ-12-02)',
+    'el enlace de la portada define estilos inline en lugar de heredar (REQ-12-02)',
   );
   assert.doesNotMatch(
     layout,
@@ -94,13 +104,13 @@ test('REQ-12-02: el enlace Home no define clase ni estilo propios y hereda los e
   );
 });
 
-test('REQ-12-03: la restauración conserva el ancla del logo, About, Arquitectura, @moibaldenegro y la barra', () => {
+test('REQ-12-03: la navbar conserva About, Arquitectura, @moibaldenegro y la barra con el ancla del logo', () => {
   const layout = readLayout();
   const nav = readNav(layout);
   assert.match(
     nav,
-    /<a\b[^>]*href="\/"[^>]*>\s*<img\b[^>]*alt="Logo de moibaldenegro\.com"/,
-    'se perdió el ancla del logo (REQ-12-03)',
+    /<img\b[^>]*src="\/assets\/mxvi_logo\.webp"/,
+    'el navbar no conserva el ancla del logo (REQ-12-03)',
   );
   assert.match(
     nav,
@@ -122,24 +132,27 @@ test('REQ-12-03: la restauración conserva el ancla del logo, About, Arquitectur
     /<SearchBar\s*\/?\s*>/,
     'se perdió la barra de búsqueda (REQ-12-03)',
   );
+  assert.doesNotMatch(
+    nav,
+    /<a\b[^>]*href="\/"[^>]*>\s*Home\s*<\/a>/,
+    'el navbar conserva el enlace de texto Home (REQ-12-03)',
+  );
 });
 
-test('REQ-12-04: el enlace Home omite aria-current y el ancla del logo conserva aria-current de la portada', () => {
+test('REQ-12-04: el ancla del logo declara aria-current de la portada; no existe enlace de texto Home', () => {
   const layout = readLayout();
   const nav = readNav(layout);
-  const anchor = homeAnchor(nav);
-  assert.ok(anchor.length > 0, 'no se encuentra el enlace Home (REQ-12-04)');
-  assert.doesNotMatch(
-    anchor,
-    /aria-current/,
-    'el enlace Home declara aria-current y duplica el marcador del logo (REQ-12-04)',
-  );
-  const logoAnchor = nav.match(/<a\b[^>]*href="\/"[^>]*>\s*<img\b[^>]*>/)?.[0] ?? '';
-  assert.ok(logoAnchor.length > 0, 'no se encuentra el ancla del logo (REQ-12-04)');
+  const anchor = logoAnchor(nav);
+  assert.ok(anchor.length > 0, 'no se encuentra el ancla del logo (REQ-12-04)');
   assert.match(
-    logoAnchor,
+    anchor,
     /aria-current=\{Astro\.url\.pathname\s*===\s*['"]\/['"]\s*\?\s*['"]page['"]\s*:\s*undefined\}/,
-    'el ancla del logo perdió el aria-current de la portada (REQ-12-04)',
+    'el ancla del logo no declara el aria-current de la portada (REQ-12-04)',
+  );
+  assert.doesNotMatch(
+    nav,
+    /<a\b[^>]*href="\/"[^>]*>\s*Home\s*<\/a>/,
+    'el navbar conserva el enlace de texto Home (REQ-12-04)',
   );
 });
 

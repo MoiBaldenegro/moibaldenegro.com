@@ -4,6 +4,12 @@
 /* Reset global */
 *, *::before, *::after { box-sizing: border-box; }
 html, body { margin: 0; width: 100%; height: 100%; }
+/* Reserva del hueco del scrollbar vertical (feature 14, REQ-14-01..05): con
+   ClientRouter se navega entre páginas de alturas distintas y el scrollbar
+   estilizado (10px) aparece/desaparece → el viewport se ensancha/estrecha y el
+   contenido centrado salta ~5px. stable mantiene el ancho estable; los
+   navegadores sin soporte conservan el comportamiento actual (REQ-14-04). */
+html { scrollbar-gutter: stable; }
 body {
   background: var(--color-background);
   color: var(--color-text);

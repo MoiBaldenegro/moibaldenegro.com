@@ -8,10 +8,18 @@
 //               declara aria-current="page" (misma condición que About).
 //   REQ-08-03 — WHEN la ruta activa no es /arquitectura ni /arquitectura/, el
 //               enlace omite aria-current (ternaria con degradado a undefined).
-//   REQ-08-04 — la adición conserva Home, About, @moibaldenegro y la barra.
+//   REQ-08-04 — la adición conserva el enlace de la portada (ancla del logo),
+//               About, @moibaldenegro y la barra.
 //   REQ-08-05 — el enlace no añade estilos propios: hereda .site-navbar a y
 //               a[aria-current="page"] de layout.css (sin clase/style propios,
 //               sin <style> en Layout.astro).
+//
+// Ajustado por la feature 15 navbar-logo-home (REQ-15-01/03): el «home» del
+// navbar es el ancla del logo (corrección del humano: «el Logo reemplazaba al
+// Home, el home se va», estado 686a7cc), no el enlace de texto Home. La
+// aserción REQ-08-04 pasa del texto «Home» al ancla del logo. Justificación
+// del ajuste: precedente REQ-43-06 (los tests siguen a la presentación real
+// confirmada por el humano).
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -78,13 +86,13 @@ test('REQ-08-02/03: el enlace declara aria-current con la misma condición de ru
   );
 });
 
-test('REQ-08-04: se conservan Home, About, @moibaldenegro y la barra de búsqueda', () => {
+test('REQ-08-04: se conservan el ancla del logo (enlace de la portada), About, @moibaldenegro y la barra de búsqueda', () => {
   const layout = readLayout();
   const nav = layout.match(/<nav>[\s\S]*?<\/nav>/)?.[0] ?? '';
   assert.match(
     nav,
-    /<a\b[^>]*href="\/"[^>]*>\s*Home\s*<\/a>/,
-    'el enlace Home se perdió al añadir Arquitectura (REQ-08-04)',
+    /<a\b[^>]*href="\/"[^>]*>\s*<img\b[^>]*src="\/assets\/mxvi_logo\.webp"/,
+    'el enlace de la portada (ancla del logo) se perdió al añadir Arquitectura (REQ-08-04)',
   );
   assert.match(
     nav,

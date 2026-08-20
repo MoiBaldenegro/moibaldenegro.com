@@ -11,9 +11,13 @@ import { readFileSync, existsSync } from 'node:fs';
 //               por defecto del sitio.
 //   REQ-08-04 — sin <style> embebido; los estilos viven en src/styles/layout.css
 //               importada desde el layout.
-//   REQ-08-05 — la navbar compartida (Home, About, @moibaldenegro) vive en el
-//               layout único; new-hero.astro ya no la renderiza y hero-section.css
-//               no conserva sus estilos.
+//   REQ-08-05 — la navbar compartida (enlace de la portada: ancla del logo;
+//               About, @moibaldenegro) vive en el layout único; new-hero.astro
+//               ya no la renderiza y hero-section.css no conserva sus estilos.
+//               Ajustado por la feature 15 navbar-logo-home (REQ-15-01): el
+//               enlace de la portada es el ancla del logo (corrección del
+//               humano: «el Logo reemplazaba al Home, el home se va»), no el
+//               texto Home. Justificación del ajuste: precedente REQ-43-06.
 //   REQ-08-06 — layout.css respeta el límite de 100 líneas y consume únicamente
 //               tokens (sin hex ni rgb()/rgba() hardcodeados).
 
@@ -113,8 +117,8 @@ test('REQ-08-05: la navbar compartida vive en el layout único', () => {
   );
   assert.match(
     layout,
-    /href="\/"\s*>Home/,
-    'falta el enlace Home en la navbar del layout (REQ-08-05)'
+    /href="\/"[^>]*>\s*<img\b[^>]*src="\/assets\/mxvi_logo\.webp"/,
+    'falta el ancla del logo (enlace de la portada) en la navbar del layout (REQ-08-05)'
   );
   assert.match(
     layout,

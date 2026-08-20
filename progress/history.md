@@ -1258,3 +1258,22 @@ Petición humana: «el iframe no agarra los estilos, queremos que se vea bien pr
 - **Feature 12 — restore-navbar-home-link (done, APPROVED)**: `<a href="/">Home</a>` plano restaurado en el navbar de `Layout.astro` (sin clase/style/aria-current; el logo ya marca `/`). Tests existentes REQ-08-04/05 pasan; nuevos `tests/restore-navbar-home-link.test.mjs` (REQ-12-01..05). Artefactos: `progress/impl_12_restore-navbar-home-link.md`, `progress/review_12_restore-navbar-home-link.md`.
 - **Cierre**: suite 424/424 en verde, `./init.sh` ✔ (entorno perfecto), audit-design-tokens ✔, build ✔.
 - Pendiente: feature 10 `client-init-on-navigation` sigue `in_progress` (sesión previa sin artefactos; no se tocó).
+
+## Sesión 2026-08-20 — Navbar «como estaba» (sin logo) + saltito del nav
+
+Petición humana (2 problemas): (1) «el home fue reemplazado por el logo, ajusta lo que tengas que ajustar para que quede como estaba, era correcto»; (2) «arregla un pequeño saltito que se ve por ejemplo al clickar cualquier parte del nav, se ve un pequeño movimiento a la derecha, elimínalo».
+
+- **spec_author**: análisis en `progress/research/navbar-home-logo-jump.md`. Problema A: el commit 686a7cc reemplazó el enlace Home de texto (estado 72e5c52) por el ancla del logo; la feature 12 lo había restaurado sin aria-current. Problema B: con ClientRouter el scrollbar estilizado (10px) aparece/desaparece entre páginas de alturas distintas → el contenido centrado salta ~5px a la derecha. Alta de features 13 y 14 + specs.
+- **Feature 13 — remove-navbar-logo (done, APPROVED)**: retirado el ancla del logo de `Layout.astro`; el enlace Home asume `aria-current` de la portada con degradado a undefined (REQ-37-03 intacto: Home + About + Arquitectura). Solo se ajustaron REQ-12-03/04 de `tests/restore-navbar-home-link.test.mjs` (justificación REQ-43-06 en el encabezado); layout-refactor/architecture-nav-link/visual-polish sin cambios. Asset `public/assets/mxvi_logo.webp` conservado. Incidente documentado: el workerd del dev server reescribió `article.css`; restaurada la versión tokenizada de la feature 11 (verificada por el reviewer). Artefactos: `progress/impl_13_remove-navbar-logo.md`, `progress/review_13_remove-navbar-logo.md`.
+- **Feature 14 — fix-navbar-jump (done, APPROVED)**: `html { scrollbar-gutter: stable; }` en `src/styles/layout.css` (69→75 líneas) reserva el hueco del scrollbar; se conservan `::-webkit-scrollbar`; sin `overflow-y: scroll` (descartada), sin JS, sin tocar Layout.astro. Tests: `tests/fix-navbar-jump.test.mjs` (6, REQ-14-01..05). Artefactos: `progress/impl_14_fix-navbar-jump.md`, `progress/review_14_fix-navbar-jump.md`.
+- **Cierre**: suite completa en verde (429 tests), `./init.sh` → «El entorno está perfecto» ✔, build ✔.
+- Pendiente: feature 10 `client-init-on-navigation` sigue `in_progress` (sesión previa sin artefactos; no se tocó).
+
+## Sesión 2026-08-20 — Corrección del humano: el logo ES el Home (se retira el texto Home)
+
+El humano corrigió la interpretación de la sesión anterior: «claro, el Logo te dije claramente que reemplazaba al Home, el home se va». La feature 13 (remove-navbar-logo) fue en la dirección equivocada; la intención real siempre fue el diseño 686a7cc: el ancla del logo es el enlace Home del navbar y el texto «Home» no debe existir.
+
+- **spec_author**: análisis en `progress/research/navbar-home-logo-revert.md` (decisión D: revertir el efecto de la feature 13 sobre marcado y tests, precedente REQ-43-06). Alta de la feature 15 + specs/15.
+- **Feature 15 — navbar-logo-home (done, APPROVED)**: `Layout.astro` queda con el ancla del logo (`aria-current` de la portada) + About + Arquitectura + @moibaldenegro + SearchBar, sin texto Home (46 líneas). Ajustados con justificación REQ-43-06: `tests/architecture-nav-link.test.mjs` (REQ-08-04), `tests/layout-refactor.test.mjs` (REQ-08-05), `tests/restore-navbar-home-link.test.mjs` (REQ-12-03/04), `tests/remove-navbar-logo.test.mjs` (REQ-13-xx). Nuevo `tests/navbar-logo-home.test.mjs` (REQ-15-01..07). Visual-polish REQ-37-03 y feature 14 (scrollbar-gutter) intactos y verdes. Un intento de implementación terminó vacío sin artefacto → re-lanzado con protocolo anti-silencio (artefacto `progress/impl_15_navbar-logo-home.md` en disco). Artefactos: `progress/impl_15_navbar-logo-home.md`, `progress/review_15_navbar-logo-home.md`.
+- **Cierre**: suite completa en verde, `./init.sh` → «El entorno está perfecto» ✔.
+- Pendiente: feature 10 `client-init-on-navigation` sigue `in_progress` (sesión previa sin artefactos; no se tocó).

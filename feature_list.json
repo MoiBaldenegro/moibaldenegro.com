@@ -215,6 +215,58 @@
       ],
       "depends_on": [],
       "status": "done"
+    },
+    {
+      "id": 13,
+      "name": "remove-navbar-logo",
+      "title": "Retirar el ancla del logo del navbar y devolver el estado activo de la portada al enlace Home",
+      "description": "El humano pidió restaurar el navbar «como estaba»: «el home fue reemplazado por el logo, ajusta lo que tengas que ajustar para que quede como estaba, era correcto». Causa raíz verificada en progress/research/navbar-home-logo-jump.md: el estado original 72e5c52 tenía <a href=\"/\">Home</a> de texto plano SIN logo; el commit 686a7cc reemplazó ese enlace por el ancla del logo (img /assets/mxvi_logo.webp con aria-current de la portada), y la feature 12 restauró el Home de texto pero SIN aria-current (el logo seguía marcando la portada). Esta feature retira el ancla del logo de src/layouts/Layout.astro (única referencia del asset en src/, verificado con grep), traslada el marcador de la portada al enlace Home (aria-current={Astro.url.pathname === '/' ? 'page' : undefined}, degradado a undefined: conserva REQ-37-03 con Home + About + Arquitectura = 3 aria-current) y ajusta los tests que asercionaban el logo: solo tests/restore-navbar-home-link.test.mjs (REQ-12-03/04) cambia, con justificación en el encabezado (precedente REQ-43-06: los tests siguen a la presentación real); los tests layout-refactor REQ-08-05, architecture-nav-link REQ-08-04 y visual-polish-refactor REQ-37-03 quedan en verde sin cambios (verificado: no referencian el logo). El asset público public/assets/mxvi_logo.webp se conserva (ya existía en 72e5c52, predata la regresión). Sin CSS nuevo (el Home hereda .site-navbar a[aria-current=\"page\"]) y sin JS.",
+      "acceptance": [
+        "Un test de inspección verifica que el navbar de Layout.astro ya no contiene el ancla del logo (sin <img> con src /assets/mxvi_logo.webp) y conserva el enlace de texto Home hacia / antes de About (REQ-13-01, REQ-13-03)",
+        "Un test de inspección verifica que el enlace Home declara aria-current={Astro.url.pathname === '/' ? 'page' : undefined} con degradado a undefined fuera de la portada y que ningún otro enlace del navbar marca la portada (REQ-13-02)",
+        "Un test de inspección verifica que ningún archivo de src/ referencia el asset mxvi_logo.webp tras la retirada (REQ-13-06)",
+        "Un test de inspección verifica que Layout.astro no supera las 100 líneas tras la retirada del logo (REQ-13-04)",
+        "Un test de inspección verifica que tests/restore-navbar-home-link.test.mjs actualiza las aserciones REQ-12-03 y REQ-12-04 al contrato real (sin logo; Home con aria-current) con la justificación del ajuste documentada en el encabezado (REQ-13-05, precedente REQ-43-06)",
+        "La suite completa del arnés pasa en verde al cierre de la feature, incluidos layout-refactor REQ-08-05, architecture-nav-link REQ-08-04 y visual-polish-refactor REQ-37-03 sin cambios (restricción require_tests_to_close)"
+      ],
+      "depends_on": [
+        12
+      ],
+      "status": "done"
+    },
+    {
+      "id": 14,
+      "name": "fix-navbar-jump",
+      "title": "Eliminar el salto horizontal del contenido al navegar por el navbar",
+      "description": "El humano reportó: «arregla un pequeño saltito que se ve por ejemplo al clickar cualquier parte del nav, se ve un pequeño movimiento a la derecha, elimínalo». Causa raíz verificada en progress/research/navbar-home-logo-jump.md: con ClientRouter (feature 24) se navega entre páginas de alturas distintas y layout.css estiliza el scrollbar con ::-webkit-scrollbar { width: 10px }, que solo aparece cuando el contenido desborda → el scrollbar aparece/desaparece entre páginas, el viewport se ensancha/estrecha ~10px y el contenido centrado se desplaza ~5px a la derecha. Descartados (verificados): outline de a:focus-visible (no desplaza layout), border-color del input (mismo 1px) y subrayado ::after (crece desde left). Fix: reservar el hueco del scrollbar en html con scrollbar-gutter: stable en layout.css (Chrome/Edge 94+, Firefox 97+, Safari 18.2+; degradación elegante documentada en REQ-14-04). Alternativa descartada: overflow-y: scroll (fuerza el track visible permanentemente — regresión estética — y no-op con overlay scrollbars de macOS). Sin JS de runtime (estático por defecto), sin tokens nuevos; layout.css pasa de 69 a ~70 líneas (≤100 OK). No toca Layout.astro ni src/pages.",
+      "acceptance": [
+        "Un test de inspección verifica que layout.css declara en el selector html la propiedad scrollbar-gutter con el valor stable (REQ-14-01, REQ-14-02, REQ-14-03)",
+        "Un test de inspección verifica que layout.css no supera las 100 líneas y mantiene el uso exclusivo de tokens tras la regla (REQ-14-03, REQ-08-06)",
+        "Un test de inspección verifica que layout.css conserva las reglas ::-webkit-scrollbar existentes (REQ-14-04)",
+        "Un test de inspección verifica que la reserva del hueco se implementa solo en layout.css sin scripts ni módulos de cliente nuevos (REQ-14-05, estático por defecto)",
+        "La suite completa del arnés pasa en verde al cierre de la feature (restricción require_tests_to_close)"
+      ],
+      "depends_on": [],
+      "status": "done"
+    },
+    {
+      "id": 15,
+      "name": "navbar-logo-home",
+      "title": "El logo es el enlace Home: retirar el texto Home del navbar y devolver el ancla del logo como marcador de la portada",
+      "description": "Corrección explícita del humano tras la feature 13 (remove-navbar-logo, APPROVED y done en dirección equivocada): «claro, el Logo te dije claramente que reemplazaba al Home, el home se va». La intención real SIEMPRE fue que el logo del navbar ES el enlace Home (estado correcto 686a7cc: <a aria-current={Astro.url.pathname === '/' ? 'page' : undefined} href=\"/\"><img src=\"/assets/mxvi_logo.webp\" width=\"72\"/></a> con alt descriptivo, sin enlace de texto «Home») y que NO debe existir el enlace de texto «Home». Esta feature revierte el efecto de la 13 sobre el marcado y los tests: retira el enlace Home de texto de src/layouts/Layout.astro y devuelve el ancla del logo como marcador de la portada (aria-current con degradado a undefined; hereda .site-navbar a[aria-current=\"page\"] de layout.css sin CSS nuevo; el asset public/assets/mxvi_logo.webp se conserva, REQ-13-06 se invierte). Se invierten las aserciones de los tests de las features 12 y 13 (restore-navbar-home-link, remove-navbar-logo) y los REQ-08-04/08-05 (architecture-nav-link, layout-refactor) al contrato real, con la justificación documentada en el encabezado de cada test (precedente REQ-43-06: los tests siguen a la presentación real confirmada por el humano); los artefactos históricos de la 13 (specs/, impl_/review_) quedan como bitácora. depends_on [13]: esta feature existe para invertir el contrato REQ-13-01..06; la 12 ya está done y su test se ajusta como consecuencia del mismo revert. visual-polish-refactor REQ-37-03 y fix-navbar-jump (14) quedan en verde sin cambios (verificado en el research).",
+      "acceptance": [
+        "Un test de inspección verifica que el navbar de Layout.astro enlaza la portada mediante el ancla del logo (imagen con src /assets/mxvi_logo.webp, alt descriptivo y width 72) y que no contiene ningún enlace de texto Home hacia / (REQ-15-01, REQ-15-03)",
+        "Un test de inspección verifica que el ancla del logo declara aria-current={Astro.url.pathname === '/' ? 'page' : undefined} con degradado a undefined fuera de la portada y que ningún otro enlace del navbar marca la portada (REQ-15-02)",
+        "Un test de inspección verifica que el navbar conserva About, Arquitectura, @moibaldenegro y la barra de búsqueda (REQ-15-04)",
+        "Un test de inspección verifica que public/assets/mxvi_logo.webp existe y que Layout.astro lo referencia (REQ-15-05)",
+        "Un test de inspección verifica que Layout.astro no supera las 100 líneas tras el cambio (REQ-15-06)",
+        "Un test de inspección verifica que los tests de las features 12 y 13 (restore-navbar-home-link, remove-navbar-logo) y los REQ-08-04/08-05 (architecture-nav-link, layout-refactor) actualizan las aserciones al contrato real (logo como portada, sin Home de texto) con la justificación del ajuste documentada en el encabezado (REQ-15-07, precedente REQ-43-06)",
+        "La suite completa del arnés pasa en verde al cierre de la feature, incluidos visual-polish-refactor REQ-37-03 y fix-navbar-jump sin cambios (restricción require_tests_to_close)"
+      ],
+      "depends_on": [
+        13
+      ],
+      "status": "done"
     }
   ]
 }
