@@ -4,8 +4,8 @@ title: Principios del diseño de software
 author: Moises Baldenegro Melendez
 img: entry-02.webp
 readtime: 4
-description: Exploramos los tres pilares fundamentales del diseño de software: abstracción, encapsulamiento y modularización, y cómo aplicarlos para construir sistemas desacoplados y mantenibles.
-tags: ["arquitectura", "software-design", "abstraccion", "encapsulamiento", "modularizacion"]
+description: Exploramos los tres pilares fundamentales del diseño de software abstracción, encapsulamiento y modularización, y cómo aplicarlos para construir sistemas desacoplados y mantenibles.
+tags: "#arquitectura #software-design #abstraccion #encapsulamiento #modularizacion"
 created: "20 Agosto 2026"
 updated: "20 Agosto 2026"
 ---
