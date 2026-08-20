@@ -285,6 +285,26 @@
         11
       ],
       "status": "done"
+    },
+    {
+      "id": 17,
+      "name": "term-search-oldest-first",
+      "title": "Los más antiguos primero en la búsqueda por término /<término>",
+      "description": "El humano pidió: «En las búsquedas cuando accedemos al /algo, queremos que los más antiguos aparezcan primero». Causa raíz (verificada en progress/research/term-search-oldest-first.md): el dominio searchIndex() SIEMPRE ordena descendente por fecha (REQ-02-04/05) y el controlador compartido initSearchResults (features 3/7) lo usa igual para /search?q= y /<término>. Cambio mínimo: parámetro opcional order?: 'desc' | 'asc' (default 'desc', conserva REQ-02-04/05 y a los demás consumidores) en searchIndex/searchPosts de src/domain/search/search.ts, y el controlador deriva el orden por origen del término — q !== '' (vista /search) → desc; q === '' (ruta /<término>, sección temática) → asc — propagándolo a searchIndex y a las llamadas recursivas de paginación (decisiones D1/D2 del research). Fuera de alcance documentado: /search?q= conserva desc (D3, búsqueda puntual) y el panel en vivo de la portada conserva desc (D4, vista previa de /search?q=, REQ-05-04; search-live.ts está en 100/100 líneas y no se toca). Sin UI: no hay design.md (D5). Los tests existentes REQ-02-04/05, REQ-03 y REQ-07 pasan sin cambios (default preservado y regex del controlador intactas); los tests nuevos van en tests/term-search-oldest-first.test.mjs.",
+      "acceptance": [
+        "Un test unitario node:test verifica que searchIndex con orden asc devuelve los artículos más antiguos primero según la fecha YYYY-MM-DD y que los empates de fecha conservan el orden estable del índice (REQ-17-01, REQ-17-04)",
+        "Un test unitario node:test verifica que searchIndex y searchPosts sin orden (default) y con orden desc conservan el orden descendente de REQ-02-04/05 (REQ-17-01, REQ-17-03)",
+        "Un test de inspección verifica que el controlador initSearchResults solicita el orden ascendente cuando el término proviene del pathname (ruta /<término>) y el descendente cuando proviene del parámetro q (REQ-17-02, REQ-17-03)",
+        "Un test unitario con DOM fake (patrón root-term-search) verifica que al cargar la ruta /<término> el primer item pintado es el artículo más antiguo y que la paginación conserva el orden ascendente (REQ-17-02, REQ-17-05)",
+        "Un test de inspección verifica que search-live.ts conserva la llamada a searchIndex sin el parámetro de orden (orden predeterminado descendente del panel en vivo) (REQ-17-06)",
+        "Un test de inspección verifica que search.ts y search-results-controller.ts no superan las 100 líneas tras el cambio (REQ-17-07)",
+        "La suite completa del arnés pasa en verde al cierre de la feature, incluidos los tests de REQ-02-04/05, REQ-03 y REQ-07 sin cambios (restricción require_tests_to_close)"
+      ],
+      "depends_on": [
+        2,
+        7
+      ],
+      "status": "done"
     }
   ]
 }

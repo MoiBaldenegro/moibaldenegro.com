@@ -3,7 +3,10 @@
 // (#search-index), filtra con searchIndex del dominio (feature 2) y pinta
 // items de la lista (itemHtml, feature 9), empty state, guía y paginación
 // sin recargar (JS justificado, término de ?q= o del pathname — REQ-07-03).
-import { searchIndex } from '../../domain/search/search.ts';
+// El orden por fecha lo decide el origen del término (feature 17): ?q= → desc
+// (REQ-17-03), pathname /<término> → asc (REQ-17-02), propagado a la paginación
+// (REQ-17-05).
+import { searchIndex, type SearchOrder } from '../../domain/search/search.ts';
 import type { SearchIndexEntry } from '../../domain/search/index.ts';
 import { itemHtml } from './item-html.ts';
 import { clearDestination, termFromPathname } from './term-route.ts';
@@ -27,7 +30,7 @@ export function initSearchResults(): void {
   wireClear(document.title, q !== '');
   if (term === '') return void toggle('guide', true);
   document.title = `Búsqueda: ${term}`;
-  renderSearch(term, index, 1);
+  renderSearch(term, index, 1, q !== '' ? 'desc' : 'asc');
 }
 function readIndex(): SearchIndexEntry[] | null {
   const text = document.getElementById(INDEX_ID)?.textContent ?? '';
@@ -37,8 +40,13 @@ function readIndex(): SearchIndexEntry[] | null {
     return null;
   }
 }
-function renderSearch(term: string, index: SearchIndexEntry[], page: number): void {
-  const data = searchIndex(index, term, page);
+function renderSearch(
+  term: string,
+  index: SearchIndexEntry[],
+  page: number,
+  order: SearchOrder,
+): void {
+  const data = searchIndex(index, term, page, order);
   toggle('guide', false);
   if (data.total === 0) {
     const termNode = document.querySelector('[data-search-term]');
@@ -59,11 +67,11 @@ function renderSearch(term: string, index: SearchIndexEntry[], page: number): vo
   const next = document.querySelector('[data-search-next]');
   if (prev !== null) {
     prev.toggleAttribute('disabled', data.page <= 1);
-    prev.addEventListener('click', () => renderSearch(term, index, data.page - 1));
+    prev.addEventListener('click', () => renderSearch(term, index, data.page - 1, order));
   }
   if (next !== null) {
     next.toggleAttribute('disabled', data.page >= data.totalPages);
-    next.addEventListener('click', () => renderSearch(term, index, data.page + 1));
+    next.addEventListener('click', () => renderSearch(term, index, data.page + 1, order));
   }
 }
 function wireClear(baseTitle: string, fromQuery: boolean): void {

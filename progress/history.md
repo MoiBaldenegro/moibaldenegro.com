@@ -1286,3 +1286,12 @@ Petición humana: «en la versión más grande en desktop, el iframe no quiero q
 - **Feature 16 — video-desktop-width (done, APPROVED)**: `@media (min-width: 769px)` en `src/styles/article.css` acota el contenedor a `max-width: var(--video-max-width)` (token nuevo `--video-max-width: 640px` en tokens.css, grupo Contenedor, justificado — precedente --radius-thumb) y lo centra con `margin: var(--gap-card) auto`. En ≤768px se conserva el full-width (REQ-11 intactos). 5 tests con aserción de líneas de tokens.css actualizados (91→93) con justificación REQ-43-06. Test nuevo `tests/video-desktop-width.test.mjs`. Artefactos: `progress/impl_16_video-desktop-width.md`, `progress/review_16_video-desktop-width.md`.
 - **Cierre**: suite completa en verde, `./init.sh` → «El entorno está perfecto» ✔.
 - Pendiente: feature 10 `client-init-on-navigation` sigue `in_progress` (sesión previa sin artefactos; no se tocó).
+
+## Sesión 2026-08-20 — Los más antiguos primero en la búsqueda por término /<término>
+
+Petición humana: «En las búsquedas cuando accedemos al /algo, queremos que los más antiguos aparezcan primero».
+
+- **spec_author**: análisis en `progress/research/term-search-oldest-first.md`. D1: parámetro opcional `order?: 'desc'|'asc'` (default 'desc') en el dominio; D2: el controlador pasa 'asc' solo cuando `q === ''` (ruta /<término>) y lo propaga a la paginación; D3/D4: /search?q= y panel en vivo conservan desc (search-live.ts está 100/100 y no se toca). Alta de la feature 17 + specs/17 (sin design.md, sin UI).
+- **Feature 17 — term-search-oldest-first (done, APPROVED)**: `search.ts` 61→71 líneas (SearchOrder, order default 'desc', byDateAsc); `search-results-controller.ts` 84→91 líneas (orden por origen del término, propagado a prev/next). Ningún test existente cambió (default preservado, sin precedente REQ-43-06). Test nuevo `tests/term-search-oldest-first.test.mjs` (11 tests, rojo 7 fail → verde 11/11). Artefactos: `progress/impl_17_term-search-oldest-first.md`, `progress/review_17_term-search-oldest-first.md`.
+- **Cierre**: suite completa en verde, `./init.sh` → «El entorno está perfecto» ✔.
+- Pendiente: feature 10 `client-init-on-navigation` sigue `in_progress` (sesión previa sin artefactos; no se tocó).

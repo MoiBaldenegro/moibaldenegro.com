@@ -1,15 +1,18 @@
 // Motor de búsqueda (REQ-02-02..06, feature 2 search-domain). Coincidencia por
 // subcadena del término normalizado (REQ-02-01) en título, descripción, tags
-// (unidos sin '#') y cuerpo; orden descendente por fecha YYYY-MM-DD
-// (REQ-02-04/05, empates con orden estable de sort); paginación con PAGE_SIZE
-// fijo (REQ-02-06). Consulta vacía coincide con todo el catálogo: la vista
-// dedicada (feature 3) muestra su guía cuando q falta.
+// (unidos sin '#') y cuerpo; orden por fecha YYYY-MM-DD (REQ-02-04/05:
+// descendente por defecto; ascendente opcional para la ruta /<término>,
+// feature 17 REQ-17-01; empates con orden estable de sort); paginación con
+// PAGE_SIZE fijo (REQ-02-06). Consulta vacía coincide con todo el catálogo:
+// la vista dedicada (feature 3) muestra su guía cuando q falta.
 
 import type { Post } from '../entities/post.ts';
 import { normalizeText } from './normalize.ts';
 import { buildSearchIndex, type SearchIndexEntry } from './index.ts';
 
 export const PAGE_SIZE = 6;
+
+export type SearchOrder = 'desc' | 'asc';
 
 export interface SearchPage {
   readonly results: readonly SearchIndexEntry[];
@@ -23,19 +26,21 @@ export function searchPosts(
   bodies: Readonly<Record<string, string>>,
   query: string,
   page: number,
+  order: SearchOrder = 'desc',
 ): SearchPage {
-  return searchIndex(buildSearchIndex(posts, bodies), query, page);
+  return searchIndex(buildSearchIndex(posts, bodies), query, page, order);
 }
 
 export function searchIndex(
   index: readonly SearchIndexEntry[],
   query: string,
   page: number,
+  order: SearchOrder = 'desc',
 ): SearchPage {
   const term = normalizeText(query);
   const matches = index
     .filter((entry) => searchableText(entry).includes(term))
-    .sort(byDateDesc);
+    .sort(order === 'asc' ? byDateAsc : byDateDesc);
   const total = matches.length;
   const totalPages = Math.ceil(total / PAGE_SIZE);
   const safePage = Math.max(1, Math.floor(page) || 1);
@@ -57,5 +62,11 @@ function searchableText(entry: SearchIndexEntry): string {
 function byDateDesc(a: SearchIndexEntry, b: SearchIndexEntry): number {
   if (a.date < b.date) return 1;
   if (a.date > b.date) return -1;
+  return 0;
+}
+
+function byDateAsc(a: SearchIndexEntry, b: SearchIndexEntry): number {
+  if (a.date < b.date) return -1;
+  if (a.date > b.date) return 1;
   return 0;
 }
