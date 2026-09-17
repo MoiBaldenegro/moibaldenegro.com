@@ -1295,3 +1295,19 @@ Petición humana: «En las búsquedas cuando accedemos al /algo, queremos que lo
 - **Feature 17 — term-search-oldest-first (done, APPROVED)**: `search.ts` 61→71 líneas (SearchOrder, order default 'desc', byDateAsc); `search-results-controller.ts` 84→91 líneas (orden por origen del término, propagado a prev/next). Ningún test existente cambió (default preservado, sin precedente REQ-43-06). Test nuevo `tests/term-search-oldest-first.test.mjs` (11 tests, rojo 7 fail → verde 11/11). Artefactos: `progress/impl_17_term-search-oldest-first.md`, `progress/review_17_term-search-oldest-first.md`.
 - **Cierre**: suite completa en verde, `./init.sh` → «El entorno está perfecto» ✔.
 - Pendiente: feature 10 `client-init-on-navigation` sigue `in_progress` (sesión previa sin artefactos; no se tocó).
+
+---
+
+## Sesión 2026-09-17 — Cierre feature 18 next-post-data
+
+- Feature 18 next-post-data cerrada en done (review APPROVED en progress/review_18.md, verificado en disco).
+- Implementación (informe en progress/impl_18.md): campo opcional next en esquema architecture, entidad Post (readonly next: string | null) y PostsRepository con validador expectNext (ausente -> null; formato distinto de /posts/<id> -> PostsDataError); cadena curada 00-agilismo -> 01-diseño-detallado -> 02-principios-del-diseno-de-software -> 03-principios solid (último sin next).
+- TDD: tests/next-post-data.test.mjs 6/7 en rojo antes, 16/16 en verde después (con posts-repository); fixture EXPECTED_POST alineado con next: null (precedente REQ-43-06/36).
+- Cierre: ./init.sh en verde (entorno, formato, tests 466/466, build); feature 18 en done conservada en el array; feature 19 next-post-button queda pending desbloqueada (depends_on [18] satisfecho).
+
+## Sesión 2026-09-17 — Cierre feature 19 next-post-button
+
+- Feature 19 next-post-button cerrada en done (review APPROVED en progress/review_19.md, verificado en disco, sin cambios requeridos).
+- Implementación (informe en progress/impl_19.md): pie de navegación en `src/pages/posts/[id].astro` (54 → 60 líneas, `{post.next && (...)}` con enlace `href={post.next}` de texto "Siguiente artículo", destino solo desde la entidad Post vía PostsRepository, sin JS) + hoja nueva `src/styles/post-next.css` (35 líneas, solo tokens existentes, media 768px a ancho completo; `post.css` intacto en 100 líneas).
+- TDD: tests/next-post-button.test.mjs (7 tests REQ-19-01..06 + convención) 0/7 en rojo antes, 7/7 en verde después.
+- Cierre: ./init.sh en verde (entorno, formato, tests 100%, build); feature 19 en done conservada en el array.

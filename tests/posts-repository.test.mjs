@@ -17,7 +17,13 @@
 //               EXPECTED_POST gana id/slug).
 //   REQ-36-03 — si una entrada no declara un slug de texto, el repositorio
 //               lanza PostsDataError.
+//   Ajuste feature 18 next-post-data (precedente REQ-43-06: el fixture sigue a
+//               la entidad real): EXPECTED_POST gana next: null porque el
+//               artículo 00-agilismo.md no declara next en su frontmatter y el
+//               repositorio entrega nulo en ese caso (REQ-18-04). REAL_ENTRY no
+//               cambia. Ninguna aserción de contrato de las features 7/36 cambia.
 //
+
 // Nota de diseño: el default del repositorio envuelve getCollection('architecture')
 // de astro:content, un módulo virtual de Astro que solo existe dentro del build;
 // por eso el constructor acepta un loader inyectable (patrón de los repositorios
@@ -68,6 +74,7 @@ const EXPECTED_POST = {
   tags: ['arquitectura', 'agilismo', 'software-design'],
   created: '10 Agosto 2026',
   updated: '10 Agosto 2026',
+  next: null,
 };
 
 // Repositorio con un loader inyectado (simula la colección architecture).

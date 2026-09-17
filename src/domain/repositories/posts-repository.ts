@@ -1,8 +1,6 @@
-// Repositorio del dominio: artículos (REQ-07-02..04, feature 7 posts-domain).
-// Única vía de acceso a los artículos para la UI: envuelve la colección
-// architecture de astro:content (getCollection) y entrega las entidades Post.
-// Si un artículo no cumple el esquema de la entidad o la lectura falla, lanza
-// PostsDataError (REQ-07-03): nunca falla en silencio.
+// Repositorio: artículos (REQ-07-02..04 feature 7; REQ-18-03..05 feature 18).
+// Única vía a la colección architecture: entrega entidades Post o lanza
+// PostsDataError si un artículo no cumple el esquema o la lectura falla.
 
 import type { Post } from '../entities/post.ts';
 
@@ -55,6 +53,7 @@ function parsePost(entry: unknown, index: number): Post {
     tags: expectTags(data, index),
     created: expectString(data, 'created', index),
     updated: expectString(data, 'updated', index),
+    next: expectNext(data, index),
   };
 }
 
@@ -70,21 +69,24 @@ function asData(entry: unknown, index: number): Record<string, unknown> {
 }
 
 function expectString(data: Record<string, unknown>, field: string, index: number): string {
-  if (typeof data[field] !== 'string') {
-    throw new PostsDataError(
-      `architecture: el artículo ${index} tiene un campo "${field}" que debe ser texto`,
-    );
-  }
-  return data[field] as string;
+  const value = data[field];
+  if (typeof value !== 'string') throw new PostsDataError(`architecture: el artículo ${index} tiene un campo "${field}" que debe ser texto`);
+  return value;
 }
 
 function expectNumber(data: Record<string, unknown>, field: string, index: number): number {
-  if (typeof data[field] !== 'number') {
-    throw new PostsDataError(
-      `architecture: el artículo ${index} tiene un campo "${field}" que debe ser número`,
-    );
+  const value = data[field];
+  if (typeof value !== 'number') throw new PostsDataError(`architecture: el artículo ${index} tiene un campo "${field}" que debe ser número`);
+  return value;
+}
+
+function expectNext(data: Record<string, unknown>, index: number): string | null {
+  const value = data.next;
+  if (value === undefined) return null;
+  if (typeof value !== 'string' || !/^\/posts\/.+/.test(value)) {
+    throw new PostsDataError(`architecture: el artículo ${index} tiene un campo "next" que debe ser una ruta interna /posts/<id>`);
   }
-  return data[field] as number;
+  return value;
 }
 
 function expectTags(data: Record<string, unknown>, index: number): string[] {

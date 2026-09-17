@@ -4,7 +4,7 @@
 
 ### Feature en curso
 
-_— (ninguna; sesión anterior cerrada: feature 17 done)_
+- (ninguna; feature 19 cerrada en `done`, a la espera de la siguiente tarea del líder)
 
 ### Plan
 
@@ -12,4 +12,4 @@ _— (ninguna; sesión anterior cerrada: feature 17 done)_
 
 ### Bitácora
 
-- (vacío)
+- (vacía)

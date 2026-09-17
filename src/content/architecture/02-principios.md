@@ -8,6 +8,7 @@ description: Exploramos los tres pilares fundamentales del diseño de software a
 tags: "#arquitectura #software-design #abstraccion #encapsulamiento #modularizacion"
 created: "20 Agosto 2026"
 updated: "20 Agosto 2026"
+next: /posts/03-principios solid
 ---
 
 # 01. Principios del diseño de software

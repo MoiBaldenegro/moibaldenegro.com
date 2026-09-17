@@ -305,6 +305,41 @@
         7
       ],
       "status": "done"
+    },
+    {
+      "id": 18,
+      "name": "next-post-data",
+      "title": "Propiedad next con el siguiente post en esquema, contenido, entidad y repositorio",
+      "description": "Capa de datos de la recomendación editorial manual: el esquema architecture de src/content.config.ts declara el campo opcional next (texto con formato de ruta interna /posts/<id>), los 4 artículos de src/content/architecture declaran la cadena curada 00-agilismo → 01 → 02 → 03 (el último sin next), la entidad Post expone el campo readonly next con texto o nulo, y PostsRepository lo entrega lanzando PostsDataError si el valor presente no es texto con ese formato. Base que consume la feature 19. Sin UI (sin design.md). Nota: posts-repository.ts está en 96/100 líneas, el implementer debe cerrar en ≤100 compactando.",
+      "acceptance": [
+        "Un test de inspección verifica que src/content.config.ts declara el campo opcional next como texto en el esquema architecture (REQ-18-01)",
+        "Un test de inspección verifica que la entidad Post expone el campo readonly next con texto o nulo (REQ-18-02)",
+        "Un test node:test verifica que PostsRepository entrega el valor de next cuando el frontmatter lo declara y nulo cuando lo omite (REQ-18-03, REQ-18-04)",
+        "Un test node:test verifica que PostsRepository lanza PostsDataError cuando next no es texto con formato de ruta interna /posts/<id> (REQ-18-05)",
+        "Un test de inspección verifica que los 4 artículos declaran la cadena 00-agilismo → 01 → 02 → 03 en orden cronológico con el último sin next (REQ-18-06)",
+        "Un test de inspección verifica que la entidad Post y PostsRepository no superan las 100 líneas tras el cambio (REQ-18-07)",
+        "La suite completa del arnés pasa en verde al cierre de la feature, incluidos los tests existentes de posts-repository sin cambios de contrato (restricción require_tests_to_close)"
+      ],
+      "depends_on": [],
+      "status": "done"
+    },
+    {
+      "id": 19,
+      "name": "next-post-button",
+      "title": "Botón de siguiente artículo en la página de detalle del post",
+      "description": "Capa de presentación de la recomendación: src/pages/posts/[id].astro renderiza bajo el contenido un pie de navegación con un enlace-botón de texto Siguiente artículo hacia post.next cuando el post declara siguiente, y lo omite cuando next es nulo. El destino sale solo de la entidad Post vía PostsRepository (sin leer la colección directamente). Estilos en la hoja nueva src/styles/post-next.css con solo tokens existentes (post.css está en 100/100 líneas y no se toca), responsive a ancho completo en 768px o menos, cero JS de runtime (enlace estático prerendered). Depende de la feature 18.",
+      "acceptance": [
+        "Un test de inspección verifica que posts/[id].astro muestra un enlace con el texto Siguiente artículo hacia la ruta de next cuando el post declara siguiente, y lo omite cuando next es nulo (REQ-19-01, REQ-19-02)",
+        "Un test de inspección verifica que el enlace obtiene su destino solo desde la entidad Post entregada por PostsRepository, sin leer la colección directamente (REQ-19-03)",
+        "Un test de inspección verifica que post-next.css estila el enlace solo con tokens de tokens.css, sin valores sueltos (REQ-19-04)",
+        "Un test de inspección verifica que post-next.css presenta el enlace a ancho completo en 768 píxeles o menos (REQ-19-05)",
+        "Un test de inspección verifica que la página de detalle y post-next.css no superan las 100 líneas cada una (REQ-19-06)",
+        "La suite completa del arnés pasa en verde al cierre de la feature (restricción require_tests_to_close)"
+      ],
+      "depends_on": [
+        18
+      ],
+      "status": "done"
     }
   ]
 }

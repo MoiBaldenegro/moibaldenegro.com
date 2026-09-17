@@ -8,6 +8,7 @@ description: En este capitulo hablamos sobre el contexto de arquitectura y dise�
 tags: "#arquitectura #software-design" 
 created: "19 Agosto 2026"
 updated: "19 Agosto 2026"
+next: /posts/02-principios-del-diseno-de-software
 ---
 
 # 01. Niveles de Abstracción y Enfoques de Diseño en Arquitectura de Software

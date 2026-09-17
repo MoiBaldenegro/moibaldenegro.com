@@ -3,6 +3,7 @@ import "../../styles/post.css";
 import "../../styles/post-header.css";
 import "../../styles/post-readability.css";
 import "../../styles/article.css";
+import "../../styles/post-next.css";
 import Layout from "../../layouts/Layout.astro";
 import { PostsDataError, PostsRepository } from "../../domain/repositories/posts-repository.ts";
 import { getCollection, render } from "astro:content";
@@ -50,5 +51,10 @@ export const prerender = true;
         <Content />
       </section>
     </article>
+    {post.next && (
+      <footer class="post__next">
+        <a class="post__next-link" href={post.next}>Siguiente artículo</a>
+      </footer>
+    )}
   </main>
 </Layout>

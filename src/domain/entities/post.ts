@@ -5,6 +5,8 @@
 // id y slug (REQ-36-01, feature 36 posts-navigation-fix): id identifica la
 // entrada de la colección; slug proviene del frontmatter (exposición para uso
 // futuro; la ruta sigue /posts/[id] con id = entry.id, contrato REQ-24-05).
+// next (REQ-18-02, feature 18 next-post-data): recomendación editorial manual
+// con formato de ruta interna /posts/<id>; nulo = último sin recomendado.
 
 export interface Post {
   readonly id: string;
@@ -17,4 +19,5 @@ export interface Post {
   readonly tags: readonly string[];
   readonly created: string;
   readonly updated: string;
+  readonly next: string | null;
 }

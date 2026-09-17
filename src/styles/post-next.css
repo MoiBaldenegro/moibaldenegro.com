@@ -1,0 +1,36 @@
+/* post-next.css — Pie de navegación del detalle de artículo
+   (src/pages/posts/[id].astro, feature 19 next-post-button).
+   Botón-enlace "Siguiente artículo" hacia post.next.
+   Solo tokens de tokens.css. Hoja nueva: post.css está en 100/100
+   líneas y no se toca (D4 del research). Sin JS de runtime. */
+
+.post__next {
+  margin-top: var(--gap-card);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.post__next-link {
+  display: inline-block;
+  background: var(--color-accent);
+  color: var(--color-surface);
+  border-radius: var(--radius-card);
+  padding: var(--gap-card);
+  text-decoration: none;
+  transition: var(--transition-default);
+}
+
+.post__next-link:hover {
+  background: var(--color-accent-hover);
+}
+
+@media (max-width: 768px) {
+  .post__next {
+    justify-content: stretch;
+  }
+  .post__next-link {
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+}
