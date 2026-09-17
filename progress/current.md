@@ -20,3 +20,5 @@
 - Tests `tests/related-posts-list.test.mjs` (REQ-21-01..07) escritos primero y observados en rojo: 6/8 en fallo (evidencia en `progress/impl_21.md`)
 - Implementado: sección Recomendados en `[id].astro` (72 líneas) + extensión de `post-next.css` (71 líneas); `post.css` intacto en 100 líneas
 - `./init.sh` en verde (formato OK, tests 488/488, build OK); informe en `progress/impl_21.md`
+- Review `progress/review_21.md` con veredicto APPROVED (verificado en disco, sin cambios requeridos)
+- Cierre: feature 21 marcada `done` en `feature_list.json` (conservada en el array); `./init.sh` re-verificado en verde al cierre
