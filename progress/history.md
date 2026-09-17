@@ -1318,3 +1318,47 @@ Petición humana: «En las búsquedas cuando accedemos al /algo, queremos que lo
 - Implementación (informe en progress/impl_20.md): campo opcional related en esquema architecture, entidad Post (readonly related: readonly string[] | null) y PostsRepository con validador expectRelated (ausente -> null; no-arreglo/vacío/items no-/posts/<id> -> PostsDataError); último artículo 03-principios_solid.md con related de 2 rutas; posts-repository.ts compactado a 98 líneas.
 - TDD: tests/related-posts-data.test.mjs 6/7 en rojo antes, 7/7 en verde después; fixture EXPECTED_POST alineado con related: null (precedente REQ-43-06 de la feature 18).
 - Cierre: ./init.sh en verde (entorno, formato, tests 480/480, build); feature 20 en done conservada en el array; feature 21 related-posts-list queda desbloqueada en datos (depends_on [19, 20] ambos done).
+
+## Sesión 2026-09-17 — Cierre feature 22 next-related-hrefs-fix
+
+- Feature 22 next-related-hrefs-fix cerrada en done (review APPROVED en progress/review_22.md, verificado en disco, sin cambios requeridos).
+- Implementación (informe en progress/impl_22.md): solo frontmatter en src/content/architecture/*.md — 00 next → /posts/01-diseño_detallado, 01 next → /posts/02-principios, 02 next → /posts/03-principios_solid, 03 related → [/posts/00-agilismo, /posts/01-diseño_detallado], más related cruzado en 00/01/02 (00→02, 01→03, 02→00); sin tocar src/domain, src/pages, src/styles ni repositorio.
+- TDD: tests/next-related-hrefs-fix.test.mjs (REQ-22-01..07) 0/7 en rojo antes, 7/7 en verde después (45/45 con suites vecinas); CHAIN de tests/next-post-data.test.mjs alineado a los entry.id reales (precedente REQ-43-06).
+- Cierre: ./init.sh en verde (entorno, formato, tests 100%, build); feature 22 en done conservada en el array; feature 23 related-titles-design-align queda desbloqueada (depends_on [22] satisfecho).
+
+## Sesión 2026-09-17 — Cierre feature 23 related-titles-design-align
+
+- Feature 23 related-titles-design-align cerrada en done (review APPROVED en progress/review_23.md, verificado en disco, sin cambios requeridos).
+- Implementación (informe en progress/impl_23.md): módulo nuevo src/domain/related-titles.ts (23 líneas, resolveRelatedTitles(posts, related) → RelatedLink[] {href, title}); [id].astro 73/100 (import + relatedLinks por props desde getStaticPaths, marcado href={item.href}>{item.title}, prerender intacto, cero JS); post-next.css 91/100 (botón superficie+borde+texto claro, lista con hairline/wash/subrayado, responsive 768px, solo tokens); post.css 100/100 y posts-repository.ts intactos.
+- TDD: tests/related-titles-design-align.test.mjs (REQ-23-01..07) en rojo antes (ERR_MODULE_NOT_FOUND) y en verde después (área tocada 24/24); tests REQ-21-01/04 ajustados al título con justificación precedente REQ-43-06 (destinos sin cambios).
+- Cierre: ./init.sh en verde (entorno, formato, tests 504/504, build); feature 23 en done conservada en el array.
+
+## Sesión 2026-09-17 — Feature 24 `related-card-model` (cierre)
+
+- Feature 24 related-card-model cerrada en done (review APPROVED en progress/review_24.md, verificado en disco, sin cambios requeridos).
+- Implementación (informe en progress/impl_24.md): src/domain/related-titles.ts (23 → 29 líneas, ≤100 OK) — RelatedLink extendido con readonly img/author/readtime; resolveRelatedTitles los resuelve desde los Posts con el mismo Map por href (/posts/<id>); href desconocido degrada a { href, title: href, img: '', author: '', readtime: 0 } sin lanzar. Sin tocar content.config.ts, entidad Post, posts-repository.ts (98/100), frontmatter, [id].astro ni post-next.css (eso es feature 25). Sin JS de runtime, sin dependencias, sin tokens.
+- TDD: tests/related-card-model.test.mjs nuevo (REQ-24-01..06 + convención) en rojo antes (3 pass / 4 fail: REQ-24-01/02/03/05) y en verde después (área tocada 16/16 con related-titles-design-align); tests REQ-23-01/02 ajustados a la forma extendida con justificación precedente REQ-43-06 en cabecera (destinos sin cambios).
+- Cierre: ./init.sh en verde re-verificado tras el APPROVED (entorno, formato, tests al 100%, build); feature 24 en done conservada en el array. Siguiente implementable: 25 related-cards-present (depends_on [24]).
+
+## Sesión 2026-09-17 — Feature 25 `related-cards-present` (cierre)
+
+- Feature 25 related-cards-present cerrada en done (review APPROVED en progress/review_25.md, verificado en disco, sin cambios requeridos).
+- Implementación (informe en progress/impl_25.md): [id].astro (73 → 79 líneas) pinta una card por recomendado desde el view-model de la 24 — thumb /assets/content/<img> + título como texto del enlace + meta Por X • N min; frontmatter intacto (regla 8), prerender intacto, cero JS. post-next.css (91 → 25 líneas, reescritura compacta sin pedir blocked): rejilla 2 col, thumb canónico 112×63 con --radius-thumb, hairline var(--color-border), wash var(--color-surface) en hover, subrayado del título; responsive 1 col a ancho completo con miniatura oculta en ≤768px (precedente REQ-09-09); solo tokens; post.css 100/100 y repositorio intactos.
+- TDD: tests/related-cards-present.test.mjs nuevo (REQ-25-01..06 + convención) en rojo antes (4 pass / 3 fail: REQ-25-01/02/04) y en verde después (scope 38/38 con suites 19/21/23/24 intactas); convención REQ-24 que anticipaba esta feature invertida a assert.match con justificación precedente REQ-43-06.
+- Cierre: ./init.sh en verde re-verificado tras el APPROVED (entorno, formato, tests al 100%, build); feature 25 en done conservada en el array. Ciclo de recomendados 22/23/24/25 completo.
+- Nota de cierre (flake preexistente, ajeno a la 25): tras el cierre, una corrida de ./init.sh falló SOLO en tests/hero-ui-refactor.test.mjs REQ-09-05 con ENOENT sobre src/styles/tmp-audit.css — carrera entre cleanup-dead-code.test.mjs REQ-12-06 (crea/borra esa hoja temporal en paralelo) y el walker de src/ del test del hero. Re-corrida inmediata en verde (formato + tests 100% + build). Ningún archivo de la 25 implicado.
+
+## Sesión 2026-09-17 — Feature 26 `next-related-hrefs-reales` (cierre)
+
+- Feature 26 next-related-hrefs-reales cerrada en done (review APPROVED en progress/review_26.md, verificado en disco, sin cambios requeridos).
+- Implementación (informe en progress/impl_26.md): solo frontmatter *.md — 00 next→/posts/01-diseño-detallado + related→/posts/02-principios-del-diseno-de-software; 01 next→/posts/02-principios-del-diseno-de-software + related→/posts/03-principios solid; 02 next→/posts/03-principios solid (conserva related /posts/00-agilismo, HIT); 03 related→[/posts/00-agilismo, /posts/01-diseño-detallado]. Verdad de terreno: post.id=entry.id=slug=segmento de ruta (la 22 asumió nombre de fichero y rompió 6 de 8 hrefs). Sin tocar esquema/entidad/repositorio/vista/CSS.
+- TDD: tests/next-related-hrefs-reales.test.mjs nuevo (REQ-26-01..05) en rojo antes (0 pass / 5 fail) y en verde después; REQ-26-05 valida contra post.id de PostsRepository (loader inyectado, ids = slugs), sin filenames. Ajustes con justificación REQ-43-06: tests/next-post-data.test.mjs (CHAIN a slugs reales) y tests/next-related-hrefs-fix.test.mjs (REQ-22-01..04 a slugs reales, entryIds() desde campo slug, REQ-22-07 estrechado a espacios perimetrales por el espacio canónico de `03-principios solid`). Fixtures sintéticos de 23/24 intactos para la 27.
+- Cierre: ./init.sh en verde re-verificado tras el APPROVED (entorno, formato, tests 523/523, build); feature 26 en done conservada en el array. Siguiente implementable: 27 anchor-nunca-url (depends_on [26]).
+- Nota de cierre (flake del arnés, ajeno a la 26): dos corridas de ./init.sh fallaron SOLO en el paso de tests y pasaron al reintentar sin cambios (pnpm test 523/523 directo, bash ./init.sh y ./init.sh final en verde) — misma clase de carrera paralela documentada en el cierre de la 25. Ningún archivo de la 26 implicado.
+
+## Sesión 2026-09-17 — Feature 27 `anchor-nunca-url` (cierre)
+
+- Feature 27 anchor-nunca-url cerrada en done (review APPROVED en progress/review_27.md, verificado en disco, sin cambios requeridos).
+- Implementación (informe en progress/impl_27.md): src/domain/related-titles.ts (31 → 32 líneas, ≤100 OK) — resolveRelatedTitles pasa de degradar ({ href, title: href }) a filtrar con flatMap (href sin Post → []); conserva no-throw y related null → []. Sin tocar .astro ni CSS, sin JS de runtime.
+- TDD: tests/anchor-nunca-url.test.mjs nuevo (REQ-27-01..04) en rojo antes (2 pass / 2 fail: REQ-27-01 2!==1, REQ-27-03 título=/posts/no-existe) y en verde después (área tocada 27/27 con suites 23/24/25 intactas); test REQ-24-03 ajustado al filtrado con justificación precedente REQ-43-06 en cabecera (destinos conocidos sin cambios).
+- Cierre: ./init.sh en verde re-verificado tras el APPROVED (entorno, formato, tests al 100%, build); feature 27 en done conservada en el array.

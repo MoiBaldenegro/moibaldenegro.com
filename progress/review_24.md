@@ -1,0 +1,16 @@
+# Review — feature 24
+
+**Veredicto:** APPROVED
+
+## Checkpoints
+- C1: [x] — RelatedLink con href/title/img/author/readtime readonly + resolución desde Posts (REQ-24-01/02): `src/domain/related-titles.ts` líneas 12-18 declaran `export interface RelatedLink` con las cinco propiedades `readonly` (`href: string`, `title: string`, `img: string`, `author: string`, `readtime: number`); líneas 20-30 `resolveRelatedTitles(posts, related)` resuelve `img/author/readtime` desde el mismo `Map` por href (`/posts/<id>`, línea 25) que ya resolvía el título, con `post.title/post.img/post.author/post.readtime` (línea 29). Tests REQ-24-01/02 en verde (re-verificado por el reviewer: 16/16).
+- C2: [x] — Degradado sin romper build + esquema/frontmatter intactos (REQ-24-03/04): línea 28 degrada a `{ href, title: href, img: '', author: '', readtime: 0 }` sin lanzar (test REQ-24-03 con `doesNotThrow` verde); esquema `related: z.array(z.string()).optional()` intacto en `src/content.config.ts` (línea 32 del config) y frontmatter `string[]` de rutas `/posts/<id>` verificado por el test REQ-24-04 (verde); entidad `Post.related: readonly string[] | null` intacta (`src/domain/entities/post.ts` línea 25); integridad REQ-22-06 sin cambios de contrato (tests features 20/22 verdes en la suite completa).
+- C3: [x] — Ajuste REQ-23 con justificación REQ-43-06 (REQ-24-05): `tests/related-titles-design-align.test.mjs` líneas 22-25 documentan el ajuste (precedente REQ-43-06), fake enriquecido con `img/author/readtime` (líneas 74-79) y aserción exacta REQ-23-01 con las propiedades nuevas (líneas 105-111); los destinos `/posts/[id]` no cambian. Test REQ-24-05 verde.
+- C4: [x] — ≤100 líneas + sin tocar vista/CSS/repositorio (REQ-24-06 + convención): `related-titles.ts` 31/100 (test REQ-24-06 verde); `src/pages/posts/[id].astro` 73 líneas sin `item.img/item.author/item.readtime` (test Convención `doesNotMatch` verde — las cards las pinta la feature 25); `post-next.css` 91/100 sin cambios de esta feature; `posts-repository.ts` 98/100 sin extenderse; sin `<script>`/JS de runtime, sin dependencias, sin tokens nuevos.
+- C5: [x] — Ciclo rojo/verde + `./init.sh` verde + dependencias en `done`: `progress/impl_24.md` §"Evidencia del ciclo rojo/verde" muestra el test nuevo en rojo antes del código (3 pass / 4 fail: REQ-24-01/02/03/05 en `not ok`) y en verde tras implementar (16/16 con `related-titles-design-align`). Re-verificado por el reviewer: `node --test` 16/16 y `./init.sh` final en verde (formato ✔, tests al 100% ✔, build ✔, «El entorno está perfecto»). `depends_on: [23]` con la feature 23 en `done` (`feature_list.json` línea 417); la 25 sigue `pending` sin saltos.
+
+## Pregunta de revisión
+¿Se escribió el test de cada archivo antes del código y en rojo, y la suite quedó en verde al final? Sí: `progress/impl_24.md` evidencia `tests/related-card-model.test.mjs` en rojo antes de implementar (4 fallos REQ-24-01/02/03/05) y en verde al final (16/16 junto al test REQ-23 ajustado), con `./init.sh` final en verde re-verificado por el reviewer. ¿Se implementó saltando una dependencia pendiente? No: la feature 24 declara `depends_on: [23]` y la feature 23 está en `done`.
+
+## Cambios requeridos (si aplica)
+Ninguno.

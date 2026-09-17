@@ -102,3 +102,4 @@ basicamente pone limites y nos obliga a pensar de forma ordenada como utilizar l
 
 
 ## Principio de Segregacion de Interfaces
+Es muy comun el uso de interfaces para plasmar las funcionalidades de un modulo

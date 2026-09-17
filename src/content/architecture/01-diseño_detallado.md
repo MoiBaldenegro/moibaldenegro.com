@@ -9,6 +9,7 @@ tags: "#arquitectura #software-design"
 created: "19 Agosto 2026"
 updated: "19 Agosto 2026"
 next: /posts/02-principios-del-diseno-de-software
+related: [/posts/03-principios solid]
 ---
 
 # 01. Niveles de Abstracción y Enfoques de Diseño en Arquitectura de Software

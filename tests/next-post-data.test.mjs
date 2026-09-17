@@ -5,8 +5,18 @@
 // declara next opcional, los 4 artículos declaran la cadena curada en orden
 // cronológico, la entidad Post expone next con texto o nulo y PostsRepository
 // lo entrega validando el formato de ruta interna /posts/<id>.
-// Los ids de destino son los slugs del frontmatter (entry.id real verificado
-// en .astro/data-store.json): el último artículo no declara next.
+// Los ids de destino son los entry.id reales (nombre de fichero sin
+// extensión, la ruta es /posts/[id] con params id = entry.id, verificado en
+// getStaticPaths de [id].astro): el último artículo no declara next.
+// Ajuste feature 22 (precedente REQ-43-06: el test sigue al dato real):
+// la cadena original codificaba los hrefs rotos (guion vs guion-bajo,
+// slug vs id, espacio literal) que la feature 22 corrigió a entry.id.
+// Ajuste feature 26 next-related-hrefs-reales (mismo precedente REQ-43-06:
+// el test sigue al dato real): la 22 asumió entry.id = nombre de fichero y
+// la verdad de terreno (progress/research/anchor-sin-url.md, build emitido)
+// es entry.id = post.id = slug = segmento de ruta; la cadena curada pasa a
+// los slugs reales (01-diseño-detallado con guion, 02-principios-del-
+// diseno-de-software largo, 03-principios solid con espacio).
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

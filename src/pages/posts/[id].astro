@@ -6,6 +6,7 @@ import "../../styles/article.css";
 import "../../styles/post-next.css";
 import Layout from "../../layouts/Layout.astro";
 import { PostsDataError, PostsRepository } from "../../domain/repositories/posts-repository.ts";
+import { resolveRelatedTitles } from "../../domain/related-titles.ts";
 import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
@@ -24,12 +25,12 @@ export async function getStaticPaths() {
     }
     return {
       params: { id: entry.id },
-      props: { post, entry },
+      props: { post, entry, relatedLinks: resolveRelatedTitles(posts, post.related) },
     };
   });
 }
 
-const { post, entry } = Astro.props;
+const { post, entry, relatedLinks } = Astro.props;
 const { title, author, readtime, img } = post;
 const { Content } = await render(entry);
 
@@ -60,9 +61,13 @@ export const prerender = true;
       <section class="post__related">
         <h2 class="post__related-title">Recomendados</h2>
         <ul class="post__related-list">
-          {post.related.map((href) => (
+          {relatedLinks.map((item) => (
             <li class="post__related-item">
-              <a class="post__related-link" href={href}>{href}</a>
+              <img class="post__related-thumb" src={`/assets/content/${item.img}`} alt={item.title} loading="lazy" />
+              <div class="post__related-body">
+                <a class="post__related-link" href={item.href}>{item.title}</a>
+                <p class="post__related-meta">Por {item.author} • {item.readtime} min</p>
+              </div>
             </li>
           ))}
         </ul>

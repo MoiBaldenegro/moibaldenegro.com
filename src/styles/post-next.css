@@ -1,71 +1,25 @@
-/* post-next.css — Pie de navegación del detalle de artículo
-   (src/pages/posts/[id].astro, features 19 next-post-button y 21
-   related-posts-list). Botón-enlace "Siguiente artículo" hacia post.next y
-   sección "Recomendados" con la lista de enlaces hacia post.related.
-   Solo tokens de tokens.css. Hoja extendida: post.css está en 100/100
-   líneas y no se toca (D4 del research, D2 del design). Sin JS. */
-
-.post__next {
-  margin-top: var(--gap-card);
-  display: flex;
-  justify-content: flex-end;
-}
-
-.post__next-link {
-  display: inline-block;
-  background: var(--color-accent);
-  color: var(--color-surface);
-  border-radius: var(--radius-card);
-  padding: var(--gap-card);
-  text-decoration: none;
-  transition: var(--transition-default);
-}
-
-.post__next-link:hover {
-  background: var(--color-accent-hover);
-}
-
-.post__related {
-  margin-top: var(--gap-card);
-}
-
-.post__related-title {
-  color: var(--color-text);
-  margin-top: 0;
-  margin-bottom: var(--gap-card);
-}
-
-.post__related-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap-card);
-}
-
-.post__related-link {
-  color: var(--color-accent);
-  text-decoration: none;
-  transition: var(--transition-default);
-}
-
-.post__related-link:hover {
-  color: var(--color-accent-hover);
-  text-decoration: underline;
-}
-
+/* post-next.css — Pie del detalle (features 19/21/23/25): botón Siguiente
+   + cards Recomendados en rejilla 2 col (thumb 112×63, hairline + wash del
+   modo lista, feature 9). Solo tokens. post.css (100/100) no se toca. Sin JS. */
+.post__next { margin-top: var(--gap-card); display: flex; justify-content: flex-end; }
+.post__next-link { display: inline-block; background: var(--color-surface); color: var(--color-text); border: 1px solid var(--color-border); border-radius: var(--radius-card); padding: var(--gap-card); font-family: var(--font-sans); text-decoration: none; transition: var(--transition-default); }
+.post__next-link:hover { border-color: var(--color-accent); }
+.post__related { margin-top: var(--gap-card); }
+.post__related-title { color: var(--color-text); font-size: 1.35rem; margin-top: 0; margin-bottom: var(--gap-card); }
+.post__related-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap-card); }
+.post__related-item { display: flex; align-items: center; gap: var(--gap-card); padding: var(--gap-card) 12px; border-bottom: 1px solid var(--color-border); transition: var(--transition-default); }
+.post__related-item:last-child { border-bottom: none; }
+.post__related-item:hover { background: var(--color-surface); }
+.post__related-thumb { width: 112px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--radius-thumb); border: 1px solid var(--color-border); flex-shrink: 0; }
+.post__related-body { flex: 1; min-width: 0; }
+.post__related-link { color: var(--color-text); font-size: 1.05rem; font-family: var(--font-sans); text-decoration: none; transition: var(--transition-default); }
+.post__related-link:hover { text-decoration: underline; }
+.post__related-meta { color: var(--color-text-secondary); font-size: 0.85rem; margin: 4px 0 0; }
 @media (max-width: 768px) {
-  .post__next {
-    justify-content: stretch;
-  }
-  .post__next-link {
-    display: block;
-    width: 100%;
-    text-align: center;
-  }
-  .post__related-link {
-    display: block;
-    width: 100%;
-  }
+.post__next { justify-content: stretch; }
+.post__next-link { display: block; width: 100%; text-align: center; }
+.post__related-list { grid-template-columns: 1fr; }
+.post__related-item { padding: 12px 6px; }
+.post__related-thumb { display: none; }
+.post__related-link { display: block; width: 100%; }
 }

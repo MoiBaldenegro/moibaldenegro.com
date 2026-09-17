@@ -9,6 +9,7 @@ tags: "#arquitectura #agilismo #software-design"
 created: "10 Agosto 2026"
 updated: "10 Agosto 2026"
 next: /posts/01-diseño-detallado
+related: [/posts/02-principios-del-diseno-de-software]
 
 ---
 

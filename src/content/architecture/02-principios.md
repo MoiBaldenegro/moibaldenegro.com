@@ -9,6 +9,7 @@ tags: "#arquitectura #software-design #abstraccion #encapsulamiento #modularizac
 created: "20 Agosto 2026"
 updated: "20 Agosto 2026"
 next: /posts/03-principios solid
+related: [/posts/00-agilismo]
 ---
 
 # 01. Principios del diseño de software

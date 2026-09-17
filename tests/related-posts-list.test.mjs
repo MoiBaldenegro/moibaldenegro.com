@@ -16,6 +16,12 @@
 //   REQ-21-06 — post-next.css SHALL presentar la lista a ancho completo en
 //               768 píxeles o menos.
 //   REQ-21-07 — La página y post-next.css SHALL respetar 100 líneas cada una.
+//
+// Ajuste feature 23 related-titles-design-align (precedente REQ-43-06: el
+// test sigue a la presentación real): REQ-21-01/04 iteraban post.related con
+// el href crudo como texto; la vista itera ahora relatedLinks (título
+// resuelto en build por src/domain/related-titles.ts) y el texto es el
+// título. Los destinos /posts/[id] no cambian (REQ-21-03/04 intactos).
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -56,8 +62,18 @@ test('REQ-21-01: el detalle muestra una lista de enlaces con el encabezado Recom
   );
   assert.match(
     page,
-    /post\.related\.map/,
-    'la página no itera sobre post.related para la lista (REQ-21-01)',
+    /relatedLinks\.map/,
+    'la página no itera sobre los recomendados resueltos (REQ-21-01)',
+  );
+  assert.match(
+    page,
+    /href=\{item\.href\}/,
+    'los enlaces no apuntan a las rutas de related (REQ-21-01)',
+  );
+  assert.match(
+    page,
+    />\{item\.title\}</,
+    'el texto de los enlaces no es el título del recomendado (REQ-21-01)',
   );
   assert.match(
     page,
@@ -105,8 +121,13 @@ test('REQ-21-04: los destinos salen solo de la entidad Post vía PostsRepository
   );
   assert.match(
     page,
-    /post\.related\.map/,
-    'los destinos de la lista no salen de la entidad Post (REQ-21-04)',
+    /relatedLinks\.map/,
+    'los destinos de la lista no salen de los recomendados resueltos (REQ-21-04)',
+  );
+  assert.match(
+    page,
+    /resolveRelatedTitles\(posts, post\.related\)/,
+    'la resolución no parte de la entidad Post (REQ-21-04)',
   );
   assert.doesNotMatch(
     page,

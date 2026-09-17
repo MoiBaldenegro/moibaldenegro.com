@@ -379,6 +379,113 @@
         20
       ],
       "status": "done"
+    },
+    {
+      "id": 22,
+      "name": "next-related-hrefs-fix",
+      "title": "Corregir los hrefs next/related a los entry.id reales y completar related en toda la cadena",
+      "description": "Causa raíz del reporte (verificada en progress/research/recomendados-next-design.md): 4 de 5 hrefs curados apuntan a 404 — 00 usa guion donde el id lleva guion-bajo (01-diseño_detallado), 01 usa el slug (02-principios-del-diseno-de-software) en vez del entry.id (02-principios), 02 declara un espacio literal (03-principios solid) en vez de 03-principios_solid, y related[1] de 03 repite el error de 00; el validador de formato /posts/.+ los deja pasar (riesgo R2 asumido). Además la lista 'no se renderiza' en 00/01/02 por diseño (REQ-21-02 omite related nulo y solo 03 lo declara, decisión D5 del research anterior). Esta feature corrige los 5 valores a /posts/<entry.id> exactos y declara related complementario con al menos una ruta en 00/01/02. Solo frontmatter *.md (fuera del conteo de 100 líneas de src/): no toca repositorio (98/100) ni entidad ni vista. Base que consume la feature 23.",
+      "acceptance": [
+        "Un test de inspección verifica que el frontmatter de 00-agilismo declara next con el valor exacto /posts/01-diseño_detallado (REQ-22-01)",
+        "Un test de inspección verifica que el frontmatter de 01-diseño_detallado declara next con el valor exacto /posts/02-principios (REQ-22-02)",
+        "Un test de inspección verifica que el frontmatter de 02-principios declara next con el valor exacto /posts/03-principios_solid (REQ-22-03)",
+        "Un test de inspección verifica que el frontmatter de 03-principios_solid declara related con /posts/00-agilismo y /posts/01-diseño_detallado (REQ-22-04)",
+        "Un test de inspección verifica que cada artículo 00/01/02 declara related con al menos una ruta interna /posts/<id> (REQ-22-05)",
+        "Un test de inspección verifica que toda ruta de next/related corresponde a un entry.id existente de la colección y que ningún valor contiene espacios (REQ-22-06, REQ-22-07)",
+        "La suite completa del arnés pasa en verde al cierre de la feature (restricción require_tests_to_close)"
+      ],
+      "depends_on": [],
+      "status": "done"
+    },
+    {
+      "id": 23,
+      "name": "related-titles-design-align",
+      "title": "Mostrar títulos en recomendados y alinear botón y lista al design system",
+      "description": "Capa de presentación del reporte (ver progress/research/recomendados-next-design.md y specs/23_related-titles-design-align/design.md): la lista muestra el href crudo como texto en vez del título, el botón combina fondo de acento con texto oscuro y radio de tarjeta, y la lista no comparte ningún patrón con el modo lista canónico de la feature 9 (sin hairlines, sin wash, sin escala tipográfica). Esta feature resuelve el título de cada recomendado en un módulo .ts nuevo que [id].astro importa (cero JS de runtime, prerender intacto; el repositorio está en 98/100 y no se extiende, el frontmatter solo importa y pasa datos) y reestila botón y lista en post-next.css con solo tokens existentes siguiendo search-results.css/post.css. No toca post.css (100/100). Los tests REQ-21-01/04 que asercionan el texto del enlace se ajustan al título con justificación (precedente REQ-43-06; los destinos no cambian). Depende de la feature 22 (títulos sobre hrefs íntegros).",
+      "acceptance": [
+        "Un test de inspección verifica que posts/[id].astro muestra el título de cada artículo recomendado como texto de su enlace cuando el post declara related (REQ-23-01)",
+        "Un test de inspección verifica que la resolución del título vive en un módulo .ts nuevo importado por la vista y que el frontmatter solo hace imports y paso de datos (REQ-23-02)",
+        "Un test de inspección verifica que post-next.css presenta el botón Siguiente artículo con superficie, borde y texto claro del sistema (REQ-23-03, REQ-23-05)",
+        "Un test de inspección verifica que post-next.css presenta la lista de recomendados con filas separadas por hairline y resaltado al pasar el puntero (REQ-23-04, REQ-23-05)",
+        "Un test de inspección verifica que post-next.css conserva la presentación a ancho completo en 768 píxeles o menos (REQ-23-06)",
+        "Un test de inspección verifica que la página de detalle, post-next.css y el módulo nuevo no superan las 100 líneas cada uno (REQ-23-07)",
+        "La suite completa del arnés pasa en verde al cierre de la feature (restricción require_tests_to_close)"
+      ],
+      "depends_on": [
+        22
+      ],
+      "status": "done"
+    },
+    {
+      "id": 24,
+      "name": "related-card-model",
+      "title": "Resolver las propiedades de cada recomendado en build como objeto con título, imagen y meta",
+      "description": "Capa de dominio del reporte (ver progress/research/recomendados-cards-objetos.md): la vista recibe strings con solo el título (RelatedLink {href,title}) y no tiene propiedades con las que componer cards. Esta feature extiende RelatedLink con img/author/readtime readonly y resolveRelatedTitles los resuelve desde los Posts recibidos (el mismo Map que hoy resuelve el título; degradado al href/título actual si el post falta, nunca rompe el build). El frontmatter related conserva el arreglo de texto (features 20/22): no toca esquema, entidad ni repositorio (98/100 sin margen) y la integridad REQ-22-06 queda intacta. Sin UI (sin design.md). Base que consume la feature 25. Depende de la feature 23 (extiende su contrato REQ-23-01/02).",
+      "acceptance": [
+        "Un test de inspección verifica que el tipo RelatedLink expone las propiedades readonly href, title, img, author y readtime (REQ-24-01)",
+        "Un test unitario node:test verifica que resolveRelatedTitles resuelve img, author y readtime de cada href desde los Posts recibidos (REQ-24-02)",
+        "Un test unitario node:test verifica que un href sin Post conocido degrada al href y título actuales sin lanzar error (REQ-24-03)",
+        "Un test de inspección verifica que el esquema de content.config.ts y el frontmatter related conservan el arreglo de texto de rutas internas /posts/<id> (REQ-24-04)",
+        "Un test de inspección verifica que los tests REQ-23-01/02 que asercionan la forma exacta ajustan la aserción con la justificación documentada en el encabezado, o pasan sin cambios (REQ-24-05)",
+        "Un test de inspección verifica que related-titles.ts no supera las 100 líneas tras el cambio (REQ-24-06)",
+        "La suite completa del arnés pasa en verde al cierre de la feature, incluidos los tests de las features 20/22 sin cambios de contrato (restricción require_tests_to_close)"
+      ],
+      "depends_on": [
+        23
+      ],
+      "status": "done"
+    },
+    {
+      "id": 25,
+      "name": "related-cards-present",
+      "title": "Presentar los recomendados como cards pequeñas acordes al diseño",
+      "description": "Capa de presentación del reporte (ver progress/research/recomendados-cards-objetos.md y specs/25_related-cards-present/design.md): la lista simple de títulos se convierte en cards pequeñas en rejilla de dos columnas (miniatura canónica 112×63 con --radius-thumb + título enlazado + meta Por X • N min) que hablan el idioma del modo lista de la feature 9 (hairline --color-border, wash --color-surface en hover, subrayado del título). [id].astro pinta las cards desde el view-model de la feature 24 (frontmatter solo importa y pasa datos, regla 8); estilos solo en post-next.css con tokens existentes (post.css 100/100 no se toca; post-next.css 91/100: compactar antes de pedir blocked). Sin descripción ni tags (contexto de búsqueda, no de curaduría). Responsive 1 columna a ancho completo con miniatura oculta en 768px o menos (precedente REQ-09-09), cero JS (prerender). Depende de la feature 24.",
+      "acceptance": [
+        "Un test de inspección verifica que posts/[id].astro muestra una card por cada recomendado con su miniatura, su título como texto del enlace y su meta de autor y tiempo de lectura (REQ-25-01)",
+        "Un test de inspección verifica que post-next.css presenta las cards en rejilla de dos columnas con miniatura, separación por hairline var(--color-border) y resaltado var(--color-surface) al pasar el puntero (REQ-25-02)",
+        "Un test de inspección verifica que post-next.css estila las cards solo con tokens de tokens.css, sin valores sueltos (REQ-25-03)",
+        "Un test de inspección verifica que post-next.css presenta las cards en una columna a ancho completo y oculta la miniatura en 768 píxeles o menos (REQ-25-04)",
+        "Un test de inspección verifica que la página resuelve las cards en build sin scripts ni módulos de cliente (REQ-25-05)",
+        "Un test de inspección verifica que la página de detalle y post-next.css no superan las 100 líneas cada una (REQ-25-06)",
+        "La suite completa del arnés pasa en verde al cierre de la feature (restricción require_tests_to_close)"
+      ],
+      "depends_on": [
+        24
+      ],
+      "status": "done"
+    },
+    {
+      "id": 26,
+      "name": "next-related-hrefs-reales",
+      "title": "Corregir los hrefs next/related a los post.id y rutas reales del build",
+      "description": "La feature 22 asumió entry.id = nombre de fichero y movió los hrefs a valores que no resuelven: 6 de 8 hrefs next/related no coinciden con ningún post.id (ver tabla en progress/research/anchor-sin-url.md). La verdad de terreno la dicta el build: entry.id = post.id = segmento de ruta = valor del campo slug (00-agilismo, 01-diseño-detallado con guion, 02-principios-del-diseno-de-software largo, 03-principios solid con espacio), no el nombre de fichero. Esta feature corrige los 6 hrefs rotos a esos valores exactos (los 2 HIT a /posts/00-agilismo se conservan) para que el lookup de related-titles.ts resuelva títulos y el botón Siguiente deje de apuntar a 404. Solo frontmatter *.md (fuera del conteo de 100 líneas de src/): no toca esquema, entidad, repositorio ni vista. Sin UI (sin design.md). Base que consume la feature 27.",
+      "acceptance": [
+        "Un test de inspección verifica que el frontmatter de 00-agilismo declara next con el valor exacto /posts/01-diseño-detallado y related con /posts/02-principios-del-diseno-de-software (REQ-26-01)",
+        "Un test de inspección verifica que el frontmatter de 01-diseño_detallado declara next con el valor exacto /posts/02-principios-del-diseno-de-software y related con /posts/03-principios solid (REQ-26-02)",
+        "Un test de inspección verifica que el frontmatter de 02-principios declara next con el valor exacto /posts/03-principios solid y conserva related con /posts/00-agilismo (REQ-26-03)",
+        "Un test de inspección verifica que el frontmatter de 03-principios_solid declara related con /posts/00-agilismo y /posts/01-diseño-detallado (REQ-26-04)",
+        "Un test node:test verifica que cada ruta de next/related corresponde a un post.id entregado por PostsRepository, sin comparar contra nombres de fichero (REQ-26-05)",
+        "La suite completa del arnés pasa en verde al cierre de la feature (restricción require_tests_to_close)"
+      ],
+      "depends_on": [],
+      "status": "done"
+    },
+    {
+      "id": 27,
+      "name": "anchor-nunca-url",
+      "title": "Endurecer el view-model para que el texto del anchor nunca sea una URL",
+      "description": "Aunque la feature 26 corrija los hrefs, el fallback de src/domain/related-titles.ts (línea 28) sigue degradando un href sin Post conocido a {title: href}, y la vista pinta ese título como texto del anchor: cualquier typo futuro vuelve a mostrar la URL y a enlazar a un 404 (síntoma del reporte en progress/research/anchor-sin-url.md). Esta feature cambia el degradado a filtrado: resolveRelatedTitles omite los hrefs sin Post conocido en vez de titularlos con la ruta (filtrar, no titular: un título derivado seguiría enlazando a un 404; omitir mata ambos síntomas y conserva el no-throw de REQ-24-03), más un test que barre el prefijo /posts/ en el texto visible de los anchors. related-titles.ts está en 31/100 líneas (margen amplio). Sin JS de runtime, sin tocar .astro ni CSS (sin design.md), test-first. Depende de la feature 26 (se verifica sobre hrefs íntegros).",
+      "acceptance": [
+        "Un test unitario node:test verifica que resolveRelatedTitles omite del resultado un href sin Post conocido en lugar de degradar su título a la ruta (REQ-27-01)",
+        "Un test unitario node:test verifica que con todos los hrefs conocidos se devuelve un item por href con el título del Post destino (REQ-27-02)",
+        "Un test de inspección verifica que el texto de cada anchor de recomendados muestra el título del destino y no contiene el prefijo /posts/ (REQ-27-03)",
+        "Un test de inspección verifica que related-titles.ts no supera las 100 líneas tras el cambio (REQ-27-04)",
+        "La suite completa del arnés pasa en verde al cierre de la feature (restricción require_tests_to_close)"
+      ],
+      "depends_on": [
+        26
+      ],
+      "status": "done"
     }
   ]
 }
