@@ -22,6 +22,11 @@
 //               artículo 00-agilismo.md no declara next en su frontmatter y el
 //               repositorio entrega nulo en ese caso (REQ-18-04). REAL_ENTRY no
 //               cambia. Ninguna aserción de contrato de las features 7/36 cambia.
+//   Ajuste feature 20 related-posts-data (mismo precedente REQ-43-06):
+//               EXPECTED_POST gana related: null porque el artículo
+//               00-agilismo.md no declara related en su frontmatter y el
+//               repositorio entrega nulo en ese caso (REQ-20-04). REAL_ENTRY no
+//               cambia. Ninguna aserción de contrato de las features 7/36 cambia.
 //
 
 // Nota de diseño: el default del repositorio envuelve getCollection('architecture')
@@ -75,6 +80,7 @@ const EXPECTED_POST = {
   created: '10 Agosto 2026',
   updated: '10 Agosto 2026',
   next: null,
+  related: null,
 };
 
 // Repositorio con un loader inyectado (simula la colección architecture).

@@ -7,6 +7,8 @@
 // futuro; la ruta sigue /posts/[id] con id = entry.id, contrato REQ-24-05).
 // next (REQ-18-02, feature 18 next-post-data): recomendación editorial manual
 // con formato de ruta interna /posts/<id>; nulo = último sin recomendado.
+// related (REQ-20-02, feature 20 related-posts-data): lista de recomendados
+// con formato de ruta interna /posts/<id> por item; nulo = sin recomendados.
 
 export interface Post {
   readonly id: string;
@@ -20,4 +22,5 @@ export interface Post {
   readonly created: string;
   readonly updated: string;
   readonly next: string | null;
+  readonly related: readonly string[] | null;
 }

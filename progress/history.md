@@ -1311,3 +1311,10 @@ Petición humana: «En las búsquedas cuando accedemos al /algo, queremos que lo
 - Implementación (informe en progress/impl_19.md): pie de navegación en `src/pages/posts/[id].astro` (54 → 60 líneas, `{post.next && (...)}` con enlace `href={post.next}` de texto "Siguiente artículo", destino solo desde la entidad Post vía PostsRepository, sin JS) + hoja nueva `src/styles/post-next.css` (35 líneas, solo tokens existentes, media 768px a ancho completo; `post.css` intacto en 100 líneas).
 - TDD: tests/next-post-button.test.mjs (7 tests REQ-19-01..06 + convención) 0/7 en rojo antes, 7/7 en verde después.
 - Cierre: ./init.sh en verde (entorno, formato, tests 100%, build); feature 19 en done conservada en el array.
+
+## Sesión 2026-09-17 — Cierre feature 20 related-posts-data
+
+- Feature 20 related-posts-data cerrada en done (review APPROVED en progress/review_20.md, verificado en disco, sin cambios requeridos).
+- Implementación (informe en progress/impl_20.md): campo opcional related en esquema architecture, entidad Post (readonly related: readonly string[] | null) y PostsRepository con validador expectRelated (ausente -> null; no-arreglo/vacío/items no-/posts/<id> -> PostsDataError); último artículo 03-principios_solid.md con related de 2 rutas; posts-repository.ts compactado a 98 líneas.
+- TDD: tests/related-posts-data.test.mjs 6/7 en rojo antes, 7/7 en verde después; fixture EXPECTED_POST alineado con related: null (precedente REQ-43-06 de la feature 18).
+- Cierre: ./init.sh en verde (entorno, formato, tests 480/480, build); feature 20 en done conservada en el array; feature 21 related-posts-list queda desbloqueada en datos (depends_on [19, 20] ambos done).

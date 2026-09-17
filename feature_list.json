@@ -340,6 +340,45 @@
         18
       ],
       "status": "done"
+    },
+    {
+      "id": 20,
+      "name": "related-posts-data",
+      "title": "Propiedad related con recomendados en esquema, contenido, entidad y repositorio",
+      "description": "Capa de datos de la lista de recomendados pedida por el humano (array de urls por artículo para el último sin siguiente o como complementarios al tema; ver progress/research/recommended-list.md): el esquema architecture de src/content.config.ts declara el campo opcional related como arreglo de texto con formato de ruta interna /posts/<id> por item, el último artículo de la colección declara related con al menos dos rutas curadas, la entidad Post expone el campo readonly related con arreglo o nulo, y PostsRepository lo entrega lanzando PostsDataError si el valor presente no es un arreglo de esas rutas. Base que consume la feature 21. Sin UI (sin design.md). Nota: posts-repository.ts está en 99/100 líneas, el implementer debe cerrar en ≤100 compactando.",
+      "acceptance": [
+        "Un test de inspección verifica que src/content.config.ts declara el campo opcional related como arreglo de texto en el esquema architecture (REQ-20-01)",
+        "Un test de inspección verifica que la entidad Post expone el campo readonly related con arreglo de texto o nulo (REQ-20-02)",
+        "Un test node:test verifica que PostsRepository entrega los valores de related cuando el frontmatter lo declara y nulo cuando lo omite (REQ-20-03, REQ-20-04)",
+        "Un test node:test verifica que PostsRepository lanza PostsDataError cuando related no es un arreglo de rutas internas /posts/<id> (REQ-20-05)",
+        "Un test de inspección verifica que el último artículo de la colección declara related con al menos dos rutas internas /posts/<id> (REQ-20-06)",
+        "Un test de inspección verifica que la entidad Post y PostsRepository no superan las 100 líneas tras el cambio (REQ-20-07)",
+        "La suite completa del arnés pasa en verde al cierre de la feature, incluidos los tests existentes de posts-repository sin cambios de contrato (restricción require_tests_to_close)"
+      ],
+      "depends_on": [
+        18
+      ],
+      "status": "done"
+    },
+    {
+      "id": 21,
+      "name": "related-posts-list",
+      "title": "Lista de recomendados en la página de detalle del post",
+      "description": "Capa de presentación de la lista de recomendados: src/pages/posts/[id].astro renderiza bajo el contenido una sección con el encabezado Recomendados y una lista de enlaces hacia post.related cuando el post lo declara, y la omite cuando related es nulo. Convive con el botón Siguiente artículo de la feature 19 (ambos visibles si coexisten; la lista queda como única recomendación cuando next es nulo, el caso del último artículo). Los destinos salen solo de la entidad Post vía PostsRepository (sin leer la colección directamente). Estilos extendiendo src/styles/post-next.css con solo tokens existentes (post.css está en 100/100 líneas y no se toca), responsive a ancho completo en 768px o menos, cero JS de runtime (enlaces estáticos prerendered). Depende de las features 19 y 20.",
+      "acceptance": [
+        "Un test de inspección verifica que posts/[id].astro muestra una lista de enlaces con el encabezado Recomendados hacia las rutas de related cuando el post lo declara, y la omite cuando related es nulo (REQ-21-01, REQ-21-02)",
+        "Un test de inspección verifica que la página muestra el botón de siguiente junto a la lista cuando el post declara next y related (REQ-21-03)",
+        "Un test de inspección verifica que los enlaces obtienen sus destinos solo desde la entidad Post entregada por PostsRepository, sin leer la colección directamente (REQ-21-04)",
+        "Un test de inspección verifica que post-next.css estila la lista solo con tokens de tokens.css, sin valores sueltos (REQ-21-05)",
+        "Un test de inspección verifica que post-next.css presenta la lista a ancho completo en 768 píxeles o menos (REQ-21-06)",
+        "Un test de inspección verifica que la página de detalle y post-next.css no superan las 100 líneas cada una (REQ-21-07)",
+        "La suite completa del arnés pasa en verde al cierre de la feature (restricción require_tests_to_close)"
+      ],
+      "depends_on": [
+        19,
+        20
+      ],
+      "status": "in_progress"
     }
   ]
 }

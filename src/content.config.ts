@@ -25,6 +25,7 @@ const architecture = defineCollection({
     created: z.string(),
     updated: z.string(),
     next: z.string().optional(),
+    related: z.array(z.string()).optional(),
   }),
 });
 

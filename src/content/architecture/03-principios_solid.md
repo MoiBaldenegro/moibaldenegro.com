@@ -8,6 +8,7 @@ description: En este capitulo aprenderemos los conceptos fundamentales de la arq
 tags: "#arquitectura #agilismo #solid"
 created: "21 Agosto 2026"
 updated: "21 Agosto 2026"
+related: [/posts/00-agilismo, /posts/01-diseño-detallado]
 
 ---
 

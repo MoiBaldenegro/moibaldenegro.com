@@ -1,8 +1,9 @@
 /* post-next.css — Pie de navegación del detalle de artículo
-   (src/pages/posts/[id].astro, feature 19 next-post-button).
-   Botón-enlace "Siguiente artículo" hacia post.next.
-   Solo tokens de tokens.css. Hoja nueva: post.css está en 100/100
-   líneas y no se toca (D4 del research). Sin JS de runtime. */
+   (src/pages/posts/[id].astro, features 19 next-post-button y 21
+   related-posts-list). Botón-enlace "Siguiente artículo" hacia post.next y
+   sección "Recomendados" con la lista de enlaces hacia post.related.
+   Solo tokens de tokens.css. Hoja extendida: post.css está en 100/100
+   líneas y no se toca (D4 del research, D2 del design). Sin JS. */
 
 .post__next {
   margin-top: var(--gap-card);
@@ -24,6 +25,36 @@
   background: var(--color-accent-hover);
 }
 
+.post__related {
+  margin-top: var(--gap-card);
+}
+
+.post__related-title {
+  color: var(--color-text);
+  margin-top: 0;
+  margin-bottom: var(--gap-card);
+}
+
+.post__related-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-card);
+}
+
+.post__related-link {
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: var(--transition-default);
+}
+
+.post__related-link:hover {
+  color: var(--color-accent-hover);
+  text-decoration: underline;
+}
+
 @media (max-width: 768px) {
   .post__next {
     justify-content: stretch;
@@ -32,5 +63,9 @@
     display: block;
     width: 100%;
     text-align: center;
+  }
+  .post__related-link {
+    display: block;
+    width: 100%;
   }
 }

@@ -56,5 +56,17 @@ export const prerender = true;
         <a class="post__next-link" href={post.next}>Siguiente artículo</a>
       </footer>
     )}
+    {post.related && (
+      <section class="post__related">
+        <h2 class="post__related-title">Recomendados</h2>
+        <ul class="post__related-list">
+          {post.related.map((href) => (
+            <li class="post__related-item">
+              <a class="post__related-link" href={href}>{href}</a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
   </main>
 </Layout>
