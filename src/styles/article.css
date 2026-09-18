@@ -27,3 +27,20 @@
     margin: var(--gap-card) auto;
   }
 }
+
+/* Bloques de código resaltados por Shiki (fix 2026-09-19: ```text de
+   02-principios y ```c# de 03-principios_solid). Shiki inyecta el fondo del
+   tema github-dark inline en el pre y ese negro rompe la superficie del
+   sitio: se iguala a --color-surface con !important (precedente
+   hero-card.css: el estilo inline de terceros solo cede ante !important).
+   El code interno queda transparente y sin el padding del código inline. */
+.post__content pre.astro-code {
+  background: var(--color-surface) !important;
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+.post__content pre.astro-code code {
+  background: transparent;
+  padding: 0;
+}
