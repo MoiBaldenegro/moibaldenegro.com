@@ -29,7 +29,8 @@
 //               cambia. Ninguna aserción de contrato de las features 7/36 cambia.
 //
 
-// Nota de diseño: el default del repositorio envuelve getCollection('architecture')
+// Nota de diseño: el default del repositorio envuelve getCollection('posts')
+// de astro:content, un módulo virtual de Astro que solo existe dentro del build;
 // de astro:content, un módulo virtual de Astro que solo existe dentro del build;
 // por eso el constructor acepta un loader inyectable (patrón de los repositorios
 // previos) y el test verifica por inspección que el default envuelve la colección.
@@ -48,8 +49,8 @@ const REPOSITORY_URL = new URL(
   import.meta.url,
 );
 
-// La entrada que getCollection('architecture') entrega para el artículo real
-// src/content/architecture/00-agilismo.md (schema de src/content.config.ts ya
+// La entrada que getCollection('posts') entrega para el artículo real
+// src/content/posts/architecture/00-agilismo.md (schema de src/content.config.ts ya
 // aplicado: tags es un arreglo tras el transform).
 const REAL_ENTRY = {
   id: '00-agilismo',
@@ -83,7 +84,7 @@ const EXPECTED_POST = {
   related: null,
 };
 
-// Repositorio con un loader inyectado (simula la colección architecture).
+// Repositorio con un loader inyectado (simula la colección posts).
 function repositoryWith(entries) {
   return new PostsRepository(async () => entries);
 }
@@ -109,11 +110,11 @@ test('REQ-07-02: PostsRepository entrega los artículos de la colección como Po
   assert.deepEqual(posts[0], EXPECTED_POST, 'el Post entregado no coincide con el artículo real');
 });
 
-test('REQ-07-02: el default del repositorio envuelve getCollection("architecture") de astro:content', () => {
+test('REQ-07-02: el default del repositorio envuelve getCollection("posts") de astro:content', () => {
   const content = readFileSync(REPOSITORY_URL, 'utf8');
   assert.match(content, /astro:content/, 'el repositorio no usa astro:content (REQ-07-02)');
   assert.match(content, /getCollection/, 'el repositorio no usa getCollection (REQ-07-02)');
-  assert.match(content, /architecture/, 'el repositorio no apunta a la colección architecture (REQ-07-02)');
+  assert.match(content, /getCollection\(['"]posts['"]\)/, 'el repositorio no apunta a la colección posts (REQ-07-02)');
 });
 
 test('REQ-36-03: una entrada sin slug de texto lanza PostsDataError', async () => {

@@ -11,8 +11,10 @@ export const prerender = true;
 // precedente posts/[id].astro), serializado con JSON.stringify y escape de
 // </script (<\/script) para no romper el HTML.
 const posts = await new PostsRepository().getPosts();
-const entries = await getCollection('architecture');
-const bodies = Object.fromEntries(entries.map((entry) => [entry.id, entry.body]));
+const entries = await getCollection('posts');
+// DECISIÓN 2026-09-18 (colección unificada): bodies por entry.data.slug para
+// coincidir con post.id = slug; entry.id lleva subcarpeta y daría body vacío.
+const bodies = Object.fromEntries(entries.map((entry) => [entry.data.slug, entry.body]));
 const indexJson = JSON.stringify(buildSearchIndex(posts, bodies)).replace(
   /<\/script/gi,
   '<\\/script',

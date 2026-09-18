@@ -22,7 +22,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
-const ARCH_DIR = new URL('../src/content/architecture/', import.meta.url);
+const ARCH_DIR = new URL('../src/content/posts/architecture/', import.meta.url);
 
 // post.id reales: valores del campo slug del frontmatter (verdad de terreno
 // de la feature 26: entry.id = slug = segmento de ruta, no el fichero).

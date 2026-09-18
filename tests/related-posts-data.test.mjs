@@ -126,7 +126,7 @@ test('REQ-20-05: related inválido lanza PostsDataError', async () => {
 });
 
 test('REQ-20-06: el último artículo declara related con al menos dos rutas internas', () => {
-  const url = new URL(`../src/content/architecture/${LAST_FILE}`, import.meta.url);
+  const url = new URL(`../src/content/posts/architecture/${LAST_FILE}`, import.meta.url);
   const declared = relatedOf(readFileSync(url, 'utf8'));
   assert.ok(
     Array.isArray(declared) && declared.length >= 2,

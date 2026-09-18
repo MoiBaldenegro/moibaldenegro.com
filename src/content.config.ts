@@ -2,9 +2,13 @@ import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 
-const architecture = defineCollection({
+// Colección unificada posts (DECISIÓN 2026-09-18): subcarpetas
+// architecture/ y os/ bajo la misma colección para búsqueda y /posts/[id]
+// únicos. post.id = data.slug (ver posts-repository.ts): entry.id incluye
+// la subcarpeta y no sirve como clave de ruta ni de next/related.
+const posts = defineCollection({
   loader: glob({
-    base: "./src/content/architecture",
+    base: "./src/content/posts",
     pattern: "**/*.md",
   }),
   schema: z.object({
@@ -29,4 +33,4 @@ const architecture = defineCollection({
   }),
 });
 
-export const collections = { architecture };
+export const collections = { posts };

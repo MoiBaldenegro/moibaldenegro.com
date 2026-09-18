@@ -130,6 +130,9 @@ test('REQ-24-05/Resolución: [id].astro usa PostsRepository y no markdownPostRep
 });
 
 test('REQ-24-05/Resolución: getStaticPaths genera params con el id real de la ruta', () => {
+  // Ajuste colección unificada posts 2026-09-18 (precedente REQ-43-06: el test
+  // sigue al contrato real): params.id = slug del frontmatter (post.slug), no
+  // entry.id (lleva subcarpeta architecture/ u os/ y rompería /posts/[id]).
   const page = readPage();
   assert.match(
     page,
@@ -138,8 +141,8 @@ test('REQ-24-05/Resolución: getStaticPaths genera params con el id real de la r
   );
   assert.match(
     page,
-    /params:\s*\{\s*id:\s*entry\.id\s*\}/,
-    'los params de la ruta no usan el id real de la colección (entry.id)'
+    /params:\s*\{\s*id:\s*slug\s*\}/,
+    'los params de la ruta no usan el slug estable (REQ-24-05)'
   );
 });
 

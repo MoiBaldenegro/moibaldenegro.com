@@ -108,7 +108,7 @@ test('REQ-18-05: next con formato inválido lanza PostsDataError', async () => {
 
 test('REQ-18-06: los 4 artículos declaran la cadena curada con el último sin next', () => {
   for (const { file, next } of CHAIN) {
-    const url = new URL(`../src/content/architecture/${file}`, import.meta.url);
+    const url = new URL(`../src/content/posts/architecture/${file}`, import.meta.url);
     const declared = nextOf(readFileSync(url, 'utf8'));
     assert.equal(declared, next, `${file} declara next ${JSON.stringify(declared)} en lugar de ${JSON.stringify(next)} (REQ-18-06)`);
   }

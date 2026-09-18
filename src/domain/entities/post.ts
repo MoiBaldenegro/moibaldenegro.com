@@ -1,10 +1,13 @@
 // Entidad del dominio: artículo (REQ-07-01, feature 7 posts-domain).
-// Tipa los artículos de la colección architecture (src/content/architecture).
+// Tipa los artículos de la colección unificada posts (src/content/posts con
+// subcarpetas architecture/ y os/). DECISIÓN 2026-09-18: id = slug del
+// frontmatter (no entry.id con subcarpeta) para URLs /posts/<slug> estables.
 // Inmutable: todos los campos son readonly. tags ya viene transformado a
 // arreglo de texto por el schema de src/content.config.ts.
 // id y slug (REQ-36-01, feature 36 posts-navigation-fix): id identifica la
 // entrada de la colección; slug proviene del frontmatter (exposición para uso
-// futuro; la ruta sigue /posts/[id] con id = entry.id, contrato REQ-24-05).
+// futuro; la ruta sigue /posts/[id] con id = slug, contrato REQ-24-05 y
+// colección unificada posts (2026-09-18).
 // next (REQ-18-02, feature 18 next-post-data): recomendación editorial manual
 // con formato de ruta interna /posts/<id>; nulo = último sin recomendado.
 // related (REQ-20-02, feature 20 related-posts-data): lista de recomendados

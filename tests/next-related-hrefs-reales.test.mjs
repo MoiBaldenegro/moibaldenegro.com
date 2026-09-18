@@ -31,7 +31,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { PostsRepository } from '../src/domain/repositories/posts-repository.ts';
 
-const ARCH_DIR = new URL('../src/content/architecture/', import.meta.url);
+const ARCH_DIR = new URL('../src/content/posts/architecture/', import.meta.url);
 const REPO_PATH = new URL('../src/domain/repositories/posts-repository.ts', import.meta.url);
 
 // Ficheros de la colección (nombres en disco; NUNCA se usan como ids: solo
@@ -173,13 +173,14 @@ test('REQ-26-04: 03-principios_solid declara related con los dos slugs reales', 
 test('REQ-26-05: cada ruta de next/related corresponde a un post.id de PostsRepository', async () => {
   const ids = postIds();
   assert.equal(ids.size, 4, `se esperaban 4 post.id (slugs), hay ${ids.size} (REQ-26-05)`);
-  // El repositorio entrega post.id desde entry.id (inspección: el id NUNCA
-  // sale del nombre de fichero) y valida el formato de next/related.
+  // Ajuste colección unificada posts 2026-09-18 (precedente REQ-43-06: el test
+  // sigue al contrato real): post.id = data.slug (no entry.id, que incluye la
+  // subcarpeta architecture/ u os/). El repositorio valida next/related igual.
   const repo = readFileSync(REPO_PATH, 'utf8');
   assert.match(
     repo,
-    /\(entry as Record<string, unknown>\)\.id/,
-    'PostsRepository no entrega post.id desde entry.id (REQ-26-05)',
+    /const slug = expectString\(data, 'slug'/,
+    'PostsRepository no entrega post.id desde data.slug (REQ-26-05)',
   );
   const repository = new PostsRepository(async () =>
     [...ids].map((slug) => entryFor(slug, '/posts/00-agilismo', ['/posts/00-agilismo'])),

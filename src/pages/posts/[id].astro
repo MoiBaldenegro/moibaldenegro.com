@@ -10,21 +10,24 @@ import { resolveRelatedTitles } from "../../domain/related-titles.ts";
 import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
+  // DECISIÓN 2026-09-18 (colección unificada posts/): params.id = slug del
+  // frontmatter, no entry.id (lleva subcarpeta architecture/ u os/).
   const posts = await new PostsRepository().getPosts();
-  const entries = await getCollection("architecture");
+  const entries = await getCollection("posts");
   if (entries.length !== posts.length) {
     throw new PostsDataError(
       "posts: la colección y el repositorio no coinciden en número de artículos",
     );
   }
-  const postById = new Map(posts.map((post) => [post.id, post]));
+  const postById = new Map(posts.map((post) => [post.slug, post]));
   return entries.map((entry) => {
-    const post = postById.get(entry.id);
+    const slug = entry.data.slug;
+    const post = postById.get(slug);
     if (!post) {
-      throw new PostsDataError(`posts: no existe un post con id ${entry.id}`);
+      throw new PostsDataError(`posts: no existe un post con id ${slug}`);
     }
     return {
-      params: { id: entry.id },
+      params: { id: slug },
       props: { post, entry, relatedLinks: resolveRelatedTitles(posts, post.related) },
     };
   });
