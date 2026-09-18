@@ -8,11 +8,14 @@ description: Post de prueba para validar la colección unificada posts + búsque
 tags: "#os #prueba #sistemas-operativos"
 created: "18 Septiembre 2026"
 updated: "18 Septiembre 2026"
+next: /posts/01-procesos-memoria
+related: [/posts/01-procesos-memoria, /posts/00-agilismo]
 ---
 
-<!-- Post de prueba (2026-09-18): valida colección unificada posts/ + búsqueda.
-Sin next/related para no acoplar artículos existentes. Keyword única
-xyz-os-test-123 para assert en /search. Borrable sin impacto. -->
+<!-- Post de prueba (2026-09-18, actualizado 2026-09-19): valida colección
+unificada posts/ + búsqueda. next -> 01-procesos-memoria para probar el botón
+Siguiente; related cruzado OS + architecture para probar Recomendados.
+Keyword única xyz-os-test-123 para assert en /search. -->
 
 # 00. Prueba OS - Qué es un sistema operativo
 
