@@ -4,11 +4,11 @@
 
 ### Feature en curso
 
-- (ninguna — feature 27 anchor-nunca-url cerrada en done con APPROVED en progress/review_27.md)
+- Ninguna (feature 29 `horizontal-scroll-gsap-cards` cerrada en done el 2026-09-21; ver progress/history.md).
 
 ### Plan
 
-- (pendiente de la siguiente sesión)
+- Pendiente de la siguiente feature del backlog (la selecciona el líder).
 
 ### Bitácora
 

@@ -3,12 +3,12 @@ import "../styles/latest-articles.css";
 
 import { PostsRepository } from "../domain/repositories/posts-repository.ts";
 
-const posts = await new PostsRepository().getPosts();
+const posts = (await new PostsRepository().getPosts()).slice(0, 3);
 ---
 
-<section class="latest-articles">
+<section class="latest-articles" data-latest-scroll>
   <h2 class="latest-articles__heading">Últimos artículos</h2>
-  <div class="latest-articles__list">
+  <div class="latest-articles__list" data-latest-track>
     {posts.map((post) => (
       <article class="latest-articles__card">
         <a class="latest-articles__link" href={`/posts/${post.id}`}>
@@ -32,3 +32,8 @@ const posts = await new PostsRepository().getPosts();
     ))}
   </div>
 </section>
+
+<script>
+  import { initLatestScroll } from "./latest-articles-scroll.ts";
+  document.addEventListener("astro:page-load", () => initLatestScroll());
+</script>

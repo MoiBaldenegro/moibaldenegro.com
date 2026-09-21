@@ -486,6 +486,41 @@
         26
       ],
       "status": "done"
+    },
+    {
+      "id": 28,
+      "name": "gsap-setup-recent-limit",
+      "title": "Alta de GSAP y límite de la portada a los 3 artículos recientes",
+      "description": "Base del ciclo GSAP (ver progress/research/gsap-horizontal-cards.md, D1/D3/D6): el humano autorizó GSAP solo para la página principal (src/pages/index.astro). Esta feature instala gsap vía pnpm (scope dependencies; el validador falla si package.json declara la dependencia sin entrada aprobada, por eso registro e instalación viajan en el mismo cierre) y limita la sección Últimos artículos a los 3 más recientes reutilizando el orden descendente de PostsRepository.getPosts (byCreatedDesc), sin tocar el repositorio (100/100 líneas, sin margen) ni el esquema. Sin design.md: no cambia estilos ni layout, solo alta de dependencia y selección de datos.",
+      "acceptance": [
+        "Un test de inspección verifica que package.json declara gsap en dependencies y que docs/dependencies.md contiene la entrada ### gsap con version y scope iguales a los de package.json y con approved y motivo (REQ-28-01, REQ-28-02)",
+        "Un test de inspección verifica que la portada pinta como máximo 3 cards reutilizando el orden descendente entregado por PostsRepository (REQ-28-03)",
+        "Un test unitario node:test verifica que con menos de 3 artículos se muestran todos sin error (REQ-28-04)",
+        "Un test de inspección verifica que cada archivo modificado no supera las 100 líneas (REQ-28-05)",
+        "La suite completa del arnés pasa en verde al cierre de la feature (restricción require_tests_to_close)"
+      ],
+      "depends_on": [],
+      "status": "done"
+    },
+    {
+      "id": 29,
+      "name": "horizontal-scroll-gsap-cards",
+      "title": "Animación horizontal gobernada por el scroll con GSAP ScrollTrigger para las cards recientes",
+      "description": "Corrección de rumbo del humano (2026-09-21, verbatim en progress/research/gsap-horizontal-cards.md): la feature 29 NO es un carrusel con scroll-snap ni una animación de entrada; es una animación horizontal GOBERNADA POR EL SCROLL: el scroll vertical del usuario conduce la traslación horizontal de la pista de las 3 cards recientes (feature 28) con gsap + ScrollTrigger (patrón pin + scrub), experiencia scroll-driven, no carrusel navegable. ScrollTrigger vive dentro del paquete gsap ya dado de alta en la feature 28 (docs/dependencies.md ### gsap, scope dependencies): sin dependencia nueva. El módulo cliente .ts registra la animación como listener de astro:page-load (ClientRouter, feature 10) con limpieza de triggers previos; respeta prefers-reduced-motion (contenido estático visible); degrada sin JS (las 3 cards visibles sin animación); conserva los pares title-<id>/img-<id> (feature 36); convive con el panel live-search dentro de data-landing-sections (modo resultados intacto, features 5/10). JS de runtime justificado como excepción a estático por defecto. latest-articles.css está en 97/100: compactar antes de pedir blocked; el repositorio (100/100) no se toca. Depende de la feature 28.",
+      "acceptance": [
+        "Un test de inspección verifica que el módulo cliente importa gsap y ScrollTrigger desde el paquete gsap y configura la pista con fijado y progreso vinculado al desplazamiento (REQ-29-01, REQ-29-02, REQ-29-04)",
+        "Un test de inspección verifica que el módulo cliente registra la animación como listener del evento astro:page-load con limpieza de triggers previos, y un test unitario verifica que el desplazamiento vertical conduce la traslación horizontal de la pista (REQ-29-03, REQ-29-04)",
+        "Un test unitario verifica que con movimiento reducido activo se omite la animación y el contenido queda estático y visible (REQ-29-05)",
+        "Un test de inspección verifica que sin JavaScript la portada muestra las 3 cards visibles sin animación (REQ-29-06)",
+        "Un test de inspección verifica que las cards conservan los pares de transición de título e imagen por identificador de artículo (REQ-29-07)",
+        "Un test unitario verifica que con la consulta de búsqueda activa la sección animada no rompe el modo resultados y que al vaciar se restaura (REQ-29-08)",
+        "Un test de inspección verifica que la hoja de estilos usa solo tokens de tokens.css y que cada archivo modificado no supera las 100 líneas (REQ-29-09, REQ-29-10)",
+        "La suite completa del arnés pasa en verde al cierre de la feature (restricción require_tests_to_close)"
+      ],
+      "depends_on": [
+        28
+      ],
+      "status": "done"
     }
   ]
 }

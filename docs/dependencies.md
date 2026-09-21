@@ -40,3 +40,10 @@ devDependencies), `approved` (fecha de aprobación) y `motivo`.
 - scope: devDependencies
 - approved: 2026-08-13
 - motivo: tipos del runtime Cloudflare Workers para TypeScript
+
+### gsap
+
+- version: ^3.15.0
+- scope: dependencies
+- approved: 2026-09-21
+- motivo: animación del carrusel horizontal de la portada autorizada por el humano solo para src/pages/index.astro (ciclo GSAP, features 28/29)

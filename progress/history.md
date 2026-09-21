@@ -1362,3 +1362,17 @@ Petición humana: «En las búsquedas cuando accedemos al /algo, queremos que lo
 - Implementación (informe en progress/impl_27.md): src/domain/related-titles.ts (31 → 32 líneas, ≤100 OK) — resolveRelatedTitles pasa de degradar ({ href, title: href }) a filtrar con flatMap (href sin Post → []); conserva no-throw y related null → []. Sin tocar .astro ni CSS, sin JS de runtime.
 - TDD: tests/anchor-nunca-url.test.mjs nuevo (REQ-27-01..04) en rojo antes (2 pass / 2 fail: REQ-27-01 2!==1, REQ-27-03 título=/posts/no-existe) y en verde después (área tocada 27/27 con suites 23/24/25 intactas); test REQ-24-03 ajustado al filtrado con justificación precedente REQ-43-06 en cabecera (destinos conocidos sin cambios).
 - Cierre: ./init.sh en verde re-verificado tras el APPROVED (entorno, formato, tests al 100%, build); feature 27 en done conservada en el array.
+
+## Sesión 2026-09-21 — Feature 28 `gsap-setup-recent-limit` (cierre)
+
+- Feature 28 gsap-setup-recent-limit cerrada en done (review APPROVED en progress/review_28.md, verificado en disco, sin cambios requeridos).
+- Implementación (informe en progress/impl_28.md): `pnpm add gsap` (^3.15.0 en dependencies + pnpm-lock.yaml) + entrada `### gsap` en docs/dependencies.md (version/scope idénticos, approved 2026-09-21, motivo: autorización humana solo para src/pages/index.astro) en el mismo cierre (R3); `src/components/latest-articles.astro` (1 línea) limita a `.slice(0, 3)` sobre el orden byCreatedDesc de PostsRepository (D6, selección en presentación; repositorio 100/100 intacto). Sin design.md (D7), cero JS de runtime.
+- TDD: tests/gsap-setup-recent-limit.test.mjs nuevo (REQ-28-01..05) en rojo antes (2 pass / 3 fail: REQ-28-01/02/03) y en verde después (5/5); ajuste solo-test con parseo línea a línea como el validador (el helper usaba `\Z` inválido en JS).
+- Cierre: ./init.sh en verde re-verificado tras el APPROVED (entorno, formato, tests al 100%, build); feature 28 en done conservada en el array. Siguiente implementable: 29 horizontal-scroll-gsap-cards (depends_on [28]). Nota: feature 10 sigue en in_progress stale sin artefacto (no tocada, orden del líder).
+
+## Sesión 2026-09-21 — Feature 29 `horizontal-scroll-gsap-cards` (cierre)
+
+- Feature 29 horizontal-scroll-gsap-cards cerrada en done (review APPROVED en progress/review_29.md, verificado en disco, sin cambios requeridos).
+- Implementación (informe en progress/impl_29.md): src/components/latest-articles-scroll.ts nuevo (65/100) — gsap + ScrollTrigger del paquete gsap (feature 28, sin dependencia nueva), tween horizontal con pin + scrub, limpieza de triggers previos, prefers-reduced-motion, convivencia live-search (landingHidden + refresh), no-op seguro sin DOM; src/components/latest-articles.astro (39/100) con data-latest-scroll/data-latest-track + listener astro:page-load; src/styles/latest-articles.css (83/100) con el modificador .latest-articles--scroll. Sin scroll-snap (blindado en test), pares title-/img- intactos, repositorio intacto.
+- TDD: tests/horizontal-scroll-gsap-cards.test.mjs nuevo (REQ-29-01..10) en rojo antes (ERR_MODULE_NOT_FOUND) y en verde después (11/11); dos ajustes documentados (scroll-snap solo en comentarios; normalización de -0 en trackShift).
+- Cierre: ./init.sh en verde re-verificado tras el APPROVED (entorno, formato, tests 557/557, build); feature 29 en done conservada en el array. Nota: feature 10 sigue en in_progress (no tocada, orden del líder).
