@@ -521,6 +521,84 @@
         28
       ],
       "status": "done"
+    },
+    {
+      "id": 30,
+      "name": "full-bleed-scroll-cards",
+      "title": "Sección fijada a ancho completo para que las cards atraviesen la web de lado a lado",
+      "description": "Reporte UX del humano (verbatim en progress/research/gsap-horizontal-cards.md, decisión D11-D15): la animación scroll-driven de la feature 29 (done) funciona pero quedó encerrada en la columna de contenido (width min(var(--container-max), 95%)): el hero se va con el scroll y la pista queda pegada dentro de la caja, con sensación de scroll interno. Lo pedido es FULL-BLEED: la sección fijada rompe el container solo con CSS (ancho de viewport con margin-inline calc(50% - 50vw), sin mover marcado ni tocar index.astro) y ocupa todo el ancho del viewport de borde a borde, de modo que las 3 cards recientes atraviesan la web completa de un lado al otro conducidas por el scroll vertical. El mecanismo scroll-driven (ScrollTrigger pin + scrub, ease none, invalidateOnRefresh, refresh, registro en astro:page-load con limpieza de triggers) se conserva; el único ajuste de JS permitido es recalcular distance() contra el ancho del viewport. El hero conserva su desplazamiento normal; las 3 cards, los pares title-<id>/img-<id>, el live-search, el reduced-motion y el degradado sin JS quedan intactos. Sin dependencia nueva (ScrollTrigger vive en el paquete gsap de la feature 28). latest-articles.css en 83/100 y latest-articles-scroll.ts en 65/100: compactar antes de pedir blocked; el repositorio (100/100) no se toca. Depende de la feature 29.",
+      "acceptance": [
+        "Un test de inspección verifica que la sección de artículos recientes declara el ancho del viewport fuera de la columna de contenido (REQ-30-01)",
+        "Un test de inspección verifica que la pista recorre de un lado al otro del viewport conducida por el desplazamiento vertical, y un test unitario verifica que el recorrido se calcula contra el ancho del viewport (REQ-30-02, REQ-30-08)",
+        "Un test de inspección verifica que el hero conserva su desplazamiento normal y que la sección no queda contenida en una caja con scroll interno (REQ-30-03)",
+        "Un test de inspección verifica que la pista conserva las 3 cards recientes con sus pares de transición y que con la consulta activa se oculta mostrando el panel de resultados (REQ-30-06, REQ-30-07)",
+        "Un test unitario verifica que con movimiento reducido se omite la animación con contenido estático visible, y un test de inspección verifica que sin JavaScript las 3 cards quedan visibles sin animación (REQ-30-04, REQ-30-05)",
+        "Un test de inspección verifica que la hoja de estilos usa solo tokens de tokens.css y que cada archivo modificado no supera las 100 líneas (REQ-30-09, REQ-30-10)",
+        "La suite completa del arnés pasa en verde al cierre de la feature (restricción require_tests_to_close)"
+      ],
+      "depends_on": [
+        29
+      ],
+      "status": "done"
+    },
+    {
+      "id": 31,
+      "name": "pin-timing-center",
+      "title": "Enganche temprano y centrado vertical del pin de las cards",
+      "description": "Reporte UX del humano (verbatim en progress/research/gsap-horizontal-cards.md, decisión D16-D19): la sección fijada full-bleed de la feature 30 (done) engancha DEMASIADO ABAJO en el viewport (start 'top center': las cards quedan abajo, casi fuera de vista, cuando empieza el recorrido horizontal) y el pin deja un HUECO EN BLANCO al irse el hero (el resto sigue en scroll Y mientras la pista aún no es visible/protagonista). Lo pedido: el pin se activa ANTES y la sección se posiciona para que las cards queden CENTRADAS y visibles en el viewport durante todo el recorrido horizontal, sin página en blanco entre el hero y la animación. El mecanismo scroll-driven (ScrollTrigger pin + scrub, ease none, invalidateOnRefresh, refresh, registro en astro:page-load con limpieza, full-bleed de lado a lado, distance() contra el viewport) se conserva; solo cambian el start/end del trigger (enganche temprano) y el posicionamiento vertical de la sección fijada (pista centrada en el viewport durante el pin). El hero conserva su desplazamiento normal; las 3 cards, los pares title-<id>/img-<id>, el live-search, el reduced-motion y el degradado sin JS quedan intactos. Sin dependencia nueva (ScrollTrigger vive en el paquete gsap de la feature 28). latest-articles.css en 86/100 y latest-articles-scroll.ts en 70/100: compactar antes de pedir blocked; el repositorio (100/100) no se toca. Depende de la feature 30.",
+      "acceptance": [
+        "Un test de inspección verifica que el módulo cliente declara un inicio del trigger de enganche temprano anterior a 'top center', con la sección fijada y la pista visible al empezar el recorrido (REQ-31-01, REQ-31-02)",
+        "Un test de inspección verifica que la hoja centra la pista verticalmente en el viewport durante el pin, de modo que las cards no quedan abajo ni fuera de vista en el recorrido horizontal (REQ-31-01, REQ-31-03)",
+        "Un test de inspección verifica que la transición no deja hueco en blanco: el hero conserva su desplazamiento normal y la sección libera el pin al agotar el recorrido horizontal (REQ-31-02, REQ-31-04)",
+        "Un test de inspección verifica que la pista conserva el recorrido de lado a lado full-bleed con las 3 cards y sus pares de transición, y que con la consulta activa se oculta mostrando el panel de resultados (REQ-31-07, REQ-31-08)",
+        "Un test unitario verifica que con movimiento reducido se omite la animación con contenido estático visible, y un test de inspección verifica que sin JavaScript las 3 cards quedan visibles sin animación (REQ-31-05, REQ-31-06)",
+        "Un test de inspección verifica que la hoja de estilos usa solo tokens de tokens.css y que cada archivo modificado no supera las 100 líneas (REQ-31-09, REQ-31-10)",
+        "La suite completa del arnés pasa en verde al cierre de la feature (restricción require_tests_to_close)"
+      ],
+      "depends_on": [
+        30
+      ],
+      "status": "done"
+    },
+    {
+      "id": 32,
+      "name": "pin-spacer-scroll-fix",
+      "title": "El pin no genera espaciado gigante y el scroll vertical sigue funcionando",
+      "description": "Bugfix de la regresión que deja la feature 31 (done): tras el enganche temprano (start 'top bottom') + sección fijada con min-height 100vh + flex centrado, la portada muestra un espacio gigante sin contenido y el scroll vertical deja de funcionar (causa raíz verificada en progress/research/gsap-horizontal-cards.md, sección de regresión de la feature 31: pinSpacing por defecto sobre sección de 100vh + end +=distance() genera un spacer de ~100vh + recorrido completo fijado antes de contenido visible; valores funcionales en x/end + invalidateOnRefresh + imágenes lazy + refresh() incondicional desestabilizan distance() con recálculos encadenados; medición de track.scrollWidth antes del layout definitivo; overflow hidden como agravante). La suite node:test sigue en verde porque sus tests son de inspección/unitarios que fijan como correctos los valores regresados y no miden layout en runtime. El fix acota el espaciado del pin al recorrido real, estabiliza distance() con funciones puras testeables y evita bucles de refresco, conservando el recorrido lado a lado, el enganche temprano visible, el centrado vertical, las 3 cards, los pares title-<id>/img-<id>, el live-search, el reduced-motion y el degradado sin JS. Sin dependencia nueva (ScrollTrigger vive en el paquete gsap de la feature 28). latest-articles.css en 94/100 y latest-articles-scroll.ts en 72/100: compactar antes de pedir blocked; el repositorio (100/100) no se toca.",
+      "acceptance": [
+        "Un test unitario verifica que la función pura que acota el espaciado del pin lo limita al recorrido horizontal real de la pista, sin hueco gigante vacío (REQ-32-01, REQ-32-08)",
+        "Un test de inspección verifica que la configuración del pin declara el espaciado acotado al recorrido real y que el módulo no encadena refrescos incondicionales que bloqueen el scroll vertical (REQ-32-01, REQ-32-02)",
+        "Un test unitario verifica que las funciones puras calculan la distancia y el fin del pin contra el ancho del viewport de forma estable ante mediciones previas al layout definitivo (REQ-32-02, REQ-32-08)",
+        "Un test de inspección verifica que la pista conserva el recorrido de lado a lado full-bleed con enganche temprano visible y centrado vertical durante el pin (REQ-32-03)",
+        "Un test de inspección verifica que la pista conserva las 3 cards recientes con sus pares de transición title-<id>/img-<id>, y que con la consulta activa se oculta mostrando el panel de resultados (REQ-32-04, REQ-32-05)",
+        "Un test unitario verifica que con movimiento reducido se omite la animación con contenido estático visible, y un test de inspección verifica que sin JavaScript las 3 cards quedan visibles sin animación (REQ-32-06, REQ-32-07)",
+        "Un test de inspección verifica que la hoja de estilos usa solo tokens de tokens.css y que cada archivo modificado no supera las 100 líneas (REQ-32-09, REQ-32-10)",
+        "La suite completa del arnés pasa en verde al cierre de la feature (restricción require_tests_to_close)"
+      ],
+      "depends_on": [
+        31
+      ],
+      "status": "done"
+    },
+    {
+      "id": 33,
+      "name": "pin-visible-start",
+      "title": "El pin engancha con la sección visible llenando el viewport",
+      "description": "Bugfix de la persistencia de la regresión tras la feature 32 (done): reporte verbatim del humano 'NO, se vio absolutamente ningún cambio, sigue completamente roto todo'. Causa raíz confirmada con evidencia en progress/research/gsap-horizontal-cards.md (sección de persistencia tras la 32): src/components/latest-articles-scroll.ts línea 75 conserva start: 'top bottom' con pin: true, de modo que la sección queda FIJADA FUERA DE VISTA (bajo el pliegue) durante TODO el recorrido y el scrub mueve la pista en invisible; la 32 acotó el spacer y vigiló el refresh sin mover el enganche, por eso nada visible cambió. La premisa de la 31 ('top bottom' = enganche temprano) estaba INVERTIDA: temprano pero invisible. El fix aplica la receta estándar: inicio que garantiza la sección visible llenando el viewport al fijar (p. ej. 'top top' con el min-height: 100vh existente); el hero se va con scroll normal y la sección entra en vista con scroll normal. Se conservan el espaciado acotado y el refresco vigilado de la 32, el full-bleed lado a lado de la 30, el centrado vertical de la 31, las 3 cards, los pares title-<id>/img-<id>, el live-search, el reduced-motion y el degradado sin JS. Los tests de la 31 (pin-timing-center.test.mjs, exige 'top bottom' y prohíbe 'top center') y de la 32 (pin-spacer-scroll-fix.test.mjs línea 128, exige 'top bottom') se actualizan con justificación en el encabezado (precedente REQ-43-06: los tests siguen a la presentación real). Sin dependencia nueva (ScrollTrigger vive en el paquete gsap de la feature 28). latest-articles-scroll.ts en 85/100 y latest-articles.css en 94/100: compactar antes de pedir blocked; el repositorio (100/100) no se toca. Nota de verificación (no es feature): el dev server corre en http://localhost:4321 con HMR; el humano debe recargar duro (Ctrl+Shift+R) tras el fix para descartar caché.",
+      "acceptance": [
+        "Un test de inspección verifica que el módulo cliente declara el inicio del trigger que garantiza la sección visible llenando el viewport al fijar (p. ej. 'top top') con la sección fijada (pin) y el progreso vinculado (scrub) (REQ-33-01, REQ-33-02)",
+        "Un test de inspección verifica que la pista se traslada de un lado al otro del viewport de forma visible durante el pin y que al agotar el recorrido la sección libera el pin (REQ-33-03, REQ-33-04)",
+        "Un test de inspección verifica que no hay huecos en blanco antes del pin (el hero conserva su desplazamiento normal), durante el recorrido ni tras liberar, y que fuera del pin la página conserva el desplazamiento vertical normal (REQ-33-05, REQ-33-06, REQ-33-07)",
+        "Un test de inspección verifica que la pista conserva el full-bleed, las 3 cards recientes con sus pares de transición title-<id>/img-<id>, y que con la consulta activa se oculta mostrando el panel de resultados (REQ-33-08, REQ-33-09)",
+        "Un test unitario verifica que con movimiento reducido se omite la animación con contenido estático visible, y un test de inspección verifica que sin JavaScript las 3 cards quedan visibles sin animación (REQ-33-10, REQ-33-11)",
+        "Un test de inspección verifica que los tests de las features 31 y 32 actualizan las aserciones que fijaban el inicio fuera de vista al inicio visible con la justificación documentada en el encabezado (REQ-33-12, precedente REQ-43-06)",
+        "Un test de inspección verifica que la hoja de estilos usa solo tokens de tokens.css y que cada archivo modificado no supera las 100 líneas (REQ-33-13, REQ-33-14)",
+        "La suite completa del arnés pasa en verde al cierre de la feature (restricción require_tests_to_close)"
+      ],
+      "depends_on": [
+        32
+      ],
+      "status": "done"
     }
   ]
 }

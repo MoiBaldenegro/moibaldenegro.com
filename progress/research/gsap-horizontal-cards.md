@@ -133,3 +133,224 @@
   degradado sin JS (3 cards visibles) + pares de transición + convivencia live-search +
   re-init `astro:page-load` con limpieza de triggers. NO es carrusel navegable ni
   animación de entrada.
+
+## Decisión full-bleed (2026-09-21, reporte UX del humano)
+
+> Reporte verbatim: "si esta funcionando el scroll pero esta raro porque funciona
+> dentro del contenedor, tiene que verse la experiencia fluida porque se ve el hero
+> que se va y se queda pegado en contenedor y el scroll dentro del contenedor. La
+> experiencia debe ser que las cards atraviesan la web completa, tienen que estar
+> fuera de ese container, de un lado al otro van".
+
+- Diagnóstico: la animación de la feature 29 (done) funciona pero quedó encerrada en
+  la columna de contenido (`.latest-articles { width: min(var(--container-max), 95%) }`):
+  el hero se va con el scroll normal, la sección fijada queda "pegada" dentro de la
+  caja y `distance() = track.scrollWidth - section.clientWidth` mide el recorrido
+  contra el ancho de la columna, no del viewport. Sensación resultante de scroll
+  interno en lugar de travesía fluida de lado a lado.
+- D11 (full-bleed, técnica de salida del container): la sección fijada rompe la
+  columna sin moverla de `index.astro` — solo CSS: `width: 100vw` (o `100dvw` donde
+  aplique) con `margin-inline: calc(50% - 50vw)` y `max-width: none`, de modo que
+  ocupa todo el ancho del viewport de borde a borde. El hero y el resto de secciones
+  conservan su columna y su desplazamiento normal; solo la sección del pin sale del
+  container. Sin mover marcado entre componentes y sin tocar `index.astro`.
+- D12 (recorrido de lado a lado): la pista se dimensiona contra el viewport y las 3
+  cards recientes la atraviesan completa de un lado al otro conducidas por el scroll
+  vertical. El mecanismo scroll-driven se conserva intacto (ScrollTrigger pin + scrub,
+  `ease: none`, `invalidateOnRefresh`, `ScrollTrigger.refresh()`); el único ajuste de
+  JS permitido es recalcular `distance()` contra el ancho del viewport en vez del
+  `clientWidth` de la sección. Sin JS nuevo: sin plugins, sin dependencias, sin
+  listeners adicionales.
+- D13 (hero con scroll normal): el hero (`NewHero`) no se fija ni se envuelve en el
+  pin; se desplaza con el flujo normal de la página y queda atrás al entrar la sección
+  fijada, que al agotar su recorrido libera y deja continuar la página. Nunca contenido
+  dentro de una caja con scroll interno.
+- D14 (mobile ≤768px y movimiento reducido): en ≤768px el gesto vertical sigue
+  conduciendo la pista full-bleed sin overlays que capturen el gesto; con
+  `prefers-reduced-motion: reduce` se omite la animación y el contenido queda estático
+  y visible; sin JS las 3 cards quedan visibles en disposición estática full-bleed.
+  Pares de transición `title-<id>` / `img-<id>` y convivencia live-search
+  (`data-landing-sections`, `ScrollTrigger.refresh()` al restaurar) intactos.
+- D15 (restricciones): solo tokens de `tokens.css`; ≤100 líneas por archivo
+  (`latest-articles.css` tiene margen: 83/100; `latest-articles-scroll.ts` 65/100;
+  compactar antes de pedir `blocked`); `posts-repository.ts` (100/100) no se toca;
+  estilos fuera del `.astro`; lógica en el módulo `.ts` existente.
+
+## Descomposición (feature 30, cambio solo de layout)
+
+- Feature 30 `full-bleed-scroll-cards` (`depends_on: [29]`, pending): la sección
+  fijada sale del container y ocupa todo el ancho del viewport; la pista recorre de
+  lado a lado conducida por el scroll vertical; hero con desplazamiento normal;
+  3 cards, transiciones, live-search, reduced-motion y degradado sin JS intactos.
+
+## Decisión timing del pin + centrado vertical (2026-09-21, reporte UX del humano)
+
+> Reporte verbatim: "va bien, pero se quedan super abajo las cards cuando
+> empiezan a hacer el scroll, y lo demas sigue haciendo el scroll en Y entonces
+> quedan abajo y se ve como el hero se va y queda la pagina en blanco, vamos a
+> arreglar eso".
+
+- Diagnóstico: el pin full-bleed de la feature 30 (done) conserva el mecanismo
+  scroll-driven (ScrollTrigger pin + scrub, `ease: none`, `invalidateOnRefresh`,
+  `refresh()`, registro en `astro:page-load` con limpieza) pero engancha
+  DEMASIADO ABAJO: `start: 'top center'` fija la sección cuando su borde
+  superior alcanza el centro del viewport, de modo que al empezar el recorrido
+  horizontal la pista ocupa la mitad inferior (cards abajo, casi fuera de vista)
+  mientras el resto sigue en scroll Y. Entre la salida del hero y el enganche
+  tardío queda un HUECO EN BLANCO: el hero ya se fue y la pista aún no es
+  visible/protagonista. Lo verificado en disco: `latest-articles-scroll.ts`
+  (línea 62, `start: 'top center'`) y `latest-articles.css` (sección full-bleed
+  sin altura ni centrado vertical durante el pin).
+- D16 (enganche temprano, solo timing): el trigger adelanta su `start` a un
+  punto anterior al actual (`'top center'` → enganche temprano, p. ej. la
+  entrada de la sección por el borde inferior del viewport) de modo que el pin
+  se activa ANTES, con la pista ya visible al empezar el recorrido; el `end`
+  se recalcula en coherencia (`+=distance()`, sin alargar ni acortar el
+  recorrido de lado a lado). El mecanismo pin + scrub, `ease: none`,
+  `invalidateOnRefresh`, `refresh()`, registro en `astro:page-load` con
+  limpieza y `distance()` contra el viewport (feature 30) se conservan; el
+  único JS que cambia es el `start`/`end` del trigger. Sin plugins, sin
+  dependencias, sin listeners nuevos.
+- D17 (pista centrada durante el pin, solo posicionamiento): la sección fijada
+  centra la pista verticalmente en el viewport durante todo el pin (p. ej.
+  altura de viewport con flex + centrado y contenido justificado al centro),
+  de modo que las cards quedan CENTRADAS y visibles de principio a fin del
+  recorrido horizontal, nunca abajo ni fuera de vista. La salida full-bleed
+  (`100vw` + `margin-inline: calc(50% - 50vw)`, feature 30) se conserva; el
+  cambio es solo vertical (altura + alineado), con tokens de `tokens.css`.
+- D18 (sin hueco en blanco): con el enganche temprano + la pista centrada, la
+  transición hero → pin no deja página en blanco: al irse el hero la sección
+  ya está fijada y protagonista, y al agotarse el recorrido libera y la página
+  continúa. El hero conserva su desplazamiento normal (no se fija, no entra en
+  el pin, D13 intacta); la sección sigue dentro de `data-landing-sections`
+  (convivencia live-search intacta, `refresh()` al restaurar).
+- D19 (contratos intactos y restricciones): recorrido de lado a lado full-bleed
+  con `distance()` contra el viewport, 3 cards, pares `title-<id>`/`img-<id>`,
+  live-search, `prefers-reduced-motion` (estático visible) y degradado sin JS
+  (3 cards visibles) intactos. Solo tokens; ≤100 líneas por archivo
+  (`latest-articles.css` 86/100, `latest-articles-scroll.ts` 70/100: compactar
+  antes de pedir `blocked`); `posts-repository.ts` (100/100) no se toca;
+  estilos fuera del `.astro`; lógica en el módulo `.ts` existente. Valores
+  exactos de `start`/`end` y de altura/alineado los fija el implementer en el
+  ciclo rojo/verde contra la spec (test-first); esta decisión fija el QUÉ
+  (temprano + centrado + sin hueco) y el PORQUÉ, no los literales.
+
+## Descomposición (feature 31, ajuste de timing/posicionamiento del pin)
+
+- Feature 31 `pin-timing-center` (`depends_on: [30]`, pending): el pin engancha
+  temprano con la pista visible y centrada en el viewport; sin hueco en blanco
+  entre el hero y la sección; recorrido lado a lado, full-bleed, pares,
+  live-search, reduced-motion y degradado sin JS intactos.
+
+## Regresión de la feature 31 (2026-09-21, reporte del humano)
+
+> Reporte verbatim: "solo quedó ahora un espacio gigante sin contenido y el
+> scroll dejó de funcionar".
+
+- Síntoma: tras la feature 31 (done, `start: 'top bottom'` + sección fijada con
+  `min-height: 100vh` + flex column centrado), la portada muestra un hueco
+  gigante vacío y el scroll vertical deja de funcionar. La suite node:test
+  sigue en verde: los tests existentes son de INSPECCIÓN (regex sobre el
+  fuente: asercionan los literales `start: 'top bottom'`, `pin: true`,
+  `scrub`, `min-height: 100vh`, `refresh()`) y UNITARIOS sobre funciones puras
+  (`trackShift`, `viewportDistance`, `shouldBuildTrigger`, `landingHidden`).
+  Ningún test mide layout en runtime (ni `scrollWidth` real, ni altura del
+  pin-spacer insertado por ScrollTrigger, ni continuidad del scroll vertical),
+  de modo que la suite no puede capturar este fallo de runtime: de hecho los
+  tests de la 31 FIJAN como correctos los valores que causan la regresión
+  (`pin-timing-center.test.mjs` exige `start: 'top bottom'` y prohíbe
+  `'top center'`).
+- Causa raíz (combinada, verificada en disco):
+  - (a) VERIFICADA como causa primaria — `start: 'top bottom'` + sección de
+    `min-height: 100vh` + `pinSpacing` por defecto: `latest-articles-scroll.ts`
+    línea 64 (`start: 'top bottom'`) con `pin: true` línea 66 SIN declarar
+    `pinSpacing`, y `latest-articles.css` líneas 31-37 (`.latest-articles--scroll`
+    con `min-height: 100vh` + flex column centrado). Con pin, ScrollTrigger
+    inserta un pin-spacer cuya altura = altura de la sección (ya 100vh) +
+    recorrido `end` (`+=distance()`, línea 65, donde `distance()` =
+    `track.scrollWidth - window.innerWidth` con 3 cards a `flex: 0 0 78%`,
+    es decir, ~2 anchos de viewport). Resultado: un spacer de ~100vh +
+    recorrido completo que se recorre con la sección ya fijada ANTES de que
+    haya contenido visible (el pin engancha cuando el borde superior toca el
+    borde inferior del viewport, con la sección aún fuera de vista) → el
+    "espacio gigante sin contenido" reportado.
+  - (b) VERIFICADA como causa contributiva — valores funcionales en `x`/`end`
+    + `invalidateOnRefresh` + imágenes lazy desestabilizan `distance()`:
+    líneas 57-68 (`x: () => -distance()`, `end: () => \`+=${distance()}\``,
+    `invalidateOnRefresh: true`) + `ScrollTrigger.refresh()` incondicional
+    línea 71 + `loading="lazy"` en `latest-articles.astro` línea 19. Cada
+    carga diferida de imagen cambia `track.scrollWidth` → con
+    `invalidateOnRefresh` cada refresh recalcula `distance()` y la altura del
+    pin-spacer → saltos de layout y cadena de refreshes que degrada/congela el
+    scroll vertical. Los tests solo asercionan que `refresh()` EXISTE, nunca
+    que esté acotado o vigilado.
+  - (c) DESCARTADA como causa raíz, confirmada como agravante — `overflow:
+    hidden` + pin: línea 32 del CSS (`.latest-articles--scroll` con
+    `overflow: hidden`). No genera el spacer (lo genera el pin), pero recorta
+    la pista durante la traslación y hace que el hueco se perciba vacío: la
+    sección fijada no muestra contenido útil mientras se atraviesa el spacer.
+    El test REQ-31-02/04 solo prohíbe `overflow: auto/scroll` (scroll interno),
+    nunca valida la compatibilidad de `hidden` con el pin.
+  - (d) VERIFICADA como causa contributiva — medición de `track.scrollWidth`
+    antes del layout definitivo: `distance()` (línea 56) lee `track.scrollWidth`
+    en vivo en cada invocación, pero `initLatestScroll` corre en
+    `astro:page-load` (`latest-articles.astro` línea 38) con imágenes lazy y
+    fuentes aún sin asentar; la primera medición fija un `end` y un spacer que
+    luego `invalidateOnRefresh` corrige a otro valor → el spacer salta y el
+    scroll se percibe roto. No existe ninguna función pura que acote
+    (`clamp`) el espaciado: `viewportDistance` solo hace `Math.max(0, ...)`
+    sin cota superior ligada al recorrido real.
+- Dirección del fix (feature 32, bugfix sobre la 31): acotar el espaciado del
+  pin al recorrido real (configuración del pin + `end` calculado contra el
+  viewport, sin spacer gigante), estabilizar `distance()` con funciones puras
+  que calculen/acoten start/end/distancia testeables en node:test, evitar
+  bucles de refresh (refresco vigilado, no incondicional), conservar el
+  recorrido lado a lado, el enganche temprano visible, el centrado vertical,
+  los pares `title-<id>`/`img-<id>`, el live-search, el reduced-motion y el
+  degradado sin JS.
+
+## Persistencia de la regresión tras la feature 32 (2026-09-21, reporte del humano)
+
+> Reporte verbatim: "NO, se vio absolutamente ningún cambio, sigue
+> completamente roto todo" (tras la feature 32, que acotó el spacer y vigiló
+> el refresh).
+
+- Veredicto: diagnóstico del líder CONFIRMADO con evidencia en disco. La
+  feature 32 no podía cambiar nada visible porque conservó intacta la causa
+  raíz primaria: el `start` que esconde el contenido.
+- Evidencia (verificada en disco):
+  - `src/components/latest-articles-scroll.ts` línea 75 conserva
+    `start: 'top bottom'` con `pin: true` (línea 77). Con pin, ScrollTrigger
+    fija la sección en la posición que ocupa al enganchar: con 'top bottom'
+    el borde superior de la sección toca el borde inferior del viewport, es
+    decir, la sección queda FIJADA FUERA DE VISTA (bajo el pliegue) durante
+    TODO el recorrido del pin. El scrub mueve la pista horizontalmente pero
+    INVISIBLE: el usuario atraviesa el recorrido completo de scroll en blanco
+    y percibe "espacio gigante sin contenido + scroll roto".
+  - La feature 32 solo tocó lo secundario: `clampPinDistance` (líneas 37-40),
+    `distance()` acotada (línea 67) y refresco vigilado (líneas 83-84, sin
+    `invalidateOnRefresh`). Ninguno de esos cambios mueve el punto de
+    enganche: el pin sigue activándose con la sección fuera de vista, de modo
+    que acotar el spacer y vigilar el refresh no altera ni un píxel visible.
+    Por eso "no se vio ningún cambio".
+  - El CSS conserva `min-height: 100vh` + flex column centrado
+    (`src/styles/latest-articles.css` líneas 31-37): con el enganche fuera de
+    vista, ese viewport de altura se recorre a ciegas igualmente.
+  - Consecuencia: la premisa de la feature 31 ("enganche temprano =
+    'top bottom'", D16) estaba INVERTIDA: temprano pero invisible. Sus tests
+    (`tests/pin-timing-center.test.mjs` líneas 64-80) FIJAN 'top bottom' y
+    prohíben 'top center'; `tests/pin-spacer-scroll-fix.test.mjs` línea 128
+    también fija 'top bottom' (REQ-32-03). Ambos deben actualizarse con
+    justificación en el encabezado (precedente REQ-43-06: los tests siguen a
+    la presentación real).
+- Dirección del fix (feature 33, bugfix sobre la 32): receta estándar del
+  UX — `start: 'top top'` con sección de `min-height: 100vh`: al enganchar,
+  la sección llena el viewport y el recorrido horizontal es visible; antes,
+  el hero se va con scroll normal y la sección entra en vista con scroll
+  normal. Sin blancos. Se conservan el recorrido lado a lado full-bleed, el
+  centrado vertical, las 3 cards, los pares `title-<id>`/`img-<id>`, el
+  live-search, el reduced-motion y el degradado sin JS; el espaciado acotado
+  y el refresco vigilado de la 32 se conservan.
+- Nota de verificación (no es feature): el dev server corre en
+  http://localhost:4321 con HMR; el humano debe recargar duro (Ctrl+Shift+R)
+  tras el fix para descartar caché.

@@ -4,12 +4,12 @@
 
 ### Feature en curso
 
-- Ninguna (feature 29 `horizontal-scroll-gsap-cards` cerrada en done el 2026-09-21; ver progress/history.md).
+- (sin feature en curso)
 
 ### Plan
 
-- Pendiente de la siguiente feature del backlog (la selecciona el líder).
+- (pendiente de selección: coger la pending de menor id con dependencias en done)
 
 ### Bitácora
 
-- (vacía)
+- (vacío)

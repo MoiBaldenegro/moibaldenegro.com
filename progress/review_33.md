@@ -1,0 +1,15 @@
+# Review — feature 33
+
+**Veredicto:** APPROVED
+
+## Checkpoints
+- C1: [x] ← El pin engancha visible: `src/components/latest-articles-scroll.ts` líneas 73-78 declara `start: 'top top'` + `pin: true` + `scrub: true`, y el código sin comentarios ya no contiene `'top bottom'` (verificado en `tests/pin-visible-start.test.mjs` REQ-33-01/02, que además prohíbe el literal fuera de vista). Con el `min-height: 100vh` de `src/styles/latest-articles.css` líneas 31-37 la sección llena el viewport al fijar: el recorrido se ve de principio a fin, sin atravesar el pin en blanco.
+- C2: [x] ← Espaciado acotado: `end: () => \`+=${distance()}\`` deriva del recorrido real con `clampPinDistance(track.scrollWidth, window.innerWidth)` (scroll.ts línea 67, tope 3 viewports), `invalidateOnRefresh` eliminado y `refresh()` solo vigilado al asentar el layout (scroll.ts líneas 81-84). El test REQ-33-06/08 fija `clampPinDistance(20000, 1280) === 3840` y prohíbe `invalidateOnRefresh: true` y el `refresh()` incondicional: habría atrapado el spacer de 1700px+ vacío.
+- C3: [x] ← Recorrido horizontal visible lado a lado (tween `x`, `ease: 'none'`, full-bleed `100vw` + `margin-inline: calc(50% - 50vw)` en latest-articles.css líneas 5-12); scroll vertical normal fuera del pin (`trigger: section`, el hero no se fija, sin scroll interno en cajas); sigue scroll-driven, NO carrusel (tests prohíben `scroll-snap` y `<button>` en la sección).
+- C4: [x] ← Tests de la 31 (`tests/pin-timing-center.test.mjs` líneas 4-10, aserción línea 76-77) y la 32 (`tests/pin-spacer-scroll-fix.test.mjs` líneas 7-12, aserción línea 134) actualizados de `'top bottom'` a `'top top'` con justificación `precedente REQ-43-06` en el encabezado; `feature_list.json` de las features 10, 28, 29, 30, 31 y 32 intacto. `depends_on: [32]` con la 32 en `done`: sin salto de dependencia.
+- C5: [x] ← Intactos: full-bleed (css 8-10), 3 cards (`.slice(0, 3)`), pares `title-<id>`/`img-<id>`, live-search (`astro:page-load` + limpieza `ScrollTrigger.getAll()`, `shouldBuildTrigger`), reduced-motion (`prefers-reduced-motion` → no trigger), degradado sin JS (lista `display: grid` base, sección sin `hidden`), tokens (sin hex ni `rgb()/rgba()` en la hoja), 100 líneas (scroll.ts 85/100, latest-articles.astro 39/100, css 94/100), sin dependencias nuevas (`gsap` ya aprobado en `docs/dependencies.md`, 2026-09-21), `./init.sh` verde al cierre (formato ✔, tests 100% ✔, build ✔).
+- C6: [x] ← Ciclo rojo/verde documentado en `progress/impl_33.md`: test nuevo `tests/pin-visible-start.test.mjs` (10 tests) escrito ANTES del código y observado en rojo (8 pass / 2 fail: enganche visible ausente + tests 31/32 sin actualizar), 10/10 en verde tras el cambio; suite 597/597 en verde.
+- C7: [ ]  ← Razón: inspección visual en navegador (desktop y móvil ≤768px, sin errores en consola) no verificable por el reviewer; queda en manos del humano con recarga dura (Ctrl+Shift+R) por el HMR, según nota de `progress/impl_33.md`.
+
+## Cambios requeridos (si aplica)
+Ninguno.

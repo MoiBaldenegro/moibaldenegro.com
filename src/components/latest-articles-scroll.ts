@@ -7,8 +7,9 @@
 // justificado (excepción a estático por defecto): sin JS las 3 cards quedan
 // visibles en la disposición base de la hoja; con movimiento reducido el
 // contenido queda estático. Re-init en astro:page-load (ClientRouter,
-// feature 10) con limpieza de triggers previos y refresco al restaurar el
-// modo landing tras el live-search (features 5/10).
+// feature 10) con limpieza de triggers previos y refresco vigilado al
+// asentar el layout (feature 32: sin refresh() incondicional ni
+// invalidateOnRefresh, que encadenaban el spacer y congelaban el scroll).
 
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -24,6 +25,19 @@ export function trackShift(progress: number, maxShift: number): number {
   return -clamped * maxShift;
 }
 
+// Recorrido full-bleed (feature 30): la pista se mide contra el ancho del
+// viewport, no contra la sección, para atravesar la web de lado a lado.
+export function viewportDistance(trackScrollWidth: number, viewportWidth: number): number {
+  return Math.max(0, trackScrollWidth - viewportWidth);
+}
+
+// Espaciado acotado del pin (feature 32, REQ-32-01/08): una medición previa
+// al layout (imágenes lazy, fuentes sin asentar) no genera un spacer
+// gigante; el tope es el recorrido real con un máximo de N viewports.
+export function clampPinDistance(trackScrollWidth: number, viewportWidth: number, maxViewports = 3): number {
+  const raw = viewportDistance(trackScrollWidth, viewportWidth);
+  return Math.min(raw, Math.max(0, maxViewports * viewportWidth));
+}
 // La animación solo se construye en modo landing y sin movimiento reducido;
 // en modo resultados (landing oculta) la sección no rompe el panel.
 export function shouldBuildTrigger(landingHidden: boolean, prefersReduced: boolean): boolean {
@@ -48,18 +62,24 @@ export function initLatestScroll(
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (shouldBuildTrigger(landingHidden(section), prefersReduced) === false) return;
   section.classList.add(SCROLL_READY_CLASS);
-  const distance = (): number => track.scrollWidth - section.clientWidth;
+  // Distancia acotada (feature 32): el fin del pin deriva del recorrido
+  // real, sin spacer gigante por mediciones previas al layout.
+  const distance = (): number => clampPinDistance(track.scrollWidth, window.innerWidth);
   gsap.to(track, {
     x: (): number => -distance(),
     ease: 'none',
     scrollTrigger: {
       trigger: section,
-      start: 'top center',
+      // Enganche visible (feature 33, receta estándar): el pin se activa
+      // con la sección llenando el viewport, y el recorrido se ve entero.
+      start: 'top top',
       end: (): string => `+=${distance()}`,
       pin: true,
       scrub: true,
-      invalidateOnRefresh: true,
     },
   });
-  ScrollTrigger.refresh();
+  // Refresco vigilado (feature 32, REQ-32-02): sin invalidateOnRefresh ni
+  // refresh() incondicional; solo al asentar el layout tras el pin.
+  if (document.readyState === 'complete') ScrollTrigger.refresh();
+  else window.addEventListener('load', () => ScrollTrigger.refresh(), { once: true });
 }

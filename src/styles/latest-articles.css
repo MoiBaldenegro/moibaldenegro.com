@@ -3,8 +3,11 @@
    Solo tokens de tokens.css. Patrón BEM ligero: bloque latest-articles. */
 
 .latest-articles {
-  width: min(var(--container-max), 95%);
-  margin: auto;
+  /* Full-bleed (feature 30): la sección fijada rompe la columna y ocupa
+     todo el ancho del viewport de borde a borde; el hero conserva la suya. */
+  width: 100vw;
+  max-width: none;
+  margin-inline: calc(50% - 50vw);
   padding: 48px 0 64px;
 }
 
@@ -22,8 +25,16 @@
 }
 
 /* Pista scroll-driven (feature 29): el módulo cliente añade el modificador
-   al activar ScrollTrigger; sin JS la lista conserva la disposición base. */
-.latest-articles--scroll { overflow: hidden; }
+   al activar ScrollTrigger; sin JS la lista conserva la disposición base.
+   Centrado vertical (feature 31, D17): la sección fijada ocupa la altura del
+   viewport y centra la pista, visible de principio a fin del recorrido. */
+.latest-articles--scroll {
+  overflow: hidden;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 .latest-articles--scroll .latest-articles__list { display: flex; }
 .latest-articles--scroll .latest-articles__card { flex: 0 0 78%; }
 
