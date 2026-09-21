@@ -354,3 +354,68 @@
 - Nota de verificación (no es feature): el dev server corre en
   http://localhost:4321 con HMR; el humano debe recargar duro (Ctrl+Shift+R)
   tras el fix para descartar caché.
+
+## Por qué el horizontal no se mueve aunque el spacer se fue (2026-09-21)
+
+> Reporte verbatim: "ya se fue el espacio pero el scroll horizontal no funciona".
+
+- Estado verificado en disco: `src/components/latest-articles-scroll.ts`
+  líneas 67-76 (`distance()` vía `clampPinDistance(track.scrollWidth,
+  innerWidth)`, `x: () => -distance()`, `end: () => '+='+distance()`,
+  `start: 'top top'`, `pin: true`, `scrub: true`, sin
+  `invalidateOnRefresh` por la 32). Suite verde: fallo de runtime,
+  invisible a node:test (los tests son de inspección/unitarios, no miden
+  layout real).
+- Verificación de hipótesis del líder (con evidencia, sin asumir):
+  - (a) CONFIRMADA como causa primaria — `distance()` vale 0 al construir
+    el tween. Firma exacta del síntoma: con `end: '+=0'` el pin queda de
+    longitud cero → sin spacer (coincide con "se fue el espacio") y el
+    scrub no tiene recorrido → `x` congelado en `-0` (coincide con "no
+    funciona"). Ninguna otra hipótesis explica AMBOS síntomas a la vez.
+    El código permite el 0: medición única al crear (la clase
+    `latest-articles--scroll` se añade en la línea 64 justo antes de
+    medir, con el layout aún sin asentar: fuentes, imágenes lazy y
+    estilos recién aplicados), sin guarda contra el 0 y sin
+    `invalidateOnRefresh` (quitado en la 32 por los bucles de refresh).
+    Un 0 inicial queda congelado para siempre aunque el layout asiente
+    después: la 32 quitó el refresh incondicional y el péndulo quedó en
+    el otro extremo (sin re-medición vigilada no hay corrección).
+  - (b) CONFIRMADA como mecanismo de persistencia — sin
+    `invalidateOnRefresh` los valores funcionales del tween (`x`) se
+    evalúan una sola vez en la creación y nunca se corrigen; el
+    `refresh()` vigilado al `load` (líneas 83-84) recalcula posiciones
+    pero no re-invoca el `x` del tween. Posible split-brain: `end`
+    corregido al asentar + `x` congelado en el 0 inicial.
+  - (c) DESCARTADA como causa general — retorno temprano por
+    `landingHidden`/`prefersReduced`: la sección vive dentro de
+    `[data-landing-sections]` (`src/pages/index.astro` líneas 27-29)
+    pero el HTML estático NO declara `hidden`; el atributo solo aparece
+    con consulta activa (`search-live.ts` líneas 52-53). Con `/` plano
+    el guarda deja construir. Se conserva como guarda válido.
+  - (d) DESCARTADA — nodo equivocado o scrub sin progreso: selectores
+    verificados en disco (`data-latest-scroll` en
+    `latest-articles.astro` línea 9, `data-latest-track` línea 11), el
+    tween apunta al track y `scrub: true` está declarado (línea 78).
+- Límite honesto: node:test no mide `scrollWidth`/`innerWidth` reales;
+  el valor exacto en el navegador del humano no es verificable desde
+  disco. Por eso la feature 34 exige observabilidad (atributo con la
+  distancia + marca en consola) además del fix.
+- Cómo observarlo en runtime (el humano puede abrir consola/DevTools):
+  1. Abrir `/` con la consola abierta y recarga dura (Ctrl+Shift+R).
+  2. Leer `data-pin-distance` en `section[data-latest-scroll]`: es la
+     distancia medida que usan `x` y `end`. Si vale `0`, causa (a)
+     confirmada en ese navegador.
+  3. Consola: marca `[latest-scroll]` al construir y al re-medir tras
+     asentar el layout (distancia inicial vs. final).
+  4. Elements: comprobar el `.pin-spacer` envolviendo la sección (su
+     altura es el recorrido del pin) y el `transform: translateX` del
+     track cambiando al avanzar el scroll vertical.
+- Dirección del fix (feature 34, bugfix sobre la 33): medir tras asentar
+  el layout, NUNCA construir un pin de longitud cero (si la distancia
+  es 0 se difiere y se reintenta de forma vigilada, sin bucles),
+  sincronizar `x` con el `end` medido (`end > 0` ligado a la distancia),
+  exponer la distancia como observable. Se conservan 29/30/31/33
+  (scroll-driven, full-bleed lado a lado, enganche visible `top top`,
+  centrado vertical), espaciado acotado + refresco vigilado de la 32,
+  3 cards, pares `title-<id>`/`img-<id>`, live-search, reduced-motion
+  y degradado sin JS.

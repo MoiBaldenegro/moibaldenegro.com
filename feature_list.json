@@ -599,6 +599,27 @@
         32
       ],
       "status": "done"
+    },
+    {
+      "id": 34,
+      "name": "horizontal-track-shift-fix",
+      "title": "La pista horizontal se traslada el recorrido real al avanzar el scroll",
+      "description": "Bugfix del reporte verbatim del humano tras la 33 (done, start 'top top' + spacer acotado): 'ya se fue el espacio pero el scroll horizontal no funciona'. El hueco gigante desapareció pero la pista NO se traslada horizontalmente al hacer scroll vertical. Causa raíz verificada en progress/research/gsap-horizontal-cards.md (sección 'Por qué el horizontal no se mueve...'): distance() vale 0 al construir el tween (medición única previa al layout asentado: la clase se añade en la línea 64 justo antes de medir) y con end '+=0' el pin queda de longitud cero — sin spacer (coincide con 'se fue el espacio') y sin movimiento (coincide con 'no funciona'); sin invalidateOnRefresh (quitado en la 32 por los bucles) el 0 queda congelado aunque el layout asiente después. Retorno temprano (landingHidden/prefersReduced) y nodo equivocado descartados con evidencia en disco. El fix mide tras asentar el layout, nunca construye un pin de longitud cero (difiere y reintenta de forma vigilada, sin bucles), sincroniza x con el end medido (end > 0 ligado a la distancia), y expone la distancia como atributo observable en la sección + marca en consola para verificar en DevTools. Se conservan 29/30/31/33 (scroll-driven, full-bleed lado a lado, enganche visible, centrado), espaciado acotado y refresco vigilado de la 32, 3 cards, pares title-<id>/img-<id>, live-search, reduced-motion y degradado sin JS. Los tests que fijan el cableado anterior se actualizan con justificación (precedente REQ-43-06). Sin dependencia nueva (ScrollTrigger vive en el paquete gsap de la 28). latest-articles-scroll.ts en 85/100 y latest-articles.css en 94/100: compactar antes de pedir blocked; el repositorio (100/100) no se toca.",
+      "acceptance": [
+        "Un test unitario node:test verifica que con distancia medida cero el módulo no construye el pin y difiere la construcción hasta la re-medición vigilada tras asentar el layout (REQ-34-01, REQ-34-02)",
+        "Un test unitario node:test verifica que la pista se traslada horizontalmente el recorrido real medido al avanzar el progreso vertical, y un test de inspección verifica que el fin del pin deriva de la distancia medida con valor mayor que cero (REQ-34-03, REQ-34-04)",
+        "Un test de inspección verifica que el pin acota su espaciado al recorrido real sin hueco gigante y engancha con la sección visible llenando el viewport (REQ-34-05, REQ-34-06)",
+        "Un test de inspección verifica que la pista conserva el recorrido full-bleed de lado a lado con las 3 cards recientes y sus pares title-<id>/img-<id>, y que con la consulta activa se oculta mostrando el panel de resultados (REQ-34-07, REQ-34-08)",
+        "Un test unitario node:test verifica que con movimiento reducido se omite la animación con contenido estático visible, y un test de inspección verifica que sin JavaScript las 3 cards quedan visibles sin animación (REQ-34-09, REQ-34-10)",
+        "Un test de inspección verifica que la sección expone la distancia medida como atributo observable y que el módulo emite la marca de consola para DevTools (REQ-34-11)",
+        "Un test de inspección verifica que los tests que fijan el cableado anterior actualizan sus aserciones con la justificación documentada en el encabezado (REQ-34-12, precedente REQ-43-06)",
+        "Un test de inspección verifica que la hoja de estilos usa solo tokens de tokens.css y que cada archivo modificado no supera las 100 líneas (REQ-34-13, REQ-34-14)",
+        "La suite completa del arnés pasa en verde al cierre de la feature (restricción require_tests_to_close)"
+      ],
+    "depends_on": [
+      33
+    ],
+    "status": "done"
     }
   ]
 }

@@ -4,12 +4,4 @@
 
 ### Feature en curso
 
-- (sin feature en curso)
-
-### Plan
-
-- (pendiente de selección: coger la pending de menor id con dependencias en done)
-
-### Bitácora
-
-- (vacío)
+_Sin feature activa en implementación._

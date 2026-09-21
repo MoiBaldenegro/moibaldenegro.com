@@ -8,6 +8,11 @@
 // reportado por el humano). El enganche visible es 'top top' con la
 // sección llenando el viewport (min-height 100vh); las aserciones de
 // inicio se actualizan a ese contrato sin cambiar el resto del mecanismo.
+// AJUSTE feature 34 (precedente REQ-43-06: los tests siguen a la
+// presentación real): el fin del pin deja de re-medirse en cada creación
+// (congelaba el 0 medido antes del layout y dejaba el pin sin longitud y
+// la pista parada); x y end comparten la distancia medida con valor mayor
+// que cero, verificada por el guardián antes de construir.
 // Reporte UX original del humano (verbatim en
 // progress/research/gsap-horizontal-cards.md, D16-D19): el pin full-bleed
 // D16-D19): el pin full-bleed de la feature 30 (done) engancha DEMASIADO ABAJO
@@ -108,8 +113,8 @@ test('REQ-31-02/04: sin hueco en blanco, el hero sigue normal y la sección libe
   assert.match(source, /trigger\s*:\s*section/, 'el pin no se ancla solo a la sección (REQ-31-02)');
   assert.match(
     source,
-    /end\s*:\s*\(\s*\)(\s*:\s*\w+)?\s*=>\s*`\+=\$\{distance\(\)\}`/,
-    'el fin del pin no se recalcula en coherencia con el recorrido (REQ-31-04)',
+    /end\s*:\s*`\+=\$\{distance\}`/,
+    'el fin del pin no deriva de la distancia medida sincronizada con x (REQ-31-04)',
   );
   const css = readCss().replace(/\/\*[\s\S]*?\*\//g, '');
   assert.doesNotMatch(

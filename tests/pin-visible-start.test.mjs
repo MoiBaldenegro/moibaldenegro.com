@@ -18,8 +18,12 @@
 // acotado y el refresco vigilado de la 32, el full-bleed lado a lado de
 // la 30, el centrado vertical de la 31, las 3 cards, los pares
 // title-<id>/img-<id>, el live-search, el reduced-motion y el degradado
-// sin JS. Patrón del arnés: inspección por regex + unitarios por import
-// directo.
+// sin JS. AJUSTE feature 34 (precedente REQ-43-06: los tests siguen a la
+// presentación real): el fin del pin deja de re-medirse en cada creación
+// (congelaba el 0 medido antes del layout y dejaba el pin sin longitud y
+// la pista parada); x y end comparten la distancia medida con valor mayor
+// que cero, verificada por el guardián antes de construir. Patrón del
+// arnés: inspección por regex + unitarios por import directo.
 //
 //   REQ-33-01 — el pin engancha con la sección visible llenando el viewport.
 //   REQ-33-02 — al alcanzar el inicio fija con el borde superior alineado
@@ -105,8 +109,8 @@ test('REQ-33-03/04: la pista atraviesa el viewport visible y libera al agotar', 
   assert.match(source, /\bx\s*:/, 'el tween no traslada la pista en horizontal (x, REQ-33-03)');
   assert.match(
     source,
-    /end\s*:\s*\(\s*\)(\s*:\s*\w+)?\s*=>\s*`\+=\$\{distance\(\)\}`/,
-    'el fin del pin no deriva del recorrido real (REQ-33-04)',
+    /end\s*:\s*`\+=\$\{distance\}`/,
+    'el fin del pin no deriva de la distancia medida sincronizada con x (REQ-33-04)',
   );
   assert.match(
     source,

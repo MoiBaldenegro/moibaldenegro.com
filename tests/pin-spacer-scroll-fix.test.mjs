@@ -10,7 +10,11 @@
 // reportado por el humano); el enganche visible es 'top top' con la
 // sección llenando el viewport. La aserción de inicio (REQ-32-03) se
 // actualiza a ese contrato; el espaciado acotado y el refresco vigilado
-// se conservan. Causa raíz (progress/research/gsap-horizontal-cards.md, sección
+// se conservan. AJUSTE feature 34 (precedente REQ-43-06: los tests siguen
+// a la presentación real): el fin del pin deja de re-medirse en cada
+// creación (congelaba el 0 medido antes del layout y dejaba el pin sin
+// longitud y la pista parada); x y end comparten la distancia medida con
+// valor mayor que cero, verificada por el guardián antes de construir. Causa raíz (progress/research/gsap-horizontal-cards.md, sección
 // de regresión de la 31): (a) spacer de ~100vh + recorrido completo fijado
 // antes de contenido visible; (b) x/end funcionales + invalidateOnRefresh +
 // lazy + refresh() incondicional desestabilizan distance(); (d) medición de
@@ -96,8 +100,8 @@ test('REQ-32-01/02: el pin declara el espaciado acotado sin refrescos incondicio
   );
   assert.match(
     source,
-    /end\s*:\s*\(\s*\)(\s*:\s*\w+)?\s*=>\s*`\+=\$\{distance\(\)\}`/,
-    'el fin del pin no deriva del recorrido acotado (REQ-32-01)',
+    /end\s*:\s*`\+=\$\{distance\}`/,
+    'el fin del pin no deriva de la distancia medida sincronizada con x (REQ-32-01)',
   );
   const code = source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
   assert.doesNotMatch(
