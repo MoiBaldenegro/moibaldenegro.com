@@ -2,8 +2,11 @@
 import "../styles/latest-articles.css";
 
 import { PostsRepository } from "../domain/repositories/posts-repository.ts";
+import { latestPosts } from "../domain/latest-posts.ts";
 
-const posts = await new PostsRepository().getPosts();
+// La lista visible se recorta a los 3 más recientes en el módulo de dominio
+// (REQ-30-01..06): aquí solo imports y paso de datos.
+const posts = latestPosts(await new PostsRepository().getPosts());
 ---
 
 <section class="latest-articles">

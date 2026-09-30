@@ -2,6 +2,7 @@
 // package.json (REQ-29-01..03, feature 29 dependencies-registry).
 // Formato del registro: bloques "### package" seguidos de "- clave: valor"
 // (claves: version, scope, approved, motivo). Node stdlib, <=100 líneas.
+// El parseo tolera finales de línea LF y CRLF (REQ-28-01..03, feature 28).
 
 import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -12,18 +13,23 @@ const REGISTRY_PATH = fileURLToPath(new URL('../docs/dependencies.md', import.me
 const REQUIRED_FIELDS = ['version', 'scope', 'approved', 'motivo'];
 
 // Parsea el registro en un Map package -> { package, fields }.
+// Los finales de línea pueden ser LF o CRLF (REQ-28-01/02/08): con
+// core.autocrlf=true y sin .gitattributes, docs/dependencies.md llega en CRLF
+// en Windows. Por eso se separan las líneas con /\r?\n/ y las regex absorben
+// cualquier resto con (.+?)\s*$ en vez de (.+)$: en JavaScript `.` no matchea
+// un line terminator como \r, así que `(.+)$` nunca casaría con "### astro\r".
 export function parseRegistry(content) {
   const entries = new Map();
   let current = null;
-  for (const line of content.split('\n')) {
-    const header = line.match(/^###\s+(.+)$/);
+  for (const line of content.split(/\r?\n/)) {
+    const header = line.match(/^###\s+(.+?)\s*$/);
     if (header !== null) {
       current = { package: header[1].trim(), fields: {} };
       entries.set(current.package, current);
       continue;
     }
     if (current === null) continue;
-    const field = line.match(/^-\s*([a-z]+)\s*:\s*(.+)$/);
+    const field = line.match(/^-\s*([a-z]+)\s*:\s*(.+?)\s*$/);
     if (field !== null) current.fields[field[1]] = field[2].trim();
   }
   return entries;
