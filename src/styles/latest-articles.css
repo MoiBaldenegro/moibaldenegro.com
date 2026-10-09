@@ -61,7 +61,7 @@
 /* Imagen de la card (feature 17): bloque uniforme 16:9 con tokens. */
 .latest-articles__image {
   display: block;
-  width: 100%;
+  width: 100%; height: auto; /* feature 65 */
   aspect-ratio: 16 / 9;
   object-fit: cover;
   border-radius: var(--radius-card);

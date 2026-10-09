@@ -32,7 +32,7 @@
    de latest-articles__image): ancho 16:9 cover, radio y borde con tokens. */
 .post__image {
   display: block;
-  width: 100%;
+  width: 100%; height: auto; /* feature 65: anula el alto fijo del atributo height */
   aspect-ratio: 16 / 9;
   object-fit: cover;
   border-radius: var(--radius-card);

@@ -58,7 +58,9 @@ test('REQ-48-04: miniaturas con loading="lazy" y decoding="async"', () => {
   }
 });
 
-test('REQ-48-05: el CSS de las imágenes conserva height:auto/aspect-ratio u object-fit', () => {
+// Ajuste feature 65 (precedente REQ-43-06): aspect-ratio u object-fit no bastan, porque el atributo
+// height="768" fija el alto si el CSS no lo anula. Se exige height: auto o un height explícito.
+test('REQ-48-05: el CSS de las imágenes declara height: auto o un height explícito', () => {
   const rules = [
     ['src/styles/post.css', '.post__image'],
     ['src/styles/latest-articles.css', '.latest-articles__image'],
@@ -69,7 +71,7 @@ test('REQ-48-05: el CSS de las imágenes conserva height:auto/aspect-ratio u obj
   for (const [rel, selector] of rules) {
     const body = cssRule(rel, selector);
     assert.ok(body, `${rel}: falta ${selector}`);
-    assert.match(body, /height:\s*auto|aspect-ratio|object-fit:\s*cover/, `${rel} ${selector} podría deformar la imagen`);
+    assert.match(body, /(^|[;\s])height:\s*[^;]+/, `${rel} ${selector} podría deformar la imagen`);
   }
 });
 

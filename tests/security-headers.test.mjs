@@ -3,7 +3,8 @@
 // middleware las añade sin pisar las existentes y el build conserva la regla
 // /_astro/* del adapter (outDir temporal, serializado con el helper).
 // Ajuste feature 64 (precedente REQ-43-06): la CSP pasa de solo-reporte a obligatoria;
-// EXPECTED usa la clave Content-Security-Policy (mismo valor de REQ-40-06).
+// EXPECTED usa la clave Content-Security-Policy; su valor es la política de REQ-64-11
+// (sustituye a REQ-40-06: añade Cloudflare Web Analytics, ajuste REQ-64-13).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync, mkdtempSync, rmSync } from 'node:fs';
@@ -15,7 +16,7 @@ import { onRequest } from '../src/middleware.ts';
 
 const root = new URL('../', import.meta.url);
 const read = (rel) => readFileSync(new URL(rel, root), 'utf8');
-const CSP = "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; frame-src https://www.youtube-nocookie.com https://www.youtube.com; frame-ancestors 'none'; base-uri 'self'; object-src 'none'";
+const CSP = "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; connect-src 'self' https://cloudflareinsights.com; frame-src https://www.youtube-nocookie.com https://www.youtube.com; frame-ancestors 'none'; base-uri 'self'; object-src 'none'";
 const EXPECTED = {
   'X-Content-Type-Options': 'nosniff',
   'Referrer-Policy': 'strict-origin-when-cross-origin',

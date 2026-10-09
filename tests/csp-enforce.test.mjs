@@ -1,6 +1,7 @@
 // Feature 64 (csp-enforce): la CSP pasa de Report-Only a obligatoria. La revisión del HTML de
 // producción (progress/research/csp_production_review.md) no encontró orígenes fuera de la
-// política. Spec: specs/64_csp-enforce/requirements.md.
+// política salvo Cloudflare Web Analytics, que se permite por decisión humana (REQ-64-11).
+// Ajuste REQ-64-13 (precedente REQ-43-06): CSP vale la política de REQ-64-11. Spec: specs/64_csp-enforce/.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, mkdtempSync, rmSync, statSync } from 'node:fs';
@@ -14,7 +15,7 @@ import { onRequest } from '../src/middleware.ts';
 const root = new URL('../', import.meta.url);
 const read = (rel) => readFileSync(new URL(rel, root), 'utf8');
 const RO = ['Content-Security-Policy', 'Report-Only'].join('-');
-const CSP = "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; frame-src https://www.youtube-nocookie.com https://www.youtube.com; frame-ancestors 'none'; base-uri 'self'; object-src 'none'";
+const CSP = "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; connect-src 'self' https://cloudflareinsights.com; frame-src https://www.youtube-nocookie.com https://www.youtube.com; frame-ancestors 'none'; base-uri 'self'; object-src 'none'";
 const directive = (name) => CSP.split(';').map((d) => d.trim().split(/ +/)).find(([n]) => n === name)?.slice(1) ?? [];
 const walk = (dir) => readdirSync(dir).flatMap((n) => (statSync(join(dir, n)).isDirectory() ? walk(join(dir, n)) : [join(dir, n)]));
 
@@ -79,6 +80,16 @@ test('REQ-64-05/06 (build): recursos de los HTML permitidos y bundles sin eval',
   } finally {
     rmSync(out, { recursive: true, force: true });
   }
+});
+
+test('REQ-64-11: la política permite el beacon de Web Analytics y su envío', () => {
+  assert.ok(directive('script-src').includes('https://static.cloudflareinsights.com'));
+  assert.deepEqual(directive('connect-src'), ["'self'", 'https://cloudflareinsights.com']);
+});
+
+test('REQ-64-12: el beacon real se acepta como script y un origen ajeno no', () => {
+  assert.ok(allowed('https://static.cloudflareinsights.com/beacon.min.js/v4bc70e2c01a94c73b74392e4234840661791215815920', 'script'));
+  assert.ok(!allowed('https://evil.example/x.js', 'script'));
 });
 
 test('REQ-64-10: security-headers.ts, _headers y este test ≤100 líneas', () => {
