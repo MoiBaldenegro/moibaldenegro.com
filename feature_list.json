@@ -1182,7 +1182,7 @@
         "El test nuevo tests/csp-enforce.test.mjs se escribe primero contra esta spec y se observa en rojo antes de modificar security-headers.ts y public/_headers (ciclo test-first de AGENTS.md §3) (REQ-64-09)",
         "La suite completa del arnés pasa en verde, ./init.sh termina sin errores y security-headers.ts, public/_headers y los tests creados o modificados no superan las 100 líneas (REQ-64-10)"
       ],
-      "status": "pending",
+      "status": "in_progress",
       "depends_on": [
         68
       ]
@@ -1263,7 +1263,7 @@
         "El test nuevo tests/legacy-redirects.test.mjs se escribe primero contra esta spec y se observa en rojo antes de crear legacy-redirects.ts y modificar middleware.ts y astro.config.mjs (ciclo test-first de AGENTS.md §3) (REQ-68-13)",
         "Cada archivo creado o modificado no supera las 100 líneas, la suite completa del arnés pasa en verde y ./init.sh termina sin errores (REQ-68-14, REQ-68-15)"
       ],
-      "status": "in_progress"
+      "status": "done"
     }
   ]
 }

@@ -2,7 +2,8 @@
 // Única fuente de verdad: public/_headers replica estos valores para los
 // assets estáticos (páginas prerenderizadas) y src/middleware.ts los añade a
 // las respuestas que genera el Worker ([...term], server islands, 404).
-// La CSP va en modo Report-Only (despliegue gradual): 'unsafe-inline' lo
+// CSP obligatoria (feature 64, tras revisar producción: progress/research/
+// csp_production_review.md; antes solo-reporte, feature 40). 'unsafe-inline' lo
 // exigen los scripts inline de las server islands y code-copy y los estilos
 // inline de Shiki; la CSP nativa de Astro no admite <ClientRouter /> ni Shiki.
 export const SECURITY_HEADERS: Readonly<Record<string, string>> = Object.freeze({
@@ -10,7 +11,7 @@ export const SECURITY_HEADERS: Readonly<Record<string, string>> = Object.freeze(
   'Referrer-Policy': 'strict-origin-when-cross-origin',
   'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
   'X-Frame-Options': 'DENY',
-  'Content-Security-Policy-Report-Only':
+  'Content-Security-Policy':
     "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; " +
     "script-src 'self' 'unsafe-inline'; frame-src https://www.youtube-nocookie.com https://www.youtube.com; " +
     "frame-ancestors 'none'; base-uri 'self'; object-src 'none'",
