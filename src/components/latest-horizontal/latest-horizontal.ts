@@ -6,7 +6,7 @@
 // encabezado saltaba); ScrollTrigger solo hace el scrub de x. Cifras de src/domain (feature 71/73).
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { focusScrollTarget, pinScrollLength, trackOffset } from '../../domain/latest-horizontal.ts';
+import { edgeOffsets, focusScrollTarget, pairInset, pinScrollLength, trackOffset } from '../../domain/latest-horizontal.ts';
 import { entranceEase, entranceState } from '../../domain/latest-entrance.ts';
 import { clearTrack, restoreScroll } from './track-dom.ts';
 
@@ -23,7 +23,6 @@ export function destroy(): void {
   const track = document.querySelector<HTMLElement>('.latest-articles__list');
   if (track) clearTrack(track);
 }
-
 
 /** Inicializa el efecto de forma idempotente. */
 export function init(): void {
@@ -52,11 +51,15 @@ function setup(section: HTMLElement, track: HTMLElement, cards: HTMLElement[]): 
   const sizeWrapper = (): void => { wrapper.style.height = `${section.offsetHeight + length()}px`; };
   sizeWrapper();
   ScrollTrigger.addEventListener('refreshInit', sizeWrapper);
-  const tween = gsap.to(track, {
-    x: () => trackOffset(1, cardWidth(), gap(), n),
-    ease: 'none',
+  // Feature 76: misma línea de tiempo (mismo ScrollTrigger y scrub) para el track y la x propia de
+  // la primera y la última card: las cards cruzan los bordes de la ventana y en reposo no asoman.
+  const inset = (): number => pairInset(section.clientWidth, cardWidth(), gap());
+  const tween = gsap.timeline({
+    defaults: { ease: 'none' },
     scrollTrigger: { trigger: wrapper, start: 'top top', end: () => `+=${pinScrollLength(cardWidth(), gap(), n)}`, scrub: true, invalidateOnRefresh: true },
   });
+  tween.to(track, { x: () => trackOffset(1, cardWidth(), gap(), n), ease: 'none' }, 0);
+  for (const i of [0, n - 1]) tween.fromTo(cards[i], { x: () => edgeOffsets(0, n, inset(), gap())[i] }, { x: () => edgeOffsets(1, n, inset(), gap())[i] }, 0);
   // Feature 75: entrada desde arriba ligada al scroll; termina EXACTAMENTE en el inicio del
   // tramo fijado (y 0, scale 1, opacity 1), así que el horizontal arranca sin salto.
   gsap.fromTo(track, {

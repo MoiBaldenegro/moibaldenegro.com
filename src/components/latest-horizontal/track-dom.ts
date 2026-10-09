@@ -4,12 +4,17 @@
 // Los tweens revertidos dejan un transform neutro en línea; sin efecto el track no lleva estilos.
 export function clearTrack(track: HTMLElement): void {
   if (track.closest('.latest-articles--horizontal')) return; // el efecto se recreó entretanto
-  track.style.removeProperty('transform');
-  track.style.removeProperty('translate');
-  track.style.removeProperty('rotate');
-  track.style.removeProperty('scale');
-  track.style.removeProperty('opacity');
-  if (!track.getAttribute('style')?.trim()) track.removeAttribute('style');
+  // Feature 76: también las cards (x propia de la primera y la última).
+  for (const el of [track, ...track.querySelectorAll<HTMLElement>('.latest-articles__card')]) clearInline(el);
+}
+
+function clearInline(el: HTMLElement): void {
+  el.style.removeProperty('transform');
+  el.style.removeProperty('translate');
+  el.style.removeProperty('rotate');
+  el.style.removeProperty('scale');
+  el.style.removeProperty('opacity');
+  if (!el.getAttribute('style')?.trim()) el.removeAttribute('style');
 }
 
 // El envoltorio cambia el alto del documento después de que Astro restaure el scroll al volver

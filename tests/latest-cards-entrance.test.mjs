@@ -50,6 +50,8 @@ test('REQ-75-09/10/11: tween fromTo del track con scrub entre top bottom y top t
   assert.ok(mod.includes('entranceState'));
   assert.match(mod, /gsap[.]fromTo[(]\s*track/);
   for (const s of ['scale', 'opacity', 'ease: entranceEase', "start: 'top bottom'", "end: 'top top'", 'toggleClass', 'latest-articles--entering']) assert.ok(mod.includes(s), s);
+  const block = mod.slice(mod.indexOf('gsap.fromTo(track'), mod.indexOf('});', mod.indexOf('gsap.fromTo(track')));
+  for (const s of ['scrub: true', 'invalidateOnRefresh: true', "start: 'top bottom'", "end: 'top top'", 'ease: entranceEase']) assert.ok(block.includes(s), `fromTo de la entrada sin ${s}`);
   assert.ok(!mod.includes('pin:'));
   assert.doesNotMatch(mod, /gsap[.](to|fromTo|from)[(][^)]*(latest-articles__card|latest-articles__heading)/);
 });
@@ -59,14 +61,14 @@ test('REQ-75-14/15: recorte y encabezado durante la entrada', () => {
   const rule = (sel) => [...css.matchAll(/([^{}]+)[{]([^{}]*)[}]/g)].filter(([, s]) => s.trim() === sel).map(([, , b]) => b).join(';');
   const entering = rule('.latest-articles--horizontal.latest-articles--entering');
   assert.match(entering, /overflow-y:[ ]*visible/);
-  assert.match(entering, /clip-path:[ ]*inset[(]-100vh var[(]--latest-pair-inset[)] 0[)]/);
+  assert.doesNotMatch(entering, /clip-path/); // Ajuste REQ-76-03 (precedente REQ-43-06): sin recorte lateral
   const heading = rule('.latest-articles--horizontal.latest-articles--entering .latest-articles__heading');
   assert.match(heading, /position:[ ]*relative/); assert.match(heading, /z-index:[ ]*1/);
   for (const [, sel] of css.matchAll(/([^{}]+)[{][^{}]*[}]/g)) for (const s of sel.split(',')) assert.ok(s.includes('.latest-articles--horizontal'), s.trim());
 });
 
 test('REQ-75-27: archivos tocados <= 100 líneas', () => {
-  for (const rel of [DOMAIN, 'src/components/latest-horizontal/latest-horizontal.ts', 'src/styles/latest-horizontal.css', 'tests/latest-cards-entrance.test.mjs']) {
+  for (const rel of [DOMAIN, 'src/components/latest-horizontal/latest-horizontal.ts', 'src/components/latest-horizontal/track-dom.ts', 'src/styles/latest-horizontal.css', 'tests/latest-cards-entrance.test.mjs']) {
     const s = read(rel); assert.ok(s.split('\n').length - (s.endsWith('\n') ? 1 : 0) <= 100, rel);
   }
 });

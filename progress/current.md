@@ -4,95 +4,29 @@
 
 ### Feature en curso
 
-- (ninguna: features 70-72 en done; 10 en blocked por decisión humana)
+- (ninguna: features 73, 74 y 75 en done; 10 en blocked por decisión humana)
 
 ### Plan
 
-- Análisis en curso: feedback humano de la feature 72 (cards muy separadas, saltito al fijar la sección) y violación CSP del router en las navegaciones del ClientRouter.
-- Plan: (1) informe progress/research/horizontal_feedback.md; (2) spec y alta de la 73 latest-horizontal-compact-sticky (cards contiguas con gap de token, scroll 1:1, sticky CSS en lugar del pin de ScrollTrigger, geometría pura ajustada); (3) spec y alta de la 74 csp-router-inline-script (prioridad baja, depends_on [73]); (4) ./init.sh.
+- (vacío)
 
 ### Bitácora
 
-- spec_author: alta de la 73 latest-horizontal-compact-sticky (pending, depends_on [72]; spec specs/73_latest-horizontal-compact-sticky/requirements.md y design.md) y de la 74 csp-router-inline-script (pending, prioridad baja, depends_on [73]; spec specs/74_csp-router-inline-script/requirements.md). Análisis: progress/research/horizontal_feedback.md. Abiertas para el humano: 3 o 4 cards, gap var(--gap-card), scroll 1:1 y, en la 74, opción de build (recomendada) frente a data: en script-src-elem.
-- spec_author: check-format en verde. ./init.sh falla en el bloque de tests y en el de build por un fallo de entorno ajeno a estos cambios (solo se tocaron JSON y md). Fallan REQ-11-05 y REQ-30-13, porque `pnpm build` da EPERM al vaciar dist/client: lo tiene bloqueado un `astro preview --port 4399` (más un `astro dev`) en ejecución. Volver a ejecutar ./init.sh tras pararlos.
+- (vacía)
 
-- spec_author (enmienda de la 73 por instrucción humana): «meter 2 cards para que ocupen todo el ancho y que al final queden la 2 y la 3». La spec, el design y la entrada del backlog se reescriben (REQ-73-01..34; 16 acceptance; nota_retomar actualizada). Análisis en progress/research/horizontal_feedback.md §5.
-  - Nueva geometría: W = min((C − G)/2, límite por alto), con C = min(var(--container-max), 95%) y G = var(--gap-card).
-  - Inset del par: (V − 2W − G)/2; recorrido (n − 2)(W + G) con scroll 1:1.
-  - El track se recorta en los bordes del par y el h2 toma el ancho del par.
-  - Con n ≤ 2 no hay efecto.
-  - Ampliar a 4 o más posts queda como decisión futura del humano.
+### Análisis spec_author (feature 76)
 
-### NOTA PARA RETOMAR (2026-10-09, cuota de tokens; geometría ENMENDADA, ver abajo)
+- Análisis en curso: cards que cruzan la página (full bleed) en el horizontal de «Últimos artículos» — feedback humano tras 73-75.
+- Plan:
+  - Quitar el recorte lateral del par (REQ-73-15) y la parte lateral del clip-path de entrada (REQ-75-15).
+  - Recorte solo por overflow: clip de la sección (= ancho del viewport), sin scroll horizontal del documento.
+  - Ajustar las aserciones de clip-path en los tests de la 73 y la 75 (precedente REQ-43-06) y test nuevo test-first.
+  - Verificación CDP a 1280×800 y 1440×900 (márgenes con card, posiciones del par, scrollWidth, rueda real, capturas).
+- Alta en backlog: feature 76 latest-cards-full-bleed (pending, depends_on [75]). Spec: specs/76_latest-cards-full-bleed/requirements.md (REQ-76-01..19) y design.md. Análisis: progress/research/cards_full_bleed.md.
+- ENMIENDA B 76 (spec_author, 2026-10-09): márgenes limpios en reposo (Δ = max(0, inset − G); x propia card 1 = −Δ·p, card n = Δ·(1 − p), mismo scrub). requirements.md reescrito (REQ-76-01..27), design.md con alternativa A revisable y punto abierto de la entrada (scale < 1), 9 acceptance en feature_list.json. Análisis: progress/research/cards_full_bleed.md §7.
 
-- ENMIENDA: el plan de la 73 de abajo («primera centrada y la siguiente asomando», (n−1)(W+G)) queda SUSTITUIDO por el par a todo el ancho de §5 de horizontal_feedback.md: al inicio se ven las cards 1 y 2, al final la 2 y la 3, y el recorrido es (n−2)(W+G). El resto (sticky, wrapper, rueda real por CDP) se mantiene.
+### Feature 75 → done. Feature 76 latest-cards-full-bleed (opción B)
 
-- Siguiente feature: **73 latest-horizontal-compact-sticky** (pending, sin empezar; depende de la 72, ya en done).
-  Spec en specs/73_latest-horizontal-compact-sticky/ y análisis en progress/research/horizontal_feedback.md.
-- Feedback del humano que motiva la 73:
-  - las cards están demasiado separadas: deben ir juntas, con la primera centrada y la siguiente asomando a la mitad;
-  - hay un «saltito» en «Últimos artículos» al fijarse la sección.
-- Diagnóstico:
-  - el espacio sale de los slots de ancho de viewport de la 72;
-  - el salto solo aparece con rueda real: el pin JS (position fixed) llega un frame tarde, y anticipatePin lo agrava.
-- Plan de la 73:
-  - gap de token, padding de centrado del track y recorrido (n−1)(W+G);
-  - scroll 1:1 con el recorrido;
-  - sticky CSS dentro de un wrapper creado por JS en lugar del pin de ScrollTrigger;
-  - ajustar src/domain/latest-horizontal.ts y sus tests (precedente REQ-43-06);
-  - verificar con eventos mouseWheel por CDP y el top del h2 medido por frame.
-- Después viene la 74 csp-router-inline-script (prioridad baja, al final): la violación CSP del script data: del router de Astro.
-- Decisiones abiertas del humano: 3 o 4 cards (se usan 3), gap var(--gap-card) y scroll 1:1.
-- Estado: features 1-72 en done salvo la 10 (blocked). ./init.sh en verde tras cerrar el preview :4399 del líder.
-  Hay un `astro dev` del humano en marcha. Trabajo sin commitear: humano.
-
-### Feature 73 latest-horizontal-compact-sticky (retomada; nueva geometría de par de cards)
-
-- ROJO 1/5 → VERDE 5/5; legacy 71/72 ajustados. Suite 822/822.
-- Chrome: par 1-2 → 2-3 exacto a 1280 y 1440, 1600×700 centrado. Rueda real: 0 px de desviación
-  y 0 retrocesos. Apilado, reversión, ida y vuelta, teclado, búsqueda, clic y CSP OK.
-  Informe en progress/impl_73.md. Reviewer lanzado.
-
-### Feature 73 → done. Feature 74 csp-router-inline-script → BLOCKED (REQ-74-07)
-
-- ROJO 2/4 → VERDE 4/4 con vite.build.assetsInlineLimit (los scripts de componentes Astro nunca
-  van inline). Suite 826/826.
-- Navegación real con CDP. ANTES: violación al entrar en el post con código. DESPUÉS: el post
-  queda sin violación y Copiar funciona, pero aparece la violación al VOLVER a la portada.
-  Causa: el router salta los scripts ya ejecutados en la sesión, y el último módulo pendiente es
-  el cargador inline de la server island de HTB (siempre inline).
-- Detenida para decisión humana:
-  (a) data: solo en script-src-elem;
-  (b) aceptar la violación, que no tiene impacto funcional;
-  (c) otra vía, p. ej. la isla HTB sin server:defer.
-
-### Enmienda de la 74 (spec_author, 2026-10-09): opción A por decisión humana
-
-- Análisis en curso: la violación data: al volver a la portada (cargador inline de la isla HTB).
-- Plan: data: solo en script-src-elem (REQ-74-03 sustituye a REQ-64-11); se mantiene assetsInlineLimit;
-  ajustar constantes CSP de 3 tests y la clasificación del test de build REQ-64-05 (REQ-43-06);
-  verificación con clics reales del ClientRouter en preview y producción.
-- Hecho: spec reescrita (REQ-74-01..15), 12 acceptance, 74 de blocked a pending sin blocked_reason.
-  Análisis en progress/research/horizontal_feedback.md §6.
-
-### Feature 74 → opción A (decisión humana) implementada
-
-- Constantes CSP de 3 tests y clasificación por script-src-elem → ROJO 8 fallos → política de
-  REQ-74-03 → VERDE. Suite 826/826.
-- Navegación real: 0 violaciones en los 5 pasos, también al volver a la portada. Informe en
-  progress/impl_74.md. Reviewer lanzado.
-
-### Alta de la 75 (spec_author, 2026-10-09): entrada de las cards desde arriba
-
-- Análisis en curso: petición humana «que las cards salgan de encima y se claven donde deben estar para el scroll horizontal», interpretación del líder confirmada por el humano (scrub ligado al scroll, solo en el modo horizontal de la 73).
-- Plan: (1) informe progress/research/cards_entrance_animation.md; (2) spec specs/75_latest-cards-entrance/ (requirements.md + design.md); (3) alta de la 75 pending con depends_on [73]; (4) check-format y ./init.sh.
-- Hecho: alta de la 75 latest-cards-entrance (pending, depends_on [73]; 30 REQ y 12 acceptance). Spec specs/75_latest-cards-entrance/requirements.md y design.md; análisis progress/research/cards_entrance_animation.md. Decisiones: se anima el track (las cards tienen transition all), tramo 'top bottom' → 'top top' del envoltorio con scrub true, y −0,4vh / scale 0,9 / opacity 0 → 0 / 1 / 1 con ease cúbica de salida pura (src/domain/latest-entrance.ts), clase latest-articles--entering (toggleClass) que libera el recorte superior solo durante la entrada; tests de 71/72/73 sin cambios. check-format en verde.
-- ./init.sh en verde (formato, tests y build) tras el alta de la 75.
-
-### Feature 74 → done. Feature 75 latest-cards-entrance (2026-10-09)
-
-- ROJO 0/5 → VERDE 5/5. Suite 831/831.
-- Correcciones halladas en la verificación: el ancho de card se medía con el track escalado
-  (recorrido 551 en vez de 610), y quedaba un transform residual tras revertir.
-- Rueda real: 0 desajustes, 0 rupturas de monotonía y el h2 fijo en el tramo fijado.
-  Informe en progress/impl_75.md. Reviewer lanzado.
+- ROJO 5 fallos → VERDE; suite 835/835. Chrome a 1280, 1440 y 1600×700: márgenes limpios en
+  reposo, cards cruzando la ventana a mitad del recorrido, sin scroll horizontal y rueda real sin
+  retrocesos. Informe en progress/impl_76.md. Reviewer lanzado.

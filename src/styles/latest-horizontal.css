@@ -15,7 +15,6 @@
   width: 100%;
   min-height: 100vh;
   overflow: clip;
-  clip-path: inset(0 var(--latest-pair-inset));
 }
 
 .latest-articles--horizontal .latest-articles__heading {
@@ -32,6 +31,7 @@
 .latest-articles--horizontal .latest-articles__card {
   flex: 0 0 var(--latest-card-width);
   width: var(--latest-card-width);
+  transition-property: border-color, box-shadow; /* feature 76: el transform (x de la 1.ª y la última) no transiciona */
 }
 
 .latest-articles--horizontal .latest-articles__card:first-child {
@@ -39,11 +39,10 @@
 }
 
 /* Feature 75: durante la entrada (clase que pone el ScrollTrigger de la entrada) las cards bajan
-   desde arriba: se libera el recorte superior (el lateral del par se mantiene) y el encabezado
+   desde arriba: se libera el recorte superior (sin recorte lateral desde la feature 76) y el encabezado
    queda por encima del track. Sin offsets: el encabezado no se mueve. */
 .latest-articles--horizontal.latest-articles--entering {
   overflow-y: visible;
-  clip-path: inset(-100vh var(--latest-pair-inset) 0);
 }
 
 .latest-articles--horizontal.latest-articles--entering .latest-articles__heading {

@@ -49,3 +49,25 @@ export function focusScrollTarget(index: number, count: number, start: number, e
   const k = clamp(Number.isFinite(index) ? index - 1 : 0, 0, count - 2);
   return start + (k / (count - 2)) * (end - start);
 }
+
+// Feature 76 (opción B): las cards cruzan los bordes de la ventana, pero en reposo los márgenes
+// quedan limpios. La primera y la última card llevan una x propia: Δ = max(0, inset − gap) basta
+// para que, con p = 0, la última quede justo fuera por la derecha y, con p = 1, la primera justo
+// fuera por la izquierda. El track y su recorrido (n − 2)(W + G) no cambian.
+
+/** Margen de reposo Δ = max(0, inset − gap); 0 si algún argumento no es finito o es negativo. */
+export function restMargin(inset: number, gap: number): number {
+  if (!Number.isFinite(inset) || !Number.isFinite(gap) || inset < 0 || gap < 0) return 0;
+  return Math.max(0, inset - gap);
+}
+
+/** x propia de cada card: −Δ·p en la primera, Δ·(1 − p) en la última y 0 en las intermedias. */
+export function edgeOffsets(progress: number, count: number, inset: number, gap: number): number[] {
+  if (!validCount(count)) return [];
+  const p = clamp01(progress);
+  const delta = restMargin(inset, gap);
+  const offsets = new Array<number>(count).fill(0);
+  offsets[0] = 0 - delta * p;
+  offsets[count - 1] = delta * (1 - p);
+  return offsets;
+}

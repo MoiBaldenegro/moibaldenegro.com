@@ -66,7 +66,9 @@ test('REQ-73-10/11/15/16/21: hoja con par, gap, recorte y sticky', () => {
   assert.doesNotMatch(rule('.latest-articles--horizontal .latest-articles__card'), /margin-inline/);
   assert.match(rule('.latest-articles--horizontal .latest-articles__card:first-child'), /margin-inline-start:[ ]*var[(]--latest-pair-inset[)]/);
   const section = rule('.latest-articles--horizontal');
-  for (const re of [/clip-path:[ ]*inset[(]0 var[(]--latest-pair-inset[)][)]/, /position:[ ]*sticky/, /top:[ ]*0/, /min-height:[ ]*100vh/, /overflow:[ ]*clip/]) assert.match(section, re);
+  // Ajuste REQ-76-01 (precedente REQ-43-06): sin clip-path lateral; las cards cruzan los bordes de la ventana.
+  assert.doesNotMatch(section, /clip-path/);
+  for (const re of [/position:[ ]*sticky/, /top:[ ]*0/, /min-height:[ ]*100vh/, /overflow:[ ]*clip/]) assert.match(section, re);
   assert.match(rule('.latest-articles--horizontal .latest-articles__heading'), /2 [*] var[(]--latest-card-width[)] [+] var[(]--gap-card[)]/);
   for (const [, sel] of css.matchAll(/([^{}]+)[{][^{}]*[}]/g)) for (const s of sel.split(',')) assert.ok(s.includes('.latest-articles--horizontal'), s.trim());
 });

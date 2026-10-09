@@ -13,14 +13,14 @@ scroll horizontal, ligado al scroll. El humano confirmó la interpretación del 
 
 ## Cambios
 
-- src/domain/latest-entrance.ts (39 líneas), funciones puras:
+- src/domain/latest-entrance.ts (35 líneas), funciones puras:
   - entranceEase = 1 − (1 − p)³ (cúbica de salida, sin rebote);
   - entranceDistance = 0,4 · vh;
   - entranceState = { y: −d·(1 − e), scale: 1 − 0,1·(1 − e), opacity: e }, exactamente
     { +0, 1, 1 } con p ≥ 1;
   - entranceProgress;
   - con entradas inválidas devuelven el estado final.
-- src/components/latest-horizontal/latest-horizontal.ts (92 líneas), en setup tras el tween de x:
+- src/components/latest-horizontal/latest-horizontal.ts (91 líneas), en setup tras el tween de x:
   - gsap.fromTo(track) de entranceState(0, innerHeight) a { y: 0, scale: 1, opacity: 1 },
     con ease entranceEase y ScrollTrigger sobre el envoltorio: start 'top bottom',
     end 'top top', scrub true, invalidateOnRefresh y
@@ -73,10 +73,17 @@ scroll horizontal, ligado al scroll. El humano confirmó la interpretación del 
   style, no hay clase entering ni envoltorio, y las cards son iguales que sin JS.
 - Reversión (REQ-75-20): al redimensionar de 1280 a 1024 y en astro:before-swap el track no
   tiene atributo style, la sección no lleva la clase entering y no queda envoltorio.
-- Durante la entrada (REQ-75-14/30): la clase entering está puesta y elementFromPoint sobre el
-  texto del h2 devuelve el h2 (queda por encima de las cards). El header sticky del sitio ya no
-  está a la vista en ese tramo, porque solo es sticky en el primer viewport (impl_61); no hay
-  solape posible.
+- Durante la entrada (REQ-75-14/30), corregido en la ronda 2: la afirmación de la ronda 1 de
+  que el header no se veía era errónea. Medición CDP con la entrada en p 0,05, 0,1 y 0,25
+  (1280×800: scrollY 455, 495 y 615; 1440×900: 360, 405 y 540). En todos los casos:
+  - la clase latest-articles--entering está presente y el header está a la vista (top 0,
+    bottom 75);
+  - elementFromPoint en el centro de .site-navbar devuelve el header;
+  - un barrido cada 60 px a lo largo de la fila del header no encuentra ningún punto fuera del
+    header;
+  - el track ni siquiera llega a la zona del header (top ≥ 574 a 1280 y ≥ 632 a 1440).
+  REQ-75-30 se cumple. elementFromPoint sobre el texto del h2 a mitad de la entrada devuelve el
+  h2. Capturas: h75-header-{1280,1440}-p{0.05,0.1,0.25}.png.
 - Teclado (REQ-75-21), con foco emulado: desde 900 y 400 px antes del envoltorio, el focus de
   cada una de las 3 cards lleva al tramo fijado. Card completa, y = 0 y opacity 1 en los 6 casos.
 - Ida y vuelta (REQ-75-23): desde la mitad de la entrada, 815 → 815, history 815 e
@@ -90,3 +97,15 @@ scroll horizontal, ligado al scroll. El humano confirmó la interpretación del 
 ### Capturas
 
 progress/research/gsap75/: h75-{1280x800,1440x900}-e0 / e0.25 / e0.5 / e1 y -pinstart (.png).
+
+## Ronda 2 (CHANGES_REQUESTED en review_75.md)
+
+1. REQ-75-30: medición del header visible durante la entrada añadida arriba (sin cambios de
+   código, porque el requisito se cumple).
+2. Observaciones no bloqueantes atendidas:
+   - doble línea en blanco eliminada en latest-horizontal.ts (91 líneas);
+   - el test REQ-75-09/10/11 ahora exige scrub, invalidateOnRefresh, start, end y ease DENTRO
+     del bloque gsap.fromTo(track …), para distinguirlo del tween de x de la 73;
+   - REQ-75-27 incluye track-dom.ts;
+   - cifras de líneas corregidas.
+3. Suite y ./init.sh en verde tras los cambios.
