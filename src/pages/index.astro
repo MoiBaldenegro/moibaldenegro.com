@@ -2,6 +2,7 @@
 import NewHero from '../components/new-hero/new-hero.astro';
 import Layout from '../layouts/Layout.astro';
 import LatestArticles from '../components/latest-articles.astro';
+import LatestHorizontal from '../components/latest-horizontal/latest-horizontal.astro';
 import HtbStadistics from '../components/htb-stadistics.astro';
 import SearchLive from '../components/search-live/search-live.astro';
 import { HeroProfileRepository } from '../domain/repositories/hero-profile-repository.ts';
@@ -18,6 +19,7 @@ const profile = new HeroProfileRepository().getProfile();
   <div class="home__landing" data-landing-sections>
     <NewHero/>
     <LatestArticles/>
+    <LatestHorizontal />
     <HtbStadistics server:defer>
       <p slot="fallback">Cargando estadísticas de HTB...</p>
     </HtbStadistics>

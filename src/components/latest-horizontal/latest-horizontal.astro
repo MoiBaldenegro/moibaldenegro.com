@@ -1,0 +1,11 @@
+---
+import '../../styles/latest-horizontal.css';
+---
+
+<script>
+  // Feature 72: mejora progresiva de .latest-articles (sin marcado propio). JS de runtime
+  // justificado: el humano autorizó GSAP para este efecto (feature 70).
+  import { destroy, init } from './latest-horizontal.ts';
+  document.addEventListener('astro:page-load', () => init());
+  document.addEventListener('astro:before-swap', () => destroy());
+</script>

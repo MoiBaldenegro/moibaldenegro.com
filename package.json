@@ -16,6 +16,7 @@
   "dependencies": {
     "@astrojs/cloudflare": "^14.3.4",
     "astro": "^7.3.8",
+    "gsap": "3.15.0",
     "wrangler": "^4.149.0"
   },
   "pnpm": {

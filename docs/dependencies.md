@@ -31,6 +31,12 @@ cambia en la feature correspondiente, para que el validador siga en verde.
   APLICADA en la feature 60 `workers-types-upgrade`: ^5.20261009.1 con
   `approved: 2026-10-08`.
 
+* 2026-10-09 — el humano AUTORIZA el uso de GSAP («Se acaba de autorizar el uso de la
+  librería GSAP para ponerle scroll en X a las 3 cards de los 3 posts más recientes en la
+  página principal»): alta de gsap (incluye el plugin ScrollTrigger) solo para la portada.
+  Licencia «Standard no charge» de Webflow, NO OSI (ver entrada ### gsap). APLICADA en la
+  feature 70: gsap 3.15.0 exacta con `approved: 2026-10-09`.
+
 ### astro
 
 - version: ^7.3.8
@@ -58,3 +64,12 @@ cambia en la feature correspondiente, para que el validador siga en verde.
 - scope: devDependencies
 - approved: 2026-10-08
 - motivo: tipos del runtime Cloudflare Workers para TypeScript
+
+### gsap
+
+- version: 3.15.0
+- scope: dependencies
+- approved: 2026-10-09
+- motivo: scroll horizontal fijado de las cards de últimos artículos en la portada (feature 72)
+- licencia: Standard 'no charge' license de Webflow (https://gsap.com/standard-license), NO OSI: gratuita incluso para uso comercial, sin quitar los avisos de copyright; Webflow puede revisar los términos de versiones futuras
+- alcance: solo la portada (src/components/latest-articles); gsap y el plugin ScrollTrigger, incluido en el mismo paquete; sin registro privado de GreenSock

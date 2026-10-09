@@ -44,8 +44,10 @@ test('REQ-56-03: sin desplazamiento en hover de .hero-card y .profile-card con r
   }
 });
 
-test('REQ-56-04: ningún .ts de src/ consulta prefers-reduced-motion', () => {
-  const files = readdirSync(new URL('src/', root), { recursive: true }).filter((f) => f.endsWith('.ts'));
+// Ajuste feature 72 (precedente REQ-43-06): latest-horizontal.ts usa la consulta en gsap.matchMedia
+// para NO activar el efecto con reduced motion (REQ-72-04); es la única excepción.
+test('REQ-56-04: ningún .ts de src/ (salvo latest-horizontal.ts) consulta prefers-reduced-motion', () => {
+  const files = readdirSync(new URL('src/', root), { recursive: true }).filter((f) => f.endsWith('.ts') && !f.endsWith('latest-horizontal.ts'));
   for (const file of files) {
     assert.doesNotMatch(read(`src/${file.split(String.fromCharCode(92)).join('/')}`), /prefers-reduced-motion/, file);
   }

@@ -34,6 +34,11 @@ export default defineConfig({
   }),
 
   vite: {
+    // Feature 72 (REQ-72-24): conservar los avisos @license (GSAP, licencia Standard
+    // "no charge" de Webflow, prohíbe retirarlos) al minificar los chunks del cliente.
+    build: {
+      rolldownOptions: { output: { comments: { legal: true } } },
+    },
     optimizeDeps: {
       include: ['astro/assets/services/noop'],
     },

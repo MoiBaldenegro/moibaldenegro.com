@@ -1,0 +1,39 @@
+/* latest-horizontal.css — Modo horizontal de últimos artículos (features 72 y 73). Solo aplica
+   con la clase .latest-articles--horizontal, que añade latest-horizontal.ts en escritorio
+   (>=1201 px) sin reduced motion; sin ella el layout apilado de latest-articles.css queda intacto.
+   Feature 73: se ve un PAR de cards que llena el contenedor (W = mitad del contenedor menos el
+   gap, limitado por el alto del viewport como en la 72) centrado en la sección (inset lateral).
+   Todos los % se resuelven contra el ancho de la sección: no tiene padding horizontal y el track
+   tampoco. La sección se fija con sticky dentro del envoltorio que crea el script (sin el pin de
+   ScrollTrigger, que daba un salto con rueda real). */
+
+.latest-articles--horizontal {
+  --latest-card-width: min(calc((min(var(--container-max), 95%) - var(--gap-card)) / 2), calc((100vh - 30rem) * 16 / 9 + 3.5rem));
+  --latest-pair-inset: calc((100% - 2 * var(--latest-card-width) - var(--gap-card)) / 2);
+  position: sticky;
+  top: 0;
+  width: 100%;
+  min-height: 100vh;
+  overflow: clip;
+  clip-path: inset(0 var(--latest-pair-inset));
+}
+
+.latest-articles--horizontal .latest-articles__heading {
+  width: calc(2 * var(--latest-card-width) + var(--gap-card));
+  margin-inline: auto;
+}
+
+.latest-articles--horizontal .latest-articles__list {
+  display: flex;
+  gap: var(--gap-card);
+  will-change: transform;
+}
+
+.latest-articles--horizontal .latest-articles__card {
+  flex: 0 0 var(--latest-card-width);
+  width: var(--latest-card-width);
+}
+
+.latest-articles--horizontal .latest-articles__card:first-child {
+  margin-inline-start: var(--latest-pair-inset);
+}
