@@ -13,6 +13,7 @@
 //               inicial (guía visible, sin resultados).
 //   REQ-06-03 — Escape con consulta vacía: ninguna acción (no-op).
 //   REQ-06-04 — el manejador SIEMPRE detiene la propagación del evento.
+// Ajuste feature 66 (precedente REQ-43-06): el dominio del sitio pasa a moisesbaldenegro.com.
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -184,7 +185,7 @@ test('REQ-06-01 (wiring): Escape en la portada vacía la consulta y restaura las
   const { root, panel, landing, listeners, calls } = fakeRoot();
   const { input, barRoot } = fakeBar();
   emitChange('agilismo'); // consulta activa en memoria (REQ-04-02)
-  initSearchEscape(root, barRoot, 'moibaldenegro.com');
+  initSearchEscape(root, barRoot, 'moisesbaldenegro.com');
   fireEscape(listeners, calls);
   assert.equal(input.value, '', 'Escape no vació la consulta de la barra (REQ-06-01)');
   assert.equal(input.focusCalls, 1, 'Escape no devolvió el foco a la barra (REQ-06-01)');

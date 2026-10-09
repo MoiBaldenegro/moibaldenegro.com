@@ -1,4 +1,4 @@
-# moibaldenegro.com
+# moisesbaldenegro.com
 
 Sitio personal de **Moisés Baldenegro Melendez** (@moibaldenegro). La portada
 muestra su perfil y las tecnologías con las que trabaja, y el sitio publica

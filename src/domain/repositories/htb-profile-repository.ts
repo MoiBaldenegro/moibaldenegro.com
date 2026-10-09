@@ -45,7 +45,7 @@ export class HtbProfileRepository {
         headers: {
           Authorization: `Bearer ${this.token}`,
           Accept: 'application/json',
-          'User-Agent': 'moibaldenegro.com',
+          'User-Agent': 'moisesbaldenegro.com',
         },
       });
     } catch {

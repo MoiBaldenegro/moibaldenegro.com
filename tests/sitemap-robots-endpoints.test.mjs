@@ -5,6 +5,7 @@
 // Ajuste feature 45 (precedente REQ-43-06): los slugs pasan a ASCII
 // (03-principios-solid, 01-diseno-detallado, 04-ciclo-de-vida-y-arquitectura);
 // las URLs antiguas redirigen con 301 desde astro.config.mjs.
+// Ajuste feature 66 (precedente REQ-43-06): el dominio del sitio pasa a moisesbaldenegro.com.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync, mkdtempSync, rmSync } from 'node:fs';
@@ -15,7 +16,7 @@ import { buildSitemap, robotsTxt } from '../src/domain/seo/sitemap.ts';
 
 const root = new URL('../', import.meta.url);
 const read = (rel) => readFileSync(new URL(rel, root), 'utf8');
-const SITE = 'https://moibaldenegro.com';
+const SITE = 'https://moisesbaldenegro.com';
 const post = (id, created, updated) => ({
   id, slug: id, title: id, author: 'A', img: 'x.webp', readtime: 1, description: 'd', tags: [],
   created, updated, next: null, related: null,

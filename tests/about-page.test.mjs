@@ -1,3 +1,4 @@
+// Ajuste feature 66 (precedente REQ-43-06): el dominio del sitio pasa a moisesbaldenegro.com.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
@@ -9,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 // Verifica contra specs/11_about-page/requirements.md y design.md:
 //   REQ-11-01 — src/pages/about.astro existe (la navbar enlaza /about y hoy da 404).
 //   REQ-11-02 — la página usa el layout único del sitio con su propio título
-//               (Decisión 2: "About — moibaldenegro.com").
+//               (Decisión 2: "About — moisesbaldenegro.com").
 //   REQ-11-03 — el perfil (name, username, description) se obtiene de
 //               HeroProfileRepository sin leer datos ni lógica en la UI
 //               (Decisión 1: sin inventar contenido).
@@ -80,8 +81,8 @@ test('REQ-11-02: la página usa el layout único con título propio', () => {
     'la página no pasa la prop title al layout (REQ-11-02/Decisión 2)'
   );
   assert.ok(
-    page.includes('About — moibaldenegro.com'),
-    'la página no pasa el título "About — moibaldenegro.com" (Decisión 2)'
+    page.includes('About — moisesbaldenegro.com'),
+    'la página no pasa el título "About — moisesbaldenegro.com" (Decisión 2)'
   );
 });
 
@@ -227,8 +228,8 @@ test('REQ-11-05: el build genera la ruta /about con los datos reales del perfil'
   );
   const html = readFileSync(DIST_ABOUT_PATH, 'utf8');
   assert.ok(
-    html.includes('About — moibaldenegro.com'),
-    'el <title> de /about no es "About — moibaldenegro.com" (Decisión 2)'
+    html.includes('About — moisesbaldenegro.com'),
+    'el <title> de /about no es "About — moisesbaldenegro.com" (Decisión 2)'
   );
   const profile = JSON.parse(readFileSync(PROFILE_JSON, 'utf8'));
   for (const field of ['name', 'username', 'description']) {

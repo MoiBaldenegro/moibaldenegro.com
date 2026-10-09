@@ -1,6 +1,7 @@
 // Test del JSON-LD BlogPosting (feature 44 article-json-ld, REQ-44-01..08):
 // funciones puras de src/domain/seo/json-ld.ts y HTML real del build (outDir
 // temporal, serializado con el helper de builds).
+// Ajuste feature 66 (precedente REQ-43-06): el dominio del sitio pasa a moisesbaldenegro.com.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, mkdtempSync, rmSync } from 'node:fs';
@@ -11,7 +12,7 @@ import { blogPostingJsonLd, serializeJsonLd } from '../src/domain/seo/json-ld.ts
 
 const root = new URL('../', import.meta.url);
 const read = (rel) => readFileSync(new URL(rel, root), 'utf8');
-const SITE = 'https://moibaldenegro.com';
+const SITE = 'https://moisesbaldenegro.com';
 const BACKSLASH = String.fromCharCode(92);
 const POST = {
   id: '00-agilismo', slug: '00-agilismo', title: 'Agilismo', author: 'Moises Baldenegro', img: 'arch00.webp',

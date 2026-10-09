@@ -4,7 +4,7 @@
 // Las cuentas @moibaldenegro y el Worker moibaldenegro-web no cambian (no son dominios).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync, statSync, mkdtempSync, rmSync, existsSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -68,8 +68,10 @@ test('REQ-66-06 (build): canonical, og, JSON-LD, sitemap y robots apuntan a mois
       assert.ok(urls.length >= 2, `${page}: sin URLs absolutas`);
       for (const url of urls) assert.ok(url.startsWith(ORIGIN), `${page}: ${url}`);
     }
-    const sitemapFile = [join(client, 'sitemap.xml'), join(client, 'sitemap.xml', 'index.html')].find(existsSync);
-    if (sitemapFile) for (const [, loc] of readFileSync(sitemapFile, 'utf8').matchAll(/<loc>([^<]+)<[/]loc>/g)) assert.ok(loc.startsWith(ORIGIN), loc);
+    const locs = [...readFileSync(join(client, 'sitemap.xml'), 'utf8').matchAll(/<loc>([^<]+)<[/]loc>/g)].map((m) => m[1]);
+    assert.ok(locs.length > 0, 'sitemap.xml sin <loc>');
+    for (const loc of locs) assert.ok(loc.startsWith(ORIGIN), loc);
+    assert.ok(readFileSync(join(client, 'robots.txt'), 'utf8').includes(`Sitemap: ${ORIGIN}sitemap.xml`), 'robots.txt');
   } finally {
     rmSync(out, { recursive: true, force: true });
   }

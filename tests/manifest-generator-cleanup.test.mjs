@@ -2,6 +2,7 @@
 // manifest-generator-cleanup, REQ-58-01..05): nombre real del sitio en
 // site.webmanifest y sin <meta name="generator"> (huella de versión) en el
 // Layout ni en el HTML del build (outDir temporal, helper de builds).
+// Ajuste feature 66 (precedente REQ-43-06): el dominio del sitio pasa a moisesbaldenegro.com.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, mkdtempSync, rmSync } from 'node:fs';
@@ -13,8 +14,8 @@ const read = (rel) => readFileSync(new URL(`../${rel}`, import.meta.url), 'utf8'
 
 test('REQ-58-01: site.webmanifest declara el nombre real del sitio', () => {
   const manifest = JSON.parse(read('public/site.webmanifest'));
-  assert.equal(manifest.name, 'moibaldenegro.com');
-  assert.equal(manifest.short_name, 'moibaldenegro.com');
+  assert.equal(manifest.name, 'moisesbaldenegro.com');
+  assert.equal(manifest.short_name, 'moisesbaldenegro.com');
 });
 
 test('REQ-58-02: Layout.astro no emite la meta generator', () => {

@@ -5,6 +5,7 @@
 // Ajuste feature 45 (precedente REQ-43-06): los slugs pasan a ASCII
 // (03-principios-solid, 01-diseno-detallado, 04-ciclo-de-vida-y-arquitectura);
 // las URLs antiguas redirigen con 301 desde astro.config.mjs.
+// Ajuste feature 66 (precedente REQ-43-06): el dominio del sitio pasa a moisesbaldenegro.com.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, existsSync, mkdtempSync, rmSync } from 'node:fs';
@@ -16,7 +17,7 @@ import { composeTitle, canonicalUrl } from '../src/domain/seo/head.ts';
 const root = new URL('../', import.meta.url);
 const read = (rel) => readFileSync(new URL(rel, root), 'utf8');
 const LAYOUT = 'src/layouts/Layout.astro';
-const SITE = 'https://moibaldenegro.com';
+const SITE = 'https://moisesbaldenegro.com';
 const ABOUT_TEXT = 'Articulos dedicados a la ingeniería de software aplicada, ejemplos, arquitectura, implementaciones y proyectos mas cercanos a proyectos reales.';
 const decode = (s) => s.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
 const descriptions = (html) => [...html.matchAll(/<meta name="description" content="([^"]*)">/g)].map((m) => decode(m[1]));
@@ -33,9 +34,9 @@ test('REQ-35-01: astro.config.mjs declara site', () => {
 });
 
 test('REQ-35-02: composeTitle añade la marca sin duplicarla', () => {
-  assert.equal(composeTitle('Principios solid'), 'Principios solid | moibaldenegro.com');
-  assert.equal(composeTitle('About — moibaldenegro.com'), 'About — moibaldenegro.com');
-  assert.equal(composeTitle(undefined), 'moibaldenegro.com');
+  assert.equal(composeTitle('Principios solid'), 'Principios solid | moisesbaldenegro.com');
+  assert.equal(composeTitle('About — moisesbaldenegro.com'), 'About — moisesbaldenegro.com');
+  assert.equal(composeTitle(undefined), 'moisesbaldenegro.com');
 });
 
 test('REQ-35-03: canonicalUrl es absoluta y codifica el path', () => {

@@ -3,7 +3,7 @@ import cloudflare from '@astrojs/cloudflare';
 
 export default defineConfig({
   // REQ-35-01: base de las URL canónicas (Astro.site).
-  site: 'https://moibaldenegro.com',
+  site: 'https://moisesbaldenegro.com',
   output: 'server',
 
   // Las 301 de los slugs antiguos (feature 45) viven en src/middleware.ts (feature 68):

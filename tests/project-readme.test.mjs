@@ -1,3 +1,4 @@
+// Ajuste feature 66 (precedente REQ-43-06): el dominio del sitio pasa a moisesbaldenegro.com.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
@@ -5,7 +6,7 @@ import { readFileSync, existsSync } from 'node:fs';
 // Test del README del proyecto (REQ-13-01..05, feature 13 project-readme).
 //
 // Verifica contra specs/13_project-readme/requirements.md:
-//   REQ-13-01 — README.md describe moibaldenegro.com con su propósito real
+//   REQ-13-01 — README.md describe moisesbaldenegro.com con su propósito real
 //               (sitio personal con portada de tecnologías, artículos de
 //               arquitectura de software y página /about; sin inventar contenido).
 //   REQ-13-02 — documenta la estructura de carpetas REAL del proyecto:
@@ -34,9 +35,9 @@ function readReadme() {
   return readFileSync(README_URL, 'utf8');
 }
 
-test('REQ-13-01: README menciona moibaldenegro.com y su propósito', () => {
+test('REQ-13-01: README menciona moisesbaldenegro.com y su propósito', () => {
   const readme = readReadme();
-  assert.ok(readme.includes('moibaldenegro.com'), 'debe mencionar moibaldenegro.com');
+  assert.ok(readme.includes('moisesbaldenegro.com'), 'debe mencionar moisesbaldenegro.com');
   assert.ok(readme.includes('Moisés Baldenegro'), 'debe nombrar al autor del sitio');
   assert.ok(readme.includes('artículos'), 'debe mencionar los artículos del sitio');
   assert.ok(

@@ -1,6 +1,7 @@
 // Test de Open Graph y Twitter/X cards (feature 43 social-meta-tags,
 // REQ-43-01..08): función pura socialMeta y HTML real del build (outDir
 // temporal, serializado con el helper de builds).
+// Ajuste feature 66 (precedente REQ-43-06): el dominio del sitio pasa a moisesbaldenegro.com.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, mkdtempSync, rmSync } from 'node:fs';
@@ -12,11 +13,11 @@ import { canonicalUrl } from '../src/domain/seo/head.ts';
 
 const root = new URL('../', import.meta.url);
 const read = (rel) => readFileSync(new URL(rel, root), 'utf8');
-const SITE = 'https://moibaldenegro.com';
+const SITE = 'https://moisesbaldenegro.com';
 const asMap = (tags) => Object.fromEntries(tags.map((t) => [t.property ?? t.name, t.content]));
-const page = asMap(socialMeta({ title: 'About | moibaldenegro.com', description: 'Desc', pathname: '/about/', site: SITE }));
+const page = asMap(socialMeta({ title: 'About | moisesbaldenegro.com', description: 'Desc', pathname: '/about/', site: SITE }));
 const post = asMap(socialMeta({
-  title: 'Post | moibaldenegro.com', description: 'Post desc', pathname: '/posts/00-agilismo/', site: SITE,
+  title: 'Post | moisesbaldenegro.com', description: 'Post desc', pathname: '/posts/00-agilismo/', site: SITE,
   image: '/assets/content/arch00.webp', type: 'article', published: '19 Septiembre 2026', modified: '1 Octubre 2026',
 }));
 
@@ -24,7 +25,7 @@ test('REQ-43-01: siete propiedades og no vacías, site_name y locale', () => {
   for (const key of ['og:title', 'og:description', 'og:url', 'og:image', 'og:type', 'og:site_name', 'og:locale']) {
     assert.ok(page[key], `${key} vacío`);
   }
-  assert.equal(page['og:site_name'], 'moibaldenegro.com');
+  assert.equal(page['og:site_name'], 'moisesbaldenegro.com');
   assert.equal(page['og:locale'], 'es_MX');
   assert.equal(page['og:type'], 'website');
 });

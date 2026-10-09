@@ -5,6 +5,7 @@
 // Ajuste feature 64 (precedente REQ-43-06): la CSP pasa de solo-reporte a obligatoria;
 // EXPECTED usa la clave Content-Security-Policy; su valor es la política de REQ-64-11
 // (sustituye a REQ-40-06: añade Cloudflare Web Analytics, ajuste REQ-64-13).
+// Ajuste feature 66 (precedente REQ-43-06): el dominio del sitio pasa a moisesbaldenegro.com.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync, mkdtempSync, rmSync } from 'node:fs';
@@ -61,9 +62,9 @@ test('REQ-40-04: el middleware conserva un valor existente sin duplicarlo', asyn
 });
 
 test('REQ-40-03: una respuesta con cabeceras inmutables (Response.redirect) también las recibe', async () => {
-  const response = await onRequest({}, async () => Response.redirect('https://moibaldenegro.com/', 302));
+  const response = await onRequest({}, async () => Response.redirect('https://moisesbaldenegro.com/', 302));
   assert.equal(response.status, 302);
-  assert.equal(response.headers.get('Location'), 'https://moibaldenegro.com/');
+  assert.equal(response.headers.get('Location'), 'https://moisesbaldenegro.com/');
   assert.equal(response.headers.get('X-Content-Type-Options'), 'nosniff');
 });
 
