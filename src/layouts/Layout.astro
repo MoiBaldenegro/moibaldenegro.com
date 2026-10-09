@@ -7,6 +7,7 @@ import SearchEscape from '../components/search-escape/search-escape.astro';
 
 import { canonicalUrl, composeTitle } from '../domain/seo/head.ts';
 import { socialMeta } from '../domain/seo/social.ts';
+import { THEME_COLOR } from '../domain/seo/theme.ts';
 
 interface Props {
   title?: string;
@@ -43,6 +44,7 @@ const social = socialMeta({ title: pageTitle, description, pathname: Astro.url.p
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content={THEME_COLOR} />
     <ClientRouter />
   </head>
   <body>

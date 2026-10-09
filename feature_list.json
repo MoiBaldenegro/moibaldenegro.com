@@ -1147,7 +1147,7 @@
         "Un test de inspección verifica que code-copy.ts, code-copy.css y los tests modificados no superan las 100 líneas (REQ-62-08)",
         "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-62-09)"
       ],
-      "status": "in_progress"
+      "status": "done"
     },
     {
       "id": 63,
@@ -1163,13 +1163,13 @@
         "Un test de inspección verifica que Layout.astro y src/domain/seo/theme.ts no superan las 100 líneas (REQ-63-07)",
         "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-63-08)"
       ],
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": 64,
       "name": "csp-enforce",
       "title": "Pasar la CSP de Report-Only a Content-Security-Policy obligatoria verificada contra el build",
-      "description": "La feature 40 desplegó la CSP como Content-Security-Policy-Report-Only en src/domain/http/security-headers.ts (fuente única, usada por src/middleware.ts) y replicada en public/_headers. Inventario del build (progress/research/post_audit_backlog.md): scripts /_astro/*.js + inline (cargador de server islands, módulo de code-copy), sin eval/new Function; fetch solo al mismo origen (server islands, ClientRouter, índice de búsqueda); estilos /_astro/*.css + <style> y atributos style de Shiki; imágenes solo /assets; iframe https://www.youtube-nocookie.com; la isla HTB consulta la API en el servidor. La política vigente (REQ-40-06) cubre todo: se aplica tal cual cambiando el nombre de la cabecera a Content-Security-Policy en el módulo y en public/_headers, sin relajarla ni ampliarla. Riesgo: inyección de Cloudflare en el borde (Web Analytics static.cloudflareinsights.com, Rocket Loader): no se pudo comprobar en vivo; el implementer revisa el HTML de producción y para si aparece un origen no permitido. tests/security-headers.test.mjs (EXPECTED con Report-Only) se actualiza al nombre obligatorio dentro de esta feature. No toca UI: sin design.md. Sin dependencias. Spec: specs/64_csp-enforce/requirements.md.",
+      "description": "La feature 40 desplegó la CSP como Content-Security-Policy-Report-Only en src/domain/http/security-headers.ts (fuente única, usada por src/middleware.ts) y replicada en public/_headers. Inventario del build (progress/research/post_audit_backlog.md): scripts /_astro/*.js + inline (cargador de server islands, módulo de code-copy), sin eval/new Function; fetch solo al mismo origen (server islands, ClientRouter, índice de búsqueda); estilos /_astro/*.css + <style> y atributos style de Shiki; imágenes solo /assets; iframe https://www.youtube-nocookie.com; la isla HTB consulta la API en el servidor. La política vigente (REQ-40-06) cubre todo: se aplica tal cual cambiando el nombre de la cabecera a Content-Security-Policy en el módulo y en public/_headers, sin relajarla ni ampliarla. Riesgo: inyección de Cloudflare en el borde (Web Analytics static.cloudflareinsights.com, Rocket Loader): no se pudo comprobar en vivo; el implementer revisa el HTML de producción y para si aparece un origen no permitido. tests/security-headers.test.mjs (EXPECTED con Report-Only) se actualiza al nombre obligatorio dentro de esta feature. No toca UI: sin design.md. Spec: specs/64_csp-enforce/requirements.md. Desbloqueada (2026-10-09): el líder revisó el HTML de producción de https://moisesbaldenegro.com sin orígenes no permitidos (progress/research/csp_production_review.md), lo que cubre la revisión de REQ-64-07. Depende de la 68: sin deploy funcional no se puede aplicar ni comprobar la CSP obligatoria en producción.",
       "acceptance": [
         "Un test importa SECURITY_HEADERS y verifica que contiene Content-Security-Policy con el valor exacto de REQ-40-06 y que no contiene la clave Content-Security-Policy-Report-Only (REQ-64-01)",
         "Un test parsea public/_headers y verifica que la regla /* declara Content-Security-Policy idéntica al módulo y ninguna línea Content-Security-Policy-Report-Only (REQ-64-02)",
@@ -1182,7 +1182,88 @@
         "El test nuevo tests/csp-enforce.test.mjs se escribe primero contra esta spec y se observa en rojo antes de modificar security-headers.ts y public/_headers (ciclo test-first de AGENTS.md §3) (REQ-64-09)",
         "La suite completa del arnés pasa en verde, ./init.sh termina sin errores y security-headers.ts, public/_headers y los tests creados o modificados no superan las 100 líneas (REQ-64-10)"
       ],
-      "status": "pending"
+      "status": "pending",
+      "depends_on": [
+        68
+      ]
+    },
+    {
+      "id": 65,
+      "name": "card-image-height-auto",
+      "title": "Alto automático en las imágenes de cards para que respeten su aspect-ratio",
+      "description": "Bug (prioridad máxima), regresión de la feature 48 (progress/impl_48.md): los <img> de portadas y miniaturas llevan width=\"1376\" height=\"768\" (latest-articles.astro:18-23, posts/[id].astro:50 y :75, search-results/item-html.ts:12) y su CSS fija width y aspect-ratio pero no height, así que el atributo height gana y aspect-ratio se ignora. Medidas del líder en Chrome headless a 1280 px: .post__image 554x768 (debería ser 4/3 >768 px y 16/9 <=768 px; post.css:33, post-header.css:48 y :96), .post__related-thumb 112x768 (post-next.css:13), .search-results__thumb 112x768 (search-results.css:33), .latest-articles__image 1149x768 (latest-articles.css:60-68). Hero (.profile-image img, height: 100%) y logo (sin regla CSS, 72x25) están bien; no hay más img con atributos en src/. Cambio: height: auto en las cuatro reglas conservando los atributos (CLS). post.css está en 100/100: declarar en .post__hero .post__image de post-header.css (99/100) o en la misma línea que width; post-next.css y search-results.css usan reglas de una línea. latest-articles.css tiene el conteo fijado a 98 en tests/home-latest-articles-limit.test.mjs:255: si cambia, se actualiza con nota (precedente REQ-43-06). El test REQ-48-05 (tests/image-loading-hints.test.mjs:61-74) aceptaba aspect-ratio sin height: auto y por eso no detectó el fallo: se endurece en esta feature. Verificación real con Chrome headless + CDP. Depende de la 68 (arreglo del deploy, prioritario: sin deploy nada se valida en producción; progress/research/deploy_redirects_bug.md). Spec: specs/65_card-image-height-auto/requirements.md y design.md. Análisis: progress/research/cards_domain_backlog.md.",
+      "acceptance": [
+        "Un test de inspección verifica que las reglas .post__image (post.css o .post__hero .post__image de post-header.css), .latest-articles__image, .post__related-thumb y .search-results__thumb declaran height: auto (REQ-65-01, REQ-65-02, REQ-65-03, REQ-65-04)",
+        "Un test de inspección verifica que los img de latest-articles.astro, posts/[id].astro (portada y recomendados) e item-html.ts conservan width=\"1376\" y height=\"768\" (REQ-65-05)",
+        "Un test recorre cada <img con atributo height y clase propia (o contenedor con clase) de Layout.astro, new-hero.astro, latest-articles.astro, posts/[id].astro e item-html.ts y verifica que alguna regla CSS de src/styles cuyo selector termina en esa clase (o en '<clase del contenedor> img') declara height: auto o un height explícito; el test REQ-48-05 de tests/image-loading-hints.test.mjs deja de aceptar aspect-ratio como sustituto de height (REQ-65-06)",
+        "Verificación en Chrome headless + CDP sobre /, un post con recomendados y /search?q=solid a 1280 y 375 px: para cada imagen de card visible getBoundingClientRect().height es igual a width / ratio (16/9, o 4/3 en .post__image a 1280 px) con tolerancia de 1 px, y .profile-image img no cambia respecto a la medida previa; mediciones antes/después registradas en progress/impl_65.md (REQ-65-07)",
+        "El test nuevo tests/card-image-height-auto.test.mjs se escribe primero contra esta spec y se observa en rojo antes de modificar las hojas de estilo (ciclo test-first de AGENTS.md §3) (REQ-65-08)",
+        "Un test de inspección verifica que post.css, post-header.css, latest-articles.css, post-next.css, search-results.css y los tests creados o modificados no superan las 100 líneas, y el conteo fijado de latest-articles.css queda actualizado al nuevo total (REQ-65-09)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-65-10)"
+      ],
+      "status": "pending",
+      "depends_on": [
+        68
+      ]
+    },
+    {
+      "id": 66,
+      "name": "site-domain-moisesbaldenegro",
+      "title": "Dominio real moisesbaldenegro.com en site, marca y URLs absolutas",
+      "description": "Bug: el dominio real es moisesbaldenegro.com (confirmado por el humano: moibaldenegro.com da NXDOMAIN; https://moisesbaldenegro.com responde vía Cloudflare). astro.config.mjs:6 declara site 'https://moibaldenegro.com', así que canonical, og:url, og:image, sitemap, robots y JSON-LD apuntan a un dominio inexistente. Clasificación (progress/research/cards_domain_backlog.md): URL → site de astro.config.mjs; marca (supuesto por defecto revisable por el humano: pasa a moisesbaldenegro.com por ser un nombre de dominio) → BRAND de src/domain/seo/head.ts (y sus comentarios), título de src/pages/about.astro, alt del logo de src/layouts/Layout.astro, name/short_name de public/site.webmanifest y título de README.md; identificador HTTP → User-Agent de src/domain/repositories/htb-profile-repository.ts. Sin cambio: handles @moibaldenegro (src/data/hero.json, TWITTER_SITE de social.ts, enlace x.com/moibaldenegro de Layout.astro) y el nombre del Worker/paquete moibaldenegro-web (wrangler.jsonc, package.json). Tests que fijan el dominio viejo y se actualizan con nota (precedente REQ-43-06): article-json-ld, seo-head-base, sitemap-robots-endpoints, social-meta-tags, about-page, layout-refactor, link-image-accessible-names, manifest-generator-cleanup, project-readme; security-headers y search-keyboard-escape por coherencia. Fuera de alcance: www y redirecciones en Cloudflare. Toca texto visible de .astro: design.md incluido. Depende de la 68 (arreglo del deploy, prioritario: sin deploy nada se valida en producción; progress/research/deploy_redirects_bug.md). Spec: specs/66_site-domain-moisesbaldenegro/requirements.md y design.md.",
+      "acceptance": [
+        "Un test de inspección verifica que astro.config.mjs declara site: 'https://moisesbaldenegro.com' (REQ-66-01)",
+        "Un test importa BRAND y composeTitle de src/domain/seo/head.ts y verifica que BRAND vale 'moisesbaldenegro.com' y composeTitle(undefined) devuelve 'moisesbaldenegro.com' (REQ-66-02)",
+        "Un test de inspección verifica que about.astro pasa el título 'About — moisesbaldenegro.com' y que el img del logo de Layout.astro tiene alt=\"Inicio — moisesbaldenegro.com\" (REQ-66-03)",
+        "Un test parsea public/site.webmanifest y verifica que name y short_name valen 'moisesbaldenegro.com' (REQ-66-04)",
+        "Un test de inspección verifica que htb-profile-repository.ts envía 'User-Agent': 'moisesbaldenegro.com' (REQ-66-05)",
+        "Un test sobre el build (helper tests/helpers/astro-build.mjs, outDir temporal) verifica que en index, about y un post el canonical, og:url, og:image y las url del JSON-LD empiezan por https://moisesbaldenegro.com/, que cada <loc> de sitemap.xml empieza por https://moisesbaldenegro.com/ y que robots.txt contiene 'Sitemap: https://moisesbaldenegro.com/sitemap.xml' (REQ-66-06)",
+        "Un test recorre src/, public/, astro.config.mjs y README.md y verifica que ninguno contiene la cadena 'moibaldenegro.com' (REQ-66-07)",
+        "Un test de inspección verifica que hero.json conserva username '@moibaldenegro', TWITTER_SITE vale '@moibaldenegro', Layout.astro conserva href=\"https://x.com/moibaldenegro\" y wrangler.jsonc conserva name 'moibaldenegro-web' (REQ-66-08)",
+        "El test nuevo tests/site-domain-moisesbaldenegro.test.mjs se escribe primero contra esta spec y se observa en rojo antes de modificar astro.config.mjs y el código (ciclo test-first de AGENTS.md §3) (REQ-66-09)",
+        "Los tests que fijaban moibaldenegro.com quedan actualizados con nota de ajuste (precedente REQ-43-06), cada archivo modificado no supera las 100 líneas, la suite completa pasa en verde y ./init.sh termina sin errores (REQ-66-10)"
+      ],
+      "status": "pending",
+      "depends_on": [
+        68
+      ]
+    },
+    {
+      "id": 67,
+      "name": "normalize-text-empty-guard-test",
+      "title": "Test que cubre la guarda de entrada vacía de normalizeText",
+      "description": "Regularización de un cambio humano: el humano añadió a mano la línea if (!text) return ''; al inicio de normalizeText en src/domain/search/normalize.ts:7 (sin commit) y quiere conservarla. Falta un test que la cubra. Como el código ya existe, el test se observará en verde; la evidencia test-first es una mutación: eliminar temporalmente la línea, observar el rojo y restaurarla. Hallazgo: sin la guarda normalizeText('') sigue devolviendo '' (''.normalize() es válido), así que solo los casos undefined y null coaccionados (TypeError al llamar .normalize) detectan la mutación; el caso '' se incluye como contrato, no como detector. tests/search-domain.test.mjs tiene 248 líneas: el test va en un archivo nuevo. No toca src/ (el código ya está) ni UI: sin design.md. Depende de la 68 (arreglo del deploy, prioritario: sin deploy nada se valida en producción; progress/research/deploy_redirects_bug.md). Spec: specs/67_normalize-text-empty-guard-test/requirements.md. Análisis: progress/research/cards_domain_backlog.md.",
+      "acceptance": [
+        "Un test node:test importa normalizeText de src/domain/search/normalize.ts y verifica que normalizeText('') devuelve '' (REQ-67-01)",
+        "Un test node:test verifica que normalizeText(undefined) y normalizeText(null) (coaccionados) devuelven '' sin lanzar excepción (REQ-67-02, REQ-67-03)",
+        "progress/impl_67.md registra la mutación: con la línea if (!text) return ''; eliminada temporalmente, tests/normalize-text-empty-guard.test.mjs falla en los casos undefined y null; tras restaurarla pasa en verde y git diff de normalize.ts coincide con el cambio humano (REQ-67-04)",
+        "Un test node:test verifica que normalizeText(' Diseño ÁGIL ') devuelve 'diseno agil' (REQ-67-05)",
+        "La suite completa del arnés pasa en verde, ./init.sh termina sin errores y el test nuevo no supera las 100 líneas (REQ-67-06)"
+      ],
+      "status": "pending",
+      "depends_on": [
+        68
+      ]
+    },
+    {
+      "id": 68,
+      "name": "legacy-redirects-middleware",
+      "title": "Redirecciones 301 de slugs antiguos en el middleware del Worker para desbloquear el deploy",
+      "description": "Bug crítico: todos los deploys a Cloudflare fallan (API code 100324, «Invalid _redirects configuration: Expected exactly 2 or 3 whitespace-separated tokens. Got 4»). La clave redirects de astro.config.mjs:11-15 (feature 45, REQ-45-04) hace que el adapter genere dist/client/_redirects con '/posts/03-principios solid' (espacio crudo: 4 tokens) y '/posts/01-diseño-detallado' (ñ sin codificar, no coincide con la petición %C3%B1). Cambio: quitar redirects de astro.config.mjs y mover las tres redirecciones (también la ASCII 02→04, fuente única) a una función pura legacyRedirect(pathname) en src/domain/http/legacy-redirects.ts (quita barra final, decodeURIComponent en try/catch, normalize NFC, mapa de tres entradas) usada por src/middleware.ts, que responde 301 con Location relativa + query original pasando por withSecurityHeaders y tolera un contexto sin url (tests/security-headers.test.mjs llama onRequest({}, next)). Se conserva el comportamiento de REQ-45-04. tests/ascii-post-slugs.test.mjs: REQ-45-04 pasa a verificar legacyRedirect y REQ-45-05 amplía su exclusión al test nuevo (notas con precedente REQ-43-06). Prioridad máxima: 64, 65, 66 y 67 dependen de esta. No toca UI: sin design.md. Sin dependencias. Spec: specs/68_legacy-redirects-middleware/requirements.md. Análisis: progress/research/deploy_redirects_bug.md.",
+      "acceptance": [
+        "Un test de inspección verifica que astro.config.mjs no contiene la clave redirects (REQ-68-01)",
+        "Un test importa legacyRedirect de src/domain/http/legacy-redirects.ts y verifica que '/posts/03-principios%20solid', '/posts/03-principios solid', '/posts/01-dise%C3%B1o-detallado', '/posts/01-diseño-detallado' y '/posts/02-ciclo-de-vida-y-arquitectura' devuelven '/posts/03-principios-solid', '/posts/01-diseno-detallado' y '/posts/04-ciclo-de-vida-y-arquitectura' según corresponda (REQ-68-02, REQ-68-03)",
+        "Un test verifica que las mismas rutas con barra final devuelven el mismo destino y que '/posts/01-disen%CC%83o-detallado' (ñ descompuesta) devuelve '/posts/01-diseno-detallado' (REQ-68-04, REQ-68-05)",
+        "Un test verifica que legacyRedirect devuelve null sin lanzar para '/posts/%E0%A4%A', '/', '/posts/03-principios-solid' y '/posts/otro' (REQ-68-06)",
+        "Un test invoca onRequest de src/middleware.ts con { url: new URL('https://x/posts/03-principios%20solid/?a=1') } y verifica estado 301, Location '/posts/03-principios-solid?a=1', las cabeceras de SECURITY_HEADERS y que next no se llama (REQ-68-07, REQ-68-08)",
+        "Un test invoca onRequest con {} y con una url sin slug antiguo y verifica que devuelve la respuesta de next con las cabeceras de seguridad (REQ-68-09)",
+        "Un test sobre el build real (helper tests/helpers/astro-build.mjs, outDir temporal) verifica que <outDir>/client/_redirects no existe o que cada línea no vacía tiene 2 o 3 tokens separados por espacios y solo caracteres ASCII (REQ-68-10)",
+        "progress/impl_68.md registra la verificación con astro preview y curl -I de /posts/03-principios%20solid, /posts/01-dise%C3%B1o-detallado y /posts/02-ciclo-de-vida-y-arquitectura, con y sin barra final: cada una responde 301 con Location al slug nuevo y el destino responde 200 (REQ-68-11)",
+        "El test REQ-45-04 de tests/ascii-post-slugs.test.mjs verifica legacyRedirect en lugar de astro.config.mjs y la exclusión de REQ-45-05 incluye tests/legacy-redirects.test.mjs, ambos con nota de ajuste (precedente REQ-43-06) (REQ-68-12)",
+        "El test nuevo tests/legacy-redirects.test.mjs se escribe primero contra esta spec y se observa en rojo antes de crear legacy-redirects.ts y modificar middleware.ts y astro.config.mjs (ciclo test-first de AGENTS.md §3) (REQ-68-13)",
+        "Cada archivo creado o modificado no supera las 100 líneas, la suite completa del arnés pasa en verde y ./init.sh termina sin errores (REQ-68-14, REQ-68-15)"
+      ],
+      "status": "in_progress"
     }
   ]
 }

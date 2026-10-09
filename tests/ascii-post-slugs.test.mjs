@@ -38,15 +38,18 @@ test('REQ-45-03: next y related apuntan a slugs existentes', () => {
   }
 });
 
-test('REQ-45-04: astro.config.mjs redirige 301 las tres URLs antiguas', () => {
-  const config = read('astro.config.mjs');
+// Ajuste feature 68 (precedente REQ-43-06): las 301 pasan de astro.config.mjs (generaba un
+// _redirects inválido para Cloudflare) a legacyRedirect, que usa el middleware.
+test('REQ-45-04: legacyRedirect redirige las tres URLs antiguas a sus slugs nuevos', async () => {
+  const { legacyRedirect } = await import(new URL('src/domain/http/legacy-redirects.ts', root).href);
   for (const [, [old, slug]] of Object.entries(RENAMES)) {
-    assert.ok(config.includes(`'/posts/${old}': { status: 301, destination: '/posts/${slug}' }`), `falta la redirección de ${old}`);
+    assert.equal(legacyRedirect(`/posts/${encodeURIComponent(old)}`), `/posts/${slug}`, `falta la redirección de ${old}`);
   }
 });
 
-test('REQ-45-05: ningún test cita los slugs antiguos (salvo este, de redirecciones)', () => {
-  const tests = readdirSync(new URL('tests/', root), { recursive: true }).filter((f) => f.endsWith('.mjs') && !f.endsWith('ascii-post-slugs.test.mjs'));
+// Ajuste feature 68 (precedente REQ-43-06): legacy-redirects.test.mjs también cita los slugs antiguos.
+test('REQ-45-05: ningún test cita los slugs antiguos (salvo este y legacy-redirects, de redirecciones)', () => {
+  const tests = readdirSync(new URL('tests/', root), { recursive: true }).filter((f) => f.endsWith('.mjs') && !f.endsWith('ascii-post-slugs.test.mjs') && !f.endsWith('legacy-redirects.test.mjs'));
   for (const file of tests) {
     const src = read(`tests/${file}`);
     for (const old of OLD_SLUGS) assert.ok(!src.includes(old), `${file} cita «${old}»`);

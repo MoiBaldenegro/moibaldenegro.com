@@ -4,26 +4,20 @@
 
 ### Feature en curso
 
-- (ninguna en implementación; la 10 sigue en blocked por decisión humana)
-- Análisis en curso: 4 mejoras post-auditoría (anclas tapadas por el header a 320 px, botón
-  de copiar que se desplaza con el scroll del pre, theme_color blanco del manifest, CSP en
-  Report-Only).
+- Feature 68 (deploy roto por _redirects inválido), in_progress desde 2026-10-09. El líder
+  actúa como implementer con autorización humana. Bloquea las features 64-67 (depends_on [68]).
 
 ### Plan
 
-- spec_author: analizar las 4 mejoras en progress/research/post_audit_backlog.md.
-- Alta de las features 61-64 (bugs primero: 61 header, 62 code-copy; luego 63 theme-color y
-  64 CSP obligatoria) con su spec en specs/<NN>_<slug>/.
-- Validar con node scripts/check-format.mjs y ./init.sh.
+- Escribir tests/legacy-redirects.test.mjs y verlo en rojo.
+- Crear src/domain/http/legacy-redirects.ts y modificar middleware.ts y astro.config.mjs
+  (sin redirects).
+- Ajustar REQ-45-04/05. Verificar con astro preview + curl. Reviewer nivel 1.
 
 ### Bitácora
 
-- spec_author 2026-10-09: análisis en progress/research/post_audit_backlog.md (inventario de
-  recursos del build para la CSP incluido).
-- Alta en feature_list.json (pending, sin depends_on): 61 header-anchor-offset-mobile,
-  62 code-copy-fixed-corner, 63 theme-color-dark, 64 csp-enforce.
-- Specs creadas: specs/61_header-anchor-offset-mobile/ (requirements + design),
-  specs/62_code-copy-fixed-corner/ (requirements + design), specs/63_theme-color-dark/
-  (requirements + design), specs/64_csp-enforce/requirements.md.
-- Dudas para el humano: 61 asume header sticky en móvil con token medido; 64 requiere confirmar
-  si Cloudflare inyecta scripts en el borde (Web Analytics) — sin red en esta sesión.
+- ROJO 1/8: REQ-68-10 reproduce el error de deploy (línea de 4 tokens en _redirects).
+- VERDE 8/8; suite 774/774; ./init.sh verde; preview + curl: 7 URLs antiguas → 301 → 200.
+- Informe en progress/impl_68.md. Reviewer lanzado.
+- Hallazgo: los builds de los tests dejan .wrangler/deploy/config.json apuntando a un temporal
+  borrado (impl_68.md).
