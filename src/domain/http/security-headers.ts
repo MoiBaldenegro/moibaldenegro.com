@@ -8,6 +8,8 @@
 // inline de Shiki; la CSP nativa de Astro no admite <ClientRouter /> ni Shiki.
 // Cloudflare Web Analytics (feature 64, REQ-64-11, decisión humana): el beacon se inyecta en el
 // borde desde static.cloudflareinsights.com y reporta a /cdn-cgi/rum ('self') o cloudflareinsights.com.
+// Feature 74 (REQ-74-03, opción A del humano): data: solo en script-src-elem, para el script vacío
+// src=data: que inserta el ClientRouter de Astro tras el cargador inline de la server island.
 export const SECURITY_HEADERS: Readonly<Record<string, string>> = Object.freeze({
   'X-Content-Type-Options': 'nosniff',
   'Referrer-Policy': 'strict-origin-when-cross-origin',
@@ -15,7 +17,8 @@ export const SECURITY_HEADERS: Readonly<Record<string, string>> = Object.freeze(
   'X-Frame-Options': 'DENY',
   'Content-Security-Policy':
     "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; " +
-    "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; connect-src 'self' https://cloudflareinsights.com; " +
+    "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; " +
+    "script-src-elem 'self' 'unsafe-inline' https://static.cloudflareinsights.com data:; connect-src 'self' https://cloudflareinsights.com; " +
     "frame-src https://www.youtube-nocookie.com https://www.youtube.com; " +
     "frame-ancestors 'none'; base-uri 'self'; object-src 'none'",
 });

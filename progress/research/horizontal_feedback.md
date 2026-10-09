@@ -291,3 +291,86 @@ estrecho que el contenedor).
 
 Artefactos: specs/73_latest-horizontal-compact-sticky/requirements.md (REQ-73-01..34 reescritos),
 design.md, y la entrada 73 de feature_list.json (title, description, acceptance y nota_retomar).
+
+## 6. Enmienda de la 74 (2026-10-09): data: solo en script-src-elem (opción A)
+
+### 6.1 Hallazgo que la motiva
+
+Con assetsInlineLimit (REQ-74-01/02/04, implementado y en verde) la violación desaparece al
+entrar en los posts: code-copy pasa a ser un chunk `/_astro/` y Copiar funciona. Pero al VOLVER
+a la portada con el ClientRouter sigue apareciendo `script-src-elem data`. El router (runScripts)
+salta los scripts ya ejecutados en la sesión, así que el último módulo PENDIENTE del documento
+nuevo es el cargador inline de la server island de HTB, que Astro genera siempre inline. El
+router inserta `<script type="module" src="data:application/javascript,">`. El test de build
+(último script module con src) no lo detecta porque se trata de un estado de runtime. La 74
+quedó blocked (REQ-74-07).
+
+Decisión humana: «sobre la 74 vamos a permitirlo, opción A».
+
+### 6.2 Política nueva (REQ-74-03, sustituye a REQ-64-11 como vigente)
+
+Valor completo y exacto, en este orden (script-src-elem justo detrás de script-src):
+
+```
+default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; script-src-elem 'self' 'unsafe-inline' https://static.cloudflareinsights.com data:; connect-src 'self' https://cloudflareinsights.com; frame-src https://www.youtube-nocookie.com https://www.youtube.com; frame-ancestors 'none'; base-uri 'self'; object-src 'none'
+```
+
+- Al declararse, script-src-elem SUSTITUYE a script-src para los elementos `<script>` (no se
+  combinan): por eso repite 'self', 'unsafe-inline' y el origen del beacon de Web Analytics.
+  Si se omitiera el beacon, la CSP bloquearía Web Analytics otra vez (REQ-64-11/12).
+- script-src no cambia (REQ-74-07): sigue rigiendo los atributos de evento (script-src-attr no
+  se declara y hereda de script-src), eval (sin 'unsafe-eval') y worker-src (hereda de script-src,
+  así que los workers no reciben data:). Por eso data: va en script-src-elem y no en script-src.
+- data: queda limitado a img-src y script-src-elem (REQ-74-10).
+
+### 6.3 Riesgo residual
+
+Bajo. La política ya concede 'unsafe-inline' a los elementos script: quien consiga inyectar un
+`<script>` en el HTML ya puede ejecutar código inline. data: solo añade la variante `src=data:`,
+útil para saltar filtros que bloquean el contenido inline pero no el atributo src. El sitio es
+estático, sin entrada de usuario renderizada en servidor (la búsqueda escapa en cliente). La
+mitigación real de XSS (quitar 'unsafe-inline' con hashes o nonces) es inviable hoy: la CSP nativa
+de Astro no admite el ClientRouter ni los estilos de Shiki (§3.2).
+
+Navegadores sin script-src-elem (Chrome < 75, Firefox < 108, Safari < 15.4) aplican script-src:
+verán la violación sin impacto funcional, como hasta ahora.
+
+### 6.4 script-src-attr
+
+No hace falta declararlo. Sin script-src-attr, los atributos de evento heredan de script-src, que
+no cambia, así que la enmienda no amplía nada en atributos. Endurecerlo (`script-src-attr 'none'`)
+cerraría los manejadores inline, pero exige auditar Astro, Shiki y los componentes (atributos
+onload/onerror). Queda fuera de alcance; el humano puede pedirlo como feature aparte.
+
+### 6.5 Qué se mantiene y qué cambia
+
+- Se mantiene: assetsInlineLimit en astro.config.mjs y su test (REQ-74-01, 02 y 04). Sigue
+  evitando el data: en la mayoría de navegaciones y reduce la dependencia de la excepción.
+- Cambia: REQ-74-03 (antes «CSP sin cambios») pasa a ser el valor nuevo. REQ-74-07 deja de ser
+  la condición de parada y pasa a ser el invariante de script-src. REQ-74-10..15 son nuevos.
+- Archivos de producción: src/domain/http/security-headers.ts y public/_headers.
+
+### 6.6 Tests afectados (precedente REQ-43-06)
+
+- Constantes CSP de tests/csp-enforce.test.mjs, tests/security-headers.test.mjs y
+  tests/csp-router-inline-script.test.mjs: pasan al valor de REQ-74-03 con nota de ajuste de la
+  74. El test REQ-74-03 de csp-router-inline-script deja de exigir la CSP de REQ-64-11.
+- Test de build REQ-64-05 (csp-enforce): `allowed` clasifica por `${kind}-src`, es decir, los
+  scripts por script-src. Pasa a usar script-src-elem para los scripts (REQ-74-13). Los orígenes
+  coinciden, pero así refleja la directiva que de verdad aplica el navegador. data: sigue
+  rechazado en los src de script del HTML del build: el data: solo lo inserta el router en
+  runtime. REQ-64-12 (beacon) se valida con esa clasificación (REQ-74-11).
+- tests/csp-enforce.test.mjs mide 100 líneas: el ajuste no puede añadir líneas netas.
+- REQ-64-11 (test que pide el beacon en script-src) sigue siendo cierto y no cambia.
+
+### 6.7 Verificación
+
+- Preview (implementer): Chrome headless + CDP sobre astro preview, con clics reales del
+  ClientRouter: portada → post con código → portada → /about → /search → post con vídeo. Cero
+  violaciones en cada paso, incluida la vuelta a la portada. Copiar funciona, astro:page-load se
+  dispara y la isla HTB carga. Se registran en impl_74.md el antes (REQ-64-11) y el después.
+- Producción (humano, tras el deploy): la misma navegación con cero violaciones y el beacon de
+  Web Analytics respondiendo 200, sin bloqueo del POST a /cdn-cgi/rum (REQ-74-14).
+
+Artefactos: specs/74_csp-router-inline-script/requirements.md (REQ-74-01..15) y la entrada 74 de
+feature_list.json (description, 12 acceptance, status pending, sin blocked_reason).

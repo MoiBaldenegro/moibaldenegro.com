@@ -13,7 +13,7 @@ import { SECURITY_HEADERS } from '../src/domain/http/security-headers.ts';
 
 const root = new URL('../', import.meta.url);
 const read = (rel) => readFileSync(new URL(rel, root), 'utf8');
-const CSP = "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; connect-src 'self' https://cloudflareinsights.com; frame-src https://www.youtube-nocookie.com https://www.youtube.com; frame-ancestors 'none'; base-uri 'self'; object-src 'none'";
+const CSP = "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; script-src-elem 'self' 'unsafe-inline' https://static.cloudflareinsights.com data:; connect-src 'self' https://cloudflareinsights.com; frame-src https://www.youtube-nocookie.com https://www.youtube.com; frame-ancestors 'none'; base-uri 'self'; object-src 'none'";
 const walk = (dir) => readdirSync(dir).flatMap((n) => (statSync(join(dir, n)).isDirectory() ? walk(join(dir, n)) : [join(dir, n)]));
 
 test('REQ-74-01: assetsInlineLimit es una función que no incrusta los scripts de componentes', async () => {
@@ -28,9 +28,15 @@ test('REQ-74-01: assetsInlineLimit es una función que no incrusta los scripts d
   assert.equal(fn('/src/assets/logo.svg', 'x'), undefined);
 });
 
-test('REQ-74-03: la CSP sigue siendo la de REQ-64-11', () => {
+// Ajuste feature 74 (opción A, REQ-43-06): la CSP vigente pasa a REQ-74-03, con data: solo en script-src-elem.
+test('REQ-74-03/07/10: CSP de REQ-74-03 con data: solo en img-src y script-src-elem', () => {
   assert.equal(SECURITY_HEADERS['Content-Security-Policy'], CSP);
   assert.ok(read('public/_headers').includes(`  Content-Security-Policy: ${CSP}`));
+  const dirs = Object.fromEntries(CSP.split(';').map((d) => d.trim().split(/ +/)).map(([n, ...v]) => [n, v]));
+  assert.deepEqual(dirs['script-src'], ["'self'", "'unsafe-inline'", 'https://static.cloudflareinsights.com']);
+  for (const src of dirs['script-src']) assert.ok(dirs['script-src-elem'].includes(src), src);
+  assert.ok(dirs['script-src-elem'].includes('data:'));
+  assert.deepEqual(Object.keys(dirs).filter((d) => dirs[d].includes('data:')).sort(), ['img-src', 'script-src-elem']);
 });
 
 test('REQ-74-02/04 (build): el último script module de cada HTML es externo y code-copy es un chunk', () => {

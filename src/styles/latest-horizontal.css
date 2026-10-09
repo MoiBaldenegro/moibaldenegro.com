@@ -37,3 +37,16 @@
 .latest-articles--horizontal .latest-articles__card:first-child {
   margin-inline-start: var(--latest-pair-inset);
 }
+
+/* Feature 75: durante la entrada (clase que pone el ScrollTrigger de la entrada) las cards bajan
+   desde arriba: se libera el recorte superior (el lateral del par se mantiene) y el encabezado
+   queda por encima del track. Sin offsets: el encabezado no se mueve. */
+.latest-articles--horizontal.latest-articles--entering {
+  overflow-y: visible;
+  clip-path: inset(-100vh var(--latest-pair-inset) 0);
+}
+
+.latest-articles--horizontal.latest-articles--entering .latest-articles__heading {
+  position: relative;
+  z-index: 1;
+}

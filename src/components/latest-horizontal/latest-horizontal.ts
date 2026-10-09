@@ -7,6 +7,8 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { focusScrollTarget, pinScrollLength, trackOffset } from '../../domain/latest-horizontal.ts';
+import { entranceEase, entranceState } from '../../domain/latest-entrance.ts';
+import { clearTrack, restoreScroll } from './track-dom.ts';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -18,7 +20,10 @@ let mm: gsap.MatchMedia | null = null;
 export function destroy(): void {
   mm?.revert();
   mm = null;
+  const track = document.querySelector<HTMLElement>('.latest-articles__list');
+  if (track) clearTrack(track);
 }
+
 
 /** Inicializa el efecto de forma idempotente. */
 export function init(): void {
@@ -39,7 +44,8 @@ function setup(section: HTMLElement, track: HTMLElement, cards: HTMLElement[]): 
   section.before(wrapper);
   wrapper.append(section);
   section.classList.add(HORIZONTAL);
-  const cardWidth = (): number => cards[0].getBoundingClientRect().width;
+  // Feature 75: el track puede estar escalado por la entrada; el ancho real es el medido / la escala.
+  const cardWidth = (): number => cards[0].getBoundingClientRect().width / (Number(gsap.getProperty(track, 'scale')) || 1);
   const gap = (): number => parseFloat(getComputedStyle(track).columnGap) || 0;
   const length = (): number => pinScrollLength(cardWidth(), gap(), n);
   // REQ-73-20: el envoltorio mide sección + recorrido; se fija antes de que ScrollTrigger mida.
@@ -50,6 +56,17 @@ function setup(section: HTMLElement, track: HTMLElement, cards: HTMLElement[]): 
     x: () => trackOffset(1, cardWidth(), gap(), n),
     ease: 'none',
     scrollTrigger: { trigger: wrapper, start: 'top top', end: () => `+=${pinScrollLength(cardWidth(), gap(), n)}`, scrub: true, invalidateOnRefresh: true },
+  });
+  // Feature 75: entrada desde arriba ligada al scroll; termina EXACTAMENTE en el inicio del
+  // tramo fijado (y 0, scale 1, opacity 1), así que el horizontal arranca sin salto.
+  gsap.fromTo(track, {
+    y: () => entranceState(0, window.innerHeight).y,
+    scale: () => entranceState(0, window.innerHeight).scale,
+    opacity: () => entranceState(0, window.innerHeight).opacity,
+  }, {
+    y: 0, scale: 1, opacity: 1,
+    ease: entranceEase,
+    scrollTrigger: { trigger: wrapper, start: 'top bottom', end: 'top top', scrub: true, invalidateOnRefresh: true, toggleClass: { targets: section, className: 'latest-articles--entering' } },
   });
   const trigger = tween.scrollTrigger;
   const onFocus = (event: FocusEvent): void => {
@@ -69,13 +86,7 @@ function setup(section: HTMLElement, track: HTMLElement, cards: HTMLElement[]): 
     track.removeEventListener('focusin', onFocus);
     observer.disconnect();
     wrapper.replaceWith(section); // REQ-73-25: la sección vuelve a su sitio
+    queueMicrotask(() => clearTrack(track)); // REQ-75-20: tras revertir los tweens de x y de la entrada
     section.classList.remove(HORIZONTAL);
   };
-}
-
-// El envoltorio cambia el alto del documento después de que Astro restaure el scroll al volver
-// atrás; se reaplica la posición guardada en history.state.
-function restoreScroll(): void {
-  const saved = (history.state as { scrollY?: unknown } | null)?.scrollY;
-  if (typeof saved === 'number' && Math.abs(window.scrollY - saved) > 2) window.scrollTo(0, saved);
 }

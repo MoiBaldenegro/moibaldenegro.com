@@ -52,3 +52,47 @@
 - Chrome: par 1-2 → 2-3 exacto a 1280 y 1440, 1600×700 centrado. Rueda real: 0 px de desviación
   y 0 retrocesos. Apilado, reversión, ida y vuelta, teclado, búsqueda, clic y CSP OK.
   Informe en progress/impl_73.md. Reviewer lanzado.
+
+### Feature 73 → done. Feature 74 csp-router-inline-script → BLOCKED (REQ-74-07)
+
+- ROJO 2/4 → VERDE 4/4 con vite.build.assetsInlineLimit (los scripts de componentes Astro nunca
+  van inline). Suite 826/826.
+- Navegación real con CDP. ANTES: violación al entrar en el post con código. DESPUÉS: el post
+  queda sin violación y Copiar funciona, pero aparece la violación al VOLVER a la portada.
+  Causa: el router salta los scripts ya ejecutados en la sesión, y el último módulo pendiente es
+  el cargador inline de la server island de HTB (siempre inline).
+- Detenida para decisión humana:
+  (a) data: solo en script-src-elem;
+  (b) aceptar la violación, que no tiene impacto funcional;
+  (c) otra vía, p. ej. la isla HTB sin server:defer.
+
+### Enmienda de la 74 (spec_author, 2026-10-09): opción A por decisión humana
+
+- Análisis en curso: la violación data: al volver a la portada (cargador inline de la isla HTB).
+- Plan: data: solo en script-src-elem (REQ-74-03 sustituye a REQ-64-11); se mantiene assetsInlineLimit;
+  ajustar constantes CSP de 3 tests y la clasificación del test de build REQ-64-05 (REQ-43-06);
+  verificación con clics reales del ClientRouter en preview y producción.
+- Hecho: spec reescrita (REQ-74-01..15), 12 acceptance, 74 de blocked a pending sin blocked_reason.
+  Análisis en progress/research/horizontal_feedback.md §6.
+
+### Feature 74 → opción A (decisión humana) implementada
+
+- Constantes CSP de 3 tests y clasificación por script-src-elem → ROJO 8 fallos → política de
+  REQ-74-03 → VERDE. Suite 826/826.
+- Navegación real: 0 violaciones en los 5 pasos, también al volver a la portada. Informe en
+  progress/impl_74.md. Reviewer lanzado.
+
+### Alta de la 75 (spec_author, 2026-10-09): entrada de las cards desde arriba
+
+- Análisis en curso: petición humana «que las cards salgan de encima y se claven donde deben estar para el scroll horizontal», interpretación del líder confirmada por el humano (scrub ligado al scroll, solo en el modo horizontal de la 73).
+- Plan: (1) informe progress/research/cards_entrance_animation.md; (2) spec specs/75_latest-cards-entrance/ (requirements.md + design.md); (3) alta de la 75 pending con depends_on [73]; (4) check-format y ./init.sh.
+- Hecho: alta de la 75 latest-cards-entrance (pending, depends_on [73]; 30 REQ y 12 acceptance). Spec specs/75_latest-cards-entrance/requirements.md y design.md; análisis progress/research/cards_entrance_animation.md. Decisiones: se anima el track (las cards tienen transition all), tramo 'top bottom' → 'top top' del envoltorio con scrub true, y −0,4vh / scale 0,9 / opacity 0 → 0 / 1 / 1 con ease cúbica de salida pura (src/domain/latest-entrance.ts), clase latest-articles--entering (toggleClass) que libera el recorte superior solo durante la entrada; tests de 71/72/73 sin cambios. check-format en verde.
+- ./init.sh en verde (formato, tests y build) tras el alta de la 75.
+
+### Feature 74 → done. Feature 75 latest-cards-entrance (2026-10-09)
+
+- ROJO 0/5 → VERDE 5/5. Suite 831/831.
+- Correcciones halladas en la verificación: el ancho de card se medía con el track escalado
+  (recorrido 551 en vez de 610), y quedaba un transform residual tras revertir.
+- Rueda real: 0 desajustes, 0 rupturas de monotonía y el h2 fijo en el tramo fijado.
+  Informe en progress/impl_75.md. Reviewer lanzado.
