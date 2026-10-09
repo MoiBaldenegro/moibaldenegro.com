@@ -2,6 +2,8 @@
 // REQ-40-01..08): módulo único de valores, public/_headers idéntico, el
 // middleware las añade sin pisar las existentes y el build conserva la regla
 // /_astro/* del adapter (outDir temporal, serializado con el helper).
+// Ajuste feature 64 (precedente REQ-43-06): la CSP pasa de solo-reporte a obligatoria;
+// EXPECTED usa la clave Content-Security-Policy (mismo valor de REQ-40-06).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync, mkdtempSync, rmSync } from 'node:fs';
@@ -19,7 +21,7 @@ const EXPECTED = {
   'Referrer-Policy': 'strict-origin-when-cross-origin',
   'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
   'X-Frame-Options': 'DENY',
-  'Content-Security-Policy-Report-Only': CSP,
+  'Content-Security-Policy': CSP,
 };
 
 // Reglas de un archivo _headers de Cloudflare: { '/ruta': { Cabecera: valor } }.
@@ -38,7 +40,7 @@ function parseHeaders(text) {
 test('REQ-40-01/06: el módulo exporta las cinco cabeceras exactas y congeladas', () => {
   assert.deepEqual({ ...SECURITY_HEADERS }, EXPECTED);
   assert.ok(Object.isFrozen(SECURITY_HEADERS));
-  assert.equal(SECURITY_HEADERS['Content-Security-Policy-Report-Only'], CSP);
+  assert.equal(SECURITY_HEADERS['Content-Security-Policy'], CSP);
 });
 
 test('REQ-40-02: public/_headers replica el módulo en la regla /*', () => {
