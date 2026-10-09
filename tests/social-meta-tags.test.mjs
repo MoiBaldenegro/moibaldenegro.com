@@ -62,7 +62,7 @@ test('REQ-43-06 (build): metas og y twitter en / y en un post', () => {
     const article = html(join('posts', '01-procesos-memoria', 'index.html'));
     for (const doc of [home, article]) {
       assert.match(doc, /<meta property="og:title" content="[^"]+">/);
-      assert.match(doc, /<meta property="og:image" content="https:\/\/moibaldenegro\.com\/[^"]+">/);
+      assert.match(doc, /<meta property="og:image" content="https:\/\/moisesbaldenegro\.com\/[^"]+">/);
       assert.match(doc, /<meta name="twitter:card" content="summary_large_image">/);
     }
     assert.match(home, /<meta property="og:type" content="website">/);

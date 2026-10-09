@@ -46,9 +46,10 @@
   50% { transform: translateY(-6px); }
 }
 
+/* Feature 69: minmax(..., auto) deja crecer la fila de la tarjeta de perfil con su contenido. */
 @media (max-width: 1200px) {
-  .hero-grid { grid-template-columns: repeat(6, 1fr); grid-auto-rows: 140px; }
+  .hero-grid { grid-template-columns: repeat(6, 1fr); grid-auto-rows: minmax(140px, auto); }
 }
 @media (max-width: 768px) {
-  .hero-grid { grid-template-columns: 1fr; grid-auto-rows: 190px; }
+  .hero-grid { grid-template-columns: 1fr; grid-auto-rows: minmax(190px, auto); }
 }

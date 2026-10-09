@@ -1228,7 +1228,7 @@
         "El test nuevo tests/site-domain-moisesbaldenegro.test.mjs se escribe primero contra esta spec y se observa en rojo antes de modificar astro.config.mjs y el código (ciclo test-first de AGENTS.md §3) (REQ-66-09)",
         "Los tests que fijaban moibaldenegro.com quedan actualizados con nota de ajuste (precedente REQ-43-06), cada archivo modificado no supera las 100 líneas, la suite completa pasa en verde y ./init.sh termina sin errores (REQ-66-10)"
       ],
-      "status": "in_progress",
+      "status": "done",
       "depends_on": [
         68
       ]
@@ -1245,7 +1245,7 @@
         "Un test node:test verifica que normalizeText(' Diseño ÁGIL ') devuelve 'diseno agil' (REQ-67-05)",
         "La suite completa del arnés pasa en verde, ./init.sh termina sin errores y el test nuevo no supera las 100 líneas (REQ-67-06)"
       ],
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         68
       ]
@@ -1290,7 +1290,7 @@
       "depends_on": [
         68
       ],
-      "status": "pending"
+      "status": "done"
     }
   ]
 }

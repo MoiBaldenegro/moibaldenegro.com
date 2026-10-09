@@ -2,6 +2,7 @@
 // link-image-accessible-names, REQ-53-01..07): imágenes decorativas junto a
 // títulos con alt="", logo que describe el destino, aviso de sitio externo,
 // fila de recomendado clicable y cards sin el título duplicado en el build.
+// Ajuste feature 66 (precedente REQ-43-06): el dominio del sitio pasa a moisesbaldenegro.com.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, mkdtempSync, rmSync } from 'node:fs';
@@ -33,7 +34,7 @@ test('REQ-53-01: las imágenes junto a un título enlazado o un h1 llevan alt=""
 });
 
 test('REQ-53-02: el logo describe el destino del enlace', () => {
-  assert.match(one('src/layouts/Layout.astro', /mxvi_logo/), /alt="Inicio — moibaldenegro\.com"/);
+  assert.match(one('src/layouts/Layout.astro', /mxvi_logo/), /alt="Inicio — moisesbaldenegro\.com"/);
 });
 
 test('REQ-53-03: el enlace a X avisa de sitio externo', () => {

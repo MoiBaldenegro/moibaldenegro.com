@@ -30,7 +30,7 @@ function posts(dir = 'src/content/posts/') {
 const field = (md, name) => md.match(new RegExp(`^${name}:[ \t]*(.+?)[ \t\r]*$`, 'm'))?.[1];
 
 test('REQ-35-01: astro.config.mjs declara site', () => {
-  assert.match(read('astro.config.mjs'), /site: 'https:\/\/moibaldenegro\.com'/);
+  assert.match(read('astro.config.mjs'), /site: 'https:\/\/moisesbaldenegro\.com'/);
 });
 
 test('REQ-35-02: composeTitle añade la marca sin duplicarla', () => {
@@ -56,7 +56,7 @@ test('REQ-35-08: Layout usa composeTitle y canonicalUrl sin concatenar la marca'
   const imports = layout.match(/import \{([^}]*)\} from '\.\.\/domain\/seo\/head\.ts'/)?.[1] ?? '';
   assert.match(imports, /\bcomposeTitle\b/);
   assert.match(imports, /\bcanonicalUrl\b/);
-  assert.doesNotMatch(layout.split('---')[1], /moibaldenegro\.com/);
+  assert.doesNotMatch(layout.split('---')[1], /moisesbaldenegro\.com/);
 });
 
 test('REQ-35-04/05/07 (build): description, canonical y título por página', () => {
@@ -76,7 +76,7 @@ test('REQ-35-04/05/07 (build): description, canonical y título por página', ()
       assert.ok(c[0].startsWith(`${SITE}/`), `${rel}: canonical ${c[0]}`);
     }
     const home = html('index.html');
-    assert.match(home, /<title>Moisés Baldenegro Melendez \| moibaldenegro\.com<\/title>/);
+    assert.match(home, /<title>Moisés Baldenegro Melendez \| moisesbaldenegro\.com<\/title>/);
     assert.deepEqual(descriptions(home), [ABOUT_TEXT]);
     assert.ok(read('src/domain/seo/head.ts').includes(ABOUT_TEXT) || read('src/pages/about.astro').includes(ABOUT_TEXT));
     for (const md of posts()) {

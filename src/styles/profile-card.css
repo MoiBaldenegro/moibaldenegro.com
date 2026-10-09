@@ -56,9 +56,12 @@
 /* Responsive */
 @media (max-width: 1200px) {
   .profile-card { grid-column: 1 / span 6; grid-row: auto; min-height: 650px; }
+  /* Feature 69: alto por proporción, no 68% de la tarjeta (en <=768 px medía 0 px). */
+  .profile-image { height: auto; aspect-ratio: 16 / 9; }
 }
 @media (max-width: 768px) {
   .profile-card { grid-column: auto; min-height: auto; }
+  .profile-image { aspect-ratio: 1 / 1; }
   .profile-content { padding: 24px; }
   .profile-content h1 { font-size: 2rem; }
   .profile-content p { font-size: 0.95rem; line-height: 1.6; }

@@ -64,3 +64,12 @@ contra un endpoint que en local no existe.
 
 Pendiente del deploy humano de esta versión. Después se repite el script CDP contra
 https://moisesbaldenegro.com y se espera: 0 violaciones y beacon 200.
+
+### Producción (REQ-64-15): verificada tras el deploy humano (2026-10-09)
+
+Cabecera en https://moisesbaldenegro.com: la política de REQ-64-11 (curl -I). Chrome headless +
+CDP sobre las 7 páginas: **0 violaciones y 0 errores CSP** en todas. En cada página el beacon
+`https://static.cloudflareinsights.com/beacon.min.js/v4bc70e2...` responde **200** y el envío
+`https://moisesbaldenegro.com/cdn-cgi/rum` responde **204**, es decir, Web Analytics vuelve a
+registrar visitas. La isla HTB da 200, /search?q=solid devuelve 2 resultados, el botón Copiar
+muestra «Código copiado» y el iframe de youtube-nocookie da 200. No hay ningún fallo de red.

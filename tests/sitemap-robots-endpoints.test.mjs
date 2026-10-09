@@ -79,8 +79,8 @@ test('REQ-42-01/07 (build): dist/client/sitemap.xml y robots.txt', () => {
     const build = astroBuild(['--outDir', out]);
     assert.equal(build.status, 0, `astro build falló:\n${build.stdout}\n${build.stderr}`);
     const sitemap = readFileSync(join(out, 'client', 'sitemap.xml'), 'utf8');
-    assert.match(sitemap, /<loc>https:\/\/moibaldenegro\.com\/posts\/01-procesos-memoria\/<\/loc>/);
-    assert.match(sitemap, /<loc>https:\/\/moibaldenegro\.com\/posts\/03-principios-solid\/<\/loc>/);
+    assert.match(sitemap, /<loc>https:\/\/moisesbaldenegro\.com\/posts\/01-procesos-memoria\/<\/loc>/);
+    assert.match(sitemap, /<loc>https:\/\/moisesbaldenegro\.com\/posts\/03-principios-solid\/<\/loc>/);
     const robots = readFileSync(join(out, 'client', 'robots.txt'), 'utf8');
     assert.equal(robots, robotsTxt(SITE));
   } finally {
