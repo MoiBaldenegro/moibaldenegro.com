@@ -38,6 +38,11 @@ export default defineConfig({
     // "no charge" de Webflow, prohíbe retirarlos) al minificar los chunks del cliente.
     build: {
       rolldownOptions: { output: { comments: { legal: true } } },
+      // Feature 74 (REQ-74-01): los scripts de componentes Astro nunca se incrustan inline. Si el último
+      // <script type="module"> de una página es inline, el ClientRouter inserta un script src=data: que la
+      // CSP obligatoria (REQ-64-11) bloquea; como chunk externo lo permite 'self'. El resto de assets
+      // conserva el límite por defecto (undefined).
+      assetsInlineLimit: (filePath) => (/astro_type_script|[?&]type=script/.test(filePath) ? false : undefined),
     },
     optimizeDeps: {
       include: ['astro/assets/services/noop'],

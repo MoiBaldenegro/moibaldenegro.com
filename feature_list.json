@@ -1383,7 +1383,7 @@
       "depends_on": [
         72
       ],
-      "status": "in_progress"
+      "status": "done"
     },
     {
       "id": 74,
@@ -1402,7 +1402,7 @@
       "depends_on": [
         73
       ],
-      "status": "pending"
+      "status": "in_progress"
     }
   ]
 }
