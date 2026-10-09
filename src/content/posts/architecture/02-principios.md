@@ -8,11 +8,11 @@ description: Exploramos los tres pilares fundamentales del diseño de software a
 tags: "#arquitectura #software-design #abstraccion #encapsulamiento #modularizacion"
 created: "20 Agosto 2026"
 updated: "20 Agosto 2026"
-next: /posts/03-principios solid
+next: /posts/03-principios-solid
 related: [/posts/00-agilismo]
 ---
 
-# 01. Principios del diseño de software
+## 01. Principios del diseño de software
 
 Independientemente del enfoque que se utilice, un buen diseño de software debe seguir tres principios que nos permitirán tener diseños robustos, con calidad y, muy importante, desacoplados de las herramientas concretas o de las tecnologías.
 
@@ -38,9 +38,11 @@ Y escuchemos su canción *Bad Guy*:
 
 <div class="video-container">
   <iframe
-    src="https://www.youtube.com/embed/DyDfgMOUjCI"
+    src="https://www.youtube-nocookie.com/embed/DyDfgMOUjCI"
     title="Billie Eilish - bad guy"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    loading="lazy"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
     allowfullscreen
   ></iframe>
 </div>

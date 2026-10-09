@@ -8,11 +8,11 @@ description: Analizamos la delgada línea entre el diseño arquitectónico de al
 tags: "#arquitectura #software-design #software-architecture" 
 created: "28 Septiembre 2026"
 updated: "28 Septiembre 2026"
-next: /posts/04-principios-solid
-related: [/posts/01-diseño-detallado, /posts/02-ciclo-de-vida-y-arquitectura]
+next: /posts/03-principios-solid
+related: [/posts/01-diseno-detallado, /posts/04-ciclo-de-vida-y-arquitectura]
 ---
 
-# 03. Diseño Arquitectónico vs. Diseño Detallado
+## 03. Diseño Arquitectónico vs. Diseño Detallado
 
 Existe una línea muy fina entre lo que conocemos como **diseño detallado** y **arquitectura de software**[cite: 1]. A menudo nos preguntamos: *¿Hasta qué nivel de detalle debe llegar el trabajo del arquitecto?*[cite: 1]. 
 

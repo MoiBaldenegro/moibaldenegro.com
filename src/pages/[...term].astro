@@ -1,32 +1,29 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import SearchResults from '../components/search-results/search-results.astro';
-import { PostsRepository } from '../domain/repositories/posts-repository.ts';
-import { buildSearchIndex } from '../domain/search/index.ts';
-import { termFromPathname } from '../components/search-results/term-route.ts';
-import { getCollection } from 'astro:content';
+import NotFound from '../components/not-found/not-found.astro';
+import { statusForTermPath, termFromPathname } from '../components/search-results/term-route.ts';
 
 export const prerender = false;
 
-// On-demand (REQ-07-02): términos arbitrarios no enumerables, precedente
-// HTB stats. El documento no depende del término (design.md D3): el índice
-// se construye como en search.astro y el cliente filtra por el término del
-// pathname (REQ-07-03); el título usa la misma normalización (REQ-07-07).
-const posts = await new PostsRepository().getPosts();
-const entries = await getCollection('posts');
-// DECISIÓN 2026-09-18 (colección unificada): bodies por slug, no entry.id.
-const bodies = Object.fromEntries(entries.map((entry) => [entry.data.slug, entry.body]));
-const indexJson = JSON.stringify(buildSearchIndex(posts, bodies)).replace(
-  /<\/script/gi,
-  '<\\/script',
-);
-const term = termFromPathname(`/${Astro.params.term ?? ''}`);
+// On-demand (REQ-07-02): términos arbitrarios no enumerables. El documento no
+// depende del término (design.md D3): el cliente filtra por el término del
+// pathname (REQ-07-03) con el índice de /search-index.json (feature 47, ya no
+// se construye por petición); el título usa la misma normalización (REQ-07-07).
+const pathname = `/${Astro.params.term ?? ''}`;
+const term = termFromPathname(pathname);
+// REQ-34-04/07: archivos y /posts/<inexistente> responden 404 real (no soft 404).
+const status = statusForTermPath(pathname);
+Astro.response.status = status;
 ---
 
-<Layout title={`Búsqueda: ${term}`}>
-  <main class="search-page">
-    <h1 class="search-page__heading">Búsqueda por término</h1>
-    <script type="application/json" id="search-index" is:inline set:html={indexJson}></script>
-    <SearchResults />
-  </main>
+<Layout title={status === 404 ? 'Página no encontrada' : `Búsqueda: ${term}`} noindex>
+  {status === 404 ? (
+    <NotFound />
+  ) : (
+    <div class="search-page">
+      <h1 class="search-page__heading">Búsqueda por término</h1>
+      <SearchResults />
+    </div>
+  )}
 </Layout>

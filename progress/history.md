@@ -1373,3 +1373,184 @@ Petición humana: «En las búsquedas cuando accedemos al /algo, queremos que lo
 - Nota de cierre (flake preexistente, ajeno a la 28): una corrida de ./init.sh falló solo en tests (right tras cerrar el implementer) y las 4 siguientes dieron verde. Causa raíz identificada y preexistente (misma clase que en los cierres de las features 25 y 26): tests/cleanup-dead-code.test.mjs REQ-12-06 escribe y borra src/styles/tmp-audit.css dentro del repo mientras tests/hero-ui-refactor.test.mjs REQ-09-05 camina src/ en paralelo bajo node --test. El arreglo natural es el mismo patrón que aplica la 28 (fixture en node:os.tmpdir()). PENDIENTE DE DECISIÓN DEL LÍDER: abrir feature.
 - Sin tocar por decisión propia: src/pages/about.astro aparece modificado en el working tree con un <section><h1>Articulos dedicados…</h1></section> añadido al final (duplica el h1 de la cabecera). No es cambio de esta sesión (la 28 solo toca scripts/ y tests/); se deja sin revertir por si es una edición humana en curso. worker-configuration.d.ts lo regenera pnpm build.
 - NO se dio de alta la feature del .env.example (build de clon limpio: IN_MAINTENANCE sin default en astro.config.mjs): el espacio de REQ-29-xx ya lo usan scripts/validate-dependencies.mjs y tests/dependencies-registry.test.mjs (feature histórica 29 dependencies-registry). Queda documentado en §6 del research; si el humano lo aprueba, sería id 30.
+
+## Sesión 2026-09-30 — Feature 30 `home-latest-articles-limit` (cierre)
+
+- Feature 30 home-latest-articles-limit cerrada en done (review APPROVED en progress/review_30.md, verificado en disco, sin cambios requeridos). Requerimiento del usuario: "En la pagina principal queremos que se muestren solo los 3 articulos mas recientes". Alta por spec_author con spec en specs/30_home-latest-articles-limit/requirements.md (REQ-30-01..17, sin design.md: no toca UI) y análisis en progress/research/home-3-articulos-recientes.md. depends_on [].
+- Implementación (informe en progress/impl_30.md): src/domain/latest-posts.ts NUEVO (22 líneas) — latestPosts(posts, limit = LATEST_POSTS_LIMIT = 3) con posts.slice(0, limit) (copia, no muta) y guarda Number.isInteger(limit) && limit > 0 → [] en otro caso. NO reordena: reutiliza el orden canónico por created de PostsRepository.getPosts() (comparador byCreatedDesc, una sola verdad). src/components/latest-articles.astro (frontmatter) solo aplica latestPosts(getPosts()): importa y pasa datos, sin slice/if/for (REQ-30-06). Sin JS de runtime, la sección se resuelve en build.
+- Sin tocar: src/styles/latest-articles.css (97 líneas, rejilla de una columna, solo tokens) y src/domain/repositories/posts-repository.ts (100 líneas) — el recorte vive en un módulo de dominio hermano, no en el repositorio ya saturado. 3 de 8 artículos: la colección real tiene 8, así que el recorte no es un no-op.
+- TDD: tests/home-latest-articles-limit.test.mjs nuevo (REQ-30-01..05, 11..13, 318 líneas) en rojo antes (ERR_MODULE_NOT_FOUND: el módulo de dominio aún no existía, cumple el literal de REQ-30-11) y en verde después; incluye verificación del HTML de la portada emitido por build real (patrón de about-page.test.mjs) que cuenta 3 cards. Los 5 tests de inspección existentes de latest-articles.astro (latest-articles-restore, articles-ui-refactor, article-card-images, view-transitions, visual-polish-refactor, 48/48) pasan SIN diff: ninguna aserción de contrato se tocó, no hizo falta el precedente REQ-43-06.
+- Verificación independiente del líder sobre dist/client/index.html: la sección «Últimos artículos» (encabezado conservado, REQ-37-06 intacto) contiene exactamente 3 enlaces — /posts/05-diseno-arquitectonico-vs-diseno-detallado, /posts/02-ciclo-de-vida-y-arquitectura, /posts/01-procesos-memoria — los 3 created más recientes en descendente.
+- Cierre: ./init.sh en verde re-verificado tras el APPROVED (entorno, formato, tests al 100%, build); feature 30 en done conservada en el array.
+- Commit c19d375 (hecho por el humano, no por los agentes) mezcla las features 28 y 30 e incluye el <h1> duplicado de src/pages/about.astro y el worker-configuration.d.ts regenerado por el build.
+- Pendientes de decisión del humano, NO abiertos: (1) src/pages/about.astro mantiene un <h1> duplicado (el de la cabecera y el añadido al final) — accesibilidad/SEO; (2) el flake preexistente de parallel test runner (cleanup-dead-code.test.mjs escribe src/styles/tmp-audit.css mientras hero-ui-refactor.test.mjs camina src/), ya registrado en los cierres de 25 y 26; (3) la feature 10 sigue in_progress y abandonada; (4) no se dio de alta la feature del .env.example para que un clon limpio pueda buildear (IN_MAINTENANCE sin default en astro.config.mjs).
+
+## Sesión 2026-10-08 — Auditoría del sitio, backlog 31-58 y feature 31 `search-clear-button-fix`
+
+- Auditoría pedida por el humano ("audita esta página web"): 3 explorers en paralelo → progress/research/audit_seo.md, audit_a11y.md, audit_perf_security.md. El dominio moibaldenegro.com da NXDOMAIN: se auditó sobre dist/client + código; cabeceras/HSTS/compresión en vivo quedan pendientes de re-auditar cuando resuelva.
+- spec_author dio de alta las features 31-58 (bugs primero) con specs en specs/31_* … specs/58_*; análisis en progress/research/audit_backlog.md. Decisiones humanas aplicadas (§8): 10 → blocked (aparcada, sin reporte de fallo), se quita de depends_on de 31/32/57; 41 (astro >=7.2.8 por CVE crítica) autorizada → pending, registrada en docs/dependencies.md.
+- El subagente implementer no está disponible en esta sesión de Claude Code (Agent type 'implementer' not found); el humano autorizó explícitamente al líder a tomar su rol "por esta ocasión". El reviewer sí se lanza como subagente.
+- Feature 31 cerrada en done (APPROVED en progress/review_31.md, verificado en disco). El botón del estado vacío pasa a data-search-results-clear y wireClear lo busca dentro de .search-results; el × del header conserva data-search-clear sin manejadores ajenos. TDD: tests/search-clear-button-fix.test.mjs en rojo 5/6 → verde; 4 tests previos actualizados al nuevo contrato. Suite 568/568, ./init.sh verde. Informe en progress/impl_31.md.
+- Observación no bloqueante del reviewer: tests/term-search-oldest-first.test.mjs mantiene [data-search-clear] en su fake DOM sin aserciones; alinear en una feature futura.
+- Flake de ./init.sh observado al arrancar (una corrida en rojo, la siguiente en verde): es el flake preexistente ya registrado (cleanup-dead-code.test.mjs escribe src/styles/tmp-audit.css mientras hero-ui-refactor.test.mjs camina src/).
+
+## Sesión 2026-10-08 — Feature 32 `search-pagination-listeners` (cierre)
+
+- Feature 32 cerrada en done (APPROVED en progress/review_32.md, verificado en disco). Líder en rol de implementer por autorización humana explícita (implementer no disponible en la sesión).
+- Nuevo src/components/search-results/search-pagination.ts: estado único Pager { page, render } y wirePagination con un listener por botón por inicialización; tras cada cambio de página el foco va a ul[data-search-list] (tabindex="-1"). renderSearch ya no registra listeners y devuelve data.page. Controlador en 91 líneas.
+- TDD: tests/search-pagination-listeners.test.mjs en rojo 5/7 → verde; REQ-17-02/03/05 de term-search-oldest-first actualizados al nuevo contrato. Suite 575/575, ./init.sh verde. Informe en progress/impl_32.md.
+
+## Sesión 2026-10-08 — Feature 33 `broken-resources-fix` (cierre)
+
+- Feature 33 cerrada en done (APPROVED en progress/review_33.md, verificado en disco). Líder en rol de implementer por autorización humana explícita.
+- Layout.astro sin /favicon.svg (inexistente) ni el favicon.ico duplicado; el post de SOLID usa arch00.webp hasta que el humano aporte un arch03.webp propio. Guardas en tests/broken-resources-fix.test.mjs (rojo 5/6 → verde). Suite 581/581, ./init.sh verde. Informe en progress/impl_33.md.
+
+## Sesión 2026-10-08 — Feature 34 `not-found-page` (cierre)
+
+- Feature 34 cerrada en done (APPROVED en progress/review_34.md, verificado en disco). Líder en rol de implementer por autorización humana explícita.
+- Página 404 propia (src/pages/404.astro prerender + componente not-found.astro + not-found.css con tokens). [...term].astro responde Astro.response.status = statusForTermPath(pathname): 404 para rutas con extensión de archivo y /posts/<inexistente>, 200 para términos. Prop noindex en Layout, usada en 404, /search y [...term]. Test con build a outDir temporal para no pisar dist/. Suite 590/590, ./init.sh verde. Informe en progress/impl_34.md.
+
+## Sesión 2026-10-08 — Feature 35 `seo-head-base` (cierre)
+
+- Feature 35 cerrada en done (APPROVED en progress/review_35.md, verificado en disco). Líder en rol de implementer por autorización humana explícita.
+- site en astro.config.mjs; src/domain/seo/head.ts (composeTitle, canonicalUrl y textos de descripción existentes); Layout con meta description, canonical absoluto y charset+viewport primero; cada página pasa título/descripción (portada: nombre del perfil + texto de presentación). Suite 597/597, ./init.sh verde. Informe en progress/impl_35.md.
+- Pendientes anotados: canonical con barra final (formato directorio) vs. enlaces internos sin barra (audit_seo B4); descriptions duplicadas de 00-agilismo y 03-principios_solid (contenido, decisión humana).
+
+## Sesión 2026-10-08 — Feature 36 `search-status-announcements` (cierre)
+
+- Feature 36 cerrada en done (APPROVED en progress/review_36.md, verificado en disco). Líder en rol de implementer por autorización humana explícita.
+- Nodo role="status" aria-live="polite" (.visually-hidden, utilidad global en layout.css) en /search, /<término> y el panel en vivo; search-status.ts con statusMessage, writeStatus y liveAnnouncer (debounce 300 ms). Suite 603/603, ./init.sh verde. Informe en progress/impl_36.md.
+
+## Sesión 2026-10-08 — Feature 37 `focus-visible-global` (cierre)
+
+- Feature 37 cerrada en done (APPROVED en progress/review_37.md, verificado en disco). Líder en rol de implementer por autorización humana explícita.
+- Regla de foco global :where(a, button, input, select, textarea, [tabindex]):focus-visible con anillo de acento; search-bar.css ya no anula el outline; × del buscador de 32x32 centrado. Suite 610/610, ./init.sh verde. Informe en progress/impl_37.md.
+
+## Sesión 2026-10-08 — Feature 38 `layout-main-skip-link` (cierre)
+
+- Feature 38 cerrada en done (APPROVED en progress/review_38.md, verificado en disco). Líder en rol de implementer por autorización humana explícita.
+- Un único <main id="contenido" tabindex="-1"> en el Layout y enlace .skip-link «Saltar al contenido» como primer hijo de body (oculto con transform hasta el foco, z-index sobre el navbar, solo tokens). Los main de páginas/componentes pasan a div con su clase.
+- Arreglado el flake de builds en paralelo (workerd/miniflare: «assets:storage not found»): tests/helpers/astro-build.mjs serializa los builds de los 5 tests que construyen con un lock mkdir en node_modules/. Suite 616/616 (x3), ./init.sh verde. Informe en progress/impl_38.md.
+
+## Sesión 2026-10-08 — Feature 39 `single-h1-headings` (cierre)
+
+- Feature 39 cerrada en done (APPROVED en progress/review_39.md, verificado en disco). Líder en rol de implementer por autorización humana explícita.
+- Los 7 posts con «# …» inicial lo degradan a «## …»; /about pinta la presentación como p.about__intro desde SITE_DESCRIPTION (una sola fuente con la meta description). Un único h1 por post y en /about verificado en build. Suite 621/621, ./init.sh verde. Informe en progress/impl_39.md.
+
+## Sesión 2026-10-08 — Feature 40 `security-headers` (cierre) y alta de la 59
+
+- Feature 40 cerrada en done (APPROVED en progress/review_40.md, verificado en disco). Líder en rol de implementer por autorización humana explícita.
+- src/domain/http/security-headers.ts (objeto congelado, única fuente) + withSecurityHeaders; src/middleware.ts para respuestas del Worker; public/_headers con la regla /* idéntica; el build conserva /_astro/* inmutable. Informe en progress/impl_40.md. Pendiente operativo: HSTS/Always Use HTTPS en la zona de Cloudflare y verificar con curl -I cuando el dominio resuelva.
+- El flake preexistente de tmp-audit.css (cleanup-dead-code escribe en src/ mientras otros tests lo recorren) pasó a fallar 2 de 4 corridas: el líder pidió a spec_author darlo de alta → feature 59 (análisis en progress/research/flaky-tmp-audit.md).
+
+## Sesión 2026-10-08 — Feature 41 `astro-security-upgrade` (cierre)
+
+- Feature 41 cerrada en done (APPROVED en progress/review_41.md, verificado en disco). Aprobada por el humano el 2026-10-08; líder en rol de implementer por autorización humana explícita.
+- astro 7.2.0 → 7.3.8, @astrojs/cloudflare 14.2.1 → 14.3.4, wrangler 4.121.0 → 4.149.0; docs/dependencies.md actualizado (approved 2026-10-08). pnpm audit: de 29 avisos (1 critical) a 2 high, 0 critical. Informe en progress/impl_41.md.
+- Pendiente de decisión humana: wrangler 4.149.0 pide @cloudflare/workers-types >= 5.20261006.1 (instalado 5.20260812.1, no aprobado subirlo).
+
+## Sesión 2026-10-08 — Feature 42 `sitemap-robots-endpoints` (cierre)
+
+- Feature 42 cerrada en done (APPROVED en progress/review_42.md, verificado en disco). Líder en rol de implementer por autorización humana explícita.
+- src/domain/seo/sitemap.ts (buildSitemap y robotsTxt puros) + endpoints prerenderizados src/pages/sitemap.xml.ts y robots.txt.ts, sin dependencias. loc con barra final como los canonical. Suite 640/640, ./init.sh verde. Informe en progress/impl_42.md.
+
+## Sesión 2026-10-08 — Feature 43 `social-meta-tags` (cierre)
+
+- Feature 43 cerrada en done (APPROVED en progress/review_43.md, verificado en disco). Líder en rol de implementer por autorización humana explícita.
+- src/domain/seo/social.ts (socialMeta pura: og:* + twitter:*; artículos con article:published/modified_time); Layout con props image/type/published/modified; el post pasa portada, article y fechas. Suite 647/647, ./init.sh verde. Informe en progress/impl_43.md. Revisable por el humano: og:locale es_MX, fechas sin zona horaria, portadas compartidas.
+
+## Sesión 2026-10-08 (sesión 2) — Feature 44 `article-json-ld` (cierre)
+
+- La sesión 1 se cortó por límite de tokens con la 44 a medias; la sesión 2 retomó el handoff dejado en feature_list.json y progress/current.md.
+- Feature 44 cerrada en done (APPROVED en progress/review_44.md, verificado en disco). Líder en rol de implementer por autorización humana explícita.
+- src/domain/seo/json-ld.ts (blogPostingJsonLd + serializeJsonLd con escape de </script); posts/[id].astro emite un único script application/ld+json. 6 tests heredados que prohibían <script ahora admiten solo application/ld+json (precedente REQ-43-06). Suite 654/654, ./init.sh verde. Informe en progress/impl_44.md.
+- Respuestas del humano en la sesión 2: subir @cloudflare/workers-types (aprobación registrada, feature 60); adelantar la 59 (se hace a continuación, fuera del orden por id, por indicación humana); fechas sin zona horaria (decisión del líder: YYYY-MM-DD); portadas propias por post las pondrá un humano a mano.
+
+## Sesión 2026-10-08 (sesión 2) — Feature 59 `tokens-audit-tmp-fixture` (cierre)
+
+- Feature 59 cerrada en done (APPROVED en la ronda 3 de progress/review_59.md, verificado en disco). Adelantada a la 45 por indicación humana. Líder en rol de implementer por autorización humana explícita.
+- Causa del flake histórico: cleanup-dead-code (REQ-12-06) escribía/borraba src/styles/tmp-audit.css mientras otros tests recorrían src/ en paralelo (ENOENT). scripts/audit-design-tokens.mjs acepta un directorio opcional; REQ-12-06 usa mkdtempSync(tmpdir()) + rmSync en finally.
+- Guarda nueva tests/helpers/src-write-guard.mjs (rondas 2 y 3 por CHANGES_REQUESTED): argumentos con paréntesis equilibrados, segmento 'src', asignaciones/reasignaciones multilínea, APIs fs sync/async/promesas y destino de rename/copy/cp, con autoverificación de casos positivos y negativos. 5 corridas seguidas 661/661 sin ENOENT; ./init.sh verde. Informe en progress/impl_59.md.
+
+## Sesión 2026-10-08 (sesión 2) — Feature 45 `ascii-post-slugs` (cierre)
+
+- Feature 45 cerrada en done (APPROVED en la ronda 2 de progress/review_45.md, verificado en disco; ronda 1 pidió corregir 3 comentarios desactualizados). Líder en rol de implementer por autorización humana explícita.
+- Slugs ASCII 03-principios-solid, 01-diseno-detallado y 04-ciclo-de-vida-y-arquitectura; next/related actualizados; corregido el next roto del post 05 (04-principios-solid inexistente → 03-principios-solid); redirecciones 301 en astro.config.mjs verificadas con astro preview (workerd). 8 tests heredados ajustados (REQ-43-06). Suite 667/667, ./init.sh verde. Informe en progress/impl_45.md.
+
+## Sesión 2026-10-08 (sesión 2) — Feature 46 `search-index-endpoint` (cierre)
+
+- Feature 46 cerrada en done (APPROVED en la ronda 2 de progress/review_46.md; la ronda 1 detectó dos aserciones de escape que solo pasaban por un comentario). Líder en rol de implementer por autorización humana explícita.
+- src/domain/search/index-json.ts (searchIndexJson: bodies por slug, buildSearchIndex, JSON.stringify y escape de </script) como única función; endpoint prerenderizado /search-index.json (≈39 KB) idéntico al índice embebido; las 3 páginas la usan. Tests heredados reapuntados al dominio y verificados con una prueba de mutación. Suite 672/672, ./init.sh verde. Informe en progress/impl_46.md.
+
+## Sesión 2026-10-08 (sesión 2) — Feature 47 `search-index-lazy-load` (cierre)
+
+- Feature 47 cerrada en done (APPROVED en la ronda 2 de progress/review_47.md; la ronda 1 detectó una carrera en la portada, un error silencioso, un error genérico sin validar y un catch vacío). Líder en rol de implementer por autorización humana explícita.
+- index-loader.ts (un fetch por sesión, caché síncrona, SearchIndexLoadError, fallos no cacheados); live-search.ts (último término gana, error visible y anunciado, precarga en el primer focus); controladores con loader inyectable; páginas sin índice embebido. Portada 72 477 B → 30 376 B; /search 49 355 B → 7 323 B; /<término> sin índice ni reconstrucción por petición. Suite 681/681, ./init.sh verde. Informe en progress/impl_47.md. Pendiente: verificación manual en navegador real.
+
+## Sesión 2026-10-08 (sesión 2) — Feature 48 `image-loading-hints` (cierre)
+
+- Feature 48 cerrada en done (APPROVED en progress/review_48.md, verificado en disco). Líder en rol de implementer por autorización humana explícita.
+- width/height intrínsecos en todas las img (logo 72x25, hero 952x960, portadas 1376x768), fetchpriority="high" solo en la imagen LCP (hero de la portada y portada del post), lazy + decoding async en miniaturas. Sin cambios de CSS (aspect-ratio/object-fit ya presentes). Suite 687/687, ./init.sh verde. Informe en progress/impl_48.md.
+
+## Sesión 2026-10-08 (sesión 2) — Feature 49 `static-cache-headers` (cierre)
+
+- Feature 49 cerrada en done (APPROVED en progress/review_49.md, verificado en disco). Líder en rol de implementer por autorización humana explícita.
+- src/domain/http/cache-policy.ts (ASSETS 1 semana, isla HTB 1 hora); regla /assets/* en public/_headers; la isla HTB fija Cache-Control con la constante. Verificado con astro preview: isla max-age=3600, /assets max-age=604800, HTML max-age=0. Suite 693/693, ./init.sh verde. Informe en progress/impl_49.md.
+
+## Sesión 2026-10-08 (sesión 2) — Feature 50 `youtube-embed-hardening` (cierre)
+
+- Feature 50 cerrada en done (APPROVED en la ronda 2 de progress/review_50.md; la ronda 1 pidió corregir el nombre/comentario de un test y una cifra del informe). Líder en rol de implementer por autorización humana explícita.
+- iframe de 02-principios.md con youtube-nocookie.com, loading="lazy", referrerpolicy estricta y allow sin autoplay; test que recorre todos los posts. Suite 699/699, ./init.sh verde. Informe en progress/impl_50.md.
+
+## Sesión 2026-10-08 (sesión 2) — Feature 51 `header-mobile-reflow` (cierre)
+
+- Feature 51 cerrada en done (APPROVED en la ronda 2 de progress/review_51.md; la ronda 1 exigió la verificación real en navegador). Líder en rol de implementer por autorización humana explícita.
+- Token --header-height (74px); nav con min-height en lugar de altura fija; scroll-padding-top en la regla html; header estático con viewport ≤500px de alto. 5 tests de conteo de tokens.css + meta-test a 95 líneas (precedente REQ-43-06). Verificado con Chrome headless + CDP: a 320 px el header crece a 137 px con el buscador dentro; con zoom 400% pasa a static; escritorio sin cambios. Suite 704/704. Informe en progress/impl_51.md.
+- Observaciones para una feature futura: scroll-padding-top insuficiente a 320 px (header 137 px) y logo pegado al borde superior en móvil.
+
+## Sesión 2026-10-08 (sesión 2) — Feature 52 `contrast-badge-kicker` (cierre)
+
+- Feature 52 cerrada en done (APPROVED en progress/review_52.md, verificado en disco). Líder en rol de implementer por autorización humana explícita.
+- --color-verified #17b8ff → #0a6f9e (blanco 2,25 → 5,55:1); insignia con ✓ aria-hidden y «Verificado» visually-hidden; texto del kicker con --color-accent-hover (4,10 → 5,73:1 sobre hero-top). REQ-42-03 ajustado (REQ-43-06). Suite 710/710, ./init.sh verde. Informe en progress/impl_52.md.
+
+## Sesión 2026-10-08 (sesión 2) — Feature 53 `link-image-accessible-names` (cierre)
+
+- Feature 53 cerrada en done (APPROVED en progress/review_53.md, verificado en disco). Líder en rol de implementer por autorización humana explícita.
+- alt="" en imágenes decorativas junto a títulos (cards, resultados, portada del post, recomendados); logo «Inicio — moibaldenegro.com»; aviso visually-hidden «(X, sitio externo)»; fila de recomendado clicable con ::after. 6 tests heredados ajustados (REQ-43-06). Suite 716/716, ./init.sh verde. Informe en progress/impl_53.md.
+
+## Sesión 2026-10-08 (sesión 2) — Feature 54 `code-copy-status` (cierre)
+
+- Feature 54 cerrada en done (APPROVED en la ronda 2 de progress/review_54.md; la ronda 1 detectó que «Copiado» desbordaba el botón de 30 px). Líder en rol de implementer por autorización humana explícita.
+- Región role="status" compartida en code-copy.astro; anuncios «Código copiado» / «No se pudo copiar el código» (la región se vacía antes de escribir); texto visible «Copiado» 2000 ms con el botón creciendo (width:auto). Verificado con Chrome headless en 1280 y 375 px. Suite 723/723, ./init.sh verde. Informe en progress/impl_54.md.
+
+## Sesión 2026-10-08 (sesión 2) — Feature 55 `home-heading-hierarchy` (cierre)
+
+- Feature 55 cerrada en done (APPROVED en la ronda 2 de progress/review_55.md; la ronda 1 detectó que el margen del título dependía del nivel del encabezado). Líder en rol de implementer por autorización humana explícita.
+- Títulos de las tarjetas del hero como p.card-title (svg aria-hidden/focusable=false); títulos de las cards de artículo en h3 con margin explícito 0.83em 0 (idéntico al h2 previo, medido en Chrome). Portada sin saltos de nivel en el build. REQ-24-03, REQ-53-05 y REQ-30-08 ajustados. Suite 729/729, ./init.sh verde. Informe en progress/impl_55.md.
+
+## Sesión 2026-10-08 (sesión 2) — Feature 56 `reduced-motion` (cierre)
+
+- Feature 56 cerrada en done (APPROVED en progress/review_56.md, verificado en disco). Líder en rol de implementer por autorización humana explícita.
+- Animación float del hero solo con prefers-reduced-motion: no-preference; red de seguridad global reduce en layout.css (0.01ms); hover sin transform en .hero-card y .profile-card con reduce (en cada hoja). Verificado en Chrome con setEmulatedMedia. Suite 734/734, ./init.sh verde. Informe en progress/impl_56.md.
+
+## Sesión 2026-10-08 (sesión 2) — Feature 57 `search-form-progressive` (cierre)
+
+- Feature 57 cerrada en done (APPROVED en la ronda 2 de progress/review_57.md; la ronda 1 detectó que limpiar /search no vaciaba la barra precargada). Líder en rol de implementer por autorización humana explícita.
+- Buscador del header como <search><form action="/search" method="get"> con input type=search name=q enterkeyhint=search; con JS el submit navega con view transitions; precarga de q en /search; Escape solo con el foco en la búsqueda; resetQuery al limpiar /search. Verificado en Chrome headless (precarga, Escape, Enter, envío sin JS). Suite 743/743, ./init.sh verde. Informe en progress/impl_57.md.
+
+## Sesión 2026-10-08 (sesión 2) — Feature 58 `manifest-generator-cleanup` (cierre)
+
+- Feature 58 cerrada en done (APPROVED en progress/review_58.md, verificado en disco). Líder en rol de implementer por autorización humana explícita.
+- site.webmanifest con name/short_name moibaldenegro.com; sin meta generator en Layout ni en el build. Suite 747/747, ./init.sh verde. Informe en progress/impl_58.md.
+
+## Sesión 2026-10-08 (sesión 2) — Feature 60 `workers-types-upgrade` (cierre) y fin del backlog de la auditoría
+
+- Feature 60 cerrada en done (APPROVED en progress/review_60.md, verificado en disco). Aprobada por el humano el 2026-10-08; líder en rol de implementer por autorización humana explícita.
+- @cloudflare/workers-types 5.20260812.1 → 5.20261009.1 (satisface el peer de wrangler 4.149.0; pnpm install sin avisos de peer); docs/dependencies.md actualizado y nota APLICADA; REQ-30-06 ajustado. Suite 751/751, ./init.sh verde. Informe en progress/impl_60.md.
+- Backlog de la auditoría completado: features 31-60 en done (59 adelantada por indicación humana). La 10 sigue en blocked (aparcada por decisión humana). Nada commiteado: todo el trabajo está en el working tree.
+- Pendientes para el humano: DNS del dominio (NXDOMAIN) y HSTS/Always Use HTTPS en Cloudflare; portadas propias por post; theme_color del manifest; scroll-padding y padding del header a 320 px; botón de copiar que se desplaza con el scroll horizontal del pre; CSP de Report-Only a enforcement tras revisar reportes.
+
+## 2026-10-09 — Secuencia post-auditoría (features 61-64)
+
+- spec_author dio de alta 61-64 (análisis en progress/research/post_audit_backlog.md) a petición humana («inicia una nueva secuencia de trabajo para acomodar tmb esos detalles»). Líder en rol de implementer (subagente implementer no disponible; autorización humana vigente).
+- Feature 61 header-anchor-offset-mobile cerrada en done (APPROVED en progress/review_61.md). Token --header-height-mobile 170px (header medido 165 px a 320), scroll-padding móvil y padding-block del nav; logo a 14 px del borde. Tests de conteo de tokens.css 95→97. Suite 756/756. Hallazgo: el header solo es sticky el primer viewport (body height:100%), documentado en impl_61.md.

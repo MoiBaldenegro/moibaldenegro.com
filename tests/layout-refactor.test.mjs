@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
+import { composeTitle } from '../src/domain/seo/head.ts';
 
 // Test del layout único (REQ-08-01..06, feature 8 layout-refactor).
 //
@@ -66,11 +67,12 @@ test('REQ-08-01: Layout.astro declara lang="es"', () => {
 });
 
 test('REQ-08-02: el layout muestra el título por defecto moibaldenegro.com', () => {
-  assert.match(
-    readLayout(),
-    /<title>\s*\{title\s*\?\?\s*['"]moibaldenegro\.com['"]\}\s*<\/title>/,
-    'el <title> no usa el valor por defecto moibaldenegro.com (REQ-08-02)'
-  );
+  // Feature 35 (REQ-35-02/08): el default moibaldenegro.com lo da composeTitle
+  // (src/domain/seo/head.ts) y el Layout solo pinta el resultado.
+  const layout = readLayout();
+  assert.match(layout, /const pageTitle = composeTitle\(title\);/, 'el título no pasa por composeTitle');
+  assert.match(layout, /<title>\{pageTitle\}<\/title>/, 'el <title> no usa pageTitle (REQ-08-02)');
+  assert.equal(composeTitle(undefined), 'moibaldenegro.com', 'el default no es moibaldenegro.com');
 });
 
 test('REQ-08-03: el layout acepta un título por página con default del sitio', () => {

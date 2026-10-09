@@ -30,7 +30,7 @@
 //               con .post__title, contrato REQ-39-07 intacto).
 //   REQ-40-10 — los estilos residen en src/styles/post-readability.css,
 //               ≤100 líneas y sin hex/rgba sueltos.
-//   REQ-40-11 — solo tokens existentes: tokens.css permanece en 93 líneas
+//   REQ-40-11 — solo tokens existentes: tokens.css permanece en 95 líneas
 //               (87 + el token --radius-thumb aprobado en la feature 9 + el
 //               token --video-max-width aprobado en la feature 16; ajuste
 //               REQ-43-06) sin tokens de los grupos post/reading/font-size.
@@ -39,6 +39,9 @@
 //               literal) y NINGUNA regla de post-readability.css declara
 //               max-width ni max-inline-size (REQ-41-01, guard reforzado:
 //               la medida ya no vive en ninguna capa).
+// Ajuste feature 61 (precedente REQ-43-06): tokens.css pasa de 95 a 97 (--header-height-mobile).
+// Ajuste feature 51 (precedente REQ-43-06, como en la feature 16): tokens.css pasa de 93 a 95
+// líneas por el token aprobado --header-height (comentario + token).
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -202,10 +205,10 @@ test('REQ-40-10: post-readability.css no contiene hex/rgba sueltos', () => {
   assert.doesNotMatch(content, /rgba?\(/, 'post-readability.css contiene rgb()/rgba() hardcodeado (REQ-40-10)');
 });
 
-test('REQ-40-11: tokens.css conserva 93 líneas (87 + --radius-thumb de la feature 9 + --video-max-width de la feature 16) sin tokens de post/reading/font-size', () => {
+test('REQ-40-11: tokens.css conserva 97 líneas (87 + --radius-thumb de la feature 9 + --video-max-width de la feature 16 + --header-height de la feature 51 + --header-height-mobile de la feature 61) sin tokens de post/reading/font-size', () => {
   const tokens = readTokens();
   const lineCount = countLines(tokens);
-  assert.equal(lineCount, 93, `tokens.css tiene ${lineCount} líneas y debe conservar 93 (REQ-40-11; 87 de REQ-26-07/39-09 + 4 del token --radius-thumb de la feature 9 + 2 del token --video-max-width de la feature 16; ajuste REQ-43-06)`);
+  assert.equal(lineCount, 97, `tokens.css tiene ${lineCount} líneas y debe conservar 97 (REQ-40-11; 87 de REQ-26-07/39-09 + 4 del token --radius-thumb de la feature 9 + 2 del token --video-max-width de la feature 16 + --header-height de la feature 51; ajuste REQ-43-06)`);
   assert.doesNotMatch(tokens, /--post-/, 'tokens.css define un token del grupo post (REQ-40-11)');
   assert.doesNotMatch(tokens, /--reading-/, 'tokens.css define un token del grupo reading (REQ-40-11)');
   assert.doesNotMatch(tokens, /--font-size-|--line-height-/, 'tokens.css define tokens de tipografía del artículo (REQ-40-11, REQ-26-07)');

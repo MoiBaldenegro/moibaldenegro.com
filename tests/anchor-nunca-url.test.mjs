@@ -15,6 +15,10 @@
 //   REQ-27-03 — El texto de cada anchor de recomendados SHALL mostrar el título
 //               del destino sin contener el prefijo /posts/.
 //   REQ-27-04 — related-titles.ts SHALL respetar 100 líneas.
+//
+// Ajuste feature 45 (precedente REQ-43-06): los slugs pasan a ASCII
+// (03-principios-solid, 01-diseno-detallado, 04-ciclo-de-vida-y-arquitectura);
+// las URLs antiguas redirigen con 301 desde astro.config.mjs.
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -47,7 +51,7 @@ function fakePosts() {
       readtime: 5,
     },
     {
-      id: '01-diseño-detallado',
+      id: '01-diseno-detallado',
       title: 'Diseño detallado',
       author: 'Moisés Baldenegro',
       img: 'diseno.jpg',
@@ -86,7 +90,7 @@ test('REQ-27-01: resolveRelatedTitles omite un href sin Post conocido sin lanzar
 });
 
 test('REQ-27-02: con todos los hrefs conocidos devuelve un item por href con el título del Post', () => {
-  const links = resolveRelatedTitles(fakePosts(), ['/posts/00-agilismo', '/posts/01-diseño-detallado']);
+  const links = resolveRelatedTitles(fakePosts(), ['/posts/00-agilismo', '/posts/01-diseno-detallado']);
   assert.equal(links.length, 2, 'no devuelve un item por cada href conocido (REQ-27-02)');
   assert.equal(links[0].title, 'Agilismo y fragilidad', 'el primer item no trae el título del Post (REQ-27-02)');
   assert.equal(links[1].title, 'Diseño detallado', 'el segundo item no trae el título del Post (REQ-27-02)');
@@ -120,7 +124,7 @@ test('REQ-27-03: el texto de cada anchor muestra el título sin el prefijo /post
     'el texto del anchor deriva del href en vez del título (REQ-27-03)',
   );
   // Barrido funcional: ningún título resuelto contiene el prefijo /posts/.
-  const links = resolveRelatedTitles(fakePosts(), ['/posts/00-agilismo', '/posts/no-existe', '/posts/01-diseño-detallado']);
+  const links = resolveRelatedTitles(fakePosts(), ['/posts/00-agilismo', '/posts/no-existe', '/posts/01-diseno-detallado']);
   for (const item of links) {
     assert.ok(!item.title.includes('/posts/'), `el texto del anchor contiene la ruta ${item.title} (REQ-27-03)`);
   }

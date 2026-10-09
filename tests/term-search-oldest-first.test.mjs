@@ -30,6 +30,8 @@ import {
   PAGE_SIZE,
 } from '../src/domain/search/search.ts';
 import { initSearchResults } from '../src/components/search-results/search-results-controller.ts';
+import { primeSearchIndex } from '../src/components/search-results/index-loader.ts';
+// Feature 47 (precedente REQ-43-06): el índice ya no se embebe en el DOM; se precarga en el loader.
 
 const SEARCH_URL = new URL('../src/domain/search/search.ts', import.meta.url);
 const CONTROLLER_URL = new URL(
@@ -37,6 +39,10 @@ const CONTROLLER_URL = new URL(
   import.meta.url,
 );
 const LIVE_URL = new URL('../src/components/search-live/search-live.ts', import.meta.url);
+const PAGINATION_URL = new URL(
+  '../src/components/search-results/search-pagination.ts',
+  import.meta.url,
+);
 
 // Número de líneas al estilo wc -l (sin contar la última línea vacía).
 function countLines(content) {
@@ -113,6 +119,8 @@ function fakeDom(index) {
   for (const selector of selectors) {
     nodes.set(selector, {
       toggleAttribute: (name, force) => calls.toggle.push([selector, name, force]),
+      // La paginación mueve el foco a la lista tras cambiar de página (REQ-32-05).
+      focus: () => {},
       addEventListener: (event, handler) => {
         if (selector === '[data-search-prev]' && event === 'click') calls.prevClick = handler;
         if (selector === '[data-search-next]' && event === 'click') calls.nextClick = handler;
@@ -150,6 +158,7 @@ function initWith(pathname, search = '') {
   };
   globalThis.window.location.assign = (url) => calls.assign.push(url);
   globalThis.document = document;
+  primeSearchIndex(CATALOG);
   initSearchResults();
   return {
     calls,
@@ -305,7 +314,7 @@ test('REQ-17-02/03: el controlador deriva el orden por el origen del término', 
   const controller = readController();
   assert.match(
     controller,
-    /renderSearch\(term, index, 1, q !== '' \? 'desc' : 'asc'\)/,
+    /const order: SearchOrder = q !== '' \? 'desc' : 'asc'/,
     'la primera render no pasa desc con q y asc con pathname (REQ-17-02/03)',
   );
   assert.match(
@@ -317,16 +326,16 @@ test('REQ-17-02/03: el controlador deriva el orden por el origen del término', 
 
 test('REQ-17-05: la paginación re-renderiza con el mismo orden', () => {
   const controller = readController();
+  // Feature 32: un solo render por página con el orden de la inicialización;
+  // los botones solo mueven el estado único de la página (search-pagination.ts).
   assert.match(
     controller,
-    /renderSearch\(term, index, data\.page - 1, order\)/,
-    'el botón anterior no conserva el orden (REQ-17-05)',
+    /pager\.page = renderSearch\(term, index, page, order\)/,
+    'la paginación no conserva el orden (REQ-17-05)',
   );
-  assert.match(
-    controller,
-    /renderSearch\(term, index, data\.page \+ 1, order\)/,
-    'el botón siguiente no conserva el orden (REQ-17-05)',
-  );
+  const pagination = readFileSync(PAGINATION_URL, 'utf8');
+  assert.match(pagination, /step\(-1\)/, 'el botón anterior no retrocede una página');
+  assert.match(pagination, /step\(1\)/, 'el botón siguiente no avanza una página');
 });
 
 // --- REQ-17-06: el panel en vivo conserva el orden predeterminado --------------

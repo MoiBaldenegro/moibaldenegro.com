@@ -11,12 +11,16 @@
 // sigue al dato real): la 22 asumió entry.id = nombre de fichero y la verdad
 // de terreno (progress/research/anchor-sin-url.md, build emitido en
 // dist/client/posts/) es entry.id = post.id = slug = segmento de ruta —
-// 00-agilismo, 01-diseño-detallado (guion), 02-principios-del-diseno-de-
-// software (largo), 03-principios solid (espacio) — NO el nombre de fichero.
+// 00-agilismo, 01-diseno-detallado (guion), 02-principios-del-diseno-de-
+// software (largo), 03-principios-solid (antes con espacio; ASCII desde la feature 45) — NO el nombre de fichero.
 // Se actualizan REQ-22-01..04 a los slugs reales, REQ-22-06 deriva los ids
 // del campo slug (no de readdir) y REQ-22-07 deja de prohibir el espacio
 // interior (el slug canónico lo contiene) y pasa a prohibir espacios
 // perimetrales.
+//
+// Ajuste feature 45 (precedente REQ-43-06): los slugs pasan a ASCII
+// (03-principios-solid, 01-diseno-detallado, 04-ciclo-de-vida-y-arquitectura);
+// las URLs antiguas redirigen con 301 desde astro.config.mjs.
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -67,12 +71,12 @@ function relatedOf(source) {
     .filter(Boolean);
 }
 
-test('REQ-22-01: 00-agilismo declara next /posts/01-diseño-detallado', () => {
+test('REQ-22-01: 00-agilismo declara next /posts/01-diseno-detallado', () => {
   const declared = nextOf(readArticle('00-agilismo.md'));
   assert.equal(
     declared,
-    '/posts/01-diseño-detallado',
-    `00-agilismo declara next ${JSON.stringify(declared)} en lugar de "/posts/01-diseño-detallado" (REQ-22-01)`,
+    '/posts/01-diseno-detallado',
+    `00-agilismo declara next ${JSON.stringify(declared)} en lugar de "/posts/01-diseno-detallado" (REQ-22-01)`,
   );
 });
 
@@ -85,20 +89,20 @@ test('REQ-22-02: 01-diseño_detallado declara next /posts/02-principios-del-dise
   );
 });
 
-test('REQ-22-03: 02-principios declara next /posts/03-principios solid', () => {
+test('REQ-22-03: 02-principios declara next /posts/03-principios-solid', () => {
   const declared = nextOf(readArticle('02-principios.md'));
   assert.equal(
     declared,
-    '/posts/03-principios solid',
-    `02-principios declara next ${JSON.stringify(declared)} en lugar de "/posts/03-principios solid" (REQ-22-03)`,
+    '/posts/03-principios-solid',
+    `02-principios declara next ${JSON.stringify(declared)} en lugar de "/posts/03-principios-solid" (REQ-22-03)`,
   );
 });
 
-test('REQ-22-04: 03-principios_solid declara related con 00-agilismo y 01-diseño-detallado', () => {
+test('REQ-22-04: 03-principios_solid declara related con 00-agilismo y 01-diseno-detallado', () => {
   const declared = relatedOf(readArticle('03-principios_solid.md'));
   assert.deepEqual(
     declared,
-    ['/posts/00-agilismo', '/posts/01-diseño-detallado'],
+    ['/posts/00-agilismo', '/posts/01-diseno-detallado'],
     `03-principios_solid declara related ${JSON.stringify(declared)} (REQ-22-04)`,
   );
 });

@@ -15,8 +15,12 @@
 // el test sigue al dato real): la 22 asumió entry.id = nombre de fichero y
 // la verdad de terreno (progress/research/anchor-sin-url.md, build emitido)
 // es entry.id = post.id = slug = segmento de ruta; la cadena curada pasa a
-// los slugs reales (01-diseño-detallado con guion, 02-principios-del-
-// diseno-de-software largo, 03-principios solid con espacio).
+// los slugs reales (01-diseno-detallado con guion, 02-principios-del-
+// diseno-de-software largo, 03-principios-solid, antes con espacio; ASCII desde la feature 45).
+//
+// Ajuste feature 45 (precedente REQ-43-06): los slugs pasan a ASCII
+// (03-principios-solid, 01-diseno-detallado, 04-ciclo-de-vida-y-arquitectura);
+// las URLs antiguas redirigen con 301 desde astro.config.mjs.
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -35,9 +39,9 @@ const REPOSITORY_URL = new URL(
 
 // Cadena curada en orden cronológico (created 10 → 19 → 20 → 21 Ago 2026).
 const CHAIN = [
-  { file: '00-agilismo.md', next: '/posts/01-diseño-detallado' },
+  { file: '00-agilismo.md', next: '/posts/01-diseno-detallado' },
   { file: '01-diseño_detallado.md', next: '/posts/02-principios-del-diseno-de-software' },
-  { file: '02-principios.md', next: '/posts/03-principios solid' },
+  { file: '02-principios.md', next: '/posts/03-principios-solid' },
   { file: '03-principios_solid.md', next: null },
 ];
 
@@ -87,10 +91,10 @@ test('REQ-18-02: la entidad Post expone readonly next con texto o nulo', () => {
 
 test('REQ-18-03: el repositorio entrega next cuando el frontmatter lo declara', async () => {
   const repository = repositoryWith([
-    { id: '00-agilismo', data: validData({ next: '/posts/01-diseño-detallado' }) },
+    { id: '00-agilismo', data: validData({ next: '/posts/01-diseno-detallado' }) },
   ]);
   const posts = await repository.getPosts();
-  assert.equal(posts[0].next, '/posts/01-diseño-detallado', 'el Post no entrega el next declarado (REQ-18-03)');
+  assert.equal(posts[0].next, '/posts/01-diseno-detallado', 'el Post no entrega el next declarado (REQ-18-03)');
 });
 
 test('REQ-18-04: el repositorio entrega nulo cuando el frontmatter omite next', async () => {
@@ -100,7 +104,7 @@ test('REQ-18-04: el repositorio entrega nulo cuando el frontmatter omite next', 
 });
 
 test('REQ-18-05: next con formato inválido lanza PostsDataError', async () => {
-  for (const next of [42, '01-diseño-detallado', 'posts/01-x', 'https://example.com/x', '/posts/', '/about', 'siguiente']) {
+  for (const next of [42, '01-diseno-detallado', 'posts/01-x', 'https://example.com/x', '/posts/', '/about', 'siguiente']) {
     const repository = repositoryWith([{ id: '00-agilismo', data: validData({ next }) }]);
     await assert.rejects(repository.getPosts(), PostsDataError, `next ${JSON.stringify(next)} no lanzó PostsDataError (REQ-18-05)`);
   }

@@ -163,7 +163,7 @@
       "id": 10,
       "name": "client-init-on-navigation",
       "title": "Re-inicializar los controladores de búsqueda en cada navegación con astro:page-load",
-      "description": "Bug sistémico client-side con navegación suave (<ClientRouter />, feature 24): al navegar a /arquitectura (enlace del navbar, feature 8) la página se carga con el índice embebido válido pero no pinta resultados porque los <script> empaquetados de Astro se ejecutan UNA vez por sesión (módulos ya cargados ignorados tras el swap del ClientRouter; verificado en node_modules/astro/dist/transitions/router.js). Los 4 módulos cliente con el patrón 'import + init directo' quedan sin inicializar en la 2ª+ visita: search-results.astro → initSearchResults (features 3/7, el reportado), search-bar.astro → initSearchBar(navigate) (feature 4), search-live.astro → initSearchLive (feature 5) y search-escape.astro → initSearchEscape (feature 6, cuyo comentario de cabecera asume falsamente la re-ejecución de scripts). Fix oficial de Astro: re-inicializar con document.addEventListener('astro:page-load', () => initX()) en los 4 scripts — el evento cubre la carga inicial y cada navegación, después del swap y runScripts, con pathname y DOM frescos; los controladores .ts ya son re-parametrizables por llamada (default params evaluados en cada invocación). Se añade guard de idempotencia a nivel de módulo SOLO en initSearchLive (patrón de search-escape: removeEventListener del manejador 'search:change' anterior antes de añadir) para no acumular listeners por visita a la portada; initSearchEscape conserva su guard existente. Los no-op seguros en páginas sin el DOM se conservan sin guards nuevos. Los tests de inspección que asercionan la llamada directa (features 3/4/5/6) se ajustan al patrón listener con justificación documentada (precedente REQ-43-06); tests/root-term-search.test.mjs (llamada unitaria a la función exportada) no cambia. No toca UI: sin design.md.",
+      "description": "APARCADA por decisión humana (2026-10-08): «la 10 me parece que la podemos ignorar, no tenemos reporte de que esté funcionando mal». Sin reporte de fallo en producción, se deja en blocked y se conserva en el backlog; el código de re-inicialización con astro:page-load ya está en src/ (search-results, search-bar, search-live, search-escape) y tests/client-init-on-navigation.test.mjs pasa en verde, pero la feature no se cierra sin revisión. Las features 31, 32 y 57 ya no dependen de ella (ver progress/research/audit_backlog.md §8). Contexto original: Bug sistémico client-side con navegación suave (<ClientRouter />, feature 24): al navegar a /arquitectura (enlace del navbar, feature 8) la página se carga con el índice embebido válido pero no pinta resultados porque los <script> empaquetados de Astro se ejecutan UNA vez por sesión (módulos ya cargados ignorados tras el swap del ClientRouter; verificado en node_modules/astro/dist/transitions/router.js). Los 4 módulos cliente con el patrón 'import + init directo' quedan sin inicializar en la 2ª+ visita: search-results.astro → initSearchResults (features 3/7, el reportado), search-bar.astro → initSearchBar(navigate) (feature 4), search-live.astro → initSearchLive (feature 5) y search-escape.astro → initSearchEscape (feature 6, cuyo comentario de cabecera asume falsamente la re-ejecución de scripts). Fix oficial de Astro: re-inicializar con document.addEventListener('astro:page-load', () => initX()) en los 4 scripts — el evento cubre la carga inicial y cada navegación, después del swap y runScripts, con pathname y DOM frescos; los controladores .ts ya son re-parametrizables por llamada (default params evaluados en cada invocación). Se añade guard de idempotencia a nivel de módulo SOLO en initSearchLive (patrón de search-escape: removeEventListener del manejador 'search:change' anterior antes de añadir) para no acumular listeners por visita a la portada; initSearchEscape conserva su guard existente. Los no-op seguros en páginas sin el DOM se conservan sin guards nuevos. Los tests de inspección que asercionan la llamada directa (features 3/4/5/6) se ajustan al patrón listener con justificación documentada (precedente REQ-43-06); tests/root-term-search.test.mjs (llamada unitaria a la función exportada) no cambia. No toca UI: sin design.md.",
       "acceptance": [
         "Un test de inspección verifica que el <script> de search-results.astro registra la inicialización como listener del evento astro:page-load y no invoca initSearchResults() de forma directa (REQ-10-01, REQ-10-05)",
         "Un test de inspección verifica que el <script> de search-bar.astro registra la inicialización de la barra como listener del evento astro:page-load conservando el import de navigate de astro:transitions/client (REQ-10-02, REQ-10-05)",
@@ -182,7 +182,7 @@
         7,
         9
       ],
-      "status": "in_progress"
+      "status": "blocked"
     },
     {
       "id": 11,
@@ -529,6 +529,659 @@
         "La suite completa del arnés pasa en verde al cierre de la feature y ./init.sh termina en verde sin errores de formato ni tests fallidos (REQ-30-17, restricción require_tests_to_close)"
       ],
       "depends_on": [],
+      "status": "done"
+    },
+    {
+      "id": 31,
+      "name": "search-clear-button-fix",
+      "title": "Arreglar el botón «Limpiar búsqueda» del estado vacío de /search",
+      "description": "Bug funcional confirmado por el líder: search-results-controller.ts:78 (wireClear) usa document.querySelector('[data-search-clear]'), que devuelve el PRIMER elemento del documento: el botón × del buscador del header (search-bar.astro:12), no el botón «Limpiar búsqueda» del estado vacío (search-results.astro:15). Resultado: el botón visible del estado vacío de /search?q=<x> y de /<término> no hace nada, y el × del header recibe un manejador ajeno (borra q de la URL o navega a /). Fix: el botón del estado vacío pasa a identificarse con data-search-results-clear y el controlador lo busca dentro de la raíz .search-results; el × del header conserva data-search-clear, que search-bar.ts:58 ya busca dentro de su propia raíz. Sin dependencias: la 10 (aparcada en blocked por decisión humana 2026-10-08) solo imponía orden por tocar el mismo script; el registro con astro:page-load ya está en search-results.astro. Sin design.md: no cambia la presentación. Spec: specs/31_search-clear-button-fix/requirements.md. Análisis: progress/research/audit_backlog.md. Origen: audit_a11y.md A3 (bug confirmado por el líder). Spec: specs/31_search-clear-button-fix/requirements.md. Análisis y orden: progress/research/audit_backlog.md.",
+      "acceptance": [
+        "Un test de inspección verifica que search-results.astro marca el botón .search-results__clear con data-search-results-clear y no con data-search-clear (REQ-31-01)",
+        "Un test de inspección verifica que search-results-controller.ts no contiene document.querySelector('[data-search-clear]') y busca data-search-results-clear dentro de la raíz .search-results (REQ-31-02)",
+        "Un test con document simulado en globalThis (precedente tests/client-init-on-navigation.test.mjs) verifica que un clic en el botón del estado vacío en /search?q=zzz quita q con history.replaceState, restaura el título y muestra la guía (REQ-31-03)",
+        "Un test con document simulado verifica que un clic en el botón del estado vacío en /zzz invoca location.assign('/') (REQ-31-04)",
+        "Un test con document simulado que contiene el × del header y el botón del estado vacío verifica que initSearchResults no registra ningún listener sobre el × del header (REQ-31-05)",
+        "El test nuevo tests/search-clear-button-fix.test.mjs se escribe primero contra esta spec y se observa en rojo antes de implementar el cambio (ciclo test-first de AGENTS.md §3) (REQ-31-06)",
+        "Un test de inspección verifica que los archivos de src/ creados o modificados por la feature no superan las 100 líneas (REQ-31-07)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-31-08)"
+      ],
+      "depends_on": [],
+      "status": "done"
+    },
+    {
+      "id": 32,
+      "name": "search-pagination-listeners",
+      "title": "Paginación de /search sin listeners acumulados y con foco conservado",
+      "description": "Bug funcional: renderSearch (search-results-controller.ts:66-75) añade un addEventListener('click') nuevo a Anterior y Siguiente en CADA render sin quitar los anteriores, de modo que tras N renders un clic dispara N renders con páginas obsoletas (cada closure captura su data.page). Además, al llegar al límite el botón enfocado pasa a disabled y el foco cae a body (WCAG 2.4.3). Con PAGE_SIZE = 6 (src/domain/search/search.ts:13) y 8 posts ya hay 2 páginas en búsquedas amplias. Fix: registrar los manejadores una sola vez por inicialización, fuera de renderSearch, con la página actual en un estado único; tras cambiar de página mover el foco a la lista de resultados (ul[data-search-list] con tabindex=\"-1\"). El anuncio «Página X de Y» por región de estado lo resuelve la feature 36. El controlador está en 91 líneas: si supera 100, la paginación se extrae a un módulo search-pagination.ts del mismo directorio. Depende de 31 (mismos archivos); la dependencia de la 10 se retiró al aparcarla por decisión humana (2026-10-08). Sin design.md: tabindex=\"-1\" no cambia la presentación y el anillo de foco lo unifica la feature 37. Origen: audit_a11y.md M6. Spec: specs/32_search-pagination-listeners/requirements.md. Análisis y orden: progress/research/audit_backlog.md.",
+      "acceptance": [
+        "Un test con document simulado en globalThis verifica que tras inicializar y renderizar varias páginas cada botón de paginación tiene exactamente un listener de click registrado (REQ-32-01)",
+        "Un test con document simulado verifica que un clic en Siguiente produce un único render con la página 2 y la etiqueta «Página 2 de N» (REQ-32-02)",
+        "Un test con document simulado verifica que un clic en Anterior desde la página 2 produce un único render con la página 1 (REQ-32-03)",
+        "Un test con document simulado verifica que tras una secuencia de clics alternos la página renderizada coincide con el contador esperado sin renders de páginas obsoletas (REQ-32-04)",
+        "Un test verifica que search-results.astro marca la lista data-search-list con tabindex=\"-1\" y que tras un cambio de página el controlador invoca focus() sobre ella (REQ-32-05)",
+        "Un test con document simulado verifica que al llegar a la última página el elemento que recibe focus() es la lista de resultados (REQ-32-06)",
+        "Un test con document simulado verifica que la página 2 conserva el orden asc de /<término> y el orden desc de ?q= (REQ-32-07)",
+        "El test nuevo tests/search-pagination-listeners.test.mjs se escribe primero contra esta spec y se observa en rojo antes de implementar el cambio (ciclo test-first de AGENTS.md §3) (REQ-32-08)",
+        "Un test de inspección verifica que los archivos de src/ creados o modificados por la feature no superan las 100 líneas (REQ-32-09)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-32-10)"
+      ],
+      "depends_on": [
+        31
+      ],
+      "status": "done"
+    },
+    {
+      "id": 33,
+      "name": "broken-resources-fix",
+      "title": "Eliminar recursos rotos: /favicon.svg inexistente y portada arch03.webp del post de SOLID",
+      "description": "Bug de recursos rotos. (1) Layout.astro:20 y :27 enlazan /favicon.svg, que no existe en public/ (confirmado por el líder); como [...term].astro es catch-all SSR, esa petición cae en el Worker y devuelve HTML 200. Además Layout.astro:21 y :28 declaran favicon.ico dos veces. (2) src/content/posts/architecture/03-principios_solid.md:5 declara img: arch03.webp, ausente en public/assets/content/ (solo hay arch-entry_05, arch00, entry-01, entry-02 y entry-03): portada rota del post de SOLID y de sus miniaturas. Decisión: quitar las dos líneas de /favicon.svg y la duplicada de favicon.ico (los favicon PNG, ICO y apple-touch existentes cubren el icono); el post de SOLID pasa a arch00.webp, la portada genérica que ya comparten 00-agilismo y los posts OS, hasta que el humano aporte un arch03.webp propio (pendiente anotado en el análisis). Se añaden tests de guarda que impiden volver a enlazar recursos inexistentes. El reordenamiento del head va en la feature 35. Sin design.md: no cambia la presentación prevista. Origen: audit_seo.md M6 y audit_perf_security.md B1 (favicon.svg confirmado por el líder). Spec: specs/33_broken-resources-fix/requirements.md. Análisis y orden: progress/research/audit_backlog.md.",
+      "acceptance": [
+        "Un test de inspección verifica que Layout.astro no contiene ninguna referencia a /favicon.svg (REQ-33-01)",
+        "Un test de inspección verifica que cada href de los link rel icon, shortcut icon, apple-touch-icon y manifest aparece una sola vez en Layout.astro (REQ-33-02)",
+        "Un test recorre las rutas locales de href y src de Layout.astro y verifica que cada una existe en public/ (REQ-33-03)",
+        "Un test verifica que el frontmatter de 03-principios_solid.md declara img: arch00.webp y que el archivo existe en public/assets/content/ (REQ-33-04)",
+        "Un test recorre todos los .md de src/content/posts y verifica que el img de cada frontmatter existe en public/assets/content/ (REQ-33-05)",
+        "El test nuevo tests/broken-resources-fix.test.mjs se escribe primero contra esta spec y se observa en rojo antes de implementar el cambio (ciclo test-first de AGENTS.md §3) (REQ-33-06)",
+        "Un test de inspección verifica que los archivos de src/ creados o modificados por la feature no superan las 100 líneas (REQ-33-07)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-33-08)"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 34,
+      "name": "not-found-page",
+      "title": "Página 404 propia y noindex en búsqueda y términos para eliminar el soft 404",
+      "description": "Soft 404 universal (prioridad alta). No existe src/pages/404.astro y [...term].astro (prerender = false, rest param) responde 200 con «Búsqueda por término» a cualquier URL: /posts/no-existe, /favicon.svg, /robots.txt o /wp-login.php son documentos 200 indexables y duplicados; /search y las páginas de término también son indexables. Decisión (opción 1 del informe, compatible con el filtrado en cliente): (a) crear src/pages/404.astro prerenderizada con Layout y un componente src/components/not-found/not-found.astro (h1 «Página no encontrada», enlaces a / y a /search) con su hoja src/styles/not-found.css; (b) función pura statusForTermPath(pathname) en term-route.ts que devuelve 404 si el último segmento tiene extensión de archivo o el primer segmento es posts, y 200 en otro caso; [...term].astro asigna Astro.response.status con ella y pinta el componente de no encontrado en lugar de los resultados cuando es 404; (c) prop opcional noindex en Layout que emite meta robots noindex, usada por 404.astro, search.astro y [...term].astro. /arquitectura y cualquier /<término> de un segmento sin extensión siguen siendo búsqueda (features 7 y 8); un término sin resultados sigue en 200 + noindex porque el servidor no conoce los resultados. Comportamiento en vivo no verificable hasta que el dominio resuelva. Toca UI (página nueva): design.md incluido. Origen: audit_seo.md A2. Spec: specs/34_not-found-page/requirements.md y design.md. Análisis y orden: progress/research/audit_backlog.md.",
+      "acceptance": [
+        "Un test de inspección verifica que existe src/pages/404.astro con prerender = true, que usa Layout y not-found.astro, y que el componente contiene el h1 «Página no encontrada» y enlaces a / y /search (REQ-34-01)",
+        "Un test unitario verifica que statusForTermPath devuelve 404 para /favicon.svg, /robots.txt, /wp-login.php, /posts/no-existe y /posts/no-existe/ (REQ-34-02)",
+        "Un test unitario verifica que statusForTermPath devuelve 200 para /arquitectura, /docker%20compose y /search/foo (REQ-34-03)",
+        "Un test de inspección verifica que [...term].astro asigna Astro.response.status con statusForTermPath y renderiza not-found.astro cuando el estado es 404 y SearchResults en otro caso (REQ-34-04)",
+        "Un test sobre el HTML del build verifica que /404 y /search contienen meta robots noindex y que / y las páginas de post no la contienen (REQ-34-05)",
+        "Un test de inspección verifica que 404.astro, search.astro y [...term].astro pasan noindex al Layout (REQ-34-06)",
+        "Un test de inspección verifica que el frontmatter de [...term].astro no contiene if ( y que la lógica del estado vive en term-route.ts (REQ-34-07)",
+        "Un test de inspección verifica que not-found.astro no contiene <style>, importa not-found.css y que esa hoja no declara colores hexadecimales ni rgba sueltos (REQ-34-08)",
+        "El test nuevo tests/not-found-page.test.mjs se escribe primero contra esta spec y se observa en rojo antes de implementar el cambio (ciclo test-first de AGENTS.md §3) (REQ-34-09)",
+        "Un test de inspección verifica que los archivos de src/ creados o modificados por la feature no superan las 100 líneas (REQ-34-10)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-34-11)"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 35,
+      "name": "seo-head-base",
+      "title": "SEO base del head: site, meta description, canonical, títulos con marca y orden del head",
+      "description": "SEO base (prioridad alta). Hoy astro.config.mjs no define site (Astro.site es undefined); ninguna página emite meta description aunque cada post tiene description en el frontmatter (src/content.config.ts:19); no hay canonical; los títulos son genéricos (home «moibaldenegro.com», /search «Búsqueda», posts sin marca, términos «Búsqueda: x»); y el head está desordenado (favicons antes de <meta charset>, que debe ir en los primeros 1024 bytes). Cambios: (a) site: 'https://moibaldenegro.com' en astro.config.mjs; (b) módulo puro src/domain/seo/head.ts con composeTitle(title) que devuelve «<title> | moibaldenegro.com» sin duplicar la marca si ya la contiene, y canonicalUrl(pathname, site) absoluta; (c) Layout acepta la prop description y emite meta description y link canonical; (d) <meta charset> como primer hijo de head seguido de viewport; (e) cada página pasa su título y descripción usando solo contenido existente: home con el nombre del perfil de HeroProfileRepository como título y como descripción el texto de presentación que hoy está en about.astro («Articulos dedicados a la ingeniería de software aplicada…»), /about con la misma descripción, /search con el texto de su guía, posts con post.title y post.description. Si Layout.astro supera 100 líneas, el bloque de metadatos se extrae a src/components/seo-head/seo-head.astro incluido desde el Layout (sigue habiendo un solo layout). La description duplicada de 00-agilismo y 03-principios_solid es contenido y queda como decisión del humano (análisis). Depende de 33 y 34 porque ambas tocan el head del Layout. Sin design.md: no hay cambio visible. Origen: audit_seo.md A3, A4 (site y canonical), M3 y B1. Spec: specs/35_seo-head-base/requirements.md. Análisis y orden: progress/research/audit_backlog.md.",
+      "acceptance": [
+        "Un test de inspección verifica que astro.config.mjs declara site: 'https://moibaldenegro.com' (REQ-35-01)",
+        "Un test unitario verifica que composeTitle('Principios solid') devuelve «Principios solid | moibaldenegro.com» y que un título que ya contiene moibaldenegro.com no repite la marca (REQ-35-02)",
+        "Un test unitario verifica que canonicalUrl('/about', 'https://moibaldenegro.com') devuelve https://moibaldenegro.com/about y que un slug con espacio queda codificado (REQ-35-03)",
+        "Un test sobre el HTML del build verifica que /, /about, /search y cada página de post contienen exactamente una meta description no vacía y que la de cada post coincide con su description del frontmatter (REQ-35-04)",
+        "Un test sobre el HTML del build verifica un único link canonical absoluto que empieza por https://moibaldenegro.com/ en /, /about y cada post (REQ-35-05)",
+        "Un test de inspección verifica que el primer hijo de head en Layout.astro es meta charset y el segundo meta viewport (REQ-35-06)",
+        "Un test sobre el HTML del build verifica que el title de / es «Moisés Baldenegro Melendez | moibaldenegro.com» y que su meta description es el texto de presentación de about.astro (REQ-35-07)",
+        "Un test de inspección verifica que Layout.astro importa composeTitle y canonicalUrl y que su frontmatter no contiene concatenaciones de la marca (REQ-35-08)",
+        "El test nuevo tests/seo-head-base.test.mjs se escribe primero contra esta spec y se observa en rojo antes de implementar el cambio (ciclo test-first de AGENTS.md §3) (REQ-35-09)",
+        "Un test de inspección verifica que los archivos de src/ creados o modificados por la feature no superan las 100 líneas (REQ-35-10)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-35-11)"
+      ],
+      "depends_on": [
+        33,
+        34
+      ],
+      "status": "done"
+    },
+    {
+      "id": 36,
+      "name": "search-status-announcements",
+      "title": "Anunciar los resultados de búsqueda a lectores de pantalla con una región aria-live",
+      "description": "Accesibilidad alta (WCAG 4.1.3 Status Messages). Ni search-live.astro ni search-results.astro tienen aria-live o role=\"status\": search-live.ts:66 y search-results-controller.ts:60 reescriben la lista con innerHTML y el estado vacío solo cambia con hidden, así que un lector de pantalla no se entera de los resultados ni del cambio de página. Cambios: (a) un nodo <p class=\"visually-hidden\" role=\"status\" aria-live=\"polite\" data-search-status> en search-results.astro y otro en search-live.astro; (b) función pura statusMessage(total, term, page, totalPages) en src/domain/search/status-message.ts con los textos «N resultados para \"x\"», «1 resultado para \"x\"», «Sin resultados para \"x\"» y el sufijo «Página X de Y» cuando hay más de una página; (c) el controlador de resultados escribe el mensaje en cada render y cambio de página; (d) en la portada el anuncio se aplica con debounce de 300 ms para no anunciar cada tecla; como search-live.ts está en 99 líneas, el debounce y la escritura del estado se extraen a un módulo nuevo; (e) utilidad .visually-hidden en layout.css (patrón clip estándar), reutilizada después por las features 52, 53 y 54. El contador visible de resultados queda fuera (mejora de UX opcional, anotada en el análisis). Depende de 32 (mismo controlador). Toca .astro y CSS: design.md incluido. Origen: audit_a11y.md A1 (y parte de M6). Spec: specs/36_search-status-announcements/requirements.md y design.md. Análisis y orden: progress/research/audit_backlog.md.",
+      "acceptance": [
+        "Un test de inspección verifica que search-results.astro contiene exactamente un nodo role=\"status\" aria-live=\"polite\" con data-search-status y la clase visually-hidden (REQ-36-01)",
+        "Un test de inspección verifica que search-live.astro contiene exactamente un nodo role=\"status\" aria-live=\"polite\" con data-search-status y la clase visually-hidden (REQ-36-02)",
+        "Un test unitario verifica statusMessage(5, 'docker', 1, 1) = «5 resultados para \"docker\"» y statusMessage(1, 'docker', 1, 1) = «1 resultado para \"docker\"» (REQ-36-03)",
+        "Un test unitario verifica statusMessage(0, 'zzz', 1, 0) = «Sin resultados para \"zzz\"» (REQ-36-04)",
+        "Un test unitario verifica que statusMessage(8, 'a', 2, 2) contiene «8 resultados para \"a\"» y «Página 2 de 2» (REQ-36-05)",
+        "Un test con document simulado verifica que tras inicializar /search?q=x y tras pulsar Siguiente el textContent del nodo data-search-status coincide con statusMessage (REQ-36-06)",
+        "Un test con temporizadores simulados (mock.timers de node:test) verifica que tres eventos search:change seguidos producen una sola escritura del nodo de estado 300 ms después del último (REQ-36-07)",
+        "Un test de inspección verifica que layout.css define .visually-hidden con position: absolute, width y height de 1px, overflow: hidden, clip y white-space: nowrap y sin display: none (REQ-36-08)",
+        "El test nuevo tests/search-status-announcements.test.mjs se escribe primero contra esta spec y se observa en rojo antes de implementar el cambio (ciclo test-first de AGENTS.md §3) (REQ-36-09)",
+        "Un test de inspección verifica que los archivos de src/ creados o modificados por la feature no superan las 100 líneas (REQ-36-10)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-36-11)"
+      ],
+      "depends_on": [
+        32
+      ],
+      "status": "done"
+    },
+    {
+      "id": 37,
+      "name": "focus-visible-global",
+      "title": "Foco visible global en controles interactivos y × del buscador con objetivo táctil de 32px",
+      "description": "Accesibilidad alta (WCAG 2.4.7, 1.4.11 y 2.5.8). search-bar.css:27-30 anula el outline del input del buscador (outline: none) y solo cambia el borde de rgba .08 a .15, un cambio de contraste de 1.26:1 que no sirve como indicador de foco. layout.css:62-65 solo define foco para enlaces (a:focus-visible), así que la paginación, «Limpiar búsqueda» y el × dependen del anillo por defecto del navegador. El × del buscador (search-bar.css:34-51) mide unos 9×16 px y se solapa con el input. Cambios: generalizar la regla de foco de layout.css a :where(a, button, input, select, textarea, [tabindex]):focus-visible con outline 2px var(--color-accent) y offset 2px; quitar outline: none del input; el × pasa a 32×32 px con el glifo centrado y el input reserva padding derecho para él. search-bar.css está en 75 líneas. Toca estilos: design.md incluido. Origen: audit_a11y.md A2, B7 y M2. Spec: specs/37_focus-visible-global/requirements.md y design.md. Análisis y orden: progress/research/audit_backlog.md.",
+      "acceptance": [
+        "Un test de inspección verifica que layout.css contiene la regla :where(a, button, input, select, textarea, [tabindex]):focus-visible con outline: 2px solid var(--color-accent) y outline-offset: 2px (REQ-37-01)",
+        "Un test de inspección verifica que search-bar.css no contiene outline: none ni outline: 0 (REQ-37-02)",
+        "Un test de inspección recorre src/styles/*.css y verifica que ninguna regla con :focus o :focus-visible declara outline: none u outline: 0 (REQ-37-03)",
+        "Un test de inspección verifica que .search-bar__clear declara width y height de 32px y centrado con display grid o flex (REQ-37-04)",
+        "Un test de inspección verifica que .search-bar__input declara padding-right de 40px o más (REQ-37-05)",
+        "Un test de inspección verifica que las reglas nuevas de layout.css y search-bar.css no contienen colores hexadecimales ni rgba sueltos (REQ-37-06)",
+        "El test nuevo tests/focus-visible-global.test.mjs se escribe primero contra esta spec y se observa en rojo antes de implementar el cambio (ciclo test-first de AGENTS.md §3) (REQ-37-07)",
+        "Un test de inspección verifica que los archivos de src/ creados o modificados por la feature no superan las 100 líneas (REQ-37-08)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-37-09)"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 38,
+      "name": "layout-main-skip-link",
+      "title": "Un único main en el Layout y enlace «Saltar al contenido»",
+      "description": "Accesibilidad alta (WCAG 2.4.1 Bypass Blocks y 1.3.1). Layout.astro:33-45 no tiene enlace para saltar el header. En la portada, <main class=\"hero-grid\"> está dentro de <section class=\"new-hero\"> (new-hero.astro:22), así que «Últimos artículos», HTB y los resultados en vivo quedan fuera de main, y un main dentro de section no es jerárquicamente correcto. Cambios: Layout envuelve el slot en <main id=\"contenido\" tabindex=\"-1\">; todos los <main> de páginas y componentes (new-hero, about, search, [...term], posts/[id] y not-found de la 34) pasan a div o section conservando sus clases; primer hijo de body: <a class=\"skip-link\" href=\"#contenido\">Saltar al contenido</a>, fuera de la vista hasta recibir foco. Los tests existentes que aseveran <main class=\"post\"> (tests/post-header.test.mjs:173, tests/post-page-styles.test.mjs:102) se ajustan documentando el motivo con el precedente REQ-43-06. Depende de 35 (mismo Layout). Toca layout y estilos: design.md incluido. Origen: audit_a11y.md A4. Spec: specs/38_layout-main-skip-link/requirements.md y design.md. Análisis y orden: progress/research/audit_backlog.md.",
+      "acceptance": [
+        "Un test de inspección verifica que Layout.astro contiene <main id=\"contenido\" con el <slot /> dentro (REQ-38-01)",
+        "Un test sobre el HTML del build verifica en /, /about y un post que el primer elemento de body es el enlace skip-link a #contenido (REQ-38-02)",
+        "Un test de inspección recorre src/pages y src/components y verifica que ningún archivo contiene <main (REQ-38-03)",
+        "Un test sobre el HTML del build verifica exactamente un <main en /, /about, /search y cada post (REQ-38-04)",
+        "Un test de inspección verifica que .skip-link en layout.css se desplaza fuera de la vista con transform o top negativo y no usa display: none ni visibility: hidden (REQ-38-05)",
+        "Un test de inspección verifica que .skip-link:focus devuelve el enlace a la vista con un z-index superior al de .site-navbar (REQ-38-06)",
+        "Un test de inspección verifica que las reglas .skip-link no contienen colores hexadecimales ni rgba sueltos (REQ-38-07)",
+        "Un test de inspección verifica que tests/post-header.test.mjs y tests/post-page-styles.test.mjs ya no exigen <main class=\"post\"> y documentan el ajuste con REQ-43-06 (REQ-38-08)",
+        "El test nuevo tests/layout-main-skip-link.test.mjs se escribe primero contra esta spec y se observa en rojo antes de implementar el cambio (ciclo test-first de AGENTS.md §3) (REQ-38-09)",
+        "Un test de inspección verifica que los archivos de src/ creados o modificados por la feature no superan las 100 líneas (REQ-38-10)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-38-11)"
+      ],
+      "depends_on": [
+        35
+      ],
+      "status": "done"
+    },
+    {
+      "id": 39,
+      "name": "single-h1-headings",
+      "title": "Un solo h1 por página en artículos y en /about",
+      "description": "Prioridad alta (SEO y 1.3.1). posts/[id].astro:50 pinta <h1>{title}</h1> y 7 de los 8 markdown empiezan además con una línea «# …» (todos salvo 03-principios_solid.md; p. ej. 01-procesos-memoria.md:18), así que cada artículo tiene dos h1. /about tiene dos h1 (about.astro:15 y :20; el segundo es un párrafo largo). Decisión: degradar la línea «# …» inicial de los 7 posts a «## …» conservando su texto (eliminarla perdería la numeración del capítulo) y convertir el segundo h1 de about.astro en <p class=\"about__intro\"> con estilos en about.css. Se añade un test de guarda: ningún cuerpo de post tiene encabezados de nivel 1, ignorando las líneas dentro de bloques de código cercados. Toca contenido visible y estilos: design.md incluido. Origen: audit_seo.md A5 y audit_a11y.md B1 (parte de /about). Spec: specs/39_single-h1-headings/requirements.md y design.md. Análisis y orden: progress/research/audit_backlog.md.",
+      "acceptance": [
+        "Un test recorre los .md de src/content/posts, ignora los bloques de código cercados y verifica que ninguna línea empieza por «# » (REQ-39-01)",
+        "Un test verifica para los siete posts afectados que el antiguo texto del encabezado (p. ej. «01. Procesos y memoria») aparece como línea «## » (REQ-39-02)",
+        "Un test sobre el HTML del build verifica exactamente un <h1 en cada dist/client/posts/*/index.html (REQ-39-03)",
+        "Un test sobre el HTML del build verifica exactamente un <h1 en /about (REQ-39-04)",
+        "Un test de inspección verifica que about.astro pinta el texto de presentación en <p class=\"about__intro\"> (REQ-39-05)",
+        "Un test de inspección verifica que .about__intro existe en about.css y no contiene colores hexadecimales ni rgba sueltos (REQ-39-06)",
+        "El test nuevo tests/single-h1-headings.test.mjs se escribe primero contra esta spec y se observa en rojo antes de implementar el cambio (ciclo test-first de AGENTS.md §3) (REQ-39-07)",
+        "Un test de inspección verifica que los archivos de src/ creados o modificados por la feature no superan las 100 líneas (REQ-39-08)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-39-09)"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 40,
+      "name": "security-headers",
+      "title": "Cabeceras de seguridad en assets estáticos (public/_headers) y respuestas del Worker (middleware)",
+      "description": "Seguridad alta. No existe src/middleware.* y dist/client/_headers (generado por el adapter) solo contiene la caché inmutable de /_astro/*: no se emite X-Content-Type-Options, Referrer-Policy, Permissions-Policy, X-Frame-Options ni CSP. Cloudflare solo añade Content-Type, Cache-Control, ETag y CF-Cache-Status a los assets, y _headers NO se aplica a respuestas generadas por el Worker. Por eso dos capas con una única fuente de verdad: (a) módulo src/domain/http/security-headers.ts con las cabeceras como objeto inmutable; (b) public/_headers con la regla /* que replica exactamente esos valores (páginas prerenderizadas servidas como assets); (c) src/middleware.ts que las añade a las respuestas SSR ([...term], /_server-islands/*, 404) sin pisar valores existentes. Valores: X-Content-Type-Options: nosniff; Referrer-Policy: strict-origin-when-cross-origin; Permissions-Policy: camera=(), microphone=(), geolocation=(); X-Frame-Options: DENY; Content-Security-Policy-Report-Only con la política gradual del informe (unsafe-inline necesario por los scripts inline de server islands y code-copy y los estilos de Shiki). La CSP nativa de Astro (security.csp) se descarta porque no admite <ClientRouter /> ni Shiki. HSTS y «Always Use HTTPS» son configuración de la zona de Cloudflare (operativo, en el análisis). El build debe conservar la regla /_astro/* del adapter. Sin design.md: no hay UI. Origen: audit_perf_security.md A2. Spec: specs/40_security-headers/requirements.md. Análisis y orden: progress/research/audit_backlog.md.",
+      "acceptance": [
+        "Un test unitario importa security-headers.ts y verifica el valor exacto de las cinco cabeceras y que el objeto está congelado (REQ-40-01)",
+        "Un test parsea public/_headers y verifica que la regla /* contiene exactamente las cabeceras y valores del módulo (REQ-40-02)",
+        "Un test unitario invoca onRequest con un contexto y un next() simulados y verifica que la respuesta devuelta contiene las cinco cabeceras (REQ-40-03)",
+        "Un test unitario verifica que una respuesta con Referrer-Policy: no-referrer conserva ese valor tras el middleware (REQ-40-04)",
+        "Un test sobre el build verifica que dist/client/_headers contiene la regla /* con las cabeceras de seguridad y la regla /_astro/* con Cache-Control: public, max-age=31536000, immutable (REQ-40-05)",
+        "Un test unitario verifica el valor exacto de Content-Security-Policy-Report-Only en el módulo (REQ-40-06)",
+        "El test nuevo tests/security-headers.test.mjs se escribe primero contra esta spec y se observa en rojo antes de implementar el cambio (ciclo test-first de AGENTS.md §3) (REQ-40-07)",
+        "Un test de inspección verifica que los archivos de src/ creados o modificados por la feature no superan las 100 líneas (REQ-40-08)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-40-09)"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 41,
+      "name": "astro-security-upgrade",
+      "title": "Actualizar astro a >=7.2.8 y el adapter de Cloudflare por la CVE crítica (aprobada por el humano)",
+      "description": "APROBADA por el humano el 2026-10-08 («sí lo autorizo»), registrada en docs/dependencies.md (sección Aprobaciones de cambio de versión); pasa de blocked a pending. Cambiar versiones de dependencias es decisión exclusiva del humano (docs/architecture.md regla 2 y docs/dependencies.md: ningún agente aprueba dependencias ni versiones). pnpm audit (pnpm 10.8.0) reporta 29 avisos: 1 critical, 13 high, 11 moderate, 4 low. CRITICAL: astro <7.2.8, RCE vía optimización de AVIF (GHSA-26w7-cxv4-gfx2, CVSS 9.8, parche 7.2.8); exposición real baja (imageService cloudflare, sin astro:assets ni AVIF) pero la versión instalada 7.2.0 está afectada. MODERATE: astro <=7.2.3 (GHSA-376h-93r7-7g6f). HIGH vía astro: devalue, svgo, http-cache-semantics. HIGH vía @astrojs/cloudflare y wrangler (build/dev): undici, sharp, js-yaml, source-map-js. Propuesta para discutir: astro ^7.2.8 (o la última 7.x), @astrojs/cloudflare y wrangler a su última menor, actualizar versión y fecha de aprobación en docs/dependencies.md y repetir pnpm audit. Sin design.md. Origen: audit_perf_security.md A1. Spec: specs/41_astro-security-upgrade/requirements.md. Análisis y orden: progress/research/audit_backlog.md.",
+      "acceptance": [
+        "Un test de inspección verifica que el rango de astro en package.json tiene versión mínima >= 7.2.8 (REQ-41-01)",
+        "Un test de inspección verifica que pnpm-lock.yaml resuelve astro a una versión >= 7.2.8 (REQ-41-02)",
+        "scripts/validate-dependencies.mjs pasa y docs/dependencies.md muestra la versión nueva y la fecha de aprobación de astro, @astrojs/cloudflare y wrangler (REQ-41-03)",
+        "La ejecución de pnpm audit --audit-level critical termina con código 0 y se documenta en progress/impl_41.md (REQ-41-04)",
+        "Mientras no haya aprobación registrada en docs/dependencies.md la feature sigue en blocked y package.json no cambia (REQ-41-05)",
+        "pnpm build termina sin errores tras la actualización (REQ-41-06)",
+        "El test nuevo tests/astro-security-upgrade.test.mjs se escribe primero contra esta spec y se observa en rojo antes de implementar el cambio (ciclo test-first de AGENTS.md §3) (REQ-41-07)",
+        "Un test de inspección verifica que los archivos de src/ creados o modificados por la feature no superan las 100 líneas (REQ-41-08)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-41-09)"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 42,
+      "name": "sitemap-robots-endpoints",
+      "title": "sitemap.xml y robots.txt como endpoints prerenderizados sin dependencias",
+      "description": "No existen sitemap.xml ni robots.txt (ni en public/ ni en dist/client/) y hoy ambas URLs las captura la ruta catch-all [...term] con HTML 200. @astrojs/sitemap queda descartada: es dependencia externa (exigiría estado blocked y aprobación humana) y además no incluye rutas SSR. Alternativa sin dependencias propuesta por el informe: endpoints prerenderizados src/pages/sitemap.xml.ts y src/pages/robots.txt.ts (prerender = true, tienen prioridad sobre [...term]). El XML lo construye una función pura buildSitemap en src/domain/seo/sitemap.ts a partir de PostsRepository: /, /about y /posts/<slug> con loc absoluto sobre el site de la feature 35 y lastmod YYYY-MM-DD desde updated (o created si falta) con parseSpanishDate (src/domain/search/parse-date.ts); excluye /search, términos y /404; codifica los slugs (hay uno con espacio hasta la feature 45) y escapa XML. robots.txt: User-agent: *, Allow: / y Sitemap: https://moibaldenegro.com/sitemap.xml. Depende de 35 (site) y 34 (statusForTermPath ya devuelve 404 para .txt y .xml no prerenderizados). Sin design.md. Origen: audit_seo.md A4 (sitemap y robots). Spec: specs/42_sitemap-robots-endpoints/requirements.md. Análisis y orden: progress/research/audit_backlog.md.",
+      "acceptance": [
+        "Un test de inspección verifica prerender = true y Content-Type application/xml en sitemap.xml.ts, y un test sobre el build verifica que existe dist/client/sitemap.xml (REQ-42-01)",
+        "Un test unitario con Posts de prueba verifica un <url> con <loc> absoluto por /, /about y cada post (REQ-42-02)",
+        "Un test unitario verifica que el XML no contiene /search, /404 ni rutas de término (REQ-42-03)",
+        "Un test unitario verifica que un post con updated «19 Septiembre 2026» produce <lastmod>2026-09-19</lastmod> (REQ-42-04)",
+        "Un test unitario verifica que un post sin updated usa su created como lastmod (REQ-42-05)",
+        "Un test unitario verifica que el slug «03-principios solid» aparece como 03-principios%20solid y que & se escapa como &amp; (REQ-42-06)",
+        "Un test sobre el build verifica que dist/client/robots.txt contiene User-agent: *, Allow: / y la línea Sitemap absoluta (REQ-42-07)",
+        "Un test de inspección verifica que package.json no declara @astrojs/sitemap ni otra dependencia nueva (REQ-42-08)",
+        "El test nuevo tests/sitemap-robots-endpoints.test.mjs se escribe primero contra esta spec y se observa en rojo antes de implementar el cambio (ciclo test-first de AGENTS.md §3) (REQ-42-09)",
+        "Un test de inspección verifica que los archivos de src/ creados o modificados por la feature no superan las 100 líneas (REQ-42-10)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-42-11)"
+      ],
+      "depends_on": [
+        34,
+        35
+      ],
+      "status": "done"
+    },
+    {
+      "id": 43,
+      "name": "social-meta-tags",
+      "title": "Metadatos Open Graph y Twitter/X cards en el head",
+      "description": "Ninguna página emite og:* ni twitter:*. Cambios: función pura socialMeta en src/domain/seo/social.ts que devuelve una lista inmutable de pares (property o name, content) y Layout (o seo-head.astro de la 35) la pinta. Props nuevas del Layout: image (ruta local), type (website o article) y fechas de publicación y modificación. Emite og:title, og:description, og:url (= canonical), og:image absoluta, og:type, og:site_name moibaldenegro.com, og:locale es_MX, twitter:card summary_large_image y twitter:site @moibaldenegro (cuenta ya enlazada en Layout.astro:39). En posts: og:type article, og:image = portada del post, article:published_time y article:modified_time en YYYY-MM-DD vía parseSpanishDate. Imagen por defecto del resto de páginas: /assets/moises-hero.jpg (único retrato existente). og:locale es_MX y la fecha sin zona horaria son decisiones revisables por el humano (anotadas en el análisis). La doc oficial de X no pudo verificarse (devolvía 402/404). Depende de 35. Sin design.md: no hay cambio visible. Origen: audit_seo.md M1. Spec: specs/43_social-meta-tags/requirements.md. Análisis y orden: progress/research/audit_backlog.md.",
+      "acceptance": [
+        "Un test unitario verifica que socialMeta devuelve las siete propiedades og con valores no vacíos y og:site_name = moibaldenegro.com y og:locale = es_MX (REQ-43-01)",
+        "Un test unitario verifica og:url = canonicalUrl(pathname) y que og:image empieza por https://moibaldenegro.com/ (REQ-43-02)",
+        "Un test unitario verifica twitter:card = summary_large_image y twitter:site = @moibaldenegro (REQ-43-03)",
+        "Un test unitario verifica que con type article y fechas «19 Septiembre 2026» devuelve og:type article y article:published_time 2026-09-19 (REQ-43-04)",
+        "Un test unitario verifica que sin image og:image es https://moibaldenegro.com/assets/moises-hero.jpg (REQ-43-05)",
+        "Un test sobre el HTML del build verifica og:title, og:image y twitter:card en / y en un post, y og:type article en el post (REQ-43-06)",
+        "El test nuevo tests/social-meta-tags.test.mjs se escribe primero contra esta spec y se observa en rojo antes de implementar el cambio (ciclo test-first de AGENTS.md §3) (REQ-43-07)",
+        "Un test de inspección verifica que los archivos de src/ creados o modificados por la feature no superan las 100 líneas (REQ-43-08)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-43-09)"
+      ],
+      "depends_on": [
+        35
+      ],
+      "status": "done"
+    },
+    {
+      "id": 44,
+      "name": "article-json-ld",
+      "title": "Datos estructurados JSON-LD BlogPosting en las páginas de artículo",
+      "description": "No hay ningún application/ld+json en el build. Cambios: función pura blogPostingJsonLd(post, site) en src/domain/seo/json-ld.ts que construye un BlogPosting con headline = post.title, description, image absoluta de la portada, datePublished y dateModified en YYYY-MM-DD vía parseSpanishDate (las fechas del frontmatter son texto español), author {\"@type\": \"Person\", name: post.author, url: https://moibaldenegro.com/about} y mainEntityOfPage = canonical; serializado con el mismo escape de </script que ya usan las páginas. posts/[id].astro lo emite con <script type=\"application/ld+json\" is:inline set:html>. Fecha sin hora ni zona horaria (ISO 8601 válido; añadir zona es decisión del humano, ver análisis). WebSite/Person en la home queda fuera. Depende de 35 (site y canonical). Sin design.md. Origen: audit_seo.md M2. Spec: specs/44_article-json-ld/requirements.md. Análisis y orden: progress/research/audit_backlog.md. (Handoff entre sesiones resuelto: ver progress/history.md.)",
+      "acceptance": [
+        "Un test unitario verifica @context, @type BlogPosting y headline = post.title (REQ-44-01)",
+        "Un test unitario verifica datePublished y dateModified en YYYY-MM-DD para fechas del frontmatter en español (REQ-44-02)",
+        "Un test unitario verifica author = {\"@type\": \"Person\", name: post.author, url: \"https://moibaldenegro.com/about\"} (REQ-44-03)",
+        "Un test unitario verifica que image y mainEntityOfPage empiezan por https://moibaldenegro.com/ (REQ-44-04)",
+        "Un test unitario verifica que un título con </script> se serializa con <\\/script (REQ-44-05)",
+        "Un test sobre el build parsea el único script application/ld+json de cada post y verifica @type BlogPosting (REQ-44-06)",
+        "El test nuevo tests/article-json-ld.test.mjs se escribe primero contra esta spec y se observa en rojo antes de implementar el cambio (ciclo test-first de AGENTS.md §3) (REQ-44-07)",
+        "Un test de inspección verifica que los archivos de src/ creados o modificados por la feature no superan las 100 líneas (REQ-44-08)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-44-09)"
+      ],
+      "depends_on": [
+        35
+      ],
+      "status": "done"
+    },
+    {
+      "id": 45,
+      "name": "ascii-post-slugs",
+      "title": "Slugs de artículos en ASCII con guiones y redirecciones 301 desde las URLs antiguas",
+      "description": "Slugs problemáticos: 03-principios_solid.md:2 slug «03-principios solid» (URL /posts/03-principios%20solid), 01-diseño_detallado.md:2 slug «01-diseño-detallado» (ñ percent-encoded) y 04-ciclo-de-vida-y-arquitectura.md:2 slug «02-ciclo-de-vida-y-arquitectura» (prefijo 02 frente al archivo 04, choca con 02-principios-…). Cambios: slugs 03-principios-solid, 01-diseno-detallado y 04-ciclo-de-vida-y-arquitectura; actualizar todas las referencias next y related de los .md; redirecciones 301 desde las tres URLs antiguas con redirects en astro.config.mjs; test de guarda: todo slug cumple ^[a-z0-9]+(-[a-z0-9]+)*$. Los tests existentes que citan los slugs antiguos (p. ej. tests/home-latest-articles-limit.test.mjs con 02-ciclo-de-vida-y-arquitectura) se ajustan documentando el motivo con el precedente REQ-43-06. Sin design.md: no cambia la presentación. Origen: audit_seo.md M4 y audit_perf_security.md B7. Spec: specs/45_ascii-post-slugs/requirements.md. Análisis y orden: progress/research/audit_backlog.md.",
+      "acceptance": [
+        "Un test recorre los .md de src/content/posts y verifica que cada slug cumple ^[a-z0-9]+(-[a-z0-9]+)*$ (REQ-45-01)",
+        "Un test verifica los tres slugs nuevos en el frontmatter de esos tres archivos (REQ-45-02)",
+        "Un test verifica que todos los valores next y related de los .md corresponden a slugs existentes (REQ-45-03)",
+        "Un test de inspección verifica en astro.config.mjs la redirección 301 de /posts/03-principios solid, /posts/01-diseño-detallado y /posts/02-ciclo-de-vida-y-arquitectura a sus slugs nuevos (REQ-45-04)",
+        "Un test de inspección verifica que ningún archivo de tests/ cita los slugs antiguos salvo los tests de redirección (REQ-45-05)",
+        "El test nuevo tests/ascii-post-slugs.test.mjs se escribe primero contra esta spec y se observa en rojo antes de implementar el cambio (ciclo test-first de AGENTS.md §3) (REQ-45-06)",
+        "Un test de inspección verifica que los archivos de src/ creados o modificados por la feature no superan las 100 líneas (REQ-45-07)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-45-08)"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 46,
+      "name": "search-index-endpoint",
+      "title": "Publicar el índice de búsqueda como asset estático /search-index.json",
+      "description": "La portada pesa 72 477 B (18 804 B gzip) y 39 042 B son el JSON #search-index embebido con los cuerpos markdown completos (index.astro:20-23,34); lo mismo en /search (49 355 B) y en cada respuesta SSR de [...term], que además reconstruye el índice en cada petición. Paso 1 (esta feature): un endpoint prerenderizado src/pages/search-index.json.ts que emite exactamente el mismo índice (Content-Type application/json) y una función de dominio única que construye el JSON para que endpoint y páginas no dupliquen lógica. Los consumidores todavía no cambian (paso 2 = feature 47), así que el comportamiento visible es idéntico. Sin design.md. Origen: audit_perf_security.md M1 (paso 1 de 2). Spec: specs/46_search-index-endpoint/requirements.md. Análisis y orden: progress/research/audit_backlog.md.",
+      "acceptance": [
+        "Un test de inspección verifica prerender = true y Content-Type application/json en search-index.json.ts (REQ-46-01)",
+        "Un test sobre el build verifica que dist/client/search-index.json parsea como array y coincide con el índice embebido actual de dist/client/search/index.html (REQ-46-02)",
+        "Un test de inspección verifica que index.astro, search.astro, [...term].astro y el endpoint usan la misma función de dominio y que ninguno repite el mapeo de bodies por slug (REQ-46-03)",
+        "Un test sobre el build verifica que existe dist/client/search-index.json (REQ-46-04)",
+        "El test nuevo tests/search-index-endpoint.test.mjs se escribe primero contra esta spec y se observa en rojo antes de implementar el cambio (ciclo test-first de AGENTS.md §3) (REQ-46-05)",
+        "Un test de inspección verifica que los archivos de src/ creados o modificados por la feature no superan las 100 líneas (REQ-46-06)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-46-07)"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 47,
+      "name": "search-index-lazy-load",
+      "title": "Cargar el índice de búsqueda bajo demanda y quitarlo del HTML",
+      "description": "Paso 2 de la optimización del índice: los consumidores obtienen /search-index.json (feature 46) con fetch en lugar del <script id=\"search-index\"> embebido. La portada lo pide en el primer focus o input del buscador del header; /search y /<término> lo piden al inicializar. Un loader único en src/components/search-results/index-loader.ts (o similar) cachea la promesa a nivel de módulo: un solo fetch por sesión aunque haya navegaciones con ClientRouter. Si el fetch falla, el nodo de estado de la feature 36 muestra «No se pudo cargar el índice de búsqueda» (error explícito, regla 3). Se elimina el script embebido de index.astro, search.astro y [...term].astro, y [...term] deja de construir el índice por petición. Los tests existentes que aseveran el índice embebido (REQ-03-07, REQ-05-04) se ajustan documentando el motivo con el precedente REQ-43-06. Depende de 46 y 36 (mismos controladores). search-live.ts está al límite de líneas: la carga va en el módulo nuevo. Sin design.md: no cambia la presentación. Origen: audit_perf_security.md M1 (paso 2 de 2). Spec: specs/47_search-index-lazy-load/requirements.md. Análisis y orden: progress/research/audit_backlog.md.",
+      "acceptance": [
+        "Un test sobre el build verifica que dist/client/index.html y dist/client/search/index.html no contienen id=\"search-index\" y un test de inspección lo verifica en [...term].astro (REQ-47-01)",
+        "Un test unitario con fetch simulado verifica que tres llamadas al loader producen una sola petición a /search-index.json (REQ-47-02)",
+        "Un test con document simulado verifica que el loader no se invoca al inicializar la portada y sí tras el primer focus del input (REQ-47-03)",
+        "Un test con document y fetch simulados verifica que initSearchResults renderiza resultados tras resolver el loader (REQ-47-04)",
+        "Un test con fetch simulado que rechaza verifica el mensaje en el nodo data-search-status (REQ-47-05)",
+        "Un test sobre el build verifica que dist/client/index.html pesa menos de 40 000 bytes (REQ-47-06)",
+        "El test nuevo tests/search-index-lazy-load.test.mjs se escribe primero contra esta spec y se observa en rojo antes de implementar el cambio (ciclo test-first de AGENTS.md §3) (REQ-47-07)",
+        "Un test de inspección verifica que los archivos de src/ creados o modificados por la feature no superan las 100 líneas (REQ-47-08)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-47-09)"
+      ],
+      "depends_on": [
+        36,
+        46
+      ],
+      "status": "done"
+    },
+    {
+      "id": 48,
+      "name": "image-loading-hints",
+      "title": "Dimensiones, prioridad y carga diferida en las imágenes (CLS y LCP)",
+      "description": "Ninguna imagen relevante declara dimensiones ni prioridad: logo (Layout.astro:36, width 72 sin height), hero de la portada (new-hero.astro:26-30, moises-hero.jpg 952×960, sin width/height ni fetchpriority), portada del post (posts/[id].astro:47, 1376×768) y miniaturas (latest-articles, recomendados de posts/[id].astro e item-html.ts). Cambios de código: width y height intrínsecos en todas (logo 72×25 por la proporción 2048×716), fetchpriority=\"high\" en la imagen LCP de la portada (hero) y del post (post__image), loading=\"lazy\" y decoding=\"async\" en las imágenes que no son LCP. La re-exportación de los archivos (logo de 2048×716 a ~144×50 y hero JPG de 152 KB a WebP) es una tarea manual de assets que requiere herramienta de imagen: queda anotada en el análisis como acción del humano. El CSS conserva height: auto donde aplique para no deformar. Toca componentes .astro: design.md incluido. Origen: audit_perf_security.md M2 y M3 (parte de código) y audit_seo.md B3 (height del logo). Spec: specs/48_image-loading-hints/requirements.md y design.md. Análisis y orden: progress/research/audit_backlog.md.",
+      "acceptance": [
+        "Un test de inspección verifica width y height en cada <img de esos cinco archivos (REQ-48-01)",
+        "Un test de inspección verifica width=\"72\" height=\"25\" en el img del logo de Layout.astro (REQ-48-02)",
+        "Un test de inspección verifica fetchpriority=\"high\" y ausencia de loading=\"lazy\" en el img del hero y en .post__image (REQ-48-03)",
+        "Un test de inspección verifica loading=\"lazy\" y decoding=\"async\" en las miniaturas de latest-articles.astro, posts/[id].astro e item-html.ts (REQ-48-04)",
+        "Un test de inspección verifica height: auto o aspect-ratio en las reglas CSS de las imágenes afectadas (REQ-48-05)",
+        "El test nuevo tests/image-loading-hints.test.mjs se escribe primero contra esta spec y se observa en rojo antes de implementar el cambio (ciclo test-first de AGENTS.md §3) (REQ-48-06)",
+        "Un test de inspección verifica que los archivos de src/ creados o modificados por la feature no superan las 100 líneas (REQ-48-07)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-48-08)"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 49,
+      "name": "static-cache-headers",
+      "title": "Caché de /assets/* y de la server island de HTB",
+      "description": "Solo /_astro/* tiene caché inmutable; /assets/* (imágenes y sprite SVG de 19 KB) quedan con el default de Cloudflare public, max-age=0, must-revalidate y se revalidan en cada vista. Además la server island HtbStadistics (htb-stadistics.astro:10) llama a la API de HTB en cada visita a la portada sin caché (latencia, coste de Worker y riesgo de rate limit); las islas se piden por GET y admiten Cache-Control (docs de server islands). Cambios: en public/_headers (creado en la 40) la regla /assets/* con Cache-Control: public, max-age=604800; constantes de política en src/domain/http/cache-policy.ts y la isla fija Cache-Control: public, max-age=3600 con Astro.response.headers.set usando esa constante. El HTML conserva la revalidación. Depende de 40. Sin design.md. Origen: audit_perf_security.md M4 y M5. Spec: specs/49_static-cache-headers/requirements.md. Análisis y orden: progress/research/audit_backlog.md.",
+      "acceptance": [
+        "Un test parsea public/_headers y verifica la regla /assets/* con Cache-Control: public, max-age=604800 (REQ-49-01)",
+        "Un test unitario verifica las constantes public, max-age=604800 y public, max-age=3600 (REQ-49-02)",
+        "Un test de inspección verifica que htb-stadistics.astro llama a Astro.response.headers.set con la constante de la isla (REQ-49-03)",
+        "Un test parsea public/_headers y verifica que ninguna regla aplica max-age mayor que 0 a /* ni a rutas HTML (REQ-49-04)",
+        "Un test sobre el build verifica las tres reglas en dist/client/_headers (REQ-49-05)",
+        "El test nuevo tests/static-cache-headers.test.mjs se escribe primero contra esta spec y se observa en rojo antes de implementar el cambio (ciclo test-first de AGENTS.md §3) (REQ-49-06)",
+        "Un test de inspección verifica que los archivos de src/ creados o modificados por la feature no superan las 100 líneas (REQ-49-07)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-49-08)"
+      ],
+      "depends_on": [
+        40
+      ],
+      "status": "done"
+    },
+    {
+      "id": 50,
+      "name": "youtube-embed-hardening",
+      "title": "Endurecer el iframe de YouTube del post de principios",
+      "description": "src/content/posts/architecture/02-principios.md:40-45 incrusta https://www.youtube.com/embed/... sin loading=\"lazy\" ni referrerpolicy y con autoplay en allow. Cambios: dominio de privacidad mejorada https://www.youtube-nocookie.com/embed/..., loading=\"lazy\", referrerpolicy=\"strict-origin-when-cross-origin\", quitar autoplay de allow y conservar el title existente. Test de guarda sobre todos los iframes de los posts. El contenedor ya fija aspect-ratio 16/9 (article.css:8): sin CLS. La CSP Report-Only de la 40 admite youtube-nocookie. Sin design.md: misma presentación. Origen: audit_perf_security.md M6. Spec: specs/50_youtube-embed-hardening/requirements.md. Análisis y orden: progress/research/audit_backlog.md.",
+      "acceptance": [
+        "Un test recorre los .md y verifica que ningún iframe usa www.youtube.com/embed y que todos usan youtube-nocookie.com/embed (REQ-50-01)",
+        "Un test verifica loading=\"lazy\" y referrerpolicy=\"strict-origin-when-cross-origin\" en cada iframe de los posts (REQ-50-02)",
+        "Un test verifica que ningún allow de iframe contiene autoplay (REQ-50-03)",
+        "Un test verifica title no vacío en cada iframe de los posts (REQ-50-04)",
+        "El test nuevo tests/youtube-embed-hardening.test.mjs se escribe primero contra esta spec y se observa en rojo antes de implementar el cambio (ciclo test-first de AGENTS.md §3) (REQ-50-05)",
+        "Un test de inspección verifica que los archivos de src/ creados o modificados por la feature no superan las 100 líneas (REQ-50-06)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-50-07)"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 51,
+      "name": "header-mobile-reflow",
+      "title": "Header sin desborde en móvil y anclas no tapadas por la barra sticky",
+      "description": "WCAG 2.4.11 y 1.4.10. layout.css:20-31 fija position: sticky y height: 74px; con search-bar.css:63-74 (flex-wrap y buscador al 100 %) a 320 px el logo, los tres enlaces y los gaps de 24 px generan tres líneas que se salen de la caja del header. Tampoco hay scroll-padding-top, así que las anclas de los h2 (#principio-…) quedan bajo la barra. Cambios: token --header-height: 74px en tokens.css; .site-navbar con height: auto y min-height: var(--header-height) y padding vertical en móvil; html { scroll-padding-top: var(--header-height) }; en @media (max-height: 500px) el header deja de ser sticky. Verificación manual en navegador a 320 px y zoom 400 % documentada en progress/impl_51.md (no auditable en producción por el dominio). Depende de 37 (search-bar.css) y 38 (layout). Toca estilos: design.md incluido. Origen: audit_a11y.md M1. Spec: specs/51_header-mobile-reflow/requirements.md y design.md. Análisis y orden: progress/research/audit_backlog.md.",
+      "acceptance": [
+        "Un test de inspección verifica --header-height: 74px en tokens.css (REQ-51-01)",
+        "Un test de inspección verifica que .site-navbar no declara height: 74px y sí min-height: var(--header-height) (REQ-51-02)",
+        "Un test de inspección verifica html { scroll-padding-top: var(--header-height) } en layout.css (REQ-51-03)",
+        "Un test de inspección verifica @media (max-height: 500px) con .site-navbar position: static (REQ-51-04)",
+        "La verificación manual en navegador a 320 px y con zoom al 400 % queda documentada con capturas o descripción en progress/impl_51.md (REQ-51-05)",
+        "El test nuevo tests/header-mobile-reflow.test.mjs se escribe primero contra esta spec y se observa en rojo antes de implementar el cambio (ciclo test-first de AGENTS.md §3) (REQ-51-06)",
+        "Un test de inspección verifica que los archivos de src/ creados o modificados por la feature no superan las 100 líneas (REQ-51-07)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-51-08)"
+      ],
+      "depends_on": [
+        37,
+        38
+      ],
+      "status": "done"
+    },
+    {
+      "id": 52,
+      "name": "contrast-badge-kicker",
+      "title": "Contraste y texto accesible de la insignia verificado y contraste del kicker del artículo",
+      "description": "WCAG 1.1.1, 1.4.3 y 1.4.11. La insignia «✓» del hero (new-hero.astro:35-39, profile-card.css:42-49) no tiene texto accesible y el blanco sobre --color-verified #17b8ff da 2.25:1. El kicker del artículo (post-header.css:60-72) usa --color-accent sobre accent 12 % y --color-hero-top: ~3.54:1 con texto de 0.8rem. Cambios: insignia como <span class=\"verified\"><span aria-hidden=\"true\">✓</span><span class=\"visually-hidden\">Verificado</span></span> (utilidad de la 36); --color-verified pasa a #0a6f9e (calculado: 5.55:1 con blanco y 3.18:1 con --color-username-bg); el texto del kicker usa --color-accent-hover (#9a89ff, 5.73:1 sobre --color-hero-top). Verificar en navegador el kicker por el degradado con glow. Depende de 36 (.visually-hidden). Toca estilos y tokens: design.md incluido. Origen: audit_a11y.md M3 y M4. Spec: specs/52_contrast-badge-kicker/requirements.md y design.md. Análisis y orden: progress/research/audit_backlog.md.",
+      "acceptance": [
+        "Un test de inspección verifica en new-hero.astro el span aria-hidden=\"true\" con ✓ y el span visually-hidden con «Verificado» (REQ-52-01)",
+        "Un test calcula la luminancia relativa WCAG de los tokens y verifica contraste >= 4.5 entre --color-verified y --color-text (REQ-52-02)",
+        "Un test calcula el contraste entre --color-verified y --color-username-bg y verifica >= 3 (REQ-52-03)",
+        "Un test de inspección verifica color: var(--color-accent-hover) en .post__kicker (REQ-52-04)",
+        "Un test calcula el contraste entre --color-accent-hover y --color-hero-top y verifica >= 4.5 (REQ-52-05)",
+        "El test nuevo tests/contrast-badge-kicker.test.mjs se escribe primero contra esta spec y se observa en rojo antes de implementar el cambio (ciclo test-first de AGENTS.md §3) (REQ-52-06)",
+        "Un test de inspección verifica que los archivos de src/ creados o modificados por la feature no superan las 100 líneas (REQ-52-07)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-52-08)"
+      ],
+      "depends_on": [
+        36
+      ],
+      "status": "done"
+    },
+    {
+      "id": 53,
+      "name": "link-image-accessible-names",
+      "title": "Nombres accesibles de enlaces e imágenes: alts duplicados, logo, enlace externo y recomendados",
+      "description": "Nombres accesibles redundantes o imprecisos. (1) latest-articles.astro:17-25 mete img alt={title} y h2 {title} en el mismo enlace: nombre «Título Título»; igual en item-html.ts:12, posts/[id].astro:47 (alt = h1) y la miniatura de recomendados. (2) El logo (Layout.astro:36) tiene alt «Logo de moibaldenegro.com», que describe la imagen y no el destino. (3) El enlace a x.com (Layout.astro:39) no avisa de que es externo. (4) Los enlaces de «Recomendados» (posts/[id].astro:70-75) solo cubren el título aunque la fila completa tiene hover (post-next.css:12), al contrario que los resultados de búsqueda (search-results.css:36, ::after). Cambios: alt=\"\" en miniaturas y portadas que acompañan al título; alt del logo «Inicio — moibaldenegro.com»; texto visually-hidden «(X, sitio externo)» en el enlace a x.com; enlace extendido con ::after en recomendados. Depende de 36 (.visually-hidden). Toca .astro y CSS: design.md incluido. Origen: audit_a11y.md M7, B8, B9 y B10; audit_seo.md B3. Spec: specs/53_link-image-accessible-names/requirements.md y design.md. Análisis y orden: progress/research/audit_backlog.md.",
+      "acceptance": [
+        "Un test de inspección verifica alt=\"\" en las img de latest-articles.astro, item-html.ts, .post__image y la miniatura de recomendados de posts/[id].astro (REQ-53-01)",
+        "Un test de inspección verifica alt=\"Inicio — moibaldenegro.com\" en el logo de Layout.astro (REQ-53-02)",
+        "Un test de inspección verifica dentro del enlace a x.com un span visually-hidden con «(X, sitio externo)» (REQ-53-03)",
+        "Un test de inspección verifica en post-next.css una regla ::after con position: absolute e inset: 0 sobre el enlace del recomendado y position: relative en la fila (REQ-53-04)",
+        "Un test sobre dist/client/index.html verifica que ningún enlace de card contiene un img con alt igual al título de la card (REQ-53-05)",
+        "El test nuevo tests/link-image-accessible-names.test.mjs se escribe primero contra esta spec y se observa en rojo antes de implementar el cambio (ciclo test-first de AGENTS.md §3) (REQ-53-06)",
+        "Un test de inspección verifica que los archivos de src/ creados o modificados por la feature no superan las 100 líneas (REQ-53-07)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-53-08)"
+      ],
+      "depends_on": [
+        36
+      ],
+      "status": "done"
+    },
+    {
+      "id": 54,
+      "name": "code-copy-status",
+      "title": "Confirmar el copiado de código con región de estado y texto visible",
+      "description": "WCAG 4.1.3. code-copy.ts:39-44 solo cambia el aria-label a «¡Copiado!» (muchos lectores no anuncian el cambio de nombre de un botón enfocado) y si el portapapeles falla (code-copy.ts:38) retorna en silencio, sin feedback (contrario a la regla 3 de errores explícitos). Cambios: una región compartida <p class=\"visually-hidden\" role=\"status\" aria-live=\"polite\" data-code-copy-status> en code-copy.astro con «Código copiado» o «No se pudo copiar el código»; texto visible breve «Copiado» junto al icono durante 2000 ms (clase is-copied, estilos en code-copy.css con tokens). Que el botón no se desplace con el scroll horizontal del pre exige tocar el DOM del markdown y queda fuera (anotado en el análisis). Depende de 36 (.visually-hidden). code-copy.ts está en 67 líneas. Toca .astro y CSS: design.md incluido. Origen: audit_a11y.md M5. Spec: specs/54_code-copy-status/requirements.md y design.md. Análisis y orden: progress/research/audit_backlog.md.",
+      "acceptance": [
+        "Un test de inspección verifica la región única con role=\"status\", aria-live=\"polite\", data-code-copy-status y clase visually-hidden (REQ-54-01)",
+        "Un test con document y clipboard simulados (precedente tests/code-copy-button.test.mjs) verifica «Código copiado» en la región tras un clic (REQ-54-02)",
+        "Un test con clipboard simulado que rechaza verifica «No se pudo copiar el código» en la región (REQ-54-03)",
+        "Un test con mock.timers verifica la clase is-copied y el texto «Copiado» tras el clic y su retirada a los 2000 ms (REQ-54-04)",
+        "Un test de inspección verifica la regla de is-copied en code-copy.css sin colores hexadecimales ni rgba sueltos (REQ-54-05)",
+        "El test nuevo tests/code-copy-status.test.mjs se escribe primero contra esta spec y se observa en rojo antes de implementar el cambio (ciclo test-first de AGENTS.md §3) (REQ-54-06)",
+        "Un test de inspección verifica que los archivos de src/ creados o modificados por la feature no superan las 100 líneas (REQ-54-07)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-54-08)"
+      ],
+      "depends_on": [
+        36
+      ],
+      "status": "done"
+    },
+    {
+      "id": 55,
+      "name": "home-heading-hierarchy",
+      "title": "Jerarquía de encabezados de la portada: tarjetas del hero sin h3 y títulos de artículo en h3",
+      "description": "En la portada hay un h1 seguido de 12 h3 de las tarjetas del hero (hero-card.astro:14) sin h2 previo, y los títulos de las cards de artículo son h2 (latest-articles.astro:25) al mismo nivel que «Últimos artículos». Los SVG de las tarjetas (hero-card.astro:18-20) no tienen aria-hidden. Cambios: el título de la tarjeta del hero pasa a <p class=\"card-title\"> (se ajusta el selector .card-header h3 de hero-card.css); el título de cada card de artículo pasa a h3 conservando su clase; los SVG de las tarjetas llevan aria-hidden=\"true\" y focusable=\"false\". Las tarjetas duplicadas (NODE JS, GITHUB ACTIONS, YOUTUBE, TWITCH en hero-cards.json) y la affordance de hover en tarjetas que no son enlaces son decisiones de contenido y diseño del humano (análisis). Los tests que aseveran el h2 de la card (contrato REQ-20-03..06) se ajustan con el precedente REQ-43-06. Toca .astro y CSS: design.md incluido. Origen: audit_seo.md B2 y audit_a11y.md B1 y B2. Spec: specs/55_home-heading-hierarchy/requirements.md y design.md. Análisis y orden: progress/research/audit_backlog.md.",
+      "acceptance": [
+        "Un test de inspección verifica <p class=\"card-title\"> en hero-card.astro y ausencia de <h1 a <h6 (REQ-55-01)",
+        "Un test de inspección verifica <h3 con class latest-articles__title y transition:name conservado (REQ-55-02)",
+        "Un test de inspección verifica aria-hidden=\"true\" y focusable=\"false\" en el svg de hero-card.astro (REQ-55-03)",
+        "Un test sobre dist/client/index.html extrae la secuencia de h1-h6 y verifica que ningún encabezado sube más de un nivel respecto al anterior (REQ-55-04)",
+        "Un test de inspección verifica que hero-card.css estiliza .card-title y latest-articles.css .latest-articles__title sin colores hexadecimales ni rgba sueltos (REQ-55-05)",
+        "El test nuevo tests/home-heading-hierarchy.test.mjs se escribe primero contra esta spec y se observa en rojo antes de implementar el cambio (ciclo test-first de AGENTS.md §3) (REQ-55-06)",
+        "Un test de inspección verifica que los archivos de src/ creados o modificados por la feature no superan las 100 líneas (REQ-55-07)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-55-08)"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 56,
+      "name": "reduced-motion",
+      "title": "Respetar prefers-reduced-motion en animaciones y transiciones",
+      "description": "No hay ninguna regla prefers-reduced-motion en src/: el glow del hero anima en bucle (hero-section.css:25-29, float 10s infinite sobre un elemento de 900×900 px, coste de GPU) y hay transforms en hover (hero-card.css:17-21, profile-card.css:17). Las view transitions ya respetan la preferencia (ClientRouter). Cambios: la animación float del hero solo se aplica dentro de @media (prefers-reduced-motion: no-preference); bloque global en layout.css que, con reduce, deja animation y transition en duración mínima y anula los transform de hover. Toca estilos: design.md incluido. Origen: audit_a11y.md B3 y audit_perf_security.md B3. Spec: specs/56_reduced-motion/requirements.md y design.md. Análisis y orden: progress/research/audit_backlog.md.",
+      "acceptance": [
+        "Un test de inspección verifica que animation: float aparece únicamente dentro de @media (prefers-reduced-motion: no-preference) en hero-section.css (REQ-56-01)",
+        "Un test de inspección verifica el bloque reduce con animation-duration y transition-duration de 0.01ms sobre *, *::before y *::after (REQ-56-02)",
+        "Un test de inspección verifica que el bloque reduce anula transform en los estados hover de .hero-card y .profile-card (REQ-56-03)",
+        "Un test de inspección verifica que ningún archivo .ts de src/ consulta prefers-reduced-motion (REQ-56-04)",
+        "El test nuevo tests/reduced-motion.test.mjs se escribe primero contra esta spec y se observa en rojo antes de implementar el cambio (ciclo test-first de AGENTS.md §3) (REQ-56-05)",
+        "Un test de inspección verifica que los archivos de src/ creados o modificados por la feature no superan las 100 líneas (REQ-56-06)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-56-07)"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 57,
+      "name": "search-form-progressive",
+      "title": "Buscador del header como formulario de búsqueda con mejora progresiva",
+      "description": "El buscador es un <input type=\"text\"> suelto dentro de nav (search-bar.astro:5-15), sin form, sin landmark de búsqueda y sin funcionar sin JS (solo Enter vía search-bar.ts:55-57). En /search el input no muestra el término q activo, y el Escape escucha en document y actúa aunque el foco esté fuera del buscador. Cambios: <search><form action=\"/search\" method=\"get\"> con <input type=\"search\" name=\"q\" enterkeyhint=\"search\"> (sin JS el envío navega a /search?q=); con JS search-bar.ts intercepta submit y navega con navigate del ClientRouter; en /search el input se precarga con q; Escape solo actúa con el foco en el input o en la región de resultados; el botón de cancelar nativo de type=search se oculta en CSS para no duplicar el ×. Depende de 36; la dependencia de la 10 se retiró al aparcarla por decisión humana (2026-10-08): search-bar.astro ya registra initSearchBar con astro:page-load. search-bar.ts está en 64 líneas. Toca .astro y CSS: design.md incluido. Origen: audit_a11y.md B5 y B6. Spec: specs/57_search-form-progressive/requirements.md y design.md. Análisis y orden: progress/research/audit_backlog.md.",
+      "acceptance": [
+        "Un test de inspección verifica <search> y <form action=\"/search\" method=\"get\"> en search-bar.astro (REQ-57-01)",
+        "Un test de inspección verifica type=\"search\", name=\"q\" y enterkeyhint=\"search\" en el input (REQ-57-02)",
+        "Un test con document simulado verifica preventDefault y navigate('/search?q=docker') al disparar submit (REQ-57-03)",
+        "Un test con document simulado en /search?q=docker verifica que el input queda con value docker (REQ-57-04)",
+        "Un test con document simulado verifica que Escape con el foco en body no limpia el input (REQ-57-05)",
+        "Un test de inspección verifica la regla ::-webkit-search-cancel-button con appearance: none o display: none en search-bar.css (REQ-57-06)",
+        "El test nuevo tests/search-form-progressive.test.mjs se escribe primero contra esta spec y se observa en rojo antes de implementar el cambio (ciclo test-first de AGENTS.md §3) (REQ-57-07)",
+        "Un test de inspección verifica que los archivos de src/ creados o modificados por la feature no superan las 100 líneas (REQ-57-08)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-57-09)"
+      ],
+      "depends_on": [
+        36
+      ],
+      "status": "done"
+    },
+    {
+      "id": 58,
+      "name": "manifest-generator-cleanup",
+      "title": "Nombre real en site.webmanifest y quitar la meta generator",
+      "description": "public/site.webmanifest conserva los valores genéricos \"name\": \"MyWebSite\" y \"short_name\": \"MySite\". Layout.astro:29 expone <meta name=\"generator\" content=\"Astro v7.2.0\"> (fingerprinting de versión, relevante mientras exista la CVE de la feature 41). Cambios: name y short_name = moibaldenegro.com y quitar la meta generator del Layout. La barra final (trailingSlash, audit_seo.md B4) no se toca hasta verificar en vivo el comportamiento de Cloudflare (análisis). Depende de 35 (mismo head). Sin design.md. Origen: audit_seo.md B5 y B6. Spec: specs/58_manifest-generator-cleanup/requirements.md. Análisis y orden: progress/research/audit_backlog.md.",
+      "acceptance": [
+        "Un test parsea public/site.webmanifest y verifica name y short_name = moibaldenegro.com (REQ-58-01)",
+        "Un test de inspección verifica que Layout.astro no contiene name=\"generator\" ni Astro.generator (REQ-58-02)",
+        "Un test sobre el build verifica que dist/client/index.html y un post no contienen name=\"generator\" (REQ-58-03)",
+        "El test nuevo tests/manifest-generator-cleanup.test.mjs se escribe primero contra esta spec y se observa en rojo antes de implementar el cambio (ciclo test-first de AGENTS.md §3) (REQ-58-04)",
+        "Un test de inspección verifica que los archivos de src/ creados o modificados por la feature no superan las 100 líneas (REQ-58-05)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-58-06)"
+      ],
+      "depends_on": [
+        35
+      ],
+      "status": "done"
+    },
+    {
+      "id": 59,
+      "name": "tokens-audit-tmp-fixture",
+      "title": "Sacar de src/ la hoja temporal del test del guardián de tokens para eliminar el flake de la suite",
+      "description": "Flake preexistente del arnés: tests/cleanup-dead-code.test.mjs (test REQ-12-06 «el guardián falla ante un color fuera de tokens.css», líneas 75-93) escribe y borra src/styles/tmp-audit.css dentro del repo mientras node --test ejecuta en paralelo otros archivos que recorren src/ con readdir+read (REQ-25-07 de game-of-life-removal, REQ-09-05 de hero-ui-refactor y otros). Si la hoja se borra entre el readdir y el read, fallan con ENOENT sobre srcstyles\tmp-audit.css; ocurre en ~2 de cada 4 corridas y vuelve rojo ./init.sh de forma intermitente (registrado en los cierres de 25, 26 y 28 en progress/history.md y por los reviewers de 36 y 38). Causa raíz: scripts/audit-design-tokens.mjs tiene STYLES_DIR fijo a src/styles y no admite ruta, así que el test solo puede inyectar el caso sucio escribiendo en src/. Arreglo (patrón de la feature 28): el script acepta un directorio opcional como primer argumento (sin argumento conserva src/styles y su salida) y el test crea la hoja sucia en un directorio de node:os tmpdir (mkdtempSync) que borra en finally. Se añade un test de guarda que impide que cualquier test escriba o borre dentro de src/. No toca src/ ni UI: sin design.md. Sin dependencias. Análisis: progress/research/flaky-tmp-audit.md. Spec: specs/59_tokens-audit-tmp-fixture/requirements.md.",
+      "acceptance": [
+        "Un test node:test crea con mkdtempSync un directorio temporal con una hoja .css con un hex suelto, ejecuta scripts/audit-design-tokens.mjs pasándole esa ruta y verifica exit distinto de 0 (REQ-59-01, REQ-59-03; test-first: en rojo antes del cambio porque el script ignora el argumento y audita src/styles limpio)",
+        "Un test node:test verifica que con un directorio temporal que solo contiene tokens.css con colores y una hoja limpia el script termina con exit 0 (REQ-59-01)",
+        "Un test node:test verifica que scripts/audit-design-tokens.mjs sin argumentos termina con exit 0 sobre el src/styles real y anuncia AUDIT en stdout (REQ-59-02)",
+        "Un test de inspección verifica que tests/cleanup-dead-code.test.mjs no contiene la cadena tmp-audit.css ni ninguna ruta src/styles como destino de escritura, y que usa mkdtempSync con tmpdir y rmSync dentro de un finally (REQ-59-04, REQ-59-05)",
+        "Un test de guarda recorre tests/**/*.mjs y falla si alguna llamada writeFileSync, appendFileSync, unlinkSync, rmSync, mkdirSync o renameSync apunta a una ruta bajo src/ (ningún test escribe dentro de src/) (REQ-59-06)",
+        "Tras la ejecución completa de pnpm test no existe src/styles/tmp-audit.css ni ningún archivo nuevo sin seguimiento bajo src/ (git status --porcelain src/ sin entradas nuevas) (REQ-59-06)",
+        "pnpm test se ejecuta cinco veces seguidas y las cinco corridas terminan en verde sin errores ENOENT sobre src/; el resultado de las cinco corridas queda registrado en progress/impl_59.md (REQ-59-07)",
+        "Un test de inspección verifica que scripts/audit-design-tokens.mjs no supera las 100 líneas y solo importa módulos node: (REQ-59-08)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-59-09)"
+      ],
+      "depends_on": [],
+      "status": "done"
+    },
+    {
+      "id": 60,
+      "name": "workers-types-upgrade",
+      "title": "Subir @cloudflare/workers-types a la versión que satisface el peer de wrangler 4.149.0",
+      "description": "APROBADA por el humano el 2026-10-08 («si resube la version de cloudflare»), registrada como nota PENDIENTE en docs/dependencies.md (sección Aprobaciones de cambio de versión). En la feature 41 wrangler subió a ^4.149.0, que declara como peer @cloudflare/workers-types ^5.20261006.1; el repo declara ^5.20260812.1 en devDependencies y el lockfile resuelve 5.20260812.1, así que el peer queda sin satisfacer (la aprobación de la 41 no cubría este paquete). Cambio: subir @cloudflare/workers-types en package.json (devDependencies) a la última 5.x (>= 5.20261006.1; 5.20261008.1 en pnpm view a 2026-10-08) con pnpm, regenerar pnpm-lock.yaml, actualizar la entrada ### @cloudflare/workers-types de docs/dependencies.md (version nueva + approved: 2026-10-08) y marcar la nota de aprobación como APLICADA en la feature 60. Test-first con el patrón de tests/astro-security-upgrade.test.mjs (feature 41). Si worker-configuration.d.ts o los tipos cambian, documentarlo en progress/impl_60.md. No toca src/ ni UI: sin design.md. Spec: specs/60_workers-types-upgrade/requirements.md. Análisis: progress/research/workers-types-upgrade.md.",
+      "acceptance": [
+        "Un test de inspección verifica que package.json declara @cloudflare/workers-types en devDependencies con un rango cuya versión mínima es >= 5.20261006.1 (REQ-60-01)",
+        "Un test de inspección verifica que pnpm-lock.yaml resuelve @cloudflare/workers-types en el importer raíz a una versión 5.x >= 5.20261006.1 (REQ-60-02)",
+        "Un test de inspección verifica que la entrada ### @cloudflare/workers-types de docs/dependencies.md tiene la misma versión que package.json y approved: 2026-10-08, y scripts/validate-dependencies.mjs pasa (REQ-60-03)",
+        "Un test de inspección verifica que la nota de aprobación del 2026-10-08 sobre @cloudflare/workers-types en docs/dependencies.md contiene APLICADA y la feature 60 (REQ-60-04)",
+        "La salida de pnpm install tras la actualización no contiene avisos de peer dependency no satisfecha sobre @cloudflare/workers-types y queda documentada en progress/impl_60.md (REQ-60-05)",
+        "pnpm build termina sin errores tras la actualización (REQ-60-06)",
+        "El test nuevo tests/workers-types-upgrade.test.mjs se escribe primero contra esta spec y se observa en rojo antes de modificar package.json (ciclo test-first de AGENTS.md §3) (REQ-60-07)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-60-08)"
+      ],
+      "depends_on": [],
+      "status": "done"
+    },
+    {
+      "id": 61,
+      "name": "header-anchor-offset-mobile",
+      "title": "Anclas no tapadas por el header envuelto en móvil y logo separado del borde superior",
+      "description": "Bug residual de la feature 51: a 320 px el nav se envuelve (search-bar.css:79-89, flex-wrap y buscador al 100%) y el header mide ~137 px (impl_51.md), pero html { scroll-padding-top: var(--header-height) } usa 74px (tokens.css:81, layout.css:11): ~63 px del destino de cualquier ancla (encabezados de los posts, #contenido del skip-link) quedan bajo la barra sticky. Además el nav no tiene padding vertical y el logo toca el borde superior del viewport. Cambio: token nuevo --header-height-mobile (valor medido en navegador >= altura real del header a 320 px con el padding nuevo, orientativo ~168px) y, dentro del @media (max-width: 768px) existente de layout.css, html { scroll-padding-top: var(--header-height-mobile) } y padding-block: var(--gap-card) en .site-navbar nav. Escritorio sin cambios; el header sigue sticky en móvil vertical (decisión asumida, alternativa static documentada en design.md). layout.css tiene 97 líneas: no superar 100. tokens.css pasa de 95 a 97 líneas: actualizar los tests de conteo (REQ-17-09, REQ-42-09 y los ajustados en la 51; precedente REQ-43-06). Verificación real con Chrome headless + CDP. Sin dependencias. Spec: specs/61_header-anchor-offset-mobile/requirements.md y design.md. Análisis: progress/research/post_audit_backlog.md.",
+      "acceptance": [
+        "Un test de inspección verifica que tokens.css declara --header-height-mobile con un valor en px mayor o igual que la altura del header a 320 px medida en navegador y anotada en progress/impl_61.md (REQ-61-01)",
+        "Un test de inspección verifica que layout.css, dentro de @media (max-width: 768px), aplica scroll-padding-top: var(--header-height-mobile) a html (REQ-61-02)",
+        "Un test de inspección verifica que la regla html fuera de media queries de layout.css conserva scroll-padding-top: var(--header-height) (REQ-61-03)",
+        "Un test de inspección verifica que layout.css, dentro de @media (max-width: 768px), declara padding-block: var(--gap-card) en .site-navbar nav (REQ-61-04)",
+        "Verificación en Chrome headless + CDP sobre un post con encabezados con id: tras navegar a #<id> a 320, 375 y 768 px de ancho, getBoundingClientRect().top del destino es >= el bottom de .site-navbar; mediciones registradas en progress/impl_61.md (REQ-61-05)",
+        "Verificación en Chrome headless + CDP a 320 px: el top del logo del header es >= 8 px respecto al borde superior del viewport; medición registrada en progress/impl_61.md (REQ-61-06)",
+        "El test nuevo tests/header-anchor-offset-mobile.test.mjs se escribe primero contra esta spec y se observa en rojo antes de modificar tokens.css y layout.css (ciclo test-first de AGENTS.md §3) (REQ-61-07)",
+        "Un test de inspección verifica que tokens.css, layout.css y los archivos de tests modificados no superan las 100 líneas, y los tests de conteo de tokens.css quedan actualizados al nuevo total (REQ-61-08)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-61-09)"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 62,
+      "name": "code-copy-fixed-corner",
+      "title": "Botón de copiar fijo en la esquina del bloque de código al desplazarlo horizontalmente",
+      "description": "Bug: src/components/code-copy/code-copy.ts añade el botón como hijo del pre.astro-code (pre.appendChild) y src/styles/code-copy.css lo posiciona absolute respecto al pre (position: relative), pero el pre tiene overflow-x: auto (post.css:87-93): al desplazar horizontalmente un bloque largo el botón se mueve con el contenido y sale de la vista. Cambio: initCodeCopy envuelve cada pre en un div.code-block insertado en su lugar y cuelga el botón del envoltorio; position: relative pasa del pre a .post__content .code-block en code-copy.css. Margen, borde y scroll siguen en el pre (aspecto sin scroll idéntico). Idempotencia con dataset.copyReady como hoy; el texto copiado sigue saliendo del code. tests/code-copy-button.test.mjs (REQ-CC-02/03) usa fakes con pre.appendChild: se amplían con parentNode/insertBefore y se ajustan al envoltorio dentro de esta feature. code-copy.ts tiene 84 líneas: no superar 100. Sin dependencias, sin tokens nuevos. Spec: specs/62_code-copy-fixed-corner/requirements.md y design.md. Análisis: progress/research/post_audit_backlog.md.",
+      "acceptance": [
+        "Un test node:test con fakes de DOM verifica que initCodeCopy inserta un div con clase code-block en la posición del pre, mueve el pre dentro y añade el botón code-copy como hijo del envoltorio y no del pre (REQ-62-01, REQ-62-02)",
+        "Un test node:test verifica que dos llamadas a initCodeCopy sobre la misma página dejan un único envoltorio code-block y un único botón por bloque (REQ-62-03)",
+        "Un test de inspección verifica que code-copy.css declara position: relative en .post__content .code-block y que ya no declara position: relative sobre pre.astro-code (REQ-62-04)",
+        "Verificación en Chrome headless + CDP sobre un post con un bloque de código desbordado: tras fijar scrollLeft del pre a 200 el getBoundingClientRect() del botón es idéntico al previo y su right coincide con el right del pre menos 8 px; registrado en progress/impl_62.md (REQ-62-05)",
+        "Un test node:test verifica que al pulsar el botón del bloque envuelto se escribe en el portapapeles el textContent del code del pre (REQ-62-06)",
+        "El test nuevo tests/code-copy-fixed-corner.test.mjs se escribe primero contra esta spec y se observa en rojo antes de modificar code-copy.ts y code-copy.css (ciclo test-first de AGENTS.md §3) (REQ-62-07)",
+        "Un test de inspección verifica que code-copy.ts, code-copy.css y los tests modificados no superan las 100 líneas (REQ-62-08)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-62-09)"
+      ],
+      "status": "in_progress"
+    },
+    {
+      "id": 63,
+      "name": "theme-color-dark",
+      "title": "Color de tema oscuro en site.webmanifest y meta theme-color del layout",
+      "description": "public/site.webmanifest declara theme_color y background_color #ffffff aunque el sitio es oscuro (--color-background: #070716 en tokens.css:13), y Layout.astro no emite <meta name=\"theme-color\">: la barra del navegador móvil y la ventana/splash de la PWA salen blancas. Cambio: constante THEME_COLOR en src/domain/seo/theme.ts (nuevo) con el valor de --color-background; theme_color y background_color del manifest con ese valor; Layout.astro importa THEME_COLOR y emite una única meta theme-color (sin literal hexadecimal en el componente). Un test vigila la igualdad token = constante = manifest. Se usa --color-background y no --color-navbar (rgba). No toca name/short_name (feature 58). Sin dependencias. Spec: specs/63_theme-color-dark/requirements.md y design.md. Análisis: progress/research/post_audit_backlog.md.",
+      "acceptance": [
+        "Un test importa THEME_COLOR de src/domain/seo/theme.ts, lee --color-background de tokens.css y parsea public/site.webmanifest, y verifica que THEME_COLOR, theme_color y background_color valen exactamente el valor del token (REQ-63-01, REQ-63-02)",
+        "Un test de inspección verifica que Layout.astro contiene exactamente una meta name=\"theme-color\" cuyo content es la expresión {THEME_COLOR} (REQ-63-03)",
+        "Un test de inspección verifica que Layout.astro importa THEME_COLOR desde ../domain/seo/theme.ts y no contiene ningún literal hexadecimal de color (REQ-63-04)",
+        "Un test sobre el build verifica que dist/client/index.html, about y un post contienen <meta name=\"theme-color\" content=\"#070716\"> (REQ-63-05)",
+        "El test nuevo tests/theme-color-dark.test.mjs se escribe primero contra esta spec y se observa en rojo antes de modificar el manifest y Layout.astro (ciclo test-first de AGENTS.md §3) (REQ-63-06)",
+        "Un test de inspección verifica que Layout.astro y src/domain/seo/theme.ts no superan las 100 líneas (REQ-63-07)",
+        "La suite completa del arnés pasa en verde y ./init.sh termina sin errores de formato ni tests fallidos al cierre de la feature (REQ-63-08)"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": 64,
+      "name": "csp-enforce",
+      "title": "Pasar la CSP de Report-Only a Content-Security-Policy obligatoria verificada contra el build",
+      "description": "La feature 40 desplegó la CSP como Content-Security-Policy-Report-Only en src/domain/http/security-headers.ts (fuente única, usada por src/middleware.ts) y replicada en public/_headers. Inventario del build (progress/research/post_audit_backlog.md): scripts /_astro/*.js + inline (cargador de server islands, módulo de code-copy), sin eval/new Function; fetch solo al mismo origen (server islands, ClientRouter, índice de búsqueda); estilos /_astro/*.css + <style> y atributos style de Shiki; imágenes solo /assets; iframe https://www.youtube-nocookie.com; la isla HTB consulta la API en el servidor. La política vigente (REQ-40-06) cubre todo: se aplica tal cual cambiando el nombre de la cabecera a Content-Security-Policy en el módulo y en public/_headers, sin relajarla ni ampliarla. Riesgo: inyección de Cloudflare en el borde (Web Analytics static.cloudflareinsights.com, Rocket Loader): no se pudo comprobar en vivo; el implementer revisa el HTML de producción y para si aparece un origen no permitido. tests/security-headers.test.mjs (EXPECTED con Report-Only) se actualiza al nombre obligatorio dentro de esta feature. No toca UI: sin design.md. Sin dependencias. Spec: specs/64_csp-enforce/requirements.md.",
+      "acceptance": [
+        "Un test importa SECURITY_HEADERS y verifica que contiene Content-Security-Policy con el valor exacto de REQ-40-06 y que no contiene la clave Content-Security-Policy-Report-Only (REQ-64-01)",
+        "Un test parsea public/_headers y verifica que la regla /* declara Content-Security-Policy idéntica al módulo y ninguna línea Content-Security-Policy-Report-Only (REQ-64-02)",
+        "Un test invoca onRequest de src/middleware.ts con una Response y verifica que la respuesta lleva Content-Security-Policy con el valor del módulo y no lleva Content-Security-Policy-Report-Only (REQ-64-03)",
+        "Un test recorre src/ y public/ y verifica que ningún archivo contiene la cadena Content-Security-Policy-Report-Only (REQ-64-04)",
+        "Un test sobre el build (helper tests/helpers/astro-build.mjs, outDir temporal) recorre todos los HTML del cliente y verifica que cada src/href de script, link stylesheet/preload, img e iframe es relativo, del propio sitio o de un origen listado en la directiva correspondiente (frame-src para iframe) y que las URLs data: solo aparecen en img (REQ-64-05)",
+        "Un test sobre el build verifica que ningún _astro/*.js contiene eval( ni new Function (REQ-64-06)",
+        "progress/impl_64.md documenta la revisión del HTML de producción (o de los informes Report-Only) con los orígenes externos encontrados; si alguno no está permitido la feature queda detenida con el origen registrado en progress/current.md (REQ-64-07)",
+        "Verificación en Chrome headless + CDP con la cabecera obligatoria sobre /, /about, /search?q=solid, una página de término, un post con código, /posts/02-principios-del-diseno-de-software y una URL 404: cero eventos securitypolicyviolation y cero errores CSP en consola, la isla HTB se pide sin bloqueo, el botón de copiar funciona y el iframe de YouTube carga; resultados en progress/impl_64.md (REQ-64-08)",
+        "El test nuevo tests/csp-enforce.test.mjs se escribe primero contra esta spec y se observa en rojo antes de modificar security-headers.ts y public/_headers (ciclo test-first de AGENTS.md §3) (REQ-64-09)",
+        "La suite completa del arnés pasa en verde, ./init.sh termina sin errores y security-headers.ts, public/_headers y los tests creados o modificados no superan las 100 líneas (REQ-64-10)"
+      ],
       "status": "pending"
     }
   ]

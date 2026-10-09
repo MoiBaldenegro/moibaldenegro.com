@@ -177,7 +177,9 @@ test('Convención: la página importa post-next.css sin <style> ni JS y post.css
   assert.ok(page.includes('../../styles/post-next.css'), 'la página no importa post-next.css (convención)');
   assert.doesNotMatch(page, /<style/i, 'la página contiene un bloque <style> embebido (convención)');
   assert.doesNotMatch(page, /\bstyle\s*=/, 'la página usa style inline (convención)');
-  assert.doesNotMatch(page, /<script/i, 'la página añade JS de runtime (estático por defecto)');
+  // Ajuste feature 44 (precedente REQ-43-06): el JSON-LD (type="application/ld+json")
+  // son datos estructurados, no JS de runtime; cualquier otro <script sigue prohibido.
+  assert.doesNotMatch(page, /<script(?![^>]*type="application\/ld\+json")/i, 'la página añade JS de runtime (estático por defecto)');
   const postCssLines = countLines(readFileSync(POST_CSS_PATH, 'utf8'));
   assert.equal(postCssLines, 100, `post.css tiene ${postCssLines} líneas y debe conservar 100 intactas (D2 del design)`);
 });

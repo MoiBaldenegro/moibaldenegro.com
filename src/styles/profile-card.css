@@ -64,3 +64,8 @@
   .profile-content p { font-size: 0.95rem; line-height: 1.6; }
   .profile-username { padding: 10px 18px; }
 }
+
+/* Feature 56 (REQ-56-03): sin desplazamiento en hover con movimiento reducido. */
+@media (prefers-reduced-motion: reduce) {
+  .profile-card:hover { transform: none; }
+}

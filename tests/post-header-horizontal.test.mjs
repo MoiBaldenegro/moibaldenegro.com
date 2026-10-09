@@ -20,12 +20,15 @@
 //   REQ-42-08 — el primer h1 y el primer img conservan los pares
 //               title-${entry.id} / img-${entry.id} (REQ-24-03/05).
 //   REQ-42-09 — los estilos residen en post-header.css (≤100 líneas),
-//               tokens.css permanece en 93 líneas (87 + el token
+//               tokens.css permanece en 95 líneas (87 + el token
 //               --radius-thumb aprobado en la feature 9 + el token
 //               --video-max-width aprobado en la feature 16; ajuste
 //               REQ-43-06), la página sigue ≤100 líneas sin estilos
 //               embebidos y toda declaración de color/borde/sombra de la
 //               hoja usa var() (REQ-39-09).
+// Ajuste feature 61 (precedente REQ-43-06): tokens.css pasa de 95 a 97 (--header-height-mobile).
+// Ajuste feature 51 (precedente REQ-43-06, como en la feature 16): tokens.css pasa de 93 a 95
+// líneas por el token aprobado --header-height (comentario + token).
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -151,7 +154,10 @@ test('REQ-42-05: .post__hero .post__image declara 4:3, margin 0 y glow; la regla
 
 test('REQ-42-03: .post__kicker usa var(--color-accent) en color y borde con fondo color-mix', () => {
   const kicker = ruleBlock(readHeaderCss(), '\\.post__kicker');
-  assert.match(kicker, /color:\s*var\(--color-accent\)/, 'el kicker no usa color var(--color-accent) (REQ-42-03, design Decisión 2)');
+  // Ajuste feature 52 (precedente REQ-43-06): el TEXTO del kicker usa
+  // --color-accent-hover (contraste 5.73:1 sobre --color-hero-top, WCAG 1.4.3);
+  // el borde y el fondo color-mix siguen con --color-accent.
+  assert.match(kicker, /(^|[^-])color:\s*var\(--color-accent-hover\)/m, 'el kicker no usa color var(--color-accent-hover) (REQ-42-03 + REQ-52-04)');
   assert.match(kicker, /border:[^;]*var\(--color-accent\)/, 'el kicker no usa border var(--color-accent) (REQ-42-03)');
   assert.match(
     kicker,
@@ -194,10 +200,10 @@ test('REQ-42-09: post-header.css ≤100 líneas y sin hex/rgba sueltos', () => {
   assert.doesNotMatch(content, /rgba?\(/, 'post-header.css contiene rgb()/rgba() hardcodeado (REQ-42-09)');
 });
 
-test('REQ-42-09: tokens.css conserva 93 líneas (87 + --radius-thumb de la feature 9 + --video-max-width de la feature 16) sin tokens nuevos', () => {
+test('REQ-42-09: tokens.css conserva 97 líneas (87 + --radius-thumb de la feature 9 + --video-max-width de la feature 16 + --header-height de la feature 51 + --header-height-mobile de la feature 61) sin tokens nuevos', () => {
   const tokens = readTokens();
   const lineCount = countLines(tokens);
-  assert.equal(lineCount, 93, `tokens.css tiene ${lineCount} líneas y debe conservar 93 (REQ-42-09; 87 + 4 del token --radius-thumb de la feature 9 + 2 del token --video-max-width de la feature 16; ajuste REQ-43-06)`);
+  assert.equal(lineCount, 97, `tokens.css tiene ${lineCount} líneas y debe conservar 97 (REQ-42-09; 87 + 4 del token --radius-thumb de la feature 9 + 2 del token --video-max-width de la feature 16 + --header-height de la feature 51; ajuste REQ-43-06)`);
   assert.doesNotMatch(tokens, /--post-/, 'tokens.css define un token del grupo post (REQ-42-09, sin tokens nuevos)');
 });
 

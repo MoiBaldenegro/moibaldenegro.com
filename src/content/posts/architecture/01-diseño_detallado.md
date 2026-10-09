@@ -1,5 +1,5 @@
 ---
-slug: 01-diseño-detallado
+slug: 01-diseno-detallado
 title:  Diseño detallado
 author: Moises Baldenegro Melendez
 img: entry-01.webp
@@ -9,10 +9,10 @@ tags: "#arquitectura #software-design"
 created: "19 Agosto 2026"
 updated: "19 Agosto 2026"
 next: /posts/02-principios-del-diseno-de-software
-related: [/posts/03-principios solid]
+related: [/posts/03-principios-solid]
 ---
 
-# 01. Niveles de Abstracción y Enfoques de Diseño en Arquitectura de Software
+## 01. Niveles de Abstracción y Enfoques de Diseño en Arquitectura de Software
 
 Existen dos niveles de abstracción: **alto nivel** y **bajo nivel**. Esta diferenciación, por alguna razón, normalmente tarda mucho en explicarse y, a mi parecer, es lo que haría a los profesionales entender mucho más fácilmente el rol de la Arquitectura de Software. Así que hablemos de ello desde ya.
 

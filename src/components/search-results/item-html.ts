@@ -9,7 +9,7 @@ export function itemHtml(entry: SearchIndexEntry): string {
   const tags = entry.tags.map((t) => `<span class="search-results__tag">#${esc(t)}</span>`).join('');
   return [
     '<li class="search-results__item">',
-    `<img class="search-results__thumb" src="/assets/content/${esc(entry.img)}" alt="${esc(entry.title)}" loading="lazy" />`,
+    `<img class="search-results__thumb" src="/assets/content/${esc(entry.img)}" alt="" width="1376" height="768" loading="lazy" decoding="async" />`,
     '<div class="search-results__body">',
     `<a class="search-results__link" href="/posts/${esc(entry.id)}">`,
     `<h2 class="search-results__title">${esc(entry.title)}</h2>`,

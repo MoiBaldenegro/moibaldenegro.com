@@ -1,6 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync, writeFileSync, unlinkSync } from 'node:fs';
+import { existsSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
@@ -26,8 +28,8 @@ function mustNotExist(url, label) {
   assert.ok(!existsSync(url), `${label} no debería existir (REQ-12)`);
 }
 
-function runAudit() {
-  return spawnSync(process.execPath, [fileURLToPath(AUDIT_SCRIPT)], { encoding: 'utf8' });
+function runAudit(...args) {
+  return spawnSync(process.execPath, [fileURLToPath(AUDIT_SCRIPT), ...args], { encoding: 'utf8' });
 }
 
 test('REQ-12-01: src/config.ts ya no existe', () => {
@@ -77,17 +79,18 @@ test('REQ-12-06: el guardián falla ante un color fuera de tokens.css', () => {
     existsSync(AUDIT_SCRIPT),
     'scripts/audit-design-tokens.mjs no existe (REQ-12-06)'
   );
-  const hojaTemporal = new URL('src/styles/tmp-audit.css', ROOT);
-  const rutaTemporal = fileURLToPath(hojaTemporal);
-  writeFileSync(rutaTemporal, ':root { --color-suelto: #ab12cd; }\n');
+  // Feature 59: la hoja sucia vive en un directorio temporal (fuera de src/)
+  // para no provocar ENOENT en los tests que recorren src/ en paralelo.
+  const dir = mkdtempSync(join(tmpdir(), 'tokens-audit-'));
   try {
-    const run = runAudit();
+    writeFileSync(join(dir, 'sucia.css'), ':root { --color-suelto: #ab12cd; }\n');
+    const run = runAudit(dir);
     assert.notEqual(
       run.status,
       0,
       'el audit debería FALLAR (exit ≠ 0) ante un hex fuera de tokens.css'
     );
   } finally {
-    unlinkSync(rutaTemporal);
+    rmSync(dir, { recursive: true, force: true });
   }
 });

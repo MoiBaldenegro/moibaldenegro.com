@@ -19,7 +19,7 @@ const profile = new HeroProfileRepository().getProfile();
   </div>
 
   <!-- Contenido -->
-  <main class="hero-grid">
+  <div class="hero-grid">
     <!-- HERO -->
     <section class="profile-card">
       <div class="profile-image">
@@ -27,6 +27,9 @@ const profile = new HeroProfileRepository().getProfile();
           transition:persist="hero-profile"
           src={profile.image}
           alt={profile.name}
+          width="952"
+          height="960"
+          fetchpriority="high"
         />
         <div class="profile-overlay"></div>
         <div class="profile-username">
@@ -34,7 +37,7 @@ const profile = new HeroProfileRepository().getProfile();
           {
             profile.verified && (
               <span class="verified">
-                ✓
+                <span aria-hidden="true">✓</span><span class="visually-hidden">Verificado</span>
               </span>
             )
           }
@@ -52,5 +55,5 @@ const profile = new HeroProfileRepository().getProfile();
         <HeroCard card={card} />
       ))
     }
-  </main>
+  </div>
 </section>

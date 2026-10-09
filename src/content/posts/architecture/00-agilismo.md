@@ -8,12 +8,12 @@ description: En este capitulo aprenderemos los conceptos fundamentales de la arq
 tags: "#arquitectura #agilismo #software-design"
 created: "10 Agosto 2026"
 updated: "10 Agosto 2026"
-next: /posts/01-diseño-detallado
+next: /posts/01-diseno-detallado
 related: [/posts/02-principios-del-diseno-de-software]
 
 ---
 
-# 00. Agilismo, diseño y fragilidad
+## 00. Agilismo, diseño y fragilidad
 
 Es fundamental familiarizarnos con los conceptos y principios que conforman el rol de la arquitectura de software; solo así podremos entender el impacto y nivel de importancia que tiene dentro de una organización o en el ciclo de desarrollo.
 

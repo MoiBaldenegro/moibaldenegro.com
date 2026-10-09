@@ -119,10 +119,14 @@ test('REQ-30-06: el registro de dependencias ampara los paquetes de tipos aproba
       `docs/dependencies.md no registra ${name} como aprobada (REQ-30-06)`,
     );
   }
-  assert.ok(
-    registry.includes('2026-08-13'),
-    'docs/dependencies.md no declara la aprobación del 2026-08-13 (REQ-30-06)',
-  );
+  // Ajuste feature 60 (precedente REQ-43-06): la aprobación original del 2026-08-13
+  // se actualizó con las aprobaciones humanas del 2026-10-08 (features 41 y 60);
+  // lo que protege REQ-30-06 es que cada paquete de tipos tenga su fecha de aprobación.
+  const blocks = registry.replace(/\r\n/g, '\n').split('\n### ');
+  for (const name of ['@cloudflare/workers-types', 'wrangler']) {
+    const block = blocks.find((b) => b.startsWith(`${name}\n`)) ?? '';
+    assert.match(block, /- approved: \d{4}-\d{2}-\d{2}/, `${name} no declara su fecha de aprobación (REQ-30-06)`);
+  }
 });
 
 test('REQ-30-02/03: package.json declara el script generate-types con wrangler types', () => {

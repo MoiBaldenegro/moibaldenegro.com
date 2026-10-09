@@ -15,7 +15,7 @@ related: [/posts/00-prueba-os, /posts/00-agilismo, /posts/02-principios-del-dise
 Related cruzado OS + architecture para probar resolveRelatedTitles.
 Keyword única xyz-os-test-456 para assert en /search. -->
 
-# 01. Procesos y memoria
+## 01. Procesos y memoria
 
 Si llegaste aquí con el botón **Siguiente artículo** desde `00-prueba-os`, el `next` funciona.
 

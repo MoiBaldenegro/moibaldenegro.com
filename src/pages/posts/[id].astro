@@ -8,6 +8,7 @@ import Layout from "../../layouts/Layout.astro";
 import CodeCopy from "../../components/code-copy/code-copy.astro";
 import { PostsDataError, PostsRepository } from "../../domain/repositories/posts-repository.ts";
 import { resolveRelatedTitles } from "../../domain/related-titles.ts";
+import { blogPostingJsonLd, serializeJsonLd } from "../../domain/seo/json-ld.ts";
 import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
@@ -37,14 +38,16 @@ export async function getStaticPaths() {
 const { post, entry, relatedLinks } = Astro.props;
 const { title, author, readtime, img } = post;
 const { Content } = await render(entry);
+// REQ-44-06: un único JSON-LD BlogPosting por post (escape de </script en el dominio).
+const jsonLd = serializeJsonLd(blogPostingJsonLd(post, Astro.site ?? Astro.url.origin));
 
 export const prerender = true;
 ---
 
-<Layout title={title}>
-  <main class="post">
+<Layout title={title} description={post.description} image={`/assets/content/${img}`} type="article" published={post.created} modified={post.updated}>
+  <div class="post">
     <header class="post__hero">
-      <img transition:name={`img-${entry.id}`} src={`/assets/content/${img}`} alt={title} class="post__image" />
+      <img transition:name={`img-${entry.id}`} src={`/assets/content/${img}`} alt="" class="post__image" width="1376" height="768" fetchpriority="high" />
       <div class="post__hero-copy">
         <p class="post__kicker">#{post.tags[0]}</p>
         <h1 transition:name={`title-${entry.id}`} class="post__title">{title}</h1>
@@ -57,6 +60,7 @@ export const prerender = true;
       </section>
     </article>
     <CodeCopy />
+    <script type="application/ld+json" is:inline set:html={jsonLd}></script>
     {post.next && (
       <footer class="post__next">
         <a class="post__next-link" href={post.next}>Siguiente artículo</a>
@@ -68,7 +72,7 @@ export const prerender = true;
         <ul class="post__related-list">
           {relatedLinks.map((item) => (
             <li class="post__related-item">
-              <img class="post__related-thumb" src={`/assets/content/${item.img}`} alt={item.title} loading="lazy" />
+              <img class="post__related-thumb" src={`/assets/content/${item.img}`} alt="" width="1376" height="768" loading="lazy" decoding="async" />
               <div class="post__related-body">
                 <a class="post__related-link" href={item.href}>{item.title}</a>
                 <p class="post__related-meta">Por {item.author} • {item.readtime} min</p>
@@ -78,5 +82,5 @@ export const prerender = true;
         </ul>
       </section>
     )}
-  </main>
+  </div>
 </Layout>

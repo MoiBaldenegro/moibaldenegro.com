@@ -1,13 +1,13 @@
-// search-live.ts — Controlador de la transición dinámica de la portada
-// (feature 5, REQ-05-01..07). JS de runtime justificado (design.md Decisión
-// 4): live search, excepción a "estático por defecto" (precedentes 24/43/44);
-// sin frameworks (CustomEvent nativo). Lógica separada de la UI (regla 8):
-// <script> solo importa y arranca; reutiliza itemHtml/search-results.css (f3).
+// search-live.ts — Controlador de la transición dinámica de la portada (feature 5,
+// REQ-05-01..07). JS de runtime justificado (design.md Decisión 4); sin frameworks
+// (CustomEvent nativo). Lógica fuera de la UI; reutiliza itemHtml/search-results.css.
 
 import { searchIndex, PAGE_SIZE } from '../../domain/search/search.ts';
 import type { SearchIndexEntry } from '../../domain/search/index.ts';
 import { itemHtml } from '../search-results/item-html.ts';
 import { changeEventName } from '../search-bar/search-bar.ts';
+import { loadSearchIndex, type IndexLoader } from '../search-results/index-loader.ts';
+import { liveShow, preloadOnFocus } from './live-search.ts';
 
 let changeHandler: ((event: Event) => void) | null = null; // guard de re-init (f10)
 
@@ -30,12 +30,7 @@ export function livePage(
   pageSize: number = PAGE_SIZE,
 ): LivePage {
   const data = searchIndex(index, term, 1);
-  return {
-    results: data.results,
-    total: data.total,
-    pageSize,
-    showAllLink: data.total > pageSize,
-  };
+  return { results: data.results, total: data.total, pageSize, showAllLink: data.total > pageSize };
 }
 
 export function seeAllUrl(term: string): string {
@@ -47,11 +42,11 @@ export function applyLive(
   index: readonly SearchIndexEntry[],
   panel: Element,
   landing: Element | null,
-): void {
+): number {
   const mode = layoutMode(term);
   panel.toggleAttribute('hidden', mode === 'landing');
   if (landing !== null) landing.toggleAttribute('hidden', mode === 'results');
-  if (mode === 'landing') return;
+  if (mode === 'landing') return 0;
   const data = livePage(index, term, PAGE_SIZE);
   const empty = panel.querySelector('[data-search-empty]');
   const list = panel.querySelector('[data-search-list]');
@@ -72,29 +67,26 @@ export function applyLive(
     allLink.setAttribute('href', seeAllUrl(term));
     allLink.toggleAttribute('hidden', !data.showAllLink);
   }
+  return data.total;
 }
 
+// Feature 47: sin índice embebido. La portada no lo pide al cargar: lo pide al
+// primer focus del buscador o al primer término (REQ-47-03); el modo portada
+// (término vacío) no lo necesita. Si la carga falla, se anuncia el error.
 export function initSearchLive(
   panel: Element | null = document.querySelector('[data-search-live]'),
   landing: Element | null = document.querySelector('[data-landing-sections]'),
+  load: IndexLoader = loadSearchIndex,
 ): void {
   if (panel === null) return;
-  const index = readIndex();
-  if (index === null) return;
   if (changeHandler !== null) document.removeEventListener(changeEventName(), changeHandler);
-  changeHandler = (event: Event): void => {
-    applyLive((event as CustomEvent<{ term?: string }>).detail?.term ?? '', index, panel, landing);
-  };
+  const show = liveShow(panel, landing, applyLive, load); // estado, carrera y errores: live-search.ts
+  changeHandler = (event: Event): void => show((event as CustomEvent<{ term?: string }>).detail?.term ?? '');
   document.addEventListener(changeEventName(), changeHandler);
   const input = document.querySelector('[data-search-bar] input');
-  applyLive(input instanceof HTMLInputElement ? input.value : '', index, panel, landing);
-}
-
-function readIndex(): SearchIndexEntry[] | null {
-  const text = document.getElementById('search-index')?.textContent ?? '';
-  try {
-    return JSON.parse(text) as SearchIndexEntry[];
-  } catch {
-    return null;
-  }
+  if (input instanceof HTMLInputElement) preloadOnFocus(input, load);
+  // Carga inicial: con término vacío solo se aplica el modo portada (sin anuncio).
+  const initial = input instanceof HTMLInputElement ? input.value : '';
+  if (initial.trim() === '') applyLive(initial, [], panel, landing);
+  else show(initial);
 }

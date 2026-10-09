@@ -1,5 +1,5 @@
 ---
-slug: 02-ciclo-de-vida-y-arquitectura
+slug: 04-ciclo-de-vida-y-arquitectura
 title:  El Rol de la Arquitectura en el Ciclo de Vida del Software
 author: Moises Baldenegro Melendez
 img: entry-03.webp
@@ -8,10 +8,10 @@ description: Analizamos cómo el proceso de arquitectura de software es transver
 tags: "#arquitectura #software-engineering #sdlc" 
 created: "24 Septiembre 2026"
 updated: "24 Septiembre 2026"
-related: [/posts/01-diseño-detallado]
+related: [/posts/01-diseno-detallado]
 ---
 
-# 02. El Rol de la Arquitectura en el Ciclo de Vida del Desarrollo de Software
+## 02. El Rol de la Arquitectura en el Ciclo de Vida del Desarrollo de Software
 
 Existe el mito de que la Arquitectura de Software únicamente se trabaja durante la fase de diseño[cite: 1]. Sin embargo, la realidad es que el proceso arquitectónico es totalmente **transversal a todo el ciclo de vida de desarrollo de software (SDLC)**[cite: 1]. 
 

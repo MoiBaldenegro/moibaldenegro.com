@@ -25,7 +25,10 @@
   position: absolute; width: 900px; height: 900px; right: -300px; top: -200px;
   border-radius: var(--radius-pill);
   background: radial-gradient(circle, var(--color-glow), transparent 70%);
-  animation: float 10s ease-in-out infinite;
+}
+/* Feature 56 (REQ-56-01): el brillo solo flota si el usuario no pide menos movimiento. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-gradient { animation: float 10s ease-in-out infinite; }
 }
 
 /* Cuadrícula */

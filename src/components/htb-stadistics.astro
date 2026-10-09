@@ -2,12 +2,15 @@
 import { HTB_API_TOKEN as ENV_TOKEN, HTB_USER_ID as ENV_ID } from 'astro:env/server';
 import { env } from 'cloudflare:workers';
 import { HtbProfileRepository } from '../domain/repositories/htb-profile-repository.ts';
+import { HTB_ISLAND_CACHE_CONTROL } from '../domain/http/cache-policy.ts';
 import '../styles/htb-stadistics.css';
 
 const HTB_API_TOKEN = ENV_TOKEN || env.HTB_API_TOKEN;
 const HTB_USER_ID = ENV_ID || env.HTB_USER_ID;
 
 const profile = await new HtbProfileRepository(HTB_API_TOKEN, HTB_USER_ID).getProfileOrNull();
+// REQ-49-03: la isla se pide por GET y es cacheable una hora.
+Astro.response.headers.set('Cache-Control', HTB_ISLAND_CACHE_CONTROL);
 ---
 
 {profile && (

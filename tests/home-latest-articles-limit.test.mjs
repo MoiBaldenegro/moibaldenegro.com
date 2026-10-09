@@ -20,7 +20,7 @@
 //               recorte (tampoco slice, if ( o for ().
 //   REQ-30-07 — el encabezado «Últimos artículos», una card por artículo y el
 //               enlace /posts/${post.id} se conservan (REQ-20-03..06, REQ-37-06).
-//   REQ-30-08 — latest-articles.css no cambia: 97 líneas, rejilla
+//   REQ-30-08 — latest-articles.css 98 líneas (97 + margen del título, feature 55), rejilla
 //               .latest-articles__list sin número de columnas y tokens.
 //   REQ-30-09/10 — los tests de inspección existentes de latest-articles.astro
 //               siguen verdes sin modificar sus aserciones; ninguno documenta un
@@ -34,13 +34,17 @@
 //   REQ-30-15 — la sección se resuelve en build: sin scripts de cliente ni
 //               directivas de hidratación.
 //   REQ-30-16 — el módulo nuevo y latest-articles.astro respetan 100 líneas.
+//
+// Ajuste feature 45 (precedente REQ-43-06): los slugs pasan a ASCII
+// (03-principios-solid, 01-diseno-detallado, 04-ciclo-de-vida-y-arquitectura);
+// las URLs antiguas redirigen con 301 desde astro.config.mjs.
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
-import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { latestPosts } from '../src/domain/latest-posts.ts';
+import { astroBuild } from './helpers/astro-build.mjs';
 import { PostsRepository } from '../src/domain/repositories/posts-repository.ts';
 
 const COMPONENT_PATH = new URL('../src/components/latest-articles.astro', import.meta.url);
@@ -63,22 +67,22 @@ const EXISTING_INSPECTION_TESTS = [
 // src/content/posts/*/*.md). Los tres más recientes van primero.
 const REAL_SLUGS_BY_NEWEST = [
   '05-diseno-arquitectonico-vs-diseno-detallado',
-  '02-ciclo-de-vida-y-arquitectura',
+  '04-ciclo-de-vida-y-arquitectura',
   '01-procesos-memoria',
   '00-prueba-os',
-  '03-principios solid',
+  '03-principios-solid',
   '02-principios-del-diseno-de-software',
-  '01-diseño-detallado',
+  '01-diseno-detallado',
   '00-agilismo',
 ];
 const REAL_CREATED = {
   '05-diseno-arquitectonico-vs-diseno-detallado': '28 Septiembre 2026',
-  '02-ciclo-de-vida-y-arquitectura': '24 Septiembre 2026',
+  '04-ciclo-de-vida-y-arquitectura': '24 Septiembre 2026',
   '01-procesos-memoria': '19 Septiembre 2026',
   '00-prueba-os': '18 Septiembre 2026',
-  '03-principios solid': '21 Agosto 2026',
+  '03-principios-solid': '21 Agosto 2026',
   '02-principios-del-diseno-de-software': '20 Agosto 2026',
-  '01-diseño-detallado': '19 Agosto 2026',
+  '01-diseno-detallado': '19 Agosto 2026',
   '00-agilismo': '10 Agosto 2026',
 };
 
@@ -244,9 +248,11 @@ test('REQ-30-07: conserva encabezado, card por artículo y enlace /posts/${post.
   assert.match(astro, /\{posts\.map\(/, 'el marcado ya no itera una card por artículo de la lista (REQ-30-07)');
 });
 
-test('REQ-30-08: latest-articles.css no cambia: 97 líneas, rejilla sin columnas y tokens', () => {
+test('REQ-30-08: latest-articles.css: 98 líneas (97 + el margen explícito del título de la feature 55), rejilla sin columnas y tokens', () => {
   const css = readCss();
-  assert.equal(countLines(css), 97, `latest-articles.css tiene ${countLines(css)} líneas y debe conservar 97 (REQ-30-08)`);
+  // Ajuste feature 55 (precedente REQ-43-06): .latest-articles__title declara su
+  // margen (0.83em 0) para no depender del nivel del encabezado al pasar a h3.
+  assert.equal(countLines(css), 98, `latest-articles.css tiene ${countLines(css)} líneas y debe tener 98 (REQ-30-08 + feature 55)`);
   const rule = css.match(/\.latest-articles__list\s*\{([\s\S]*?)\}/)?.[1] ?? '';
   assert.ok(rule.length > 0, 'latest-articles.css no declara .latest-articles__list (REQ-30-08)');
   assert.doesNotMatch(rule, /grid-template-columns/, '.latest-articles__list declara un número de columnas (REQ-30-08)');
@@ -271,10 +277,7 @@ test('REQ-30-09/10: los tests de inspección existentes no documentan ajuste por
 
 test('REQ-30-13: el build real de la portada emite exactamente tres cards con los tres más recientes', () => {
   assert.ok(existsSync(ASTRO_BIN), 'node_modules/astro/bin/astro.mjs no existe (build no ejecutable)');
-  const build = spawnSync(process.execPath, [ASTRO_BIN, 'build'], {
-    encoding: 'utf8',
-    maxBuffer: 8 * 1024 * 1024,
-  });
+  const build = astroBuild();
   assert.equal(build.status, 0, `astro build falló (REQ-30-13):\n${build.stdout}\n${build.stderr}`);
   assert.ok(existsSync(DIST_HOME_PATH), 'el build no generó dist/client/index.html (REQ-30-13)');
   const section = latestArticlesSection(readFileSync(DIST_HOME_PATH, 'utf8'));

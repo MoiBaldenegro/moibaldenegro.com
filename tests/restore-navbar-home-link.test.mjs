@@ -122,9 +122,10 @@ test('REQ-12-03: la navbar conserva About, Arquitectura, @moibaldenegro y la bar
     /<a\b[^>]*href="\/arquitectura"[^>]*>\s*Arquitectura\s*<\/a>/,
     'se perdió el enlace Arquitectura (REQ-12-03)',
   );
+  // Ajuste feature 53 (precedente REQ-43-06): el enlace a X añade un aviso visually-hidden de sitio externo.
   assert.match(
     nav,
-    /<a\b[^>]*href="https:\/\/x\.com\/moibaldenegro"[^>]*>\s*@moibaldenegro\s*<\/a>/,
+    /<a\b[^>]*href="https:\/\/x\.com\/moibaldenegro"[^>]*>\s*@moibaldenegro(<span class="visually-hidden">[^<]*<\/span>)?\s*<\/a>/,
     'se perdió el enlace @moibaldenegro (REQ-12-03)',
   );
   assert.match(

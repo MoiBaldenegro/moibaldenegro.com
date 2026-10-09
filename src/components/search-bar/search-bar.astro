@@ -2,17 +2,23 @@
 import '../../styles/search-bar.css';
 ---
 
-<div class="search-bar" data-search-bar>
-  <input
-    class="search-bar__input"
-    type="text"
-    placeholder="Buscar artículos…"
-    aria-label="Buscar artículos"
-  />
-  <button type="button" class="search-bar__clear" data-search-clear aria-label="Limpiar búsqueda">
-    ×
-  </button>
-</div>
+<!-- Feature 57: landmark <search> y formulario GET a /search; sin JS también
+     funciona (mejora progresiva). Con JS, search-bar.ts navega con view transitions. -->
+<search class="search-bar" data-search-bar>
+  <form class="search-bar__form" action="/search" method="get">
+    <input
+      class="search-bar__input"
+      type="search"
+      name="q"
+      enterkeyhint="search"
+      placeholder="Buscar artículos…"
+      aria-label="Buscar artículos"
+    />
+    <button type="button" class="search-bar__clear" data-search-clear aria-label="Limpiar búsqueda">
+      ×
+    </button>
+  </form>
+</search>
 
 <script>
   import { initSearchBar } from './search-bar.ts';

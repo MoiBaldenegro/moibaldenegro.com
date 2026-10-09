@@ -10,7 +10,7 @@
 //   REQ-17-04 — recorte sin deformar (object-fit: cover).
 //   REQ-17-05 — radio, borde y margen desde los tokens --radius-card,
 //               --color-border y --gap-card.
-//   REQ-17-06 — alt = título del artículo (alt={post.title}, sin tocar el
+//   REQ-17-06 — alt vacío desde la feature 53 (antes alt={post.title}), sin tocar el
 //               dominio — Decisión 5 del design.md).
 //   REQ-17-07 — carga diferida (loading="lazy", atributo HTML nativo).
 //   REQ-17-08 — la hoja conserva un máximo de 100 líneas y la regla nueva no
@@ -23,9 +23,12 @@
 //               design.md 09) y el estado canónico es 91 líneas. La feature 16
 //               (video-desktop-width) añadió el token aprobado --video-max-width
 //               (640px, ancho del embed de video en desktop) y el estado
-//               canónico actual es 93 líneas; la aserción de conteo refleja ese
+//               canónico actual es 95 líneas; la aserción de conteo refleja ese
 //               estado sin volver a añadir tokens (justificación REQ-43-06,
 //               precedente feature 9: --radius-thumb 87→91).
+// Ajuste feature 61 (precedente REQ-43-06): tokens.css pasa de 95 a 97 (--header-height-mobile).
+// Ajuste feature 51 (precedente REQ-43-06, como en la feature 16): tokens.css pasa de 93 a 95
+// líneas por el token aprobado --header-height (comentario + token).
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -86,12 +89,13 @@ test('REQ-17-01: el <img> de la card lleva la clase latest-articles__image y ref
   );
 });
 
-test('REQ-17-06: el <img> declara alt interpolado con el título del artículo', () => {
+test('REQ-17-06: el <img> declara alt vacío (decorativo junto al título, feature 53)', () => {
   const img = imgTag(readComponent());
+  // Ajuste feature 53 (precedente REQ-43-06): la miniatura es decorativa junto al título enlazado (alt="").
   assert.match(
     img,
-    /alt=\{post\.title\}/,
-    'el <img> no usa alt={post.title} (REQ-17-06)'
+    /alt=""/,
+    'el <img> no declara alt="" decorativo (REQ-17-06 + REQ-53-01)'
   );
 });
 
@@ -173,12 +177,12 @@ test('REQ-17-08: latest-articles.css no supera las 100 líneas', () => {
   );
 });
 
-test('REQ-17-09: tokens.css conserva 93 líneas (87 post-feature 25 + --radius-thumb de la feature 9 + --video-max-width de la feature 16, sin tokens nuevos de imagen)', () => {
+test('REQ-17-09: tokens.css conserva 97 líneas (87 post-feature 25 + --radius-thumb de la feature 9 + --video-max-width de la feature 16 + --header-height de la feature 51 + --header-height-mobile de la feature 61, sin tokens nuevos de imagen)', () => {
   const lineCount = countLines(readTokens());
   assert.equal(
     lineCount,
-    93,
-    `tokens.css tiene ${lineCount} líneas y debe conservar 93 (REQ-17-09; 87 post-feature 25 + 4 del token --radius-thumb de la feature 9 + 2 del token --video-max-width aprobado en la feature 16; ajuste REQ-43-06)`
+    97,
+    `tokens.css tiene ${lineCount} líneas y debe conservar 97 (REQ-17-09; 87 post-feature 25 + 4 del token --radius-thumb de la feature 9 + 2 del token --video-max-width aprobado en la feature 16; ajuste REQ-43-06)`
   );
 });
 

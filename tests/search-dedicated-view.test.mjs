@@ -24,6 +24,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
+import { searchIndexJson } from '../src/domain/search/index-json.ts';
 import {
   itemHtml,
 } from '../src/components/search-results/item-html.ts';
@@ -103,23 +104,21 @@ test('REQ-03-01: src/pages/search.astro existe y declara prerender true', () => 
   assert.match(page, /prerender\s*=\s*true/, 'la página no declara prerender = true (REQ-03-01)');
 });
 
-test('REQ-03-07: la página serializa el índice con un script application/json', () => {
+test('REQ-03-07: la página no embebe el índice y la vista lo pide al loader', () => {
+  // Ajuste feature 47 (precedente REQ-43-06): el índice ya no se serializa en la
+  // página; el controlador lo pide a /search-index.json mediante el loader.
   const page = readPage();
-  assert.match(page, /type="application\/json"/, 'no hay script type=application/json (REQ-03-07)');
-  assert.match(page, /id="search-index"/, 'el script del índice no tiene id="search-index"');
-  assert.match(page, /set:html=\{[^}]+\}/, 'el índice no se inyecta con set:html');
-  assert.match(page, /JSON\.stringify/, 'la serialización no usa JSON.stringify (REQ-03-07)');
-  assert.match(page, /buildSearchIndex/, 'la página no construye el índice con el dominio');
-  assert.match(page, /is:inline/, 'el script del índice debe ser is:inline (se emite tal cual)');
+  assert.doesNotMatch(page, /id="search-index"/, 'la página sigue embebiendo el índice (REQ-47-01)');
+  const controller = readFileSync(new URL('../src/components/search-results/search-results-controller.ts', import.meta.url), 'utf8');
+  assert.match(controller, /withSearchIndex\(/, 'el controlador no obtiene el índice del loader (REQ-47-04)');
 });
 
 test('REQ-03-07: la serialización escapa </script como <\\/script', () => {
-  const page = readPage();
-  assert.match(
-    page,
-    /<\\\/script/,
-    'el índice embebido no escapa </script como <\\/script (REQ-03-07)',
-  );
+  // Ajuste feature 46 (precedente REQ-43-06): el escape de </script lo hace
+  // searchIndexJson (dominio), no la página; se comprueba su salida real.
+  const post = { id: 'x', slug: 'x', title: 'a </script> b', author: 'A', img: 'x', readtime: 1,
+    description: '', tags: [], created: '', updated: '', next: null, related: null };
+  assert.ok(!/<\/script/i.test(searchIndexJson([post], [])), 'el índice no escapa </script (REQ-03-07)');
 });
 
 // --- REQ-03-02 / REQ-03-10: deep linking y título --------------------------
@@ -304,8 +303,8 @@ test('REQ-03-05/08: el empty state incluye la acción de limpiar la búsqueda', 
   const component = readComponent();
   assert.match(
     component,
-    /<button[^>]*data-search-clear[^>]*>Limpiar búsqueda<\/button>/,
-    'falta el botón de limpiar (data-search-clear, REQ-03-05/08)',
+    /<button[^>]*data-search-results-clear[^>]*>Limpiar búsqueda<\/button>/,
+    'falta el botón de limpiar (data-search-results-clear, REQ-03-05/08 + REQ-31-01)',
   );
 });
 

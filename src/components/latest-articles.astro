@@ -18,11 +18,14 @@ const posts = latestPosts(await new PostsRepository().getPosts());
           <img
             class="latest-articles__image"
             src={`/assets/content/${post.img}`}
-            alt={post.title}
+            alt=""
+            width="1376"
+            height="768"
             loading="lazy"
+            decoding="async"
             transition:name={`img-${post.id}`}
           />
-          <h2 transition:name={`title-${post.id}`} class="latest-articles__title">{post.title}</h2>
+          <h3 transition:name={`title-${post.id}`} class="latest-articles__title">{post.title}</h3>
         </a>
         <p class="latest-articles__meta">Por {post.author} • {post.readtime} min de lectura</p>
         <p class="latest-articles__description">{post.description}</p>

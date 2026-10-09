@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import '../styles/about.css';
 import { HeroProfileRepository } from '../domain/repositories/hero-profile-repository.ts';
+import { SITE_DESCRIPTION } from '../domain/seo/head.ts';
 
 const profile = new HeroProfileRepository().getProfile();
 
@@ -9,15 +10,15 @@ export const prerender = true;
 
 ---
 
-<Layout title="About — moibaldenegro.com">
-  <main class="about">
+<Layout title="About — moibaldenegro.com" description={SITE_DESCRIPTION}>
+  <div class="about">
     <section class="about__profile">
       <h1 class="about__name">{profile.name}</h1>
       <p class="about__username">{profile.username}</p>
       <p class="about__description">{profile.description}</p>
     </section>
     <section>
-      <h1>Articulos dedicados a la ingeniería de software aplicada, ejemplos, arquitectura, implementaciones y proyectos mas cercanos a proyectos reales.</h1>
+      <p class="about__intro">{SITE_DESCRIPTION}</p>
     </section>
-  </main>
+  </div>
 </Layout>

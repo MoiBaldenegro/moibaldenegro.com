@@ -1,22 +1,9 @@
-// Tests del botón Copiar en bloques de código (feature 2026-09-19).
-//
-// Lo pedido: en los posts con código (```text de 02-principios, ```c# de
-// 03-principios_solid) no hay forma de copiar el bloque. Astro/Shiki no
-// trae botón de copiar, así que se añade uno propio sin dependencias:
-//   REQ-CC-01 — el componente registra initCodeCopy como listener de
-//               astro:page-load (patrón search-results.astro, fix feature 10:
-//               los scripts empaquetados corren una vez por sesión) sin
-//               invocación directa.
-//   REQ-CC-02 — initCodeCopy añade un botón por cada pre.astro-code con
-//               aria-label "Copiar código"; al pulsarlo escribe el texto del
-//               bloque en el portapapeles y confirma con "¡Copiado!".
-//   REQ-CC-03 — segunda llamada no duplica botones (idempotencia ante
-//               re-navegaciones del ClientRouter).
-//   REQ-CC-04 — la página de detalle renderiza el componente sin <script>
-//               propio (convención: frontmatter solo imports y paso de datos)
-//               y no supera 100 líneas.
-//   REQ-CC-05 — la hoja usa solo tokens, sin hex ni rgb(), y los tres
-//               archivos nuevos no superan 100 líneas.
+// Tests del botón Copiar en bloques de código (feature 2026-09-19), sin dependencias:
+// REQ-CC-01 arranque en astro:page-load sin llamada directa; REQ-CC-02 un botón por
+// pre.astro-code que copia y confirma; REQ-CC-03 idempotencia (ClientRouter); REQ-CC-04
+// detalle sin <script> propio; REQ-CC-05 hoja solo con tokens y archivos ≤100 líneas.
+// Ajuste feature 62 (precedente REQ-43-06): el pre se envuelve en div.code-block y el
+// botón cuelga del envoltorio (fake: wraps). Compactado para REQ-62-08, mismas aserciones.
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -28,51 +15,33 @@ const MODULE_URL = new URL('../src/components/code-copy/code-copy.ts', import.me
 const CSS_URL = new URL('../src/styles/code-copy.css', import.meta.url);
 const PAGE_URL = new URL('../src/pages/posts/[id].astro', import.meta.url);
 
-function countLines(content) {
-  const lines = content.split('\n');
-  return content.endsWith('\n') ? lines.length - 1 : lines.length;
-}
+const countLines = (c) => c.split('\n').length - (c.endsWith('\n') ? 1 : 0);
 
-// --- Fakes mínimos de DOM ------------------------------------------------
-// initCodeCopy solo usa querySelectorAll/appendChild/dataset (marcado de
-// idempotencia), createElement/setAttribute/addEventListener en el botón y
-// navigator.clipboard.writeText (con fallback a execCommand).
+// Fakes mínimos de DOM: botones (setAttribute, classList, innerHTML, listeners),
+// envoltorios div (appendChild) y navigator.clipboard.writeText.
 function installDom(pres, clipboard) {
   const created = [];
+  const wraps = [];
   globalThis.document = {
     querySelectorAll: (sel) => (sel === 'pre.astro-code' ? pres : []),
+    querySelector: () => null, // región data-code-copy-status (feature 54) ausente
     createElement: (tag) => {
-      assert.equal(tag, 'button', 'solo debe crear botones (REQ-CC-02)');
-      const btn = {
-        type: '',
-        className: '',
-        attrs: {},
-        html: '',
-        handlers: {},
-        classes: new Set(),
-        classList: {
-          add(c) { btn.classes.add(c); },
-          remove(c) { btn.classes.delete(c); },
-        },
-        setAttribute(n, v) { this.attrs[n] = v; },
-        getAttribute(n) { return this.attrs[n]; },
-        set innerHTML(v) { this.html = v; },
-        addEventListener(e, h) { this.handlers[e] = h; },
-      };
+      if (tag === 'div') { const w = { className: '', appended: [], appendChild(n) { w.appended.push(n); return n; } }; wraps.push(w); return w; }
+      assert.equal(tag, 'button', 'solo debe crear botones y envoltorios (REQ-CC-02)');
+      const btn = { type: '', className: '', attrs: {}, html: '', handlers: {}, classes: new Set(),
+        classList: { add(c) { btn.classes.add(c); }, remove(c) { btn.classes.delete(c); } },
+        setAttribute(n, v) { this.attrs[n] = v; }, getAttribute(n) { return this.attrs[n]; },
+        set innerHTML(v) { this.html = v; }, addEventListener(e, h) { this.handlers[e] = h; } };
       created.push(btn);
       return btn;
     },
   };
   Object.defineProperty(globalThis, 'navigator', { value: { clipboard }, configurable: true });
-  return {
-    created,
-    cleanup() { delete globalThis.document; delete globalThis.navigator; },
-  };
+  return { created, wraps, cleanup() { delete globalThis.document; delete globalThis.navigator; } };
 }
 
-function fakeClipboard() {
-  return { written: [], async writeText(text) { this.written.push(text); } };
-}
+const fakeClipboard = () => ({ written: [], async writeText(text) { this.written.push(text); } });
+const fakePre = (text) => ({ dataset: {}, querySelector: () => ({ textContent: text }), appendChild: (n) => n });
 
 test('REQ-CC-01: el componente arranca con astro:page-load sin llamada directa', () => {
   assert.ok(existsSync(COMPONENT_URL), 'code-copy.astro no existe (REQ-CC-01)');
@@ -86,13 +55,11 @@ test('REQ-CC-01: el componente arranca con astro:page-load sin llamada directa',
 test('REQ-CC-02: añade botón con aria-label y copia el bloque al pulsar', async () => {
   assert.ok(existsSync(MODULE_URL), 'code-copy.ts no existe (REQ-CC-02)');
   const clipboard = fakeClipboard();
-  const dom = installDom(
-    [{ dataset: {}, appended: [], querySelector: () => ({ textContent: 'int x = 1;' }), appendChild(n) { this.appended.push(n); return n; } }],
-    clipboard,
-  );
+  const dom = installDom([fakePre('int x = 1;')], clipboard);
   try {
     initCodeCopy();
     assert.equal(dom.created.length, 1, 'no crea un botón por bloque (REQ-CC-02)');
+    assert.ok(dom.wraps[0]?.appended.includes(dom.created[0]), 'el botón no cuelga del envoltorio (REQ-CC-02 + feature 62)');
     assert.equal(dom.created[0].attrs['aria-label'], 'Copiar código', 'sin aria-label (REQ-CC-02)');
     await dom.created[0].handlers.click();
     assert.deepEqual(clipboard.written, ['int x = 1;'], 'no copia el texto del bloque (REQ-CC-02)');
@@ -101,15 +68,12 @@ test('REQ-CC-02: añade botón con aria-label y copia el bloque al pulsar', asyn
 });
 
 test('REQ-CC-03: segunda llamada no duplica botones', () => {
-  const clipboard = fakeClipboard();
-  const dom = installDom(
-    [{ dataset: {}, appended: [], querySelector: () => ({ textContent: 'x' }), appendChild(n) { this.appended.push(n); return n; } }],
-    clipboard,
-  );
+  const dom = installDom([fakePre('x')], fakeClipboard());
   try {
     initCodeCopy();
     initCodeCopy();
     assert.equal(dom.created.length, 1, 'duplica botones en re-navegación (REQ-CC-03)');
+    assert.equal(dom.wraps.length, 1, 'duplica envoltorios en re-navegación (REQ-CC-03 + feature 62)');
   } finally { dom.cleanup(); }
 });
 
@@ -117,7 +81,8 @@ test('REQ-CC-04: el detalle renderiza el componente sin script propio', () => {
   const page = readFileSync(PAGE_URL, 'utf8');
   assert.match(page, /CodeCopy/, 'la página no renderiza CodeCopy (REQ-CC-04)');
   assert.match(page, /code-copy\/code-copy\.astro/, 'la página no importa el componente (REQ-CC-04)');
-  assert.doesNotMatch(page, /<script/i, 'la página añade JS propio (REQ-CC-04)');
+  // Ajuste feature 44 (precedente REQ-43-06): el JSON-LD son datos, no JS de runtime.
+  assert.doesNotMatch(page, /<script(?![^>]*type="application\/ld\+json")/i, 'la página añade JS propio (REQ-CC-04)');
   assert.ok(countLines(page) <= 100, 'la página supera 100 líneas (REQ-CC-04)');
 });
 

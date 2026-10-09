@@ -5,42 +5,60 @@ import { ClientRouter } from 'astro:transitions';
 import SearchBar from '../components/search-bar/search-bar.astro';
 import SearchEscape from '../components/search-escape/search-escape.astro';
 
+import { canonicalUrl, composeTitle } from '../domain/seo/head.ts';
+import { socialMeta } from '../domain/seo/social.ts';
+
 interface Props {
   title?: string;
+  // REQ-35-04: meta description por página.
+  description?: string;
+  // REQ-34-05: páginas fuera del índice (404, búsqueda, términos).
+  noindex?: boolean;
+  // REQ-43: Open Graph/Twitter (imagen local, tipo y fechas en texto español).
+  image?: string;
+  type?: 'website' | 'article';
+  published?: string;
+  modified?: string;
 }
 
-const { title } = Astro.props;
+const { title, description, noindex, image, type, published, modified } = Astro.props;
+const pageTitle = composeTitle(title);
+const site = Astro.site ?? Astro.url.origin;
+const canonical = canonicalUrl(Astro.url.pathname, site);
+const social = socialMeta({ title: pageTitle, description, pathname: Astro.url.pathname, site, image, type, published, modified });
 ---
 
 <!doctype html>
 <html lang="es">
   <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    {social.map((tag) => <meta property={tag.property} name={tag.name} content={tag.content} />)}
     <!-- favicon -->
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
-
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="generator" content={Astro.generator} />
-    <title>{title ?? 'moibaldenegro.com'}</title>
     <ClientRouter />
   </head>
   <body>
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
     <header class="site-navbar">
       <nav>
-        <a aria-current={Astro.url.pathname === '/' ? 'page' : undefined} href="/"><img src="/assets/mxvi_logo.webp" alt="Logo de moibaldenegro.com" width="72"/></a>
+        <a aria-current={Astro.url.pathname === '/' ? 'page' : undefined} href="/"><img src="/assets/mxvi_logo.webp" alt="Inicio — moibaldenegro.com" width="72" height="25"/></a>
         <a aria-current={Astro.url.pathname === '/about' || Astro.url.pathname === '/about/' ? 'page' : undefined} href="/about">About</a>
         <a aria-current={Astro.url.pathname === '/arquitectura' || Astro.url.pathname === '/arquitectura/' ? 'page' : undefined} href="/arquitectura">Arquitectura</a>
-        <a href="https://x.com/moibaldenegro">@moibaldenegro</a>
+        <a href="https://x.com/moibaldenegro">@moibaldenegro<span class="visually-hidden"> (X, sitio externo)</span></a>
         <SearchBar />
       </nav>
     </header>
     <SearchEscape />
-    <slot />
+    <main id="contenido" tabindex="-1">
+      <slot />
+    </main>
   </body>
 </html>

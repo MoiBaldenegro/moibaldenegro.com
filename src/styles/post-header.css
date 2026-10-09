@@ -59,7 +59,7 @@
 
 .post__kicker {
   display: inline-flex;
-  color: var(--color-accent);
+  color: var(--color-accent-hover);
   border: 1px solid var(--color-accent);
   border-radius: var(--radius-pill);
   background: color-mix(in srgb, var(--color-accent) 12%, transparent);

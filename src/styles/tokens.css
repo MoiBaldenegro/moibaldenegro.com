@@ -58,7 +58,7 @@
   --color-username-bg: #081a28;
   --color-username-border: rgba(0,195,255,.35);
   --color-username-text: #5fd6ff;
-  --color-verified: #17b8ff;
+  --color-verified: #0a6f9e;
   --color-scrollbar-thumb: #4732a5;
   --color-scrollbar-track: #090912;
 
@@ -77,6 +77,10 @@
   --container-max: 1500px;
   /* Video embebido del artículo (feature 16): embed 16:9 estándar, ~46% de la columna desktop (design.md Decisión 2). */
   --video-max-width: 640px;
+  /* Header (feature 51): altura mínima de la barra y scroll-padding-top de las anclas. */
+  --header-height: 74px;
+  /* Header en <=768px (feature 61): alto medido a 320 px con el nav envuelto (impl_61.md). */
+  --header-height-mobile: 170px;
 
   /* Sombra */
   --shadow-card: 0 25px 80px rgba(0,0,0,.35);

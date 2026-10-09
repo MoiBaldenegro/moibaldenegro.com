@@ -37,25 +37,44 @@ export function emitChange(term: string): void {
 }
 
 export function clearQuery(root: Element): void {
+  resetQuery(root);
+  root.querySelector('input')?.focus();
+}
+
+// Vacía la barra y quita is-filled sin mover el foco (feature 57: al limpiar
+// la vista /search, la barra precargada con q no debe conservar el término).
+export function resetQuery(root: Element): void {
   const input = root.querySelector('input');
   if (input === null) return;
   input.value = '';
   syncBar(root, input);
-  input.focus();
 }
 
+// Feature 57: el buscador es un <form> GET a /search (funciona sin JS). Con JS
+// se cancela el envío nativo y se navega con view transitions (REQ-57-03); en
+// /search el input muestra el término activo (REQ-57-04). `location` se inyecta
+// para los tests (en el navegador es window.location).
 export function initSearchBar(
   navigate: (url: string) => void,
   root: Element | null = document.querySelector('[data-search-bar]'),
+  location: Pick<Location, 'pathname' | 'search'> | undefined = globalThis.location,
 ): void {
   if (root === null) return;
   const input = root.querySelector('input');
   if (input === null) return;
+  preloadTerm(root, input, location);
   input.addEventListener('input', () => syncBar(root, input));
-  input.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') submitQuery(input.value, navigate);
+  root.querySelector('form')?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    submitQuery(input.value, navigate);
   });
   root.querySelector('[data-search-clear]')?.addEventListener('click', () => clearQuery(root));
+}
+
+function preloadTerm(root: Element, input: HTMLInputElement, location?: Pick<Location, 'pathname' | 'search'>): void {
+  if (location === undefined || location.pathname.replace(/\/+$/, '') !== '/search') return;
+  input.value = new URLSearchParams(location.search).get('q')?.trim() ?? '';
+  root.classList.toggle('is-filled', isFilled(input.value));
 }
 
 function syncBar(root: Element, input: HTMLInputElement): void {

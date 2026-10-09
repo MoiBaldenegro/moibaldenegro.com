@@ -20,13 +20,23 @@
   transition: var(--transition-default);
 }
 
+/* Feature 57 (REQ-57-06): input type="search" sin el × nativo (se usa el propio). */
+.search-bar__input::-webkit-search-cancel-button,
+.search-bar__input::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.search-bar__form { margin: 0; }
+
 .search-bar__input::placeholder {
   color: var(--color-text-secondary);
 }
 
+/* Refuerzo de borde al enfocar; el indicador es el anillo global de
+   layout.css (REQ-37-02: el outline no se anula aquí). */
 .search-bar__input:focus {
   border-color: var(--color-border-strong);
-  outline: none;
 }
 
 /* Botón X (REQ-04-03, Decisión 2): oculto por defecto (también para teclado,
@@ -34,9 +44,14 @@
 .search-bar__clear {
   position: absolute;
   top: 50%;
-  right: 14px;
+  right: 6px;
   transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
   padding: 0;
+  border-radius: var(--radius-pill);
   border: none;
   background: none;
   color: var(--color-text-secondary);

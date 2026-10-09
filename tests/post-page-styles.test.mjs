@@ -10,13 +10,15 @@
 //               contenido markdown con scoping bajo .post__content
 //               (h2/h3, p, ul/ol/li, a, code/pre — Decisión 2 del design.md),
 //               sin tocar el marcado de la página ni del <Content />.
+//   Ajuste feature 38 (REQ-38-08, precedente REQ-43-06): el contenedor del
+//               post pasa de main.post a div.post (el main vive en el Layout).
 //   REQ-26-04 — la imagen declara width 100%, aspect-ratio 16/9,
 //               object-fit cover, var(--radius-card), var(--color-border)
 //               y margen con token (precedente REQ-17-02..05).
 //   REQ-26-05 — colores, radios, bordes y transiciones solo desde var();
 //               tipografía/layout literales del componente (design.md).
 //   REQ-26-06 — post.css respeta el máximo de 100 líneas sin hex/rgba sueltos.
-//   REQ-26-07 — tokens.css permanece sin cambios (93 líneas, estado canónico
+//   REQ-26-07 — tokens.css permanece sin cambios (95 líneas, estado canónico
 //               post-feature 25 + token --radius-thumb aprobado en la feature
 //               9 + token --video-max-width aprobado en la feature 16 — ajuste
 //               REQ-43-06; sin tokens nuevos del grupo post/text).
@@ -31,8 +33,11 @@
 // (search-results-list-mode) añadió el token aprobado --radius-thumb y el
 // estado canónico fue 91 líneas. La feature 16 (video-desktop-width) añadió
 // el token aprobado --video-max-width (640px) y el estado canónico actual es
-// 93 líneas (ajuste REQ-43-06). El espíritu del REQ-26-07 es "sin
+// 95 líneas (ajuste REQ-43-06). El espíritu del REQ-26-07 es "sin
 // cambios y sin tokens nuevos".
+// Ajuste feature 61 (precedente REQ-43-06): tokens.css pasa de 95 a 97 (--header-height-mobile).
+// Ajuste feature 51 (precedente REQ-43-06, como en la feature 16): tokens.css pasa de 93 a 95
+// líneas por el token aprobado --header-height (comentario + token).
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -99,7 +104,9 @@ test('REQ-26-02: la página de artículo importa la hoja post.css', () => {
 
 test('REQ-26-03: la página declara las clases del bloque post (BEM actual)', () => {
   const page = readPage();
-  assert.match(page, /<main class="post">/, 'la página no declara main.post (REQ-26-03)');
+  // Ajuste feature 38 (REQ-38-03/08, precedente REQ-43-06): el único <main>
+  // vive en Layout.astro; el contenedor del post es <div class="post">.
+  assert.match(page, /<div class="post">/, 'la página no declara div.post (REQ-26-03 + REQ-38-03)');
   assert.match(page, /<article class="post__content">/, 'la página no declara article.post__content (REQ-26-03)');
   assert.match(page, /class="post__title"/, 'la página no declara h1.post__title (REQ-26-03)');
   assert.match(page, /class="post__meta"/, 'la página no declara p.post__meta (REQ-26-03)');
@@ -208,13 +215,13 @@ test('REQ-26-06: sin valores hex ni rgb()/rgba() hardcodeados', () => {
   );
 });
 
-test('REQ-26-07: tokens.css conserva 93 líneas (87 + --radius-thumb de la feature 9 + --video-max-width de la feature 16) sin tokens nuevos de post', () => {
+test('REQ-26-07: tokens.css conserva 97 líneas (87 + --radius-thumb de la feature 9 + --video-max-width de la feature 16 + --header-height de la feature 51 + --header-height-mobile de la feature 61) sin tokens nuevos de post', () => {
   const tokens = readTokens();
   const lineCount = countLines(tokens);
   assert.equal(
     lineCount,
-    93,
-    `tokens.css tiene ${lineCount} líneas y debe conservar 93 (REQ-26-07; 87 tras REQ-25-03 + 4 del token --radius-thumb de la feature 9 + 2 del token --video-max-width de la feature 16; ajuste REQ-43-06)`
+    97,
+    `tokens.css tiene ${lineCount} líneas y debe conservar 97 (REQ-26-07; 87 tras REQ-25-03 + 4 del token --radius-thumb de la feature 9 + 2 del token --video-max-width de la feature 16 + --header-height de la feature 51; ajuste REQ-43-06)`
   );
   assert.doesNotMatch(
     tokens,

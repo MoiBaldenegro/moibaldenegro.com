@@ -6,6 +6,10 @@
 // con al menos dos rutas curadas, la entidad Post expone related con arreglo
 // o nulo y PostsRepository lo entrega validando el formato de ruta interna
 // /posts/<id> por item (convive con next de las features 18-19, sin UI).
+//
+// Ajuste feature 45 (precedente REQ-43-06): los slugs pasan a ASCII
+// (03-principios-solid, 01-diseno-detallado, 04-ciclo-de-vida-y-arquitectura);
+// las URLs antiguas redirigen con 301 desde astro.config.mjs.
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -29,7 +33,7 @@ const LAST_FILE = '03-principios_solid.md';
 // Datos mínimos válidos de un artículo para el repositorio con loader inyectado.
 function validData(overrides = {}) {
   return {
-    slug: '03-principios solid',
+    slug: '03-principios-solid',
     title: 'Principios solid',
     author: 'Moises Baldenegro Melendez',
     img: 'arch03.webp',
@@ -79,7 +83,7 @@ test('REQ-20-02: la entidad Post expone readonly related con arreglo o nulo', ()
 });
 
 test('REQ-20-03: el repositorio entrega related cuando el frontmatter lo declara', async () => {
-  const related = ['/posts/00-agilismo', '/posts/01-diseño-detallado'];
+  const related = ['/posts/00-agilismo', '/posts/01-diseno-detallado'];
   const repository = repositoryWith([
     { id: '03-principios_solid', data: validData({ related }) },
   ]);
@@ -105,7 +109,7 @@ test('REQ-20-05: related inválido lanza PostsDataError', async () => {
     '/posts/00-agilismo',
     'related',
     [],
-    ['01-diseño-detallado'],
+    ['01-diseno-detallado'],
     ['posts/01-x'],
     ['https://example.com/x'],
     ['/posts/'],

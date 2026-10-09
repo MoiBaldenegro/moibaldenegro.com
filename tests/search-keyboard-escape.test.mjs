@@ -126,8 +126,11 @@ function fakeDoc(titleValue) {
   return { doc, toggles };
 }
 
+// Ajuste feature 57 (precedente REQ-43-06): Escape solo actúa con el foco en la
+// búsqueda; el evento simulado lleva un target dentro del buscador.
+const FOCUS_IN_SEARCH = { closest: () => ({}) };
 function fireEscape(listeners, calls) {
-  listeners.keydown({ key: 'Escape', stopPropagation: () => calls.stop.push(1) });
+  listeners.keydown({ key: 'Escape', target: FOCUS_IN_SEARCH, stopPropagation: () => calls.stop.push(1) });
 }
 
 // --- REQ-06-03 / REQ-06-01 / REQ-06-02: función de decisión pura ------------

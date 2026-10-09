@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
-import { spawnSync } from 'node:child_process';
+import { astroBuild } from './helpers/astro-build.mjs';
 import { fileURLToPath } from 'node:url';
 
 // Test de la página /about (REQ-11-01..05, feature 11 about-page).
@@ -215,10 +215,7 @@ test('REQ-11-05: el build genera la ruta /about con los datos reales del perfil'
     existsSync(ASTRO_BIN),
     'node_modules/astro/bin/astro.mjs no existe (build no ejecutable)'
   );
-  const build = spawnSync(process.execPath, [ASTRO_BIN, 'build'], {
-    encoding: 'utf8',
-    maxBuffer: 8 * 1024 * 1024,
-  });
+  const build = astroBuild();
   assert.equal(
     build.status,
     0,

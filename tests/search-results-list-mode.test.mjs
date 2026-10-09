@@ -244,7 +244,7 @@ test('REQ-09-11: el modo lista conserva la guía y el empty state con limpiar', 
   );
   assert.match(
     component,
-    /<button[^>]*data-search-clear[^>]*>Limpiar búsqueda<\/button>/,
+    /<button[^>]*data-search-results-clear[^>]*>Limpiar búsqueda<\/button>/,
     'se perdió la acción de limpiar (REQ-09-11)',
   );
 });

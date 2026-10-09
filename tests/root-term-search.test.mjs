@@ -29,6 +29,9 @@ import {
   clearDestination,
 } from '../src/components/search-results/term-route.ts';
 import { initSearchResults } from '../src/components/search-results/search-results-controller.ts';
+import { searchIndexJson } from '../src/domain/search/index-json.ts';
+import { primeSearchIndex } from '../src/components/search-results/index-loader.ts';
+// Feature 47 (precedente REQ-43-06): el índice ya no se embebe en el DOM; se precarga en el loader.
 
 const PAGE_URL = new URL('../src/pages/[...term].astro', import.meta.url);
 const CONTROLLER_URL = new URL(
@@ -104,7 +107,7 @@ function fakeDom(index) {
     '[data-search-pagination]',
     '[data-search-term]',
     '[data-search-page-label]',
-    '[data-search-clear]',
+    '[data-search-results-clear]',
     '[data-search-prev]',
     '[data-search-next]',
   ];
@@ -112,7 +115,7 @@ function fakeDom(index) {
     nodes.set(selector, {
       toggleAttribute: (name, force) => calls.toggle.push([selector, name, force]),
       addEventListener: (event, handler) => {
-        if (selector === '[data-search-clear]' && event === 'click') {
+        if (selector === '[data-search-results-clear]' && event === 'click') {
           calls.clearClick = handler;
         }
       },
@@ -136,7 +139,11 @@ function fakeDom(index) {
     },
     getElementById: (id) =>
       id === 'search-index' ? { textContent: JSON.stringify(index) } : null,
-    querySelector: (selector) => nodes.get(selector) ?? null,
+    // El botón de limpiar se busca dentro de la raíz .search-results (REQ-31-02).
+    querySelector: (selector) =>
+      selector === '.search-results'
+        ? { querySelector: (inner) => nodes.get(inner) ?? null }
+        : nodes.get(selector) ?? null,
   };
   return { calls, document };
 }
@@ -149,6 +156,7 @@ function initWith(pathname, search = '') {
   };
   globalThis.window.location.assign = (url) => calls.assign.push(url);
   globalThis.document = document;
+  primeSearchIndex(CATALOG);
   initSearchResults();
   return {
     calls,
@@ -173,25 +181,16 @@ test('REQ-07-01/02: [...term].astro existe, sirve /<término> on-demand y no enu
   assert.doesNotMatch(page, /getStaticPaths/, 'el catch-all no debe enumerar términos (REQ-07-02)');
 });
 
-test('REQ-07-05: la página obtiene los artículos con PostsRepository y el índice del dominio', () => {
+test('REQ-07-05: la página no construye ni embebe el índice por petición', () => {
+  // Ajuste feature 47 (precedente REQ-43-06): /<término> ya no reconstruye el
+  // índice en cada petición SSR; el cliente lo pide a /search-index.json. El
+  // escape de </script se verifica sobre la salida real de searchIndexJson.
   const page = readPage();
-  assert.match(page, /PostsRepository/, 'la página no usa PostsRepository (REQ-07-05)');
-  assert.match(page, /getCollection/, 'la página no obtiene la colección architecture');
-  assert.match(page, /buildSearchIndex/, 'la página no construye el índice con el dominio');
-});
-
-test('REQ-07-05: la página serializa el índice embebido con escape de </script', () => {
-  const page = readPage();
-  assert.match(page, /type="application\/json"/, 'no hay script type=application/json');
-  assert.match(page, /id="search-index"/, 'el script del índice no tiene id="search-index"');
-  assert.match(page, /set:html=\{indexJson\}/, 'el índice no se inyecta con set:html');
-  assert.match(page, /JSON\.stringify/, 'la serialización no usa JSON.stringify');
-  assert.match(page, /is:inline/, 'el script del índice debe ser is:inline');
-  assert.match(
-    page,
-    /<\\\/script/,
-    'el índice embebido no escapa </script como <\\/script (patrón REQ-03-07)',
-  );
+  assert.doesNotMatch(page, /PostsRepository|getCollection|searchIndexJson|id="search-index"/,
+    'la página sigue construyendo o embebiendo el índice (REQ-47-01)');
+  const post = { id: 'x', slug: 'x', title: 'a </script> b', author: 'A', img: 'x', readtime: 1,
+    description: '', tags: [], created: '', updated: '', next: null, related: null };
+  assert.ok(!/<\/script/i.test(searchIndexJson([post], [])), 'el índice no escapa </script (patrón REQ-03-07)');
 });
 
 // --- REQ-07-07 / REQ-07-08: título con término y presentación reutilizada ----
@@ -201,7 +200,8 @@ test('REQ-07-07: el documento declara el título con el término consultado', ()
   assert.match(page, /Astro\.params/, 'la página no lee el término del parámetro de ruta');
   assert.match(
     page,
-    /title=\{`Búsqueda: \$\{term\}`\}/,
+    // Feature 34: el título alterna con «Página no encontrada» cuando el status es 404.
+    /title=\{[^}]*`Búsqueda: \$\{term\}`\}/,
     'la página no pasa el título con el término a Layout (REQ-07-07)',
   );
 });

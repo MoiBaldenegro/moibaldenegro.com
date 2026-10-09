@@ -1,0 +1,12 @@
+---
+import Layout from '../layouts/Layout.astro';
+import NotFound from '../components/not-found/not-found.astro';
+import { NOT_FOUND_DESCRIPTION } from '../domain/seo/head.ts';
+
+// Página 404 propia (REQ-34-01): prerenderizada y fuera del índice (REQ-34-06).
+export const prerender = true;
+---
+
+<Layout title="Página no encontrada" description={NOT_FOUND_DESCRIPTION} noindex>
+  <NotFound />
+</Layout>

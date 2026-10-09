@@ -139,7 +139,9 @@ test('REQ-23-02: la resolución vive en un módulo .ts nuevo que la vista import
     page.includes('export const prerender = true'),
     'la página perdió el prerender estático (REQ-23-02)',
   );
-  assert.doesNotMatch(page, /<script/i, 'la página añade JS de runtime (estático por defecto)');
+  // Ajuste feature 44 (precedente REQ-43-06): el JSON-LD (type="application/ld+json")
+  // son datos estructurados, no JS de runtime; cualquier otro <script sigue prohibido.
+  assert.doesNotMatch(page, /<script(?![^>]*type="application\/ld\+json")/i, 'la página añade JS de runtime (estático por defecto)');
 });
 
 test('REQ-23-03: el botón presenta superficie con borde y texto claro', () => {

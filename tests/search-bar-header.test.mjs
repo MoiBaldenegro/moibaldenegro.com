@@ -102,6 +102,8 @@ function fakeDom() {
     querySelector: (selector) => {
       if (selector === 'input') return input;
       if (selector === '[data-search-clear]') return clear;
+      // Ajuste feature 57 (precedente REQ-43-06): el envío llega por el submit del <form>.
+      if (selector === 'form') return { addEventListener: (type, fn) => { listeners[type] = fn; } };
       return null;
     },
   };
@@ -177,15 +179,18 @@ test('REQ-04-05/06: submitQuery navega solo con consulta no vacía', () => {
   );
 });
 
-test('REQ-04-05/06 (wiring): Enter navega con consulta y omite con vacía', () => {
+test('REQ-04-05/06 (wiring): enviar (Enter) navega con consulta y omite con vacía', () => {
+  // Ajuste feature 57 (precedente REQ-43-06): Enter envía el <form>; el controlador
+  // cancela el envío nativo y navega. Se dispara submit en lugar de keydown.
+  const submit = { preventDefault() {} };
   const fake = fakeDom();
   const calls = [];
   initSearchBar((url) => calls.push(url), fake.root);
   fake.input.value = 'agilismo';
-  fire(fake, 'keydown', { key: 'Enter' });
+  fire(fake, 'submit', submit);
   assert.deepEqual(calls, ['/search?q=agilismo'], 'Enter con consulta no navegó (REQ-04-05)');
   fake.input.value = '';
-  fire(fake, 'keydown', { key: 'Enter' });
+  fire(fake, 'submit', submit);
   fake.input.value = 'x';
   fire(fake, 'keydown', { key: 'a' });
   assert.deepEqual(
@@ -237,7 +242,8 @@ test('REQ-04-08: el input de la barra declara aria-label', () => {
   const input = component.match(/<input[\s\S]*?>/)?.[0] ?? '';
   assert.ok(input.length > 0, 'search-bar.astro no renderiza <input> (REQ-04-01)');
   assert.match(input, /aria-label=/, 'el input no declara aria-label (REQ-04-08)');
-  assert.match(input, /type="text"/, 'el input no es de tipo texto (REQ-04-01)');
+  // Ajuste feature 57 (precedente REQ-43-06): el input es type="search" (sigue siendo de texto).
+  assert.match(input, /type="search"/, 'el input no es de tipo search (REQ-04-01 + REQ-57-02)');
 });
 
 test('Decisión 4: el botón X declara su propósito accesible', () => {

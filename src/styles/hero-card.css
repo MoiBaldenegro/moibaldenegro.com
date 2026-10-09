@@ -39,7 +39,8 @@
 
 /* Header */
 .card-header { position: absolute; left: 22px; top: 18px; z-index: 4; }
-.card-header h3 { margin: 0; font-size: 0.95rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+/* Feature 55: el título de la tarjeta es un párrafo (no rompe la jerarquía de encabezados). */
+.card-title { margin: 0; font-size: 0.95rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
 
 /* Icono */
 .card-icon { position: absolute; inset: 0; overflow: hidden; }
@@ -73,6 +74,11 @@
 
 @media (max-width: 768px) {
   .hero-card { grid-column: auto !important; grid-row: auto !important; min-height: 190px; }
-  .card-header h3 { font-size: 0.82rem; }
+  .card-title { font-size: 0.82rem; }
   .card-icon svg { width: 110px !important; }
+}
+
+/* Feature 56 (REQ-56-03): sin desplazamiento en hover con movimiento reducido. */
+@media (prefers-reduced-motion: reduce) {
+  .hero-card:hover { transform: none; }
 }

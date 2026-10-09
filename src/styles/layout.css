@@ -9,7 +9,7 @@ html, body { margin: 0; width: 100%; height: 100%; }
    estilizado (10px) aparece/desaparece → el viewport se ensancha/estrecha y el
    contenido centrado salta ~5px. stable mantiene el ancho estable; los
    navegadores sin soporte conservan el comportamiento actual (REQ-14-04). */
-html { scrollbar-gutter: stable; }
+html { scrollbar-gutter: stable; scroll-padding-top: var(--header-height); }
 body {
   background: var(--color-background);
   color: var(--color-text);
@@ -26,7 +26,7 @@ body {
 .site-navbar nav {
   width: min(var(--container-max), 95%);
   margin: auto;
-  height: 74px;
+  min-height: var(--header-height);
   display: flex; align-items: center; gap: 42px;
 }
 .site-navbar a {
@@ -57,9 +57,10 @@ body {
   width: 100%;
 }
 
-/* Foco visible global (REQ-37-04, feature 37): anillo de acento con tokens
-   para enlaces y elementos interactivos (Decisión 2 del design). */
-a:focus-visible {
+/* Foco visible global (features 37 y 37-focus-visible-global, REQ-37-01):
+   anillo de acento con tokens para cualquier control enfocado por teclado;
+   :where() deja especificidad 0 para que los componentes ajusten el offset. */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
@@ -70,6 +71,28 @@ a:focus-visible {
 ::-webkit-scrollbar-track { background: var(--color-scrollbar-track); }
 
 @media (max-width: 768px) {
-  .site-navbar nav { justify-content: center; gap: 24px; }
+  html { scroll-padding-top: var(--header-height-mobile); } /* feature 61, REQ-61-02 */
+  .site-navbar nav { justify-content: center; gap: 24px; padding-block: var(--gap-card); }
   .site-navbar a { font-size: 0.85rem; }
+}
+
+/* Utilidad global (feature 36, REQ-36-08): oculta a la vista y mantiene el nodo en el árbol de accesibilidad. */
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+
+/* Header (feature 51, REQ-51-04): con poca altura de viewport (móvil horizontal, zoom) la barra
+   deja de ser sticky. scroll-padding-top (REQ-51-03) está en la regla html del inicio. */
+@media (max-height: 500px) { .site-navbar { position: static; } }
+
+/* Enlace «Saltar al contenido» (feature 38, REQ-38-05..07): fuera de la vista
+   hasta recibir foco; entonces aparece sobre el header sticky. Solo tokens. */
+.skip-link {
+  position: absolute; top: var(--gap-card); left: var(--gap-card); z-index: 200;
+  padding: calc(var(--gap-card) / 2) var(--gap-card); border-radius: var(--radius-pill);
+  background: var(--color-accent); color: var(--color-text); font-weight: 600;
+  transform: translateY(-200%); transition: var(--transition-default);
+}
+.skip-link:focus { transform: none; }
+/* Movimiento reducido (feature 56, REQ-56-02): red de seguridad global, sin JS. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }

@@ -1,8 +1,9 @@
 /* code-copy.css — Botón Copiar en bloques de código (feature 2026-09-19).
-   El pre resaltado es posicionado para anclar el botón arriba a la derecha.
+   El envoltorio .code-block del pre es posicionado para anclar el botón arriba a la derecha.
    Solo tokens de tokens.css: superficie, borde, texto y acento. */
 
-.post__content pre.astro-code {
+/* Feature 62: el ancla es el envoltorio (code-copy.ts), no el pre con scroll. */
+.post__content .code-block {
   position: relative;
 }
 
@@ -41,6 +42,19 @@
   color: var(--color-accent);
   border-color: var(--color-accent);
   opacity: 1;
+  /* Feature 54: crece con «Copiado» (anclado a right, se ensancha hacia la izquierda). */
+  width: auto;
+  padding: 0 var(--gap-card);
+  white-space: nowrap;
+}
+
+/* Texto visible tras copiar (feature 54, REQ-54-04/05). */
+.code-copy__done {
+  margin-left: 6px;
+  color: var(--color-accent);
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
 }
 
 @media (max-width: 768px) {

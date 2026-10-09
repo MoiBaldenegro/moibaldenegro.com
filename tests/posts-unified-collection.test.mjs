@@ -44,14 +44,16 @@ test('post.id = slug aunque entry.id incluya subcarpeta', async () => {
 });
 
 test('páginas usan getCollection posts y bodies por slug', () => {
-  for (const [url, label] of [[SEARCH_URL, 'search'], [TERM_URL, 'term'], [INDEX_URL, 'index'], [DETAIL_URL, 'detalle']]) {
-    const src = readFileSync(url, 'utf8');
-    assert.match(src, /getCollection\(['"]posts['"]\)/, `${label} no usa getCollection('posts')`);
-  }
-  for (const [url, label] of [[SEARCH_URL, 'search'], [TERM_URL, 'term'], [INDEX_URL, 'index']]) {
-    const src = readFileSync(url, 'utf8');
-    assert.match(src, /entry\.data\.slug/, `${label} no keyea bodies por slug`);
-  }
+  // Ajuste feature 47 (precedente REQ-43-06): /search, /<término> y la portada ya
+  // no construyen el índice; lo hace el endpoint /search-index.json con
+  // searchIndexJson, que indexa los bodies por entry.data.slug.
+  const detail = readFileSync(DETAIL_URL, 'utf8');
+  assert.match(detail, /getCollection\(['"]posts['"]\)/, "detalle no usa getCollection('posts')");
+  const endpoint = readFileSync(new URL('../src/pages/search-index.json.ts', import.meta.url), 'utf8');
+  assert.match(endpoint, /getCollection\(['"]posts['"]\)/, "el endpoint no usa getCollection('posts')");
+  assert.match(endpoint, /searchIndexJson\(/, 'el endpoint no usa searchIndexJson');
+  const domain = readFileSync(new URL('../src/domain/search/index-json.ts', import.meta.url), 'utf8');
+  assert.match(domain, /entry\.data\.slug/, 'searchIndexJson no keyea bodies por slug');
 });
 
 test('post de prueba OS existe con keyword única de búsqueda', () => {

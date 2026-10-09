@@ -11,7 +11,7 @@
 // panel en vivo (applyLive, feature 5). El contexto se detecta por DOM:
 // [data-search-live] → portada; [data-search-guide] → vista /search.
 
-import { activeQuery, clearQuery } from '../search-bar/search-bar.ts';
+import { activeQuery, clearQuery, resetQuery } from '../search-bar/search-bar.ts';
 import { queryTerm, removeQueryParam } from '../search-results/search-results-controller.ts';
 import { applyLive } from '../search-live/search-live.ts';
 
@@ -47,11 +47,12 @@ export function initSearchEscape(
   if (escapeHandler !== null) root.removeEventListener('keydown', escapeHandler);
   escapeHandler = (event: KeyboardEvent): void => {
     if (event.key !== 'Escape') return;
+    if (!isSearchFocus(event.target)) return; // REQ-57-05: solo con el foco en la búsqueda
     event.stopPropagation(); // REQ-06-04: nunca propaga al resto de la página
     const context = escapeContext(root);
     const action = escapeAction(activeTerm(context, window.location.search), context);
     if (action === 'clear-landing') clearLanding(root, barRoot);
-    if (action === 'clear-search') clearSearchView(baseTitle);
+    if (action === 'clear-search') clearSearchView(baseTitle, barRoot);
   };
   root.addEventListener('keydown', escapeHandler);
 }
@@ -65,7 +66,8 @@ function clearLanding(root: Element, barRoot: Element | null): void {
   if (panel !== null) applyLive('', [], panel, landing);
 }
 
-function clearSearchView(baseTitle: string): void {
+function clearSearchView(baseTitle: string, barRoot: Element | null): void {
+  if (barRoot !== null) resetQuery(barRoot); // feature 57: la barra precargada también se vacía
   const rest = removeQueryParam(window.location.search, 'q');
   window.history.replaceState(null, '', `${window.location.pathname}${rest ? `?${rest}` : ''}`);
   document.title = baseTitle;
@@ -75,4 +77,11 @@ function clearSearchView(baseTitle: string): void {
 
 function toggle(name: string, visible: boolean): void {
   document.querySelector(`[data-search-${name}]`)?.toggleAttribute('hidden', !visible);
+}
+// REQ-57-05 (feature 57): Escape solo actúa si el foco está en el buscador del
+// header, en el panel en vivo de la portada o en la vista de resultados.
+const SEARCH_FOCUS = '[data-search-bar], [data-search-live], .search-results';
+export function isSearchFocus(target: EventTarget | null): boolean {
+  const element = target as Element | null;
+  return typeof element?.closest === 'function' && element.closest(SEARCH_FOCUS) !== null;
 }

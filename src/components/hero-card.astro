@@ -11,11 +11,11 @@ const { card } = Astro.props;
 
 <article class="hero-card" data-color-token={card.colorToken}>
   <header class="card-header">
-    <h3>{card.title}</h3>
+    <p class="card-title">{card.title}</p>
   </header>
 
   <div class="card-icon">
-    <svg width="32px" height="32px">
+    <svg width="32px" height="32px" aria-hidden="true" focusable="false">
       <use xlink:href={card.icon} href={card.icon}/>
     </svg>
   </div>

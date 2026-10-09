@@ -31,3 +31,12 @@ function decodeURIComponentSafe(value: string): string {
     return value;
   }
 }
+// REQ-34-02/03 (feature 34): estado HTTP de la ruta catch-all. Un último
+// segmento con extensión (/favicon.svg, /robots.txt, /wp-login.php) o un
+// primer segmento posts (artículo inexistente: los reales están
+// prerenderizados) es «no encontrado»; cualquier otro path es un término.
+export function statusForTermPath(pathname: string): 200 | 404 {
+  const segments = pathname.split('/').filter((segment) => segment !== '');
+  const last = segments.at(-1) ?? '';
+  return segments[0] === 'posts' || /\.[a-z0-9]+$/i.test(last) ? 404 : 200;
+}

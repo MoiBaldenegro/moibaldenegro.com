@@ -7,24 +7,28 @@
 // Siguiente apunta a 404). Verdad de terreno
 // (progress/research/anchor-sin-url.md, verificada contra el build emitido
 // en dist/client/posts/): post.id = entry.id = segmento de ruta = valor del
-// campo slug — 00-agilismo, 01-diseño-detallado (guion), 02-principios-
-// del-diseno-de-software (largo), 03-principios solid (espacio) — NO el
+// campo slug — 00-agilismo, 01-diseno-detallado (guion), 02-principios-
+// del-diseno-de-software (largo), 03-principios-solid (antes con espacio; ASCII desde la feature 45) — NO el
 // nombre de fichero (difieren en 3 de 4 artículos).
 //   REQ-26-01 — El frontmatter de 00-agilismo SHALL declarar next
-//               /posts/01-diseño-detallado y related
+//               /posts/01-diseno-detallado y related
 //               /posts/02-principios-del-diseno-de-software.
 //   REQ-26-02 — El frontmatter de 01-diseño_detallado SHALL declarar next
 //               /posts/02-principios-del-diseno-de-software y related
-//               /posts/03-principios solid.
+//               /posts/03-principios-solid.
 //   REQ-26-03 — El frontmatter de 02-principios SHALL declarar next
-//               /posts/03-principios solid y related /posts/00-agilismo.
+//               /posts/03-principios-solid y related /posts/00-agilismo.
 //   REQ-26-04 — El frontmatter de 03-principios_solid SHALL declarar related
-//               /posts/00-agilismo y /posts/01-diseño-detallado.
+//               /posts/00-agilismo y /posts/01-diseno-detallado.
 //   REQ-26-05 — Cada ruta de next/related SHALL corresponder a un post.id
 //               entregado por PostsRepository, WHERE la verificación usa el
 //               repositorio y no el nombre de fichero.
 // Solo frontmatter *.md: sin tocar esquema, entidad, repositorio, vista ni
 // CSS (sin design.md).
+//
+// Ajuste feature 45 (precedente REQ-43-06): los slugs pasan a ASCII
+// (03-principios-solid, 01-diseno-detallado, 04-ciclo-de-vida-y-arquitectura);
+// las URLs antiguas redirigen con 301 desde astro.config.mjs.
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -123,8 +127,8 @@ test('REQ-26-01: 00-agilismo declara next y related reales', () => {
   const source = readArticle('00-agilismo.md');
   assert.equal(
     fieldOf(source, 'next'),
-    '/posts/01-diseño-detallado',
-    `00-agilismo declara next ${JSON.stringify(fieldOf(source, 'next'))} en lugar de "/posts/01-diseño-detallado" (REQ-26-01)`,
+    '/posts/01-diseno-detallado',
+    `00-agilismo declara next ${JSON.stringify(fieldOf(source, 'next'))} en lugar de "/posts/01-diseno-detallado" (REQ-26-01)`,
   );
   assert.deepEqual(
     relatedOf(source),
@@ -142,7 +146,7 @@ test('REQ-26-02: 01-diseño_detallado declara next y related reales', () => {
   );
   assert.deepEqual(
     relatedOf(source),
-    ['/posts/03-principios solid'],
+    ['/posts/03-principios-solid'],
     `01-diseño_detallado declara related ${JSON.stringify(relatedOf(source))} (REQ-26-02)`,
   );
 });
@@ -151,8 +155,8 @@ test('REQ-26-03: 02-principios declara next real y conserva related 00-agilismo'
   const source = readArticle('02-principios.md');
   assert.equal(
     fieldOf(source, 'next'),
-    '/posts/03-principios solid',
-    `02-principios declara next ${JSON.stringify(fieldOf(source, 'next'))} en lugar de "/posts/03-principios solid" (REQ-26-03)`,
+    '/posts/03-principios-solid',
+    `02-principios declara next ${JSON.stringify(fieldOf(source, 'next'))} en lugar de "/posts/03-principios-solid" (REQ-26-03)`,
   );
   assert.deepEqual(
     relatedOf(source),
@@ -165,7 +169,7 @@ test('REQ-26-04: 03-principios_solid declara related con los dos slugs reales', 
   const declared = relatedOf(readArticle('03-principios_solid.md'));
   assert.deepEqual(
     declared,
-    ['/posts/00-agilismo', '/posts/01-diseño-detallado'],
+    ['/posts/00-agilismo', '/posts/01-diseno-detallado'],
     `03-principios_solid declara related ${JSON.stringify(declared)} (REQ-26-04)`,
   );
 });

@@ -3,6 +3,7 @@ import '../../styles/search-results.css';
 ---
 
 <section class="search-results" aria-label="Resultados de búsqueda">
+  <p class="visually-hidden" role="status" aria-live="polite" data-search-status></p>
   <div class="search-results__guide" data-search-guide>
     <h2 class="search-results__heading">Buscar en el catálogo</h2>
     <p class="search-results__guide-text">
@@ -12,9 +13,9 @@ import '../../styles/search-results.css';
   </div>
   <div class="search-results__empty" data-search-empty hidden>
     <p class="search-results__empty-message">No se encontraron resultados para '<span data-search-term></span>'</p>
-    <button type="button" class="search-results__clear" data-search-clear>Limpiar búsqueda</button>
+    <button type="button" class="search-results__clear" data-search-results-clear>Limpiar búsqueda</button>
   </div>
-  <ul class="search-results__list" data-search-list hidden></ul>
+  <ul class="search-results__list" data-search-list tabindex="-1" hidden></ul>
   <nav class="search-results__pagination" data-search-pagination hidden aria-label="Paginación de resultados">
     <button type="button" class="search-results__page-button" data-search-prev>Anterior</button>
     <span class="search-results__page-label" data-search-page-label></span>

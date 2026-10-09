@@ -181,5 +181,7 @@ test('Convención: esquema, entidad, repositorio, vista y CSS intactos de la fea
   assert.match(page, /item\.img/, 'la vista no pinta la miniatura de las cards (feature 25, REQ-24-04)');
   assert.match(page, /item\.author/, 'la vista no pinta el autor de las cards (feature 25, REQ-24-04)');
   assert.match(page, /item\.readtime/, 'la vista no pinta el readtime de las cards (feature 25, REQ-24-04)');
-  assert.doesNotMatch(page, /<script/i, 'la página añade JS de runtime (estático por defecto)');
+  // Ajuste feature 44 (precedente REQ-43-06): el JSON-LD (type="application/ld+json")
+  // son datos estructurados, no JS de runtime; cualquier otro <script sigue prohibido.
+  assert.doesNotMatch(page, /<script(?![^>]*type="application\/ld\+json")/i, 'la página añade JS de runtime (estático por defecto)');
 });

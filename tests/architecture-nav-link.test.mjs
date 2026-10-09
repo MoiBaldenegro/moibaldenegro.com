@@ -99,9 +99,10 @@ test('REQ-08-04: se conservan el ancla del logo (enlace de la portada), About, @
     /<a\b[^>]*href="\/about"[^>]*>\s*About\s*<\/a>/,
     'el enlace About se perdió al añadir Arquitectura (REQ-08-04)',
   );
+  // Ajuste feature 53 (precedente REQ-43-06): el enlace a X añade un aviso visually-hidden de sitio externo.
   assert.match(
     nav,
-    /<a\b[^>]*href="https:\/\/x\.com\/moibaldenegro"[^>]*>\s*@moibaldenegro\s*<\/a>/,
+    /<a\b[^>]*href="https:\/\/x\.com\/moibaldenegro"[^>]*>\s*@moibaldenegro(<span class="visually-hidden">[^<]*<\/span>)?\s*<\/a>/,
     'el enlace externo @moibaldenegro se perdió al añadir Arquitectura (REQ-08-04)',
   );
   assert.match(

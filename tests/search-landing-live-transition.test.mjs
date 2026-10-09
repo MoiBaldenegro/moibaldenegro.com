@@ -21,6 +21,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
+import { searchIndexJson } from '../src/domain/search/index-json.ts';
 import {
   layoutMode,
   livePage,
@@ -186,19 +187,19 @@ test('REQ-05-01/02/03: el controlador alterna panel y secciones sin recarga (ins
 
 // --- REQ-05-04: presentación reutilizada de la vista dedicada ---------------
 
-test('REQ-05-04: la portada serializa el índice embebido con escape (inspección)', () => {
+test('REQ-05-04: la portada no embebe el índice; el panel lo pide al loader', () => {
+  // Ajuste feature 47 (precedente REQ-43-06): sin script embebido; el panel en
+  // vivo pide /search-index.json al loader. El escape de </script se sigue
+  // verificando sobre la salida real de searchIndexJson (endpoint).
   const index = readIndex();
-  assert.match(index, /id="search-index"/, 'falta el script del índice (REQ-03-07)');
-  assert.match(index, /type="application\/json"/, 'el índice no es application/json');
-  assert.match(index, /set:html=\{indexJson\}/, 'el índice no se inyecta con set:html');
-  assert.match(index, /JSON\.stringify/, 'la serialización no usa JSON.stringify');
-  assert.match(index, /buildSearchIndex/, 'la portada no construye el índice con el dominio');
-  assert.match(index, /is:inline/, 'el script del índice debe ser is:inline');
-  assert.match(
-    index,
-    /<\\\/script/,
-    'el índice embebido no escapa </script como <\\/script (REQ-03-07)',
-  );
+  assert.doesNotMatch(index, /id="search-index"/, 'la portada sigue embebiendo el índice (REQ-47-01)');
+  const live = readFileSync(new URL('../src/components/search-live/search-live.ts', import.meta.url), 'utf8');
+  assert.match(live, /liveShow\(/, 'el panel no delega en liveShow (REQ-47-03)');
+  const liveSearch = readFileSync(new URL('../src/components/search-live/live-search.ts', import.meta.url), 'utf8');
+  assert.match(liveSearch, /withSearchIndex\(/, 'el panel no obtiene el índice del loader (REQ-47-03)');
+  const post = { id: 'x', slug: 'x', title: 'a </script> b', author: 'A', img: 'x', readtime: 1,
+    description: '', tags: [], created: '', updated: '', next: null, related: null };
+  assert.ok(!/<\/script/i.test(searchIndexJson([post], [])), 'el índice no escapa </script (REQ-03-07)');
 });
 
 test('REQ-05-04: el panel reutiliza la presentación de la vista dedicada (inspección)', () => {

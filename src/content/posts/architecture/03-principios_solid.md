@@ -1,14 +1,14 @@
 ---
-slug: 03-principios solid
+slug: 03-principios-solid
 title:  Principios solid
 author: Moises Baldenegro Melendez
-img: arch03.webp
+img: arch00.webp
 readtime: 4
 description: En este capitulo aprenderemos los conceptos fundamentales de la arquitectura de software.
 tags: "#arquitectura #agilismo #solid"
 created: "21 Agosto 2026"
 updated: "21 Agosto 2026"
-related: [/posts/00-agilismo, /posts/01-diseño-detallado]
+related: [/posts/00-agilismo, /posts/01-diseno-detallado]
 
 ---
 

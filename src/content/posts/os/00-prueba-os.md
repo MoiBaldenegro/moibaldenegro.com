@@ -17,7 +17,7 @@ unificada posts/ + búsqueda. next -> 01-procesos-memoria para probar el botón
 Siguiente; related cruzado OS + architecture para probar Recomendados.
 Keyword única xyz-os-test-123 para assert en /search. -->
 
-# 00. Prueba OS - Qué es un sistema operativo
+## 00. Prueba OS - Qué es un sistema operativo
 
 Este es un post de prueba para validar que la colección unificada `posts`
 mezcla `architecture/` y `os/` en `/posts/[id]` y en la búsqueda.

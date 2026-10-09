@@ -1,0 +1,36 @@
+/* Página de no encontrado (feature 34 not-found-page, design.md): mismo ancho
+   y márgenes que .search-page; solo tokens de tokens.css. */
+.not-found {
+  width: min(var(--container-max), 95%);
+  margin: auto;
+  padding: calc(var(--gap-card) * 3) 0 calc(var(--gap-card) * 4);
+}
+
+.not-found__card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: calc(var(--gap-card) * 2);
+}
+
+.not-found__heading {
+  color: var(--color-text);
+  font-size: 1.75rem;
+  margin: 0 0 var(--gap-card);
+}
+
+.not-found__text {
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--gap-card);
+}
+
+.not-found__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-card);
+}
+
+.not-found__link {
+  color: var(--color-accent);
+  font-weight: 600;
+}

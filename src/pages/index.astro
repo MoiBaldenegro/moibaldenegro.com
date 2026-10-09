@@ -4,26 +4,17 @@ import Layout from '../layouts/Layout.astro';
 import LatestArticles from '../components/latest-articles.astro';
 import HtbStadistics from '../components/htb-stadistics.astro';
 import SearchLive from '../components/search-live/search-live.astro';
-import { PostsRepository } from '../domain/repositories/posts-repository.ts';
-import { buildSearchIndex } from '../domain/search/index.ts';
-import { getCollection } from 'astro:content';
+import { HeroProfileRepository } from '../domain/repositories/hero-profile-repository.ts';
+import { SITE_DESCRIPTION } from '../domain/seo/head.ts';
 
 export const prerender = true;
 
-// Índice embebido (REQ-05-04/REQ-03-07): catálogo + cuerpos markdown (solo en
-// build, precedente posts/[id].astro), serializado con JSON.stringify y
-// escape de </script (<\/script) para no romper el HTML.
-const posts = await new PostsRepository().getPosts();
-const entries = await getCollection('posts');
-// DECISIÓN 2026-09-18 (colección unificada): bodies por slug, no entry.id.
-const bodies = Object.fromEntries(entries.map((entry) => [entry.data.slug, entry.body]));
-const indexJson = JSON.stringify(buildSearchIndex(posts, bodies)).replace(
-  /<\/script/gi,
-  '<\\/script',
-);
+const profile = new HeroProfileRepository().getProfile();
+
+// Feature 47: el índice ya no se embebe; el cliente lo pide a /search-index.json.
 ---
 
-<Layout>
+<Layout title={profile.name} description={SITE_DESCRIPTION}>
   <div class="home__landing" data-landing-sections>
     <NewHero/>
     <LatestArticles/>
@@ -31,6 +22,5 @@ const indexJson = JSON.stringify(buildSearchIndex(posts, bodies)).replace(
       <p slot="fallback">Cargando estadísticas de HTB...</p>
     </HtbStadistics>
   </div>
-  <script type="application/json" id="search-index" is:inline set:html={indexJson}></script>
   <SearchLive />
 </Layout>

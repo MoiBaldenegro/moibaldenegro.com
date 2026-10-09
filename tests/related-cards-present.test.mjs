@@ -187,7 +187,9 @@ test('REQ-25-05: la página resuelve las cards en build sin JS de runtime', () =
     /getCollection|entry\.data/,
     'el marcado resuelve datos directo de la colección (REQ-25-05, regla 8)',
   );
-  assert.doesNotMatch(page, /<script/i, 'la página añade JS de runtime (REQ-25-05, estático por defecto)');
+  // Ajuste feature 44 (precedente REQ-43-06): el JSON-LD (type="application/ld+json")
+  // son datos estructurados, no JS de runtime; cualquier otro <script sigue prohibido.
+  assert.doesNotMatch(page, /<script(?![^>]*type="application\/ld\+json")/i, 'la página añade JS de runtime (REQ-25-05, estático por defecto)');
   assert.doesNotMatch(page, /client:/, 'la página usa hidratación de cliente (REQ-25-05, estático por defecto)');
 });
 

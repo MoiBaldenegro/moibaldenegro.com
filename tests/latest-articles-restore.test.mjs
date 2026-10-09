@@ -9,7 +9,7 @@
 //               post.author, post.readtime, post.description y post.tags.
 //   REQ-20-04 — el texto "min de lectura" se muestra junto al autor.
 //   REQ-20-05 — el <img> lleva la clase latest-articles__image,
-//               src con post.img, alt={post.title} y loading="lazy".
+//               src con post.img, alt="" (feature 53; antes alt={post.title}) y loading="lazy".
 //   REQ-20-06 — la card enlaza a la ruta /posts/{id}. La prohibición original
 //               de enlaces /posts (Decisión 3 del design.md de la feature 20)
 //               era transitoria: la petición del humano (ciclo 30, feature 36
@@ -108,7 +108,7 @@ test('REQ-20-04: muestra el texto "min de lectura" junto al autor', () => {
   );
 });
 
-test('REQ-20-05: el <img> lleva la clase, src con post.img, alt={post.title} y loading lazy', () => {
+test('REQ-20-05: el <img> lleva la clase, src con post.img, alt="" (feature 53) y loading lazy', () => {
   const img = imgTag(readComponent());
   assert.match(
     img,
@@ -119,10 +119,11 @@ test('REQ-20-05: el <img> lleva la clase, src con post.img, alt={post.title} y l
     img.includes('post.img'),
     'el <img> no referencia post.img (REQ-20-05)'
   );
+  // Ajuste feature 53 (precedente REQ-43-06): la miniatura es decorativa junto al título enlazado (alt="").
   assert.match(
     img,
-    /alt=\{post\.title\}/,
-    'el <img> no usa alt={post.title} (REQ-20-05)'
+    /alt=""/,
+    'el <img> no declara alt="" decorativo (REQ-20-05 + REQ-53-01)'
   );
   assert.match(
     img,
