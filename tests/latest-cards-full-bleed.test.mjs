@@ -54,16 +54,28 @@ test('REQ-76-01..04/11/25: hoja sin clip-path, overflow clip y transición sin t
   assert.equal(latest.split('\n').length - (latest.endsWith('\n') ? 1 : 0), 98);
 });
 
-test('REQ-76-10/12/13: la x de las cards extremas va en el mismo ScrollTrigger del horizontal', () => {
+// Ronda 2 (review_76): el test ata la x de las cards al bloque de la línea de tiempo del horizontal y
+// exige la limpieza real de las cards en clearTrack (no basta con que aparezcan las cadenas).
+test('REQ-76-10/12/13: x de las cards extremas en el mismo ScrollTrigger y limpieza de las cards', () => {
   const mod = read(MOD);
   assert.match(mod, /import [{][^}]*edgeOffsets[^}]*[}] from ['"][.][.][/][.][.][/]domain[/]latest-horizontal[.]ts['"]/);
   assert.ok(mod.includes('pairInset') || mod.includes('restMargin'));
+  const from = mod.indexOf('gsap.timeline('), to = mod.indexOf('gsap.fromTo(track');
+  assert.ok(from >= 0 && to > from, 'falta la línea de tiempo antes de la entrada');
+  const block = mod.slice(from, to);
+  for (const s of ["start: 'top top'", 'pinScrollLength', 'scrub: true', 'invalidateOnRefresh: true', "ease: 'none'", 'edgeOffsets(0,', 'edgeOffsets(1,', 'cards[']) assert.ok(block.includes(s), `línea de tiempo sin ${s}`);
+  const outside = mod.slice(0, from) + mod.slice(to);
+  assert.doesNotMatch(outside, /[.](to|from|fromTo|set)[(][ ]*cards/, 'animación de cards fuera de la línea de tiempo del horizontal');
   assert.equal(mod.split("start: 'top top'").length - 1, 1, "un único start: 'top top'");
   assert.ok(!mod.includes("addEventListener('scroll'"));
-  assert.match(mod, /edgeOffsets[(]0,/); assert.match(mod, /edgeOffsets[(]1,/);
   assert.doesNotMatch(mod, /gsap[.](to|fromTo|from)[(][^)]*latest-articles__card/);
-  const dom = read('src/components/latest-horizontal/track-dom.ts');
-  assert.ok(dom.includes('.latest-articles__card'));
+  const dom = read('src/components/latest-horizontal/track-dom.ts').replace(/[/][/].*$/gm, '');
+  const clear = dom.slice(dom.indexOf('export function clearTrack'), dom.indexOf('}', dom.indexOf('export function clearTrack')));
+  assert.match(clear, /querySelectorAll[^)]*latest-articles__card/, 'clearTrack no recorre las cards');
+  const helper = clear.match(/[ ]([a-zA-Z]+)[(]el[)];/)?.[1];
+  assert.ok(helper, 'clearTrack no aplica una utilidad a cada elemento');
+  const util = dom.slice(dom.indexOf(`function ${helper}`), dom.indexOf(String.fromCharCode(10) + '}', dom.indexOf(`function ${helper}`)));
+  for (const s of ["removeProperty('transform')", "removeProperty('translate')", "removeAttribute('style')"]) assert.ok(util.includes(s), `${helper} sin ${s}`);
 });
 
 test('REQ-76-25: archivos tocados <= 100 líneas', () => {

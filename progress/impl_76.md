@@ -98,3 +98,23 @@ limpio. No hay scroll horizontal en ningún punto.
   1600×700, donde la card está limitada por alto y el margen es grande.
 - La opción A (dejar asomar la vecina) es revertir las x propias; queda documentada como
   alternativa.
+
+## Ronda 2 (CHANGES_REQUESTED en review_76.md)
+
+1. REQ-76-13: el test exige ahora la limpieza real, sin comentarios. Busca el selector
+   `.latest-articles__card` en el cuerpo de `clearTrack`, localiza la utilidad que aplica a cada
+   elemento (`clearInline`) y le exige `removeProperty('transform')`,
+   `removeProperty('translate')` y `removeAttribute('style')`. Mutación: quitando
+   `removeProperty('translate')` de track-dom.ts el test falla (pass 3 / fail 1); al restaurarlo
+   vuelve a verde.
+2. REQ-76-10: el test extrae el bloque desde `gsap.timeline(` hasta `gsap.fromTo(track` y exige
+   dentro `start: 'top top'`, `pinScrollLength`, `scrub: true`, `invalidateOnRefresh: true`,
+   `ease: 'none'`, `edgeOffsets(0,`, `edgeOffsets(1,` y `cards[`. Fuera del bloque no puede haber
+   ninguna animación de cards (`.to/.from/.fromTo/.set(cards`).
+   Se siguen exigiendo un único `start: 'top top'` y ningún listener de scroll.
+3. Observaciones no bloqueantes:
+   - `end` sigue con `pinScrollLength(...)` literal, porque la inspección de la 73 exige
+     `end: () =>…pinScrollLength`;
+   - el `ease: 'none'` repetido se mantiene por la misma razón;
+   - el commit debe separar los restos de la ronda 2 de la 75.
+- Suite y ./init.sh en verde.

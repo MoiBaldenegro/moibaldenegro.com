@@ -1,0 +1,12 @@
+---
+import '../../styles/site-menu.css';
+---
+
+<script>
+  // Feature 79: menú hamburguesa móvil. Sin marcado propio (el botón y el panel viven en el
+  // header de Layout.astro). El primer astro:page-load llega con load: se inicializa al evaluar
+  // el módulo y en cada astro:after-swap (antes de la captura de la transición).
+  import { initSiteMenu } from './site-menu.ts';
+  initSiteMenu();
+  document.addEventListener('astro:after-swap', () => initSiteMenu());
+</script>

@@ -77,8 +77,8 @@
   --container-max: 1500px;
   /* Video embebido del artículo (feature 16): embed 16:9 estándar, ~46% de la columna desktop (design.md Decisión 2). */
   --video-max-width: 640px;
-  /* Header (feature 51): altura mínima de la barra y scroll-padding-top de las anclas. */
-  --header-height: 74px;
+  /* Header (feature 51; 64px desde la feature 77): altura mínima de la barra y scroll-padding-top. */
+  --header-height: 64px;
   /* Header en <=768px (feature 61): alto medido a 320 px con el nav envuelto (impl_61.md). */
   --header-height-mobile: 170px;
 

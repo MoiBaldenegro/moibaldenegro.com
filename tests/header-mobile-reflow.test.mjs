@@ -16,8 +16,9 @@ const rule = (text, selector) => {
   return '';
 };
 
-test('REQ-51-01: tokens.css declara --header-height: 74px', () => {
-  assert.match(read('src/styles/tokens.css'), /--header-height:\s*74px;/);
+// Ajuste feature 77 (precedente REQ-43-06): el header de escritorio baja de 74 a 64 px (petición humana).
+test('REQ-51-01: tokens.css declara --header-height: 64px', () => {
+  assert.match(read('src/styles/tokens.css'), /--header-height:\s*64px;/);
 });
 
 test('REQ-51-02: la barra usa altura mínima con el token, no una altura fija', () => {

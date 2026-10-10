@@ -4,6 +4,7 @@ import "../styles/layout.css";
 import { ClientRouter } from 'astro:transitions';
 import SearchBar from '../components/search-bar/search-bar.astro';
 import SearchEscape from '../components/search-escape/search-escape.astro';
+import SiteMenu from '../components/site-menu/site-menu.astro';
 
 import { canonicalUrl, composeTitle } from '../domain/seo/head.ts';
 import { socialMeta } from '../domain/seo/social.ts';
@@ -52,12 +53,16 @@ const social = socialMeta({ title: pageTitle, description, pathname: Astro.url.p
     <header class="site-navbar">
       <nav>
         <a aria-current={Astro.url.pathname === '/' ? 'page' : undefined} href="/"><img src="/assets/mxvi_logo.webp" alt="Inicio — moisesbaldenegro.com" width="72" height="25"/></a>
-        <a aria-current={Astro.url.pathname === '/about' || Astro.url.pathname === '/about/' ? 'page' : undefined} href="/about">About</a>
-        <a aria-current={Astro.url.pathname === '/arquitectura' || Astro.url.pathname === '/arquitectura/' ? 'page' : undefined} href="/arquitectura">Arquitectura</a>
-        <a href="https://x.com/moibaldenegro">@moibaldenegro<span class="visually-hidden"> (X, sitio externo)</span></a>
-        <SearchBar />
+        <button type="button" class="site-menu__toggle" data-site-menu-toggle aria-controls="site-menu" aria-expanded="false" aria-label="Abrir menú"></button>
+        <div class="site-menu" id="site-menu" data-site-menu>
+          <a aria-current={Astro.url.pathname === '/about' || Astro.url.pathname === '/about/' ? 'page' : undefined} href="/about">About</a>
+          <a aria-current={Astro.url.pathname === '/arquitectura' || Astro.url.pathname === '/arquitectura/' ? 'page' : undefined} href="/arquitectura">Arquitectura</a>
+          <a href="https://x.com/moibaldenegro">@moibaldenegro<span class="visually-hidden"> (X, sitio externo)</span></a>
+          <SearchBar />
+        </div>
       </nav>
     </header>
+    <SiteMenu />
     <SearchEscape />
     <main id="contenido" tabindex="-1">
       <slot />
