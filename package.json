@@ -16,6 +16,7 @@
   "dependencies": {
     "@astrojs/cloudflare": "^14.3.4",
     "astro": "^7.3.8",
+    "geist": "1.7.2",
     "gsap": "3.15.0",
     "pdf-lib": "1.17.1",
     "wrangler": "^4.149.0"
@@ -24,7 +25,10 @@
     "onlyBuiltDependencies": [
       "esbuild",
       "sharp"
-    ]
+    ],
+    "overrides": {
+      "geist>next": "-"
+    }
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20261009.1"

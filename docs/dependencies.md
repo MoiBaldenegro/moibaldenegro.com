@@ -50,8 +50,10 @@ cambia en la feature correspondiente, para que el validador siga en verde.
   Vercel, cuenta como dependencia»; referencia https://vercel.com/font?type=pixel), con
   Geist Pixel «específicamente»: Geist Pixel en títulos/display y Geist Sans + Geist Mono
   como base de texto y código. Fuentes autoalojadas (sin CDN externo, compatible con la
-  CSP). Paquete, versión exacta y licencia (SIL OFL esperada) los fija la spec de la
-  feature. PENDIENTE de aplicar: esa feature añade la entrada `###` al instalarla.
+  CSP). APLICADA en la feature 85 `geist-font-base`: geist 1.7.2 exacta (SIL Open Font
+  License 1.1) con `approved: 2026-10-12` (entrada `### geist`) y `pnpm.overrides`
+  `"geist>next": "-"` (sin next/react/react-dom); Geist Sans + Geist Mono como base. Geist
+  Pixel en títulos se aplica en la feature 86.
 
 ### astro
 
@@ -98,3 +100,12 @@ cambia en la feature correspondiente, para que el validador siga en verde.
 - motivo: generación del CV en PDF en build (endpoint prerenderizado /cv.pdf, feature 81) desde los mismos datos de /about
 - licencia: MIT; JavaScript puro, sin fs ni APIs de navegador (compatible con el prerender en workerd)
 - alcance: solo src/domain/cv/cv-pdf.ts importa pdf-lib; StandardFonts sin incrustar fuentes
+
+### geist
+
+- version: 1.7.2
+- scope: dependencies
+- approved: 2026-10-12
+- motivo: tipografía del proyecto autoalojada (Geist Sans y Geist Mono en la feature 85; Geist Pixel en títulos en la feature 86)
+- licencia: SIL Open Font License 1.1 (LICENSE.txt del paquete oficial de Vercel)
+- alcance: solo los woff2 de dist/fonts registrados en astro.config.mjs con fontProviders.local(); sus módulos JS (geist/font, que dependen de next/font) nunca se importan; peer next anulado con pnpm.overrides "geist>next": "-"

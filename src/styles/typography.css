@@ -1,0 +1,15 @@
+/* Feature 85 (REQ-85-14): código en Geist Mono vía el token --font-mono de tokens.css. */
+code,
+pre,
+kbd,
+samp {
+  font-family: var(--font-mono);
+}
+
+/* Feature 86 (REQ-86-05/06): títulos en Geist Pixel Circle vía --font-display. Cara única de
+   peso 400: font-synthesis: none impide la negrita/cursiva sintética sobre los puntos. */
+h1,
+h2 {
+  font-family: var(--font-display);
+  font-synthesis: none;
+}

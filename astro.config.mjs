@@ -1,10 +1,51 @@
-import { defineConfig, envField } from 'astro/config';
+import { defineConfig, envField, fontProviders } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
+
+// Feature 85 (REQ-85-07..10): Geist y Geist Mono autoalojadas desde los woff2 del paquete geist
+// (nunca sus módulos JS, que dependen de next/font). Se sirven con hash en /_astro/fonts/.
+const GEIST = './node_modules/geist/dist/fonts/';
+const fonts = [
+  {
+    provider: fontProviders.local(),
+    name: 'Geist',
+    cssVariable: '--font-geist-sans',
+    display: 'swap',
+    fallbacks: ['ui-sans-serif', 'system-ui', 'sans-serif'],
+    options: {
+      variants: [
+        { src: [`${GEIST}geist-sans/Geist-Variable.woff2`], weight: '100 900', style: 'normal' },
+        { src: [`${GEIST}geist-sans/Geist-Italic[wght].woff2`], weight: '100 900', style: 'italic' },
+      ],
+    },
+  },
+  {
+    provider: fontProviders.local(),
+    name: 'Geist Mono',
+    cssVariable: '--font-geist-mono',
+    display: 'swap',
+    fallbacks: ['ui-monospace', 'monospace'],
+    options: {
+      variants: [{ src: [`${GEIST}geist-mono/GeistMono-Variable.woff2`], weight: '100 900', style: 'normal' }],
+    },
+  },
+  // Feature 86 (REQ-86-01/02): solo la variante Circle (elección humana); Square/Grid/Triangle/Line no se emiten.
+  {
+    provider: fontProviders.local(),
+    name: 'Geist Pixel',
+    cssVariable: '--font-geist-pixel',
+    display: 'swap',
+    fallbacks: ['ui-monospace', 'monospace'],
+    options: {
+      variants: [{ src: [`${GEIST}geist-pixel/GeistPixel-Circle.woff2`], weight: '400', style: 'normal' }],
+    },
+  },
+];
 
 export default defineConfig({
   // REQ-35-01: base de las URL canónicas (Astro.site).
   site: 'https://moisesbaldenegro.com',
   output: 'server',
+  fonts,
 
   // Las 301 de los slugs antiguos (feature 45) viven en src/middleware.ts (feature 68):
   // la clave de redirecciones aquí generaba un dist/client/_redirects inválido para Cloudflare.

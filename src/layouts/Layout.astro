@@ -1,6 +1,8 @@
 ---
 import "../styles/tokens.css";
 import "../styles/layout.css";
+import "../styles/typography.css";
+import { Font } from 'astro:assets';
 import { ClientRouter } from 'astro:transitions';
 import SearchBar from '../components/search-bar/search-bar.astro';
 import SearchEscape from '../components/search-escape/search-escape.astro';
@@ -36,6 +38,9 @@ const social = socialMeta({ title: pageTitle, description, pathname: Astro.url.p
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
+    <Font cssVariable="--font-geist-sans" preload={[{ style: 'normal' }]} />
+    <Font cssVariable="--font-geist-mono" />
+    <Font cssVariable="--font-geist-pixel" preload />
     {description && <meta name="description" content={description} />}
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex" />}

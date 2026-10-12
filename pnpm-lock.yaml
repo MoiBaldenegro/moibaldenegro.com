@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  geist>next: '-'
+
 importers:
 
   .:
@@ -14,6 +17,9 @@ importers:
       astro:
         specifier: ^7.3.8
         version: 7.3.8(esbuild@0.28.2)(yaml@2.9.1)
+      geist:
+        specifier: 1.7.2
+        version: 1.7.2
       gsap:
         specifier: 3.15.0
         version: 3.15.0
@@ -1053,6 +1059,9 @@ packages:
     resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
+
+  geist@1.7.2:
+    resolution: {integrity: sha512-Gu5lDFa3pLRyoBlBPf0QIFHVdWAnpco7fS1bJm41jyLPFoguBgiubseUN2oLXMgqZ7uxAxDoXcHMhCY/fOTTgg==}
 
   get-tsconfig@5.0.0-beta.6:
     resolution: {integrity: sha512-X6fBC0pmImC70gvX2zm56go9hx0MyoGVdG0tUCkg/D+Xnh5TJsOZ7iDbOdI3PvmtrDxnu1YdDufpK2QJX1Meqw==}
@@ -2603,6 +2612,8 @@ snapshots:
 
   fsevents@2.3.3:
     optional: true
+
+  geist@1.7.2: {}
 
   get-tsconfig@5.0.0-beta.6:
     dependencies:

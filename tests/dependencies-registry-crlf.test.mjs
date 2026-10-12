@@ -23,8 +23,8 @@ const REGISTRY_URL = new URL('../docs/dependencies.md', import.meta.url);
 const VALIDATOR_URL = new URL('../scripts/validate-dependencies.mjs', import.meta.url);
 const CHECK_FORMAT_URL = new URL('../scripts/check-format.mjs', import.meta.url);
 // Ajuste feature 70 (precedente REQ-43-06): el registro suma la entrada gsap (5 entradas).
-// Ajuste feature 81 (precedente REQ-43-06): suma pdf-lib, aprobada por el humano (6 entradas).
-const APPROVED = ['astro', '@astrojs/cloudflare', 'wrangler', '@cloudflare/workers-types', 'gsap', 'pdf-lib'];
+// Ajustes features 81 y 85 (precedente REQ-43-06): suman pdf-lib y geist, aprobadas por el humano (7 entradas).
+const APPROVED = ['astro', '@astrojs/cloudflare', 'wrangler', '@cloudflare/workers-types', 'gsap', 'pdf-lib', 'geist'];
 
 // Registro de muestra con dos entradas y los cuatro campos obligatorios.
 const REGISTRY_LINES = [

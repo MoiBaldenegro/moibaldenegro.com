@@ -57,8 +57,9 @@ test('REQ-70-07: sin .npmrc apuntando al registro privado de GreenSock', () => {
 
 // Ajuste feature 72 (precedente REQ-43-06): el primer y único uso de gsap es latest-horizontal.ts.
 // Ajuste feature 81 (precedente REQ-43-06): pdf-lib 1.17.1, aprobada por el humano, se suma a dependencies.
+// Ajuste feature 85 (REQ-85-06): geist 1.7.2, aprobada por el humano, se suma a dependencies.
 test('REQ-70-08/09: solo se añade gsap y solo latest-horizontal.ts lo importa', () => {
-  assert.deepEqual(Object.keys(pkg.dependencies).sort(), ['@astrojs/cloudflare', 'astro', 'gsap', 'pdf-lib', 'wrangler']);
+  assert.deepEqual(Object.keys(pkg.dependencies).sort(), ['@astrojs/cloudflare', 'astro', 'geist', 'gsap', 'pdf-lib', 'wrangler']);
   assert.deepEqual(Object.keys(pkg.devDependencies), ['@cloudflare/workers-types']);
   assert.equal(pkg.dependencies.astro, '^7.3.8');
   assert.equal(pkg.dependencies['@astrojs/cloudflare'], '^14.3.4');

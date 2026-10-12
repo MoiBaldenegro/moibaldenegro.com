@@ -70,7 +70,7 @@ test('REQ-42-07: robotsTxt con User-agent, Allow y Sitemap absoluto', () => {
 test('REQ-42-08: sin dependencias nuevas', () => {
   const pkg = JSON.parse(read('package.json'));
   const deps = Object.keys({ ...pkg.dependencies, ...pkg.devDependencies }).sort();
-  assert.deepEqual(deps, ['@astrojs/cloudflare', '@cloudflare/workers-types', 'astro', 'gsap', 'pdf-lib', 'wrangler']); // ajustes features 70 y 81 (REQ-43-06): gsap y pdf-lib aprobadas por el humano
+  assert.deepEqual(deps, ['@astrojs/cloudflare', '@cloudflare/workers-types', 'astro', 'geist', 'gsap', 'pdf-lib', 'wrangler']); // ajustes features 70, 81 y 85 (REQ-43-06): gsap, pdf-lib y geist aprobadas por el humano
 });
 
 test('REQ-42-01/07 (build): dist/client/sitemap.xml y robots.txt', () => {
