@@ -13,3 +13,18 @@ h2 {
   font-family: var(--font-display);
   font-synthesis: none;
 }
+
+/* Feature 87 (REQ-87-01..04): Geist Pixel también en el header, los títulos de las cards y los
+   tags. Selectores con ancestro para ganar a var(--font-sans) de search-bar.css y post-next.css
+   sin depender del orden del bundle. Iconos (hamburguesa, limpiar) y meta/descripción siguen en Sans. */
+.site-navbar nav a,
+.site-navbar .search-bar__input,
+.hero-card .card-title,
+.latest-articles__title,
+.post__related .post__related-link,
+.latest-articles__tag,
+.search-results__tag,
+.post__hero .post__kicker {
+  font-family: var(--font-display);
+  font-synthesis: none;
+}

@@ -1643,7 +1643,25 @@
       "depends_on": [
         85
       ],
-      "status": "in_progress"
+      "status": "done"
+    },
+    {
+      "id": 87,
+      "name": "geist-pixel-extend",
+      "title": "Geist Pixel en el header, en los títulos de las cards y en los tags de los artículos",
+      "description": "Petición humana 2026-10-12: «en el header y en los pequeños títulos dentro de las cards también métele pixels, cards de los artículos y de las bento columns, ambas» y ampliación «los tags de los artículos también se van a ver bien bonitos con ese pixel». Extiende el token --font-display (Geist Pixel Circle, feature 86) a: enlaces del header (.site-navbar nav a: About, Arquitectura, @moibaldenegro) y el input del buscador (.site-navbar .search-bar__input con su placeholder); títulos bento (.hero-card .card-title); títulos de cards de artículos (.latest-articles__title de la portada y .post__related .post__related-link de Recomendados; los títulos de resultados de búsqueda son h2 y ya van en Pixel por la 86); tags (.latest-articles__tag, .search-results__tag en /search, /<término> y panel en vivo, y .post__hero .post__kicker del post). Todo en src/styles/typography.css con selectores con ancestro (0,2,0, ganan a var(--font-sans) de search-bar.css y post-next.css sin depender del orden del bundle) y font-synthesis: none; la regla h1, h2 de la 86 queda intacta y no se escribe el carácter almohadilla (el test REQ-86-05/06 lo prohíbe en el archivo). No se tocan hojas de componente con listas cerradas de tokens ni marcado. Fuera de alcance: logo (imagen), botón hamburguesa (☰ y ✕ no están en el cmap de Circle) y botón × de limpiar. Riesgos: legibilidad (punto Circle de 0,46-0,82 px en 12-21 px: trazo gris fino; kicker y tags son lo más pequeño) y desborde del header de escritorio entre 769 y 900 px; si la altura del header cambia, parar y reportar. Spec: specs/87_geist-pixel-extend/ (requirements.md + design.md). Análisis: progress/research/geist-pixel-extend.md.",
+      "acceptance": [
+        "REQ-87-01/02/03/04/05: un test nuevo lee src/styles/typography.css (sin comentarios) y encuentra reglas con font-family: var(--font-display) y font-synthesis: none para .site-navbar nav a, .site-navbar .search-bar__input, .hero-card .card-title, .latest-articles__title, .post__related .post__related-link, .latest-articles__tag, .search-results__tag y .post__hero .post__kicker; la regla h1, h2 sigue existiendo; el archivo no contiene '#', hex ni rgb/rgba ni otro valor de font-family distinto de var(--font-display) y var(--font-mono) (en rojo antes de tocar typography.css).",
+        "REQ-87-06/07/08: el mismo test compara con git (git diff --quiet HEAD sobre la rama de partida, o hash anotado en progress/impl_87.md) que layout.css, site-menu.css, search-bar.css, hero-card.css, latest-articles.css, latest-horizontal.css, post-next.css, post-header.css, search-results.css, Layout.astro, hero-card.astro, latest-articles.astro, src/pages/posts/[id].astro e item-html.ts no cambian; con Chrome headless el font-family computado de .site-menu__toggle y .search-bar__clear no empieza por \"Geist Pixel\" y los tags siguen siendo span/p sin enlace.",
+        "REQ-87-09/10: con Chrome headless + CDP sobre astro preview, en /, un artículo con related y /search?q=<término con resultados> el font-family computado de cada enlace del header, el input del buscador, cada .card-title, .latest-articles__title, .post__related-link, .latest-articles__tag, .search-results__tag y .post__kicker empieza por \"Geist Pixel\", y el de .latest-articles__meta, .latest-articles__description, .post__related-meta y .search-results__description empieza por \"Geist\" sin ser \"Geist Pixel\".",
+        "REQ-87-11/12/13: a 375×812, 1000×800 y 1280×800 scrollWidth === clientWidth en /, un artículo con related, /search?q= con resultados y /about; en / el borde derecho (getBoundingClientRect) de cada .card-title, .latest-articles__title y .latest-articles__tag queda dentro del de su card (±1 px); a 800×800, 1000×800 y 1280×800 la altura de header.site-navbar es igual a la base medida antes del cambio y anotada en progress/impl_87.md.",
+        "REQ-87-14/15: a 375×812 con el menú hamburguesa abierto el panel .site-menu cumple scrollWidth === clientWidth y cada enlace y el input caben en el viewport; el CLS acumulado de / a 1280×800 con caché vacía (PerformanceObserver layout-shift) es <= 0.1.",
+        "REQ-87-16/17/18/19: progress/impl_87.md anota el rojo y las alturas base del header antes de tocar typography.css, y el tamaño en px de .post__kicker a 375 px y de .search-results__tag; progress/research/geist87/ contiene capturas a 1280×800 y 375×812 (DPR 1 y DPR 2) del header con el menú móvil abierto, las cards bento, una card de últimos artículos con sus tags, los Recomendados y el kicker de un artículo y una lista de /search con tags; typography.css mide <= 100 líneas, tests/geist-pixel-display.test.mjs no cambia y ./init.sh termina en verde."
+      ],
+      "depends_on": [
+        86
+      ],
+      "status": "done"
     }
   ]
 }
