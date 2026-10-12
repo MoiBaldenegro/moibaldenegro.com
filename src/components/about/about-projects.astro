@@ -1,0 +1,24 @@
+---
+// Proyectos destacados de /about (feature 84, REQ-84-04/05/06): una tarjeta por proyecto de
+// about.json con el enlace en el h3 (nombre accesible corto, D1) y su descripción.
+import '../../styles/about-projects.css';
+import type { AboutProject } from '../../domain/entities/about-profile.ts';
+
+interface Props {
+  projects: readonly AboutProject[];
+}
+
+const { projects } = Astro.props;
+---
+
+<section class="about-projects" aria-labelledby="about-projects-title">
+  <h2 id="about-projects-title" class="about-projects__title">Proyectos destacados</h2>
+  <ul class="about-projects__grid">
+    {projects.map((project) => (
+      <li class="about-projects__card">
+        <h3 class="about-projects__name"><a class="about-projects__link" href={project.href}>{project.name}<span class="visually-hidden"> (sitio externo)</span></a><span class="about-projects__arrow" aria-hidden="true">↗</span></h3>
+        <p class="about-projects__description">{project.description}</p>
+      </li>
+    ))}
+  </ul>
+</section>

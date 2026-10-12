@@ -1,0 +1,20 @@
+---
+// Filosofía de /about (feature 84, REQ-84-13): cierra la página con el lema (en inglés, lang="en")
+// y el texto de philosophy dentro de un blockquote (D3). Las comillas son decorativas (CSS).
+import '../../styles/about-credentials.css';
+import type { AboutPhilosophy } from '../../domain/entities/about-profile.ts';
+
+interface Props {
+  philosophy: AboutPhilosophy;
+}
+
+const { philosophy } = Astro.props;
+---
+
+<section class="about-philosophy" aria-labelledby="about-philosophy-title">
+  <h2 id="about-philosophy-title" class="about-credentials__title">Filosofía</h2>
+  <blockquote class="about-philosophy__quote">
+    <p class="about-philosophy__motto" lang="en">{philosophy.motto}</p>
+    <p class="about-philosophy__text">{philosophy.text}</p>
+  </blockquote>
+</section>

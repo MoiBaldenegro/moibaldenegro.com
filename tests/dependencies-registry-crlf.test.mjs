@@ -23,7 +23,8 @@ const REGISTRY_URL = new URL('../docs/dependencies.md', import.meta.url);
 const VALIDATOR_URL = new URL('../scripts/validate-dependencies.mjs', import.meta.url);
 const CHECK_FORMAT_URL = new URL('../scripts/check-format.mjs', import.meta.url);
 // Ajuste feature 70 (precedente REQ-43-06): el registro suma la entrada gsap (5 entradas).
-const APPROVED = ['astro', '@astrojs/cloudflare', 'wrangler', '@cloudflare/workers-types', 'gsap'];
+// Ajuste feature 81 (precedente REQ-43-06): suma pdf-lib, aprobada por el humano (6 entradas).
+const APPROVED = ['astro', '@astrojs/cloudflare', 'wrangler', '@cloudflare/workers-types', 'gsap', 'pdf-lib'];
 
 // Registro de muestra con dos entradas y los cuatro campos obligatorios.
 const REGISTRY_LINES = [
@@ -65,7 +66,7 @@ test('REQ-28-01/02/03: con CRLF y con LF el parser devuelve las mismas entradas,
   }
 });
 
-test('REQ-28-03/08: el docs/dependencies.md real se parsea entero, sin \\r y con sus 5 entradas', () => {
+test('REQ-28-03/08: el docs/dependencies.md real se parsea entero, sin \\r y con sus entradas aprobadas', () => {
   const entries = parseRegistry(readFileSync(REGISTRY_URL, 'utf8'));
   assert.deepEqual(
     [...entries.keys()].sort(),

@@ -1,0 +1,25 @@
+---
+// Contenido de /about (feature 84, REQ-84-07/08): h2, la presentación del sitio por slot
+// (p.about__intro de REQ-39-05, D4) y una tarjeta enlazada por elemento de content.
+import '../../styles/about-projects.css';
+import type { AboutContent } from '../../domain/entities/about-profile.ts';
+
+interface Props {
+  content: readonly AboutContent[];
+}
+
+const { content } = Astro.props;
+---
+
+<section class="about-content" aria-labelledby="about-content-title">
+  <h2 id="about-content-title" class="about-projects__title">Contenido</h2>
+  <slot />
+  <ul class="about-projects__grid about-content__grid">
+    {content.map((item) => (
+      <li class="about-projects__card">
+        <h3 class="about-projects__name"><a class="about-projects__link" href={item.href}>{item.title}</a></h3>
+        <p class="about-projects__description">{item.description}</p>
+      </li>
+    ))}
+  </ul>
+</section>

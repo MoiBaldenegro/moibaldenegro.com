@@ -1,6 +1,6 @@
 ---
 name: implementer
-description: Trabajador. Implementa exactamente UNA feature de feature_list.json. Escribe código, escribe tests y verifica con ./init.sh. NO lanza subagentes: el líder lanza al reviewer externo.
+description: "Trabajador. Implementa exactamente UNA feature de feature_list.json. Escribe código, escribe tests y verifica con ./init.sh. NO lanza subagentes: el líder lanza al reviewer externo."
 tools: Read, Write, Edit, Glob, Grep, Bash
 ---
 

@@ -1,0 +1,75 @@
+/* about-projects.css — Proyectos destacados y Contenido de /about (about-projects.astro y
+   about-content.astro, feature 84). Solo tokens de tokens.css; espaciado con --gap-card.
+   El enlace vive en el h3 (D1) y su ::after extiende el área de clic a toda la tarjeta. */
+
+.about-projects,
+.about-content { display: grid; gap: calc(var(--gap-card) * 1.5); font-family: var(--font-sans); }
+
+.about-projects__title {
+  margin: 0;
+  color: var(--color-text);
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.about-projects__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: var(--gap-card);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.about-projects__card {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: calc(var(--gap-card) * 0.75);
+  min-width: 0;
+  padding: calc(var(--gap-card) * 1.5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card-rest);
+  transition: border-color var(--transition-default), box-shadow var(--transition-default), transform var(--transition-default);
+}
+
+.about-projects__name {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--gap-card);
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.about-projects__link { color: var(--color-text); text-decoration: none; overflow-wrap: anywhere; }
+.about-projects__link::after { content: ''; position: absolute; inset: 0; border-radius: var(--radius-card); }
+.about-projects__arrow { color: var(--color-accent-hover); font-weight: 600; transition: transform var(--transition-default); }
+
+.about-projects__description { margin: 0; color: var(--color-text-secondary); font-size: 0.95rem; line-height: 1.6; }
+
+.about-content .about__intro { max-width: 70ch; }
+
+.about-projects__card:hover { border-color: var(--color-border-strong); box-shadow: var(--shadow-card-hover); transform: translateY(-2px); }
+.about-projects__card:hover .about-projects__link { color: var(--color-accent-hover); }
+.about-projects__card:hover .about-projects__arrow { transform: translate(2px, -2px); }
+.about-projects__card:focus-within { border-color: var(--color-border-strong); }
+.about-projects__link:focus-visible { outline: 2px solid var(--color-accent-hover); outline-offset: 4px; border-radius: var(--radius-thumb); }
+
+@media (min-width: 900px) {
+  .about-projects__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .about-content__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-projects__card,
+  .about-projects__arrow { transition: none; }
+  .about-projects__card:hover,
+  .about-projects__card:hover .about-projects__arrow { transform: none; }
+}

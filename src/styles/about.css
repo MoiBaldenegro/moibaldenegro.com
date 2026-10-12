@@ -1,39 +1,21 @@
-/* about.css — Estilos de la página /about (about.astro, feature 11 about-page).
-   Solo tokens de tokens.css. Patrón BEM ligero: bloque about. */
+/* about.css — Carcasa de la página /about (about.astro; feature 11, carcasa desde la 82).
+   Solo tokens de tokens.css. Las secciones viven en about-hero.css y about-stats.css. */
 
 .about {
   width: min(var(--container-max), 95%);
   margin: auto;
-  padding: 48px 0 64px;
+  padding: calc(var(--gap-card) * 3) 0 calc(var(--gap-card) * 4);
   background: var(--color-background);
+  color: var(--color-text);
+  display: grid;
+  gap: calc(var(--gap-card) * 2);
 }
 
-.about__profile {
+.about__section {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
-  padding: 40px 48px;
-  display: grid;
-  gap: var(--gap-card);
-}
-
-.about__name {
-  color: var(--color-text);
-  font-size: 2rem;
-  line-height: 1.25;
-  margin: 0;
-}
-
-.about__username {
-  color: var(--color-text-secondary);
-  font-size: 1.1rem;
-  margin: 0;
-}
-
-.about__description {
-  color: var(--color-text);
-  line-height: 1.6;
-  margin: 0;
+  padding: calc(var(--gap-card) * 2) calc(var(--gap-card) * 2.5);
 }
 
 /* Presentación del sitio como párrafo destacado (feature 39, REQ-39-05/06):
@@ -43,11 +25,10 @@
   font-family: var(--font-sans);
   font-size: 1.2rem;
   line-height: 1.6;
-  margin: var(--gap-card) 0 0;
+  margin: 0;
 }
 
 @media (max-width: 768px) {
-  .about { padding: 32px 0 48px; }
-  .about__profile { padding: 28px 20px; }
-  .about__name { font-size: 1.5rem; }
+  .about { padding: calc(var(--gap-card) * 2) 0 calc(var(--gap-card) * 3); }
+  .about__section { padding: calc(var(--gap-card) * 1.5); }
 }

@@ -1,0 +1,36 @@
+---
+// Timeline de experiencia de /about (feature 83, REQ-83-03..06): un <li> por puesto en el orden
+// de about.json con role (h3), organización · lugar, period en píldora (texto, nunca fechas
+// derivadas), logros y, si existe, el resultado destacado con la etiqueta visible «Resultado».
+import '../../styles/about-timeline.css';
+import type { AboutExperience } from '../../domain/entities/about-profile.ts';
+
+interface Props {
+  experience: readonly AboutExperience[];
+}
+
+const { experience } = Astro.props;
+---
+
+<section class="about-timeline" aria-labelledby="about-experience-title">
+  <h2 id="about-experience-title" class="about-timeline__title">Experiencia</h2>
+  <ol class="about-timeline__list">
+    {experience.map((job) => (
+      <li class="about-timeline__item">
+        <article class="about-timeline__card">
+          <header class="about-timeline__head">
+            <h3 class="about-timeline__role">{job.role}</h3>
+            <span class="about-timeline__period">{job.period}</span>
+          </header>
+          <p class="about-timeline__org">{job.organization} · {job.place}</p>
+          <ul class="about-timeline__highlights">
+            {job.highlights.map((highlight) => <li>{highlight}</li>)}
+          </ul>
+          {job.result && (
+            <p class="about-timeline__result"><strong>Resultado:</strong> {job.result}</p>
+          )}
+        </article>
+      </li>
+    ))}
+  </ol>
+</section>

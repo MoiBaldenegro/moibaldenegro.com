@@ -1,0 +1,45 @@
+---
+// Hero de /about (feature 82, REQ-82-04..10): foto enmarcada, nombre (único h1), handle,
+// titular, ubicación, resumen, enfoque, redes y descarga del CV generado en build (/cv.pdf).
+// El h1 llega por el slot name desde about.astro (REQ-39-05: la página declara su único h1).
+import '../../styles/about-hero.css';
+import type { AboutProfile } from '../../domain/entities/about-profile.ts';
+import { heroLinks } from '../../domain/about-links.ts';
+
+interface Props {
+  username: string;
+  description: string;
+  image: string;
+  about: AboutProfile;
+}
+
+const { username, description, image, about } = Astro.props;
+const links = heroLinks(about);
+---
+
+<section class="about-hero" aria-labelledby="about-name">
+  <div class="about-hero__media">
+    <img class="about-hero__photo" src={image} alt={about.photoAlt} width="952" height="960" loading="eager" decoding="async" />
+  </div>
+  <div class="about-hero__body">
+    <p class="about-hero__handle">{username}</p>
+    <slot name="name" />
+    <p class="about-hero__headline">{about.headline}</p>
+    <p class="about-hero__location">{about.location}</p>
+    <p class="about-hero__summary">{about.summary}</p>
+    <p class="about-hero__focus">{description}</p>
+    <div class="about-hero__actions">
+      <ul class="about-hero__links">
+        {links.map((link) => (
+          <li>
+            <a class="about-hero__link" href={link.href}>
+              <svg class="about-hero__icon" aria-hidden="true" focusable="false"><use href={`/assets/svg/sprite.svg#${link.id}`} /></svg>
+              {link.label}<span class="visually-hidden"> (sitio externo)</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <a class="about-hero__cv" href="/cv.pdf" download="moises-baldenegro-cv.pdf">Descargar CV<span aria-hidden="true">↓</span></a>
+    </div>
+  </div>
+</section>

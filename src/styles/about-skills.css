@@ -1,0 +1,56 @@
+/* about-skills.css — Stack por área de /about (about-skills.astro, feature 83).
+   Solo tokens de tokens.css; espaciado con --gap-card. Rejilla auto-fit; 3 columnas >= 900 px. */
+
+.about-skills { display: grid; gap: calc(var(--gap-card) * 1.5); font-family: var(--font-sans); }
+
+.about-skills__title {
+  margin: 0;
+  color: var(--color-text);
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.about-skills__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: var(--gap-card);
+}
+
+.about-skills__card {
+  display: grid;
+  align-content: start;
+  gap: var(--gap-card);
+  min-width: 0;
+  padding: calc(var(--gap-card) * 1.5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card-rest);
+  transition: border-color var(--transition-default), box-shadow var(--transition-default);
+}
+
+.about-skills__card:hover { border-color: var(--color-border-strong); box-shadow: var(--shadow-card-hover); }
+
+.about-skills__area { margin: 0; color: var(--color-text); font-size: 1.05rem; font-weight: 700; line-height: 1.35; }
+
+.about-skills__items { display: flex; flex-wrap: wrap; gap: calc(var(--gap-card) / 2); margin: 0; padding: 0; list-style: none; }
+
+.about-skills__items li {
+  padding: calc(var(--gap-card) / 4) calc(var(--gap-card) * 0.75);
+  background: var(--color-background);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+@media (min-width: 900px) {
+  .about-skills__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-skills__card { transition: none; }
+}

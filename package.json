@@ -17,6 +17,7 @@
     "@astrojs/cloudflare": "^14.3.4",
     "astro": "^7.3.8",
     "gsap": "3.15.0",
+    "pdf-lib": "1.17.1",
     "wrangler": "^4.149.0"
   },
   "pnpm": {

@@ -37,6 +37,22 @@ cambia en la feature correspondiente, para que el validador siga en verde.
   Licencia «Standard no charge» de Webflow, NO OSI (ver entrada ### gsap). APLICADA en la
   feature 70: gsap 3.15.0 exacta con `approved: 2026-10-09`.
 
+* 2026-10-12 — el humano AUTORIZA una librería para generar el CV en PDF («queda
+  aprobada una librería para meter esa funcionalidad»): alta de pdf-lib 1.17.1 exacta
+  (licencia MIT, JavaScript puro, sin dependencias de fs ni de navegador, compatible con
+  el prerender en workerd) en `dependencies`, solo para el endpoint prerenderizado que
+  genera el CV en PDF desde los mismos datos JSON de /about. El PDF nunca incluye
+  teléfono ni correo personal. APLICADA en la feature 81 `cv-pdf-endpoint`: pdf-lib
+  1.17.1 exacta con `approved: 2026-10-12` (entrada `### pdf-lib`).
+
+* 2026-10-12 — el humano AUTORIZA la familia tipográfica Geist de Vercel como fuente del
+  proyecto («cambiaremos la fuente del proyecto por una más bonita que será la Geist de
+  Vercel, cuenta como dependencia»; referencia https://vercel.com/font?type=pixel), con
+  Geist Pixel «específicamente»: Geist Pixel en títulos/display y Geist Sans + Geist Mono
+  como base de texto y código. Fuentes autoalojadas (sin CDN externo, compatible con la
+  CSP). Paquete, versión exacta y licencia (SIL OFL esperada) los fija la spec de la
+  feature. PENDIENTE de aplicar: esa feature añade la entrada `###` al instalarla.
+
 ### astro
 
 - version: ^7.3.8
@@ -73,3 +89,12 @@ cambia en la feature correspondiente, para que el validador siga en verde.
 - motivo: scroll horizontal fijado de las cards de últimos artículos en la portada (feature 72)
 - licencia: Standard 'no charge' license de Webflow (https://gsap.com/standard-license), NO OSI: gratuita incluso para uso comercial, sin quitar los avisos de copyright; Webflow puede revisar los términos de versiones futuras
 - alcance: solo la portada (src/components/latest-articles); gsap y el plugin ScrollTrigger, incluido en el mismo paquete; sin registro privado de GreenSock
+
+### pdf-lib
+
+- version: 1.17.1
+- scope: dependencies
+- approved: 2026-10-12
+- motivo: generación del CV en PDF en build (endpoint prerenderizado /cv.pdf, feature 81) desde los mismos datos de /about
+- licencia: MIT; JavaScript puro, sin fs ni APIs de navegador (compatible con el prerender en workerd)
+- alcance: solo src/domain/cv/cv-pdf.ts importa pdf-lib; StandardFonts sin incrustar fuentes

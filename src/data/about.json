@@ -1,0 +1,97 @@
+{
+  "headline": "Senior Software Engineer | Backend & Node.js Developer | Systems Architect",
+  "location": "Guadalajara, Jalisco, México",
+  "photoAlt": "Retrato de Moisés Baldenegro Melendez",
+  "summary": "Ingeniero de Software Senior y Arquitecto de Sistemas con más de 6 años de experiencia en backend con Node.js, NestJS y TypeScript. Diseño arquitecturas escalables con Clean Architecture, DDD y microservicios, con seguridad desde el diseño (OWASP Top 10), Docker, CI/CD y nube (AWS, Cloudflare Workers).",
+  "links": [
+    { "id": "github", "label": "GitHub", "href": "https://github.com/MoiBaldenegro" },
+    { "id": "linkedin", "label": "LinkedIn", "href": "https://www.linkedin.com/in/moibaldenegro/" },
+    { "id": "youtube", "label": "YouTube", "href": "https://www.youtube.com/@moibaldenegro" },
+    { "id": "site", "label": "Sitio web", "href": "https://moisesbaldenegro.com" }
+  ],
+  "stats": [
+    { "value": "+6", "label": "años de experiencia" },
+    { "value": "4", "label": "roles en 4 organizaciones" },
+    { "value": "Sep 2025", "label": "sistema multiplataforma en producción" },
+    { "value": "3", "label": "certificaciones" }
+  ],
+  "experience": [
+    {
+      "role": "Líder de Desarrollo & Arquitecto de Software",
+      "organization": "Taquerías MG",
+      "place": "Guadalajara, Jalisco",
+      "period": "sep 2023 – presente",
+      "highlights": [
+        "Arquitectura backend integral de un ecosistema multiplataforma (Punto de Venta, App Móvil, ERP, Panel Administrador) con Node.js, NestJS y TypeScript bajo Clean Architecture y DDD.",
+        "Bases de datos híbridas: MongoDB para alta concurrencia y SQL para transacciones contables complejas.",
+        "Microservicios en Docker, serverless en Cloudflare Workers y tareas asíncronas (cron jobs, colas, concurrencia).",
+        "Servicios en tiempo real con WebSockets y documentación de APIs con Swagger/OpenAPI.",
+        "Políticas de seguridad estrictas basadas en OWASP Top 10, JWT/RBAC y pruebas unitarias."
+      ],
+      "result": "Sistema en producción en septiembre de 2025: optimizó procesos administrativos y aumentó márgenes al eliminar la dependencia de proveedores externos."
+    },
+    {
+      "role": "Desarrollador Web Multiplataforma",
+      "organization": "Kellogg's Company",
+      "place": "Mazatlán, Sinaloa",
+      "period": "1 año 2 meses",
+      "highlights": [
+        "APIs RESTful con Python y Django conectadas a interfaces Angular.",
+        "Refactorización de código legacy, mejorando tiempos de respuesta en consultas masivas de datos."
+      ]
+    },
+    {
+      "role": "Coordinador de Academia & Profesor de Asignatura",
+      "organization": "Universidad Estatal de Sonora (UES)",
+      "place": "Navojoa, Sonora",
+      "period": "3 años 5 meses",
+      "highlights": [
+        "Gestión de infraestructura y recursos tecnológicos de la academia de ingeniería; asignaturas avanzadas de ciencias de la computación y desarrollo de software."
+      ]
+    },
+    {
+      "role": "Ingeniero de Prueba Eléctrica y NPI",
+      "organization": "Winchester Interconnect",
+      "place": "Nogales, Sonora",
+      "period": "1 año 4 meses",
+      "highlights": [
+        "Programas de pruebas eléctricas automatizadas para calidad de componentes electrónicos del sector aeroespacial."
+      ]
+    }
+  ],
+  "skills": [
+    { "area": "Lenguajes y runtimes", "items": ["Node.js", "TypeScript", "JavaScript (ES6+)", "Python", "Express.js", "Rust", "WebAssembly"] },
+    { "area": "Backend y arquitectura", "items": ["NestJS", "Clean Architecture", "DDD", "APIs RESTful", "Microservicios", "WebSockets", "Servidores MCP"] },
+    { "area": "Bases de datos", "items": ["MongoDB", "DynamoDB", "PostgreSQL", "SQL", "Redis"] },
+    { "area": "Cloud, DevOps y contenedores", "items": ["Docker", "AWS", "Azure", "Cloudflare Workers", "Cloudflare Pages", "CI/CD", "Linux", "Bash", "Cron Jobs", "SSH"] },
+    { "area": "Seguridad y calidad", "items": ["OWASP Top 10", "Pruebas unitarias", "JWT", "OAuth", "RBAC", "Pentesting básico"] },
+    { "area": "Frontend y herramientas", "items": ["Angular", "React", "Astro", "Git", "GitHub", "Swagger/OpenAPI", "Scrum"] }
+  ],
+  "projects": [
+    { "name": "Raúl", "description": "Framework HTTP/MVC educativo para Node.js en TypeScript, sin dependencias y con adaptador de servidor intercambiable.", "href": "https://github.com/MoiBaldenegro/raul-framework" },
+    { "name": "mouter-router", "description": "Librería de routing ligera y tipada para React, publicada en npm.", "href": "https://www.npmjs.com/package/mouter-router" },
+    { "name": "MFinance", "description": "App de finanzas personales con Tauri v2, Rust y React.", "href": "https://github.com/MoiBaldenegro/mfinance" },
+    { "name": "Testimo", "description": "SaaS de testimonios con NestJS, React, un SDK de Web Components y Docker, creado en un hackathon.", "href": "https://github.com/MoiBaldenegro/cubepath-cms-hackaton" },
+    { "name": "Harness Kit", "description": "Kit para trabajar con agentes de IA: una feature a la vez, specs EARS y tests antes que el código.", "href": "https://github.com/MoiBaldenegro/harness-engineering" }
+  ],
+  "content": [
+    { "title": "Blog de arquitectura y sistemas operativos", "description": "Artículos en español sobre arquitectura de software y sistemas operativos.", "href": "/" },
+    { "title": "Curso de Rust desde Cero", "description": "Curso en YouTube, en español, para aprender Rust desde los fundamentos.", "href": "https://www.youtube.com/@moibaldenegro" }
+  ],
+  "education": [
+    { "degree": "Ingeniería en Ciberseguridad y Telecomunicaciones", "institution": "Universidad LAMAR, Campus Chapultepec", "place": "Guadalajara, Jalisco" }
+  ],
+  "certifications": [
+    { "name": "Backend con Rust: Bases de Datos, Controladores y Templates", "issuer": "Alura Latam" },
+    { "name": "Administración de Servidores Linux: Manejo de Recursos", "issuer": "Alura Latam" },
+    { "name": "Estrategia de Seguridad Informática para Empresas", "issuer": "AOVS Sistemas" }
+  ],
+  "languages": [
+    { "name": "Español", "level": "Nativo" },
+    { "name": "Inglés", "level": "Intermedio (B1–B2, técnico)" }
+  ],
+  "philosophy": {
+    "motto": "Deterministic Engineering in an Agentic World",
+    "text": "Uso la IA para construir software, pero con procesos verificables: specs primero, tests antes que el código y una feature a la vez."
+  }
+}

@@ -1,0 +1,42 @@
+/* about-stats.css — Cifras destacadas de /about (about-stats.astro, feature 82).
+   Solo tokens de tokens.css; espaciado con --gap-card. 2 columnas por defecto, 4 >= 900 px. */
+
+.about-stats__list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gap-card);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-sans);
+}
+
+.about-stats__list li {
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  gap: calc(var(--gap-card) / 3);
+  padding: calc(var(--gap-card) * 1.5) var(--gap-card);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  text-align: center;
+}
+
+.about-stats__value {
+  color: var(--color-accent);
+  font-size: clamp(1.75rem, 1.2rem + 1.6vw, 2.5rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.about-stats__label {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+@media (min-width: 900px) {
+  .about-stats__list { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
