@@ -36,8 +36,9 @@ test('REQ-56-02: layout.css reduce animaciones y transiciones en todos los eleme
   assert.match(block, /transition-duration:\s*0\.01ms/);
 });
 
-test('REQ-56-03: sin desplazamiento en hover de .hero-card y .profile-card con reduce', () => {
-  for (const [rel, selector] of [['src/styles/hero-card.css', '.hero-card:hover'], ['src/styles/profile-card.css', '.profile-card:hover']]) {
+// Ajuste feature 88 (REQ-88-13, precedente REQ-43-06): .profile-card ya no tiene hover; solo queda .hero-card.
+test('REQ-56-03: sin desplazamiento en hover de .hero-card con reduce', () => {
+  for (const [rel, selector] of [['src/styles/hero-card.css', '.hero-card:hover']]) {
     const block = mediaBlock(strip(read(rel)), 'prefers-reduced-motion: reduce');
     assert.ok(block.includes(selector), `${rel}: el bloque reduce no anula ${selector}`);
     assert.match(block, /transform:\s*none/, `${rel}: no anula el transform`);

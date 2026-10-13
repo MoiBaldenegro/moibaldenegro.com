@@ -1674,7 +1674,8 @@
         "REQ-88-05/07: cada segmento « • » de la descripción de hero.json aparece en el headline o en skills de about.json; tests/hero-profile-repository.test.mjs fija la nueva descripción con nota (precedente REQ-43-06).",
         "REQ-88-06/07: el test se observa en rojo antes del cambio (anotado en progress/impl_88.md) y ./init.sh termina en verde.",
         "REQ-88-09/10/11 (ampliación humana 2026-10-13: «que se vea completa la foto»): .profile-image img sin transform y con aspect-ratio 952 / 960; .profile-image en position: absolute sobre la tarjeta en escritorio y relative en <=1200 px; .profile-username dentro de .profile-content antes del h1.",
-        "REQ-88-12 (feedback humano: el nombre se partía en dos líneas en escritorio grande y subía la píldora a la cara): .profile-content con container-type: inline-size y h1 con font-size min(..., cqi)."
+        "REQ-88-12 (feedback humano: el nombre se partía en dos líneas en escritorio grande y subía la píldora a la cara): .profile-content con container-type: inline-size y h1 con font-size min(..., cqi).",
+        "REQ-88-13 (petición humana: «que no se le pueda hacer hover a esta foto»): profile-card.css sin .profile-card:hover ni transition; REQ-56-03 se limita a .hero-card con nota (precedente REQ-43-06)."
       ],
       "depends_on": [
         69

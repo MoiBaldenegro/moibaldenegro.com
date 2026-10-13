@@ -37,3 +37,10 @@
 - Rojo: el test REQ-88-12 fallaba (pass 8, fail 1) antes del cambio.
 - Medido en Chrome headless: «Moisés Baldenegro Melendez» en Geist Pixel Circle mide ≈13,5 em. `.profile-content` pasa a `container-type: inline-size` y el h1 a `font-size: min(2.4rem, 6.8cqi)`: ocupa como mucho ~92 % del ancho del bloque, independiente del viewport o del tamaño de fuente del navegador. En <=768 px sigue el 2rem de la feature 69.
 - Capturas a 1440, 1920 y 2560 en `progress/research/hero88/`: nombre en una línea y píldora en el cuello.
+
+## Ajuste: sin hover en la tarjeta de perfil (REQ-88-13)
+
+- Petición humana: «que no se le pueda hacer hover a esta foto».
+- Rojo: REQ-88-13 fallaba (pass 9, fail 1) antes del cambio.
+- profile-card.css: fuera `.profile-card:hover { transform: translateY(-6px); }`, el `transition` de `.profile-card` y su anulación en `prefers-reduced-motion: reduce` (sin hover ya no hace falta).
+- tests/reduced-motion.test.mjs: REQ-56-03 se limita a `.hero-card` con nota (precedente REQ-43-06).

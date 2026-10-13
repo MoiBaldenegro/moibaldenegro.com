@@ -13,9 +13,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
-  transition: var(--transition-default);
 }
-.profile-card:hover { transform: translateY(-6px); }
 
 /* Imagen — feature 88: foto completa (proporción real) arriba de la tarjeta; el texto va encima del desvanecido. */
 .profile-image { position: absolute; inset: 0 0 auto; overflow: hidden; }
@@ -70,9 +68,4 @@
   .profile-content h1 { font-size: 2rem; }
   .profile-content p { font-size: 0.95rem; line-height: 1.6; }
   .profile-username { padding: 5px 12px; }
-}
-
-/* Feature 56 (REQ-56-03): sin desplazamiento en hover con movimiento reducido. */
-@media (prefers-reduced-motion: reduce) {
-  .profile-card:hover { transform: none; }
 }

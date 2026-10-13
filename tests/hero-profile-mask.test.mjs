@@ -69,3 +69,8 @@ test('REQ-88-12: el nombre escala con el ancho de la tarjeta (una línea en escr
   assert.match(rule(BASE, '.profile-content'), /container-type:\s*inline-size/);
   assert.match(rule(BASE, '.profile-content h1'), /font-size:\s*min\([^;]*cqi/);
 });
+
+test('REQ-88-13: la tarjeta de perfil no reacciona al hover', () => {
+  assert.doesNotMatch(CSS, /\.profile-card:hover/);
+  assert.doesNotMatch(rule(BASE, '.profile-card'), /transition/);
+});

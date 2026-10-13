@@ -1,7 +1,7 @@
 # Requisitos — Foto del hero con máscara de desvanecido y texto alineado al CV (feature 88 hero-profile-mask)
 # Origen: petición humana 2026-10-13 con captura de referencia («la foto del perfil sea así, el estilo y la máscara, no el texto; el texto ajustarlo al CV»).
 # Toca UI/presentación: ver design.md en esta carpeta.
-# Trazabilidad REQ → acceptance (índice en feature_list.json): REQ-88-01→1, REQ-88-02→1, REQ-88-03→2, REQ-88-04→2, REQ-88-05→3, REQ-88-06→4, REQ-88-07→3, REQ-88-08→4, REQ-88-09→5, REQ-88-10→5, REQ-88-11→5, REQ-88-12→6.
+# Trazabilidad REQ → acceptance (índice en feature_list.json): REQ-88-01→1, REQ-88-02→1, REQ-88-03→2, REQ-88-04→2, REQ-88-05→3, REQ-88-06→4, REQ-88-07→3, REQ-88-08→4, REQ-88-09→5, REQ-88-10→5, REQ-88-11→5, REQ-88-12→6, REQ-88-13→7.
 
 ## Requisitos
 
@@ -17,3 +17,4 @@ REQ-88-09 La regla .profile-image img SHALL mostrar la foto completa con aspect-
 REQ-88-10 WHILE el viewport mide más de 1200 px, el contenedor .profile-image SHALL posicionarse en absolute sobre la tarjeta para que .profile-content quede encima de la zona desvanecida.
 REQ-88-11 La píldora .profile-username SHALL ubicarse dentro de .profile-content antes del h1.
 REQ-88-12 WHILE el viewport mide más de 1200 px, el h1 de .profile-content SHALL escalar su font-size con el ancho de .profile-content mediante unidades cqi para ocupar una sola línea.
+REQ-88-13 La tarjeta .profile-card SHALL prescindir de estilos :hover y de transition.
