@@ -26,14 +26,15 @@ const REPOSITORY_URL = new URL(
   import.meta.url,
 );
 
-// Perfil real actual (valores de src/data/hero.json, feature 5).
+// Perfil real actual (valores de src/data/hero.json, feature 5; descripción alineada al CV
+// en la feature 88, REQ-88-07 con el precedente REQ-43-06).
 const EXPECTED_PROFILE = {
   name: 'Moisés Baldenegro Melendez',
   username: '@moibaldenegro',
   verified: true,
   image: '/assets/moises-hero.jpg',
   description:
-    'AI Engineering • Rust • WebAssembly • Full Stack • DevOps • AWS • Azure • Security First • OWASP • Rustacean 🦀',
+    'Senior Software Engineer • Systems Architect • Node.js • NestJS • TypeScript • Clean Architecture • DDD • AWS • Cloudflare Workers • OWASP Top 10 • Rust • WebAssembly',
 };
 
 test('REQ-05-01: src/data/hero.json almacena el perfil con los 5 campos', () => {

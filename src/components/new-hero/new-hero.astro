@@ -31,7 +31,8 @@ const profile = new HeroProfileRepository().getProfile();
           height="960"
           fetchpriority="high"
         />
-        <div class="profile-overlay"></div>
+      </div>
+      <div class="profile-content">
         <div class="profile-username">
           <span>{profile.username}</span>
           {
@@ -42,8 +43,6 @@ const profile = new HeroProfileRepository().getProfile();
             )
           }
         </div>
-      </div>
-      <div class="profile-content">
         <h1>{profile.name}</h1>
         <p>{profile.description}</p>
       </div>

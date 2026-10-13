@@ -1662,6 +1662,24 @@
         86
       ],
       "status": "done"
+    },
+    {
+      "id": 88,
+      "name": "hero-profile-mask",
+      "title": "Foto del hero con máscara de desvanecido y texto alineado al CV",
+      "description": "Petición humana 2026-10-13 con captura de referencia: «la foto del perfil sea así, el estilo y la máscara, no el texto; el texto ajustarlo al CV». La img de .profile-image se desvanece hacia abajo con mask-image (solo tokens), se elimina .profile-overlay, la píldora .profile-username pasa a var(--font-mono) y la descripción de hero.json se reescribe con segmentos del headline y skills de about.json. Spec: specs/88_hero-profile-mask/ (requirements.md + design.md).",
+      "acceptance": [
+        "REQ-88-01/02: tests/hero-profile-mask.test.mjs encuentra en .profile-image img un mask-image linear-gradient hacia abajo que termina en transparent y solo usa var() como color.",
+        "REQ-88-03/04: new-hero.astro y profile-card.css ya no contienen profile-overlay; .profile-username declara font-family: var(--font-mono).",
+        "REQ-88-05/07: cada segmento « • » de la descripción de hero.json aparece en el headline o en skills de about.json; tests/hero-profile-repository.test.mjs fija la nueva descripción con nota (precedente REQ-43-06).",
+        "REQ-88-06/07: el test se observa en rojo antes del cambio (anotado en progress/impl_88.md) y ./init.sh termina en verde.",
+        "REQ-88-09/10/11 (ampliación humana 2026-10-13: «que se vea completa la foto»): .profile-image img sin transform y con aspect-ratio 952 / 960; .profile-image en position: absolute sobre la tarjeta en escritorio y relative en <=1200 px; .profile-username dentro de .profile-content antes del h1.",
+        "REQ-88-12 (feedback humano: el nombre se partía en dos líneas en escritorio grande y subía la píldora a la cara): .profile-content con container-type: inline-size y h1 con font-size min(..., cqi)."
+      ],
+      "depends_on": [
+        69
+      ],
+      "status": "done"
     }
   ]
 }
