@@ -53,7 +53,8 @@ test('REQ-82-08/09/10: enlaces con icono del sprite, CTA de descarga y sin scrip
     assert.match(a, new RegExp(`<svg[^>]*aria-hidden="true"[^>]*>\\s*<use href="/assets/svg/sprite\\.svg#${id}"`), id);
     assert.match(a, /<span class="visually-hidden">[^<]*sitio externo/, id);
   }
-  const cta = html.match(/<a[^>]*href="\/cv\.pdf"[^>]*download="moises-baldenegro-cv\.pdf"[^>]*>([\s\S]*?)<\/a>/g) ?? [];
+  // Acotado al hero: el footer del layout también enlaza /cv.pdf (REQ-89-05, precedente REQ-43-06).
+  const cta = (html.match(/<section class="about-hero"[\s\S]*?<\/section>/)?.[0] ?? '').match(/<a[^>]*href="\/cv\.pdf"[^>]*download="moises-baldenegro-cv\.pdf"[^>]*>([\s\S]*?)<\/a>/g) ?? [];
   assert.ok(cta.length === 1 && cta[0].includes('Descargar CV'), 'un solo CTA Descargar CV');
   const comps = existsSync(new URL(COMP, root)) ? readdirSync(new URL(COMP, root)) : [];
   assert.ok(comps.includes('about-hero.astro') && comps.includes('about-stats.astro'));

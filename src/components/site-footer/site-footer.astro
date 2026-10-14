@@ -1,0 +1,66 @@
+---
+// Footer del layout único (feature 89, REQ-89-05..07): marca con CTA al CV, navegación,
+// últimos artículos, redes del sprite y barra inferior con copyright y Volver arriba.
+import '../../styles/site-footer.css';
+import { AboutRepository } from '../../domain/repositories/about-repository.ts';
+import { HeroProfileRepository } from '../../domain/repositories/hero-profile-repository.ts';
+import { PostsRepository } from '../../domain/repositories/posts-repository.ts';
+import { latestPosts } from '../../domain/latest-posts.ts';
+import { copyrightLine, footerColumns } from '../../domain/site-footer.ts';
+
+const about = new AboutRepository().getProfile();
+const profile = new HeroProfileRepository().getProfile();
+const posts = latestPosts(await new PostsRepository().getPosts());
+const [navigation, social] = footerColumns(about);
+---
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <a class="site-footer__logo" href="/"><img src="/assets/mxvi_logo.webp" alt="Inicio — moisesbaldenegro.com" width="72" height="25" loading="lazy" decoding="async" /></a>
+      <p class="site-footer__headline">{about.headline}</p>
+      <p class="site-footer__location"><span aria-hidden="true">◉</span> {about.location}</p>
+      <a class="site-footer__cv" href="/cv.pdf" download="moises-baldenegro-cv.pdf">Descargar CV<span aria-hidden="true">↓</span></a>
+    </div>
+
+    <nav class="site-footer__column" aria-label={navigation.title}>
+      <p class="site-footer__title">{navigation.title}</p>
+      <ul class="site-footer__list">
+        {navigation.links.map((link) => (
+          <li><a class="site-footer__link" href={link.href}>{link.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <section class="site-footer__column" aria-label="Últimos artículos">
+      <p class="site-footer__title">Últimos artículos</p>
+      <ul class="site-footer__list">
+        {posts.map((post) => (
+          <li>
+            <a class="site-footer__link site-footer__post" href={`/posts/${post.id}`}>{post.title}</a>
+            <span class="site-footer__meta">{post.created} · {post.readtime} min</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <nav class="site-footer__column" aria-label={social.title}>
+      <p class="site-footer__title">{social.title}</p>
+      <ul class="site-footer__list">
+        {social.links.map((link) => (
+          <li>
+            <a class="site-footer__link site-footer__social" href={link.href} rel="me noopener">
+              <svg class="site-footer__icon" aria-hidden="true" focusable="false"><use href={`/assets/svg/sprite.svg#${link.icon}`} /></svg>
+              {link.label}<span class="visually-hidden"> (sitio externo)</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+
+  <div class="site-footer__bar">
+    <p class="site-footer__copy">{copyrightLine(profile.name)} · Hecho con Astro y desplegado en Cloudflare</p>
+    <a class="site-footer__top" href="#top">Volver arriba<span aria-hidden="true">↑</span></a>
+  </div>
+</footer>

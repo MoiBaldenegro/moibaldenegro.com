@@ -1681,6 +1681,23 @@
         69
       ],
       "status": "done"
+    },
+    {
+      "id": 89,
+      "name": "site-footer",
+      "title": "Footer del sitio profesional y útil",
+      "description": "Petición humana 2026-10-14: «Create un footer bien bonito y profesional además de super útil, acorde a la página». Footer en el layout único con marca (logo, titular, ubicación y CTA al CV), columnas Navegación, Últimos artículos y Conecta (iconos del sprite), y barra inferior con copyright y Volver arriba. Datos vía AboutRepository, HeroProfileRepository y PostsRepository; lógica en src/domain/site-footer.ts; estilos en src/styles/site-footer.css solo con tokens. Spec: specs/89_site-footer/ (requirements.md + design.md).",
+      "acceptance": [
+        "REQ-89-01/02/03: tests/site-footer.test.mjs comprueba footerColumns (Navegación con /, /about, /arquitectura, /search; Conecta con github, linkedin, youtube y x en https) y copyrightLine con fecha inyectada.",
+        "REQ-89-04/05: Layout.astro importa SiteFooter y lo pinta tras </main>; site-footer.astro tiene <footer class=\"site-footer\">, /cv.pdf, latestPosts, #top y el titular/ubicación de about.json.",
+        "REQ-89-06/07/08: los enlaces externos llevan «sitio externo» visually-hidden, los iconos usan el sprite con aria-hidden y site-footer.css no contiene hex ni rgb/rgba.",
+        "REQ-89-09/10: site-footer.css define la rejilla de 4 columnas desde 900 px y una sola columna por debajo de 600 px; verificado sin scroll horizontal a 375 px.",
+        "REQ-89-11/12: el test se observa en rojo antes de implementar (anotado en progress/impl_89.md) y ./init.sh termina en verde."
+      ],
+      "depends_on": [
+        80
+      ],
+      "status": "done"
     }
   ]
 }

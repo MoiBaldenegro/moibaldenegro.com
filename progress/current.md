@@ -4,7 +4,7 @@
 
 ### Feature en curso
 
-- (ninguna: feature 88 en done; 10 en blocked por decisión humana)
+- (ninguna: feature 89 en done; 10 en blocked por decisión humana)
 
 ### Plan
 

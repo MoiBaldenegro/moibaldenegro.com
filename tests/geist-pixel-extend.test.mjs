@@ -24,7 +24,7 @@ const SELECTORS = [
 const UNCHANGED = [
   'src/styles/layout.css', 'src/styles/site-menu.css', 'src/styles/search-bar.css', 'src/styles/hero-card.css',
   'src/styles/latest-articles.css', 'src/styles/latest-horizontal.css', 'src/styles/post-next.css',
-  'src/styles/post-header.css', 'src/styles/search-results.css', 'src/layouts/Layout.astro',
+  'src/styles/post-header.css', 'src/styles/search-results.css', // Layout.astro sale de la lista: monta SiteFooter (REQ-89-04, precedente REQ-43-06)
   'src/components/hero-card.astro', 'src/components/latest-articles.astro', 'src/pages/posts/[id].astro',
   'src/components/search-results/item-html.ts', 'tests/geist-pixel-display.test.mjs',
 ];

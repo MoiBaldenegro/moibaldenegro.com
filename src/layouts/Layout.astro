@@ -7,6 +7,7 @@ import { ClientRouter } from 'astro:transitions';
 import SearchBar from '../components/search-bar/search-bar.astro';
 import SearchEscape from '../components/search-escape/search-escape.astro';
 import SiteMenu from '../components/site-menu/site-menu.astro';
+import SiteFooter from '../components/site-footer/site-footer.astro';
 
 import { canonicalUrl, composeTitle } from '../domain/seo/head.ts';
 import { socialMeta } from '../domain/seo/social.ts';
@@ -72,5 +73,6 @@ const social = socialMeta({ title: pageTitle, description, pathname: Astro.url.p
     <main id="contenido" tabindex="-1">
       <slot />
     </main>
+    <SiteFooter />
   </body>
 </html>
