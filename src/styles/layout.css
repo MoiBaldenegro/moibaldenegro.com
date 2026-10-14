@@ -3,7 +3,7 @@
 
 /* Reset global */
 *, *::before, *::after { box-sizing: border-box; }
-html, body { margin: 0; width: 100%; height: 100%; }
+html, body { margin: 0; width: 100%; } /* sin height: el min-height del body lo sustituye (REQ-94-04) */
 /* Reserva del hueco del scrollbar vertical (feature 14, REQ-14-01..05): con
    ClientRouter se navega entre páginas de alturas distintas y el scrollbar
    estilizado (10px) aparece/desaparece → el viewport se ensancha/estrecha y el
@@ -11,10 +11,10 @@ html, body { margin: 0; width: 100%; height: 100%; }
    navegadores sin soporte conservan el comportamiento actual (REQ-14-04). */
 html { scrollbar-gutter: stable; scroll-padding-top: var(--header-height); }
 body {
-  background: var(--color-background);
-  color: var(--color-text);
-  font-family: var(--font-sans);
+  display: flex; flex-direction: column; min-height: 100vh; min-height: 100dvh; /* feature 94: sticky footer (REQ-94-01/02) */
+  background: var(--color-background); color: var(--color-text); font-family: var(--font-sans);
 }
+body > main { flex: 1 0 auto; } /* feature 94 (REQ-94-03): main absorbe el hueco y el footer queda abajo */
 
 /* Navbar compartida (chrome del layout único) */
 .site-navbar {

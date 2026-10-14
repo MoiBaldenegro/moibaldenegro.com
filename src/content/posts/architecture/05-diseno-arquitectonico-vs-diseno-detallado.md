@@ -5,7 +5,7 @@ author: Moises Baldenegro Melendez
 img: arch-entry_05.webp
 readtime: 7
 description: Analizamos la delgada línea entre el diseño arquitectónico de alto nivel y el diseño detallado de bajo nivel, entendiendo sus objetivos, entregables y cómo se complementan.
-tags: "#arquitectura #software-design #software-architecture" 
+tags: "#arquitectura #software-design #software-architecture #diseno-de-sistemas" 
 created: "28 Septiembre 2026"
 updated: "28 Septiembre 2026"
 next: /posts/03-principios-solid

@@ -23,7 +23,8 @@ const SELECTORS = [
 
 const UNCHANGED = [
   // hero-card.css sale de la lista: gana la regla [data-color-token="htb"] (REQ-92-03, precedente REQ-43-06)
-  'src/styles/layout.css', 'src/styles/site-menu.css', 'src/styles/search-bar.css',
+  // layout.css sale de la lista: Ajuste feature 94 (REQ-94-01..05, precedente REQ-43-06): sticky footer en body
+  'src/styles/site-menu.css', 'src/styles/search-bar.css',
   'src/styles/latest-articles.css', 'src/styles/latest-horizontal.css', 'src/styles/post-next.css',
   'src/styles/post-header.css', 'src/styles/search-results.css', // Layout.astro sale de la lista: monta SiteFooter (REQ-89-04, precedente REQ-43-06)
   'src/components/hero-card.astro', 'src/components/latest-articles.astro', 'src/pages/posts/[id].astro',

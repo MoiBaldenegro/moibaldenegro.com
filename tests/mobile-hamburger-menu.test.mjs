@@ -21,10 +21,11 @@ test('REQ-79-01/02/03: nav sin atributos con logo, botón y panel en orden', () 
   assert.match(button, /<button[^>]*>\s*$/, 'el botón no lleva texto');
   const div = nav.slice(panel);
   assert.match(div.slice(0, 80), /id="site-menu"/); assert.match(div.slice(0, 80), /data-site-menu/);
-  const order = ['href="/about"', 'href="/arquitectura"', 'href="https://x.com/moibaldenegro"', '<SearchBar />'].map((s) => div.indexOf(s));
+  // Ajuste feature 93 (REQ-93-18, precedente REQ-43-06): el panel gana Diseño de sistemas tras Arquitectura y un 4.º aria-current.
+  const order = ['href="/about"', 'href="/arquitectura"', 'href="/diseno-de-sistemas"', 'href="https://x.com/moibaldenegro"', '<SearchBar />'].map((s) => div.indexOf(s));
   assert.ok(order.every((v, i) => v >= 0 && (i === 0 || v > order[i - 1])), `orden del panel: ${order}`);
   assert.ok(div.includes('<span class="visually-hidden"> (X, sitio externo)</span>'));
-  assert.equal((nav.match(/aria-current=/g) ?? []).length, 3);
+  assert.equal((nav.match(/aria-current=/g) ?? []).length, 4);
 });
 
 test('REQ-79-04/05: componente con estilos y script de init', () => {

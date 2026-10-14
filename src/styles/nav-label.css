@@ -1,0 +1,6 @@
+/* Etiqueta corta del enlace Diseño de sistemas (feature 93, REQ-93-07/08/11):
+   a 969 px o menos solo se ve «Diseño» (a 960 px la etiqueta completa se parte); el aria-label mantiene el nombre accesible. */
+
+@media (max-width: 969px) {
+  .site-menu__label-rest { display: none; }
+}
