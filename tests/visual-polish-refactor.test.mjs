@@ -183,14 +183,17 @@ test('REQ-37-06: latest-articles.css estila el encabezado con tokens', () => {
   );
 });
 
-test('REQ-37-07: la sección de estadísticas conserva espaciado vertical con token', () => {
+// Ajuste feature 92 (REQ-92-14, petición humana 2026-10-14, precedente REQ-43-06): la sección
+// suelta pasa a la card HTB del grid del hero, cuyo hueco con las vecinas lo da el gap del grid;
+// el espaciado vertical con token se comprueba ahora en la lista compacta (.htb-stadistics__list).
+test('REQ-37-07: las estadísticas HTB conservan espaciado vertical con token (lista compacta)', () => {
   const css = read(HTB_CSS_PATH, 'src/styles/htb-stadistics.css');
-  const rule = css.match(/\.htb-stadistics\s*\{([\s\S]*?)\}/)?.[1] ?? '';
-  assert.ok(rule.length > 0, 'htb-stadistics.css no declara .htb-stadistics (REQ-37-07)');
+  const rule = css.match(/\.htb-stadistics__list\s*\{([\s\S]*?)\}/)?.[1] ?? '';
+  assert.ok(rule.length > 0, 'htb-stadistics.css no declara .htb-stadistics__list (REQ-37-07/REQ-92-14)');
   assert.match(
     rule,
-    /margin-block\s*:\s*var\(--gap-card\)/,
-    'la tarjeta HTB no tiene margen vertical con token (REQ-37-07)'
+    /(?:^|[\s;])gap\s*:\s*[^;]*var\(--gap-card\)/,
+    'la lista HTB no tiene espaciado vertical con token (REQ-37-07/REQ-92-14)'
   );
 });
 

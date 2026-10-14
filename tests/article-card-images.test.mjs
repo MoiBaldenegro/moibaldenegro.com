@@ -27,6 +27,7 @@
 //               estado sin volver a añadir tokens (justificación REQ-43-06,
 //               precedente feature 9: --radius-thumb 87→91).
 // Ajuste feature 61 (precedente REQ-43-06): tokens.css pasa de 95 a 97 (--header-height-mobile).
+// Ajuste feature 92 (precedente REQ-43-06): tokens.css pasa de 97 a 99 (--color-marca-htb y --color-marca-htb-accent, REQ-92-02).
 // Ajuste feature 51 (precedente REQ-43-06, como en la feature 16): tokens.css pasa de 93 a 95
 // líneas por el token aprobado --header-height (comentario + token).
 
@@ -177,12 +178,12 @@ test('REQ-17-08: latest-articles.css no supera las 100 líneas', () => {
   );
 });
 
-test('REQ-17-09: tokens.css conserva 97 líneas (87 post-feature 25 + --radius-thumb de la feature 9 + --video-max-width de la feature 16 + --header-height de la feature 51 + --header-height-mobile de la feature 61, sin tokens nuevos de imagen)', () => {
+test('REQ-17-09: tokens.css conserva 99 líneas (87 post-feature 25 + --radius-thumb de la feature 9 + --video-max-width de la feature 16 + --header-height de la feature 51 + --header-height-mobile de la feature 61 + --color-marca-htb/--color-marca-htb-accent de la feature 92, sin tokens nuevos de imagen)', () => {
   const lineCount = countLines(readTokens());
   assert.equal(
     lineCount,
-    97,
-    `tokens.css tiene ${lineCount} líneas y debe conservar 97 (REQ-17-09; 87 post-feature 25 + 4 del token --radius-thumb de la feature 9 + 2 del token --video-max-width aprobado en la feature 16; ajuste REQ-43-06)`
+    99,
+    `tokens.css tiene ${lineCount} líneas y debe conservar 99 (REQ-17-09; 87 post-feature 25 + 4 del token --radius-thumb de la feature 9 + 2 del token --video-max-width aprobado en la feature 16; ajuste REQ-43-06)`
   );
 });
 

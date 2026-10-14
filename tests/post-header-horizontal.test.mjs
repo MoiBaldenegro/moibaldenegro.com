@@ -27,6 +27,7 @@
 //               embebidos y toda declaración de color/borde/sombra de la
 //               hoja usa var() (REQ-39-09).
 // Ajuste feature 61 (precedente REQ-43-06): tokens.css pasa de 95 a 97 (--header-height-mobile).
+// Ajuste feature 92 (precedente REQ-43-06): tokens.css pasa de 97 a 99 (--color-marca-htb y --color-marca-htb-accent, REQ-92-02).
 // Ajuste feature 51 (precedente REQ-43-06, como en la feature 16): tokens.css pasa de 93 a 95
 // líneas por el token aprobado --header-height (comentario + token).
 
@@ -200,10 +201,10 @@ test('REQ-42-09: post-header.css ≤100 líneas y sin hex/rgba sueltos', () => {
   assert.doesNotMatch(content, /rgba?\(/, 'post-header.css contiene rgb()/rgba() hardcodeado (REQ-42-09)');
 });
 
-test('REQ-42-09: tokens.css conserva 97 líneas (87 + --radius-thumb de la feature 9 + --video-max-width de la feature 16 + --header-height de la feature 51 + --header-height-mobile de la feature 61) sin tokens nuevos', () => {
+test('REQ-42-09: tokens.css conserva 99 líneas (87 + --radius-thumb de la feature 9 + --video-max-width de la feature 16 + --header-height de la feature 51 + --header-height-mobile de la feature 61 + --color-marca-htb/--color-marca-htb-accent de la feature 92) sin tokens nuevos', () => {
   const tokens = readTokens();
   const lineCount = countLines(tokens);
-  assert.equal(lineCount, 97, `tokens.css tiene ${lineCount} líneas y debe conservar 97 (REQ-42-09; 87 + 4 del token --radius-thumb de la feature 9 + 2 del token --video-max-width de la feature 16 + --header-height de la feature 51; ajuste REQ-43-06)`);
+  assert.equal(lineCount, 99, `tokens.css tiene ${lineCount} líneas y debe conservar 99 (REQ-42-09; 87 + 4 del token --radius-thumb de la feature 9 + 2 del token --video-max-width de la feature 16 + --header-height de la feature 51; ajuste REQ-43-06)`);
   assert.doesNotMatch(tokens, /--post-/, 'tokens.css define un token del grupo post (REQ-42-09, sin tokens nuevos)');
 });
 

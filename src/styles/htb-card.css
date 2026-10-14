@@ -1,0 +1,22 @@
+/* htb-card.css — Card de Hack The Box en el grid del hero (feature 92,
+   specs/92_htb-hero-card/design.md). Radio, borde, sombra, hover y
+   reduced-motion se heredan de .hero-card (hero-card.css); aquí solo el
+   contenido en flujo (Decisión 6). Solo tokens de tokens.css. */
+
+/* El contenido va por encima de ::before/::after de .hero-card y deja libre
+   el card-header absoluto con el padding superior. */
+.hero-card--rich .hero-card__body {
+  position: relative;
+  z-index: 5;
+  padding: calc(var(--gap-card) * 4) calc(var(--gap-card) * 1.5) var(--gap-card);
+}
+
+.hero-card--rich .card-title {
+  color: var(--color-text);
+}
+
+.hero-card__loading {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+}

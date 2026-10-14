@@ -387,9 +387,13 @@ test('REQ-05-00: el componente no lleva estilos ni lógica embebida', () => {
   assert.doesNotMatch(component, /\bstyle\s*=/, 'el componente conserva atributos style inline');
 });
 
-test('REQ-05-00: index.astro conserva la sección HTB con server:defer (REQ-22-01)', () => {
-  const index = readIndex();
-  assert.match(index, /<HtbStadistics[^>]*server:defer/, 'index.astro perdió server:defer');
-  assert.match(index, /slot="fallback"/, 'index.astro perdió el slot de fallback');
-  assert.match(index, /Cargando estadísticas de HTB\.\.\./, 'index.astro perdió el fallback');
+// Ajuste feature 92 (REQ-92-14, petición humana 2026-10-14, precedente REQ-43-06): la sección
+// HTB suelta sale de index.astro y la isla vive en la card HTB del grid del hero (htb-card.astro),
+// que sigue dentro de .home__landing vía NewHero; el server:defer y el fallback se comprueban allí.
+test('REQ-05-00: la isla HTB conserva server:defer y fallback en htb-card.astro (REQ-22-01, REQ-92-14)', () => {
+  const card = readFileSync(new URL('../src/components/hero-cards/htb-card.astro', import.meta.url), 'utf8');
+  assert.match(card, /<HtbStadistics[^>]*server:defer/, 'htb-card.astro perdió server:defer');
+  assert.match(card, /slot="fallback"/, 'htb-card.astro perdió el slot de fallback');
+  assert.match(card, /Cargando estadísticas de HTB\.\.\./, 'htb-card.astro perdió el fallback');
+  assert.match(readIndex(), /<NewHero\s*\/>/, 'index.astro ya no monta el hero que contiene la card HTB');
 });

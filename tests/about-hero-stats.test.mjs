@@ -89,7 +89,7 @@ test('REQ-82-14/15/16/17: hojas nuevas solo con tokens, --gap-card y reduced-mot
     if (/transition\s*:\s*[^;]*var/.test(css)) assert.match(motion, /transition:\s*none/, `${file} sin reduced-motion`);
   }
   assert.ok(!read('src/styles/about.css').includes('prefers-color-scheme'));
-  assert.equal(lines(read('src/styles/tokens.css')), 97);
+  assert.equal(lines(read('src/styles/tokens.css')), 99); // Ajuste feature 92 (precedente REQ-43-06): 97 + --color-marca-htb/-accent (REQ-92-02).
 });
 test('REQ-82-22/24: privacidad del HTML construido y archivos de <= 100 líneas', () => {
   assert.doesNotMatch(text, /[\w.+-]+@[\w-]+\.[a-z]{2,}/i);

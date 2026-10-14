@@ -1,29 +1,16 @@
-/* htb-stadistics.css — Sección de estadísticas de Hack The Box (REQ-22-05,
-   feature 22). Consume únicamente los tokens de la tabla del design.md;
-   sin valores sueltos. BEM ligero htb-stadistics__*. */
+/* htb-stadistics.css — Lista compacta de estadísticas de Hack The Box dentro
+   de la card HTB del grid del hero (feature 92; origen feature 22). La caja
+   (fondo, radio, borde, sombra) la pone .hero-card: aquí solo la lista.
+   Solo tokens de tokens.css. BEM ligero htb-stadistics__*. */
 
 .htb-stadistics {
   width: 100%;
-  max-width: var(--container-max);
-  margin-inline: auto;
-  margin-block: var(--gap-card);
-  padding: var(--gap-card);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-card);
-}
-
-.htb-stadistics__title {
   color: var(--color-text);
-}
-
-.htb-stadistics__intro {
-  color: var(--color-text-secondary);
 }
 
 .htb-stadistics__list {
   display: grid;
-  gap: var(--gap-card);
+  gap: calc(var(--gap-card) / 2);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -32,25 +19,36 @@
 .htb-stadistics__item {
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: baseline;
   gap: var(--gap-card);
 }
 
 .htb-stadistics__item:not(:last-child) {
-  padding-bottom: var(--gap-card);
+  padding-bottom: calc(var(--gap-card) / 2);
   border-bottom: 1px solid var(--color-border);
 }
 
 .htb-stadistics__label {
   color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
+/* Valores en el verde de marca HTB; --color-accent queda de respaldo. */
 .htb-stadistics__value {
-  color: var(--color-accent);
+  color: var(--color-marca-htb-accent, var(--color-accent));
+  font-family: var(--font-mono);
   font-weight: 600;
+  text-align: right;
 }
 
-@media (min-width: 768px) {
-  .htb-stadistics__list {
-    grid-template-columns: repeat(2, 1fr);
-  }
+/* Degradación (REQ-92-09): la card conserva su celda con el aviso. */
+.htb-stadistics__empty {
+  margin: 0;
+  padding: calc(var(--gap-card) / 2) var(--gap-card);
+  color: var(--color-text-secondary);
+  background: var(--color-surface);
+  border-radius: var(--radius-card);
 }

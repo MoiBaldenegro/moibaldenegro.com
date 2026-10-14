@@ -130,5 +130,13 @@
     "rotate": -6,
     "scale": 5,
     "iconWidth": "170px"
+  },
+  {
+    "id": "htb",
+    "kind": "htb",
+    "title": "HACK THE BOX",
+    "colorToken": "htb",
+    "gridColumn": "9 / span 4",
+    "gridRow": "9 / span 2"
   }
 ]

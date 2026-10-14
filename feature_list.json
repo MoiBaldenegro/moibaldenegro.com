@@ -1698,6 +1698,58 @@
         80
       ],
       "status": "done"
+    },
+    {
+      "id": 90,
+      "name": "hero-card-kinds-domain",
+      "title": "Tipos de tarjeta en el dominio del grid del hero",
+      "description": "Petición humana 2026-10-14: el grid bento del hero debe aceptar cards de otro diseño o con más información (primera: Hack The Box) y poder extender nuevas en el futuro. Base de datos/dominio sin UI: catálogo HERO_CARD_KINDS (icon, htb) en src/domain/entities/hero-card.ts, HeroCard (icono) conserva sus 9 campos y gana kind: icon, nueva HeroRichCard (id, kind, title, colorToken, gridColumn, gridRow) y unión HeroGridCard que entrega getCards(). kind ausente = icon (las 12 tarjetas del JSON no cambian); kind desconocido o campo obligatorio ausente lanza HeroCardsDataError. El parseo se extrae a src/domain/repositories/hero-cards-parse.ts porque hero-cards-repository.ts ya tiene 94 líneas (precedente about-parse.ts). El fixture EXPECTED_CARDS sigue al dato (kind icon, precedente REQ-43-06). Análisis: progress/research/hero-extensible-cards.md. Spec: specs/90_hero-card-kinds-domain/requirements.md.",
+      "acceptance": [
+        "REQ-90-01/02/03: tests/hero-card-kinds-domain.test.mjs comprueba que hero-card.ts exporta HERO_CARD_KINDS con icon y htb, HeroCardKind, HeroCard con readonly kind y sus 9 campos, y HeroRichCard con readonly id, kind, title, colorToken, gridColumn y gridRow.",
+        "REQ-90-04/05: con un loader inyectado, getCards() devuelve las entradas en el orden del JSON, una entrada sin kind sale con kind icon y una entrada con kind htb y sus 5 campos de texto sale como HeroRichCard.",
+        "REQ-90-06/07: con un loader inyectado, un kind desconocido lanza HeroCardsDataError cuyo mensaje contiene el índice y el valor, y una tarjeta htb sin gridRow lanza HeroCardsDataError con el índice y el nombre del campo.",
+        "REQ-90-08/09/10: hero-cards-parse.ts existe y tanto él como hero-cards-repository.ts tienen 100 líneas o menos; hero-cards.json conserva las 12 tarjetas sin cambios; el fixture EXPECTED_CARDS de tests/hero-cards-repository.test.mjs incluye kind icon y el deepEqual pasa.",
+        "REQ-90-11/12: el test nuevo se observa en rojo antes de implementar (anotado en progress/impl_90.md) y ./init.sh termina en verde."
+      ],
+      "depends_on": [],
+      "status": "done"
+    },
+    {
+      "id": 91,
+      "name": "hero-card-registry",
+      "title": "Registro de componentes por tipo de tarjeta en el grid del hero",
+      "description": "Petición humana 2026-10-14 (cards extensibles en el grid del hero). Capa de UI del mecanismo: src/domain/hero-card-registry.ts con pickCardComponent(registro, kind) y HeroCardKindError (lógica pura testable); src/components/hero-cards/hero-grid-card.astro recibe card: HeroGridCard, declara el registro como objeto literal en su frontmatter ({ icon: HeroCard }) y renderiza el componente elegido con card={card}; new-hero.astro sustituye <HeroCard> por <HeroGridCard> sin condicionales por tipo. Sin cambio visual: las 12 tarjetas de icono se ven idénticas. La receta para añadir tipos futuros queda en specs/91_hero-card-registry/design.md. Análisis: progress/research/hero-extensible-cards.md. Spec: specs/91_hero-card-registry/ (requirements.md + design.md).",
+      "acceptance": [
+        "REQ-91-01/02: tests/hero-card-registry.test.mjs comprueba con objetos simples que pickCardComponent devuelve la entrada del kind y que un kind sin entrada lanza HeroCardKindError con el kind en el mensaje.",
+        "REQ-91-03/04: hero-grid-card.astro importa pickCardComponent y hero-card.astro, tipa la prop card como HeroGridCard, declara el registro literal con icon y pasa card={card}; sin <style> ni style= inline.",
+        "REQ-91-05/06: new-hero.astro importa HeroGridCard, lo usa con card={card} dentro del map y no contiene card.kind ni comparaciones por tipo; hero-card.astro conserva article.hero-card, data-color-token={card.colorToken} y card: HeroCard (tests heredados de hero-ui-refactor en verde).",
+        "REQ-91-07/08: el HTML de build de la portada contiene 12 article.hero-card con los data-color-token de hero-cards.json en su orden; hero-section.css sin cambios.",
+        "REQ-91-09/10: el test nuevo se observa en rojo antes de implementar (anotado en progress/impl_91.md) y ./init.sh termina en verde."
+      ],
+      "depends_on": [
+        90
+      ],
+      "status": "done"
+    },
+    {
+      "id": 92,
+      "name": "htb-hero-card",
+      "title": "Card de Hack The Box integrada en el grid del hero",
+      "description": "Petición humana 2026-10-14: el componente de Hack The Box con las stats pasa a ser una card más del grid del hero, con funcionalidad, y la sección suelta de la portada desaparece. Entrada htb (kind htb, colorToken htb) en hero-cards.json en la celda hoy libre 9 / span 4 x 9 / span 2; tokens --color-marca-htb (#1A2332) y --color-marca-htb-accent (#9FEF00) en tokens.css (queda en 99 líneas); regla [data-color-token=\"htb\"] en hero-card.css; src/components/hero-cards/htb-card.astro (article.hero-card.hero-card--rich prerenderizada) monta <HtbStadistics server:defer> con el fallback Cargando estadísticas de HTB...; registro htb en hero-grid-card.astro. La isla htb-stadistics.astro conserva credenciales ENV || env, getProfileOrNull() y Cache-Control, y pinta Nivel, Puntos y Owns (user / root) o Estadísticas no disponibles. index.astro deja de montar HtbStadistics. Valores por defecto propuestos y reversibles (celda, stats, colores) anotados en progress/current.md. Reapunta tests heredados (REQ-22-01, REQ-05-00, REQ-22-05 --container-max, REQ-37-07, recuentos de 12 tarjetas). Análisis: progress/research/hero-extensible-cards.md. Spec: specs/92_htb-hero-card/ (requirements.md + design.md).",
+      "acceptance": [
+        "REQ-92-01/02/03: tests/htb-hero-card.test.mjs comprueba la entrada htb de hero-cards.json (kind, title HACK THE BOX, colorToken, 9 / span 4, 9 / span 2) tras twitch-bottom, los dos tokens nuevos en tokens.css con 100 líneas o menos y la regla [data-color-token=\"htb\"] de hero-card.css con var(--color-marca-htb) y la celda.",
+        "REQ-92-04/05/06: htb-card.astro pinta <article class=\"hero-card hero-card--rich\" data-color-token={card.colorToken}> con p.card-title y <HtbStadistics server:defer> con slot fallback y el texto Cargando estadísticas de HTB...; hero-grid-card.astro registra htb con htb-card.astro.",
+        "REQ-92-07/08/09: htb-stadistics.astro conserva ENV || env, getProfileOrNull(), HTB_ISLAND_CACHE_CONTROL, {profile && y la ausencia de lógica; pinta Nivel, Puntos y Owns con N/D para nulos, no contiene h2 ni País ni Miembro desde, y pinta Estadísticas no disponibles con {!profile &&.",
+        "REQ-92-10: index.astro no contiene HtbStadistics ni htb-stadistics; el HTML de build de la portada contiene una sola vez Cargando estadísticas de HTB... dentro de article[data-color-token=\"htb\"] de .hero-grid.",
+        "REQ-92-11/12/13: htb-card.astro usa la clase hero-card (radio, borde, sombra, hover y reduced-motion heredados); verificado a 1440, 1024 y 375 px sin contenido recortado ni scroll horizontal; htb-card.css y htb-stadistics.css no contienen hex ni rgb/rgba y cada archivo tocado tiene 100 líneas o menos.",
+        "REQ-92-14: los tests heredados REQ-22-01, REQ-05-00, REQ-22-05 (--container-max), REQ-37-07 y los recuentos de 12 tarjetas se reapuntan a htb-card.astro, a la lista compacta y a 12 tarjetas de icono + 1 htb, y pasan en verde.",
+        "REQ-92-15/16: el test nuevo se observa en rojo antes de implementar (anotado en progress/impl_92.md) y ./init.sh termina en verde."
+      ],
+      "depends_on": [
+        90,
+        91
+      ],
+      "status": "done"
     }
   ]
 }

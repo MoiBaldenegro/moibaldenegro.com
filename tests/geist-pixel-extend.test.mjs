@@ -22,7 +22,8 @@ const SELECTORS = [
 ];
 
 const UNCHANGED = [
-  'src/styles/layout.css', 'src/styles/site-menu.css', 'src/styles/search-bar.css', 'src/styles/hero-card.css',
+  // hero-card.css sale de la lista: gana la regla [data-color-token="htb"] (REQ-92-03, precedente REQ-43-06)
+  'src/styles/layout.css', 'src/styles/site-menu.css', 'src/styles/search-bar.css',
   'src/styles/latest-articles.css', 'src/styles/latest-horizontal.css', 'src/styles/post-next.css',
   'src/styles/post-header.css', 'src/styles/search-results.css', // Layout.astro sale de la lista: monta SiteFooter (REQ-89-04, precedente REQ-43-06)
   'src/components/hero-card.astro', 'src/components/latest-articles.astro', 'src/pages/posts/[id].astro',

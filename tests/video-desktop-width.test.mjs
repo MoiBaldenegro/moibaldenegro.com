@@ -157,15 +157,16 @@ test('REQ-16-07: article.css no supera las 100 líneas', () => {
   );
 });
 
-test('REQ-16-09: los 5 tests de conteo de tokens.css actualizan la aserción a 97 (feature 16 + --header-height de la feature 51 + --header-height-mobile de la feature 61) con justificación en el encabezado (REQ-43-06)', () => {
+// Ajuste feature 92 (precedente REQ-43-06): la aserción pasa de 97 a 99 por --color-marca-htb y --color-marca-htb-accent (REQ-92-02).
+test('REQ-16-09: los 5 tests de conteo de tokens.css actualizan la aserción a 99 (feature 16 + --header-height de la feature 51 + --header-height-mobile de la feature 61 + tokens HTB de la feature 92) con justificación en el encabezado (REQ-43-06)', () => {
   for (const { file, req } of TOKEN_COUNT_TESTS) {
     const path = new URL(`../${file}`, import.meta.url);
     assert.ok(existsSync(path), `${file} no existe (REQ-16-09)`);
     const content = readFileSync(path, 'utf8');
     assert.match(
       content,
-      /assert\.equal\(\s*lineCount,\s*97/,
-      `${file} no actualiza la aserción de líneas de tokens.css a 97 (REQ-16-09 + features 51 y 61; ${req}, precedente REQ-43-06)`
+      /assert\.equal\(\s*lineCount,\s*99/,
+      `${file} no actualiza la aserción de líneas de tokens.css a 99 (REQ-16-09 + features 51, 61 y 92; ${req}, precedente REQ-43-06)`
     );
     assert.match(
       content,
@@ -175,5 +176,6 @@ test('REQ-16-09: los 5 tests de conteo de tokens.css actualizan la aserción a 9
     // Feature 51: 95 por --header-height; feature 61: 97 por --header-height-mobile.
     assert.match(content, /--header-height/, `${file} no documenta el token --header-height (feature 51, precedente REQ-43-06)`);
     assert.match(content, /--header-height-mobile/, `${file} no documenta el token --header-height-mobile (feature 61, precedente REQ-43-06)`);
+    assert.match(content, /--color-marca-htb/, `${file} no documenta los tokens --color-marca-htb (feature 92, precedente REQ-43-06)`);
   }
 });

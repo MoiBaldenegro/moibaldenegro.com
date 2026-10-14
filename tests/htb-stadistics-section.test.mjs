@@ -11,12 +11,16 @@
 //               sin interpolar el token ni el id en la salida.
 //   REQ-22-07 — HTB_API_TOKEN y HTB_USER_ID son opcionales en el esquema env.
 //   REQ-22-08 — el esquema declara HTB_API_TOKEN como secreta de contexto server.
+// Ajuste feature 92 (REQ-92-14, petición humana 2026-10-14, precedente REQ-43-06): la
+// sección suelta sale de la portada y la isla se monta dentro de la card HTB del grid
+// del hero; REQ-22-01 se reapunta de index.astro a htb-card.astro y --container-max sale
+// de la lista de tokens (la card no es contenedor de página). Seguridad y degradación intactas.
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
 
-const INDEX_PATH = new URL('../src/pages/index.astro', import.meta.url);
+const INDEX_PATH = new URL('../src/components/hero-cards/htb-card.astro', import.meta.url);
 const COMPONENT_PATH = new URL('../src/components/htb-stadistics.astro', import.meta.url);
 const CSS_PATH = new URL('../src/styles/htb-stadistics.css', import.meta.url);
 const CONFIG_PATH = new URL('../astro.config.mjs', import.meta.url);
@@ -39,7 +43,7 @@ const COLOR_PROPS = new Set([
 ]);
 
 function readIndex() {
-  assert.ok(existsSync(INDEX_PATH), 'src/pages/index.astro no existe (REQ-22-01)');
+  assert.ok(existsSync(INDEX_PATH), 'src/components/hero-cards/htb-card.astro no existe (REQ-22-01/REQ-92-14)');
   return readFileSync(INDEX_PATH, 'utf8');
 }
 
@@ -53,22 +57,22 @@ function readCss() {
   return readFileSync(CSS_PATH, 'utf8');
 }
 
-test('REQ-22-01: la portada renderiza la sección con server:defer y slot de fallback', () => {
+test('REQ-22-01: la card HTB del grid renderiza la isla con server:defer y slot de fallback', () => {
   const index = readIndex();
   assert.match(
     index,
     /<HtbStadistics[^>]*server:defer/,
-    'index.astro no renderiza la sección con server:defer (REQ-22-01)',
+    'htb-card.astro no renderiza la isla con server:defer (REQ-22-01/REQ-92-14)',
   );
   assert.match(
     index,
     /slot="fallback"/,
-    'index.astro no declara un slot de fallback (REQ-22-01)',
+    'htb-card.astro no declara un slot de fallback (REQ-22-01/REQ-92-14)',
   );
   assert.match(
     index,
     /Cargando estadísticas de HTB\.\.\./,
-    'index.astro no muestra el texto de fallback Cargando (REQ-22-01/Decisión 3)',
+    'htb-card.astro no muestra el texto de fallback Cargando (REQ-22-01/Decisión 3, REQ-92-14)',
   );
 });
 
@@ -166,7 +170,7 @@ test('REQ-22-05: la hoja consume los tokens de la tabla del design.md', () => {
     '--color-accent',
     '--radius-card',
     '--gap-card',
-    '--container-max',
+    // '--container-max' sale de la lista en la feature 92 (REQ-92-14): la isla vive dentro de la card.
   ]) {
     assert.ok(
       css.includes(`var(${token})`),

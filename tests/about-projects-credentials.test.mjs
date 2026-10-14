@@ -83,7 +83,7 @@ test('REQ-84-13/14/15: Filosofía en blockquote con lema en inglés y hojas solo
     }
     if (/transition\s*:\s*[^;]*var/.test(css)) assert.match(block(css, '@media (prefers-reduced-motion: reduce)'), /transition:\s*none/, file);
   }
-  assert.equal(lines(read('src/styles/tokens.css')), 97);
+  assert.equal(lines(read('src/styles/tokens.css')), 99); // Ajuste feature 92 (precedente REQ-43-06): 97 + --color-marca-htb/-accent (REQ-92-02).
 });
 test('REQ-84-16/18/19/21: rejillas, encabezados sin saltos, sin scripts propios ni datos privados, <= 100 líneas', () => {
   for (const f of SHEETS) assert.match(block(noComments(read(f)), '@media (min-width: 900px)'), /grid-template-columns:\s*repeat\((2|3|auto-fit|auto-fill)/, f);

@@ -87,7 +87,7 @@ test('REQ-83-13/14: imports de hojas y hojas solo con tokens y --gap-card', () =
     }
     if (/transition\s*:\s*[^;]*var/.test(css)) assert.match(block(css, '@media (prefers-reduced-motion: reduce)'), /transition:\s*none/, file);
   }
-  assert.equal(lines(read('src/styles/tokens.css')), 97);
+  assert.equal(lines(read('src/styles/tokens.css')), 99); // Ajuste feature 92 (precedente REQ-43-06): 97 + --color-marca-htb/-accent (REQ-92-02).
 });
 test('REQ-83-16/18: un solo h1, encabezados sin saltos, sin scripts ni datos privados, <= 100 líneas', () => {
   const levels = [...html.matchAll(/<h([1-6])\b/g)].map((m) => Number(m[1])); assert.equal(levels.filter((l) => l === 1).length, 1);

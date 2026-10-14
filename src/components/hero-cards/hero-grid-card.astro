@@ -1,0 +1,17 @@
+---
+import HeroCard from "../hero-card.astro";
+import HtbCard from "./htb-card.astro";
+
+import type { HeroGridCard } from "../../domain/entities/hero-card.ts";
+import { pickCardComponent } from "../../domain/hero-card-registry.ts";
+
+interface Props {
+  card: HeroGridCard;
+}
+
+const { card } = Astro.props;
+const registry = { icon: HeroCard, htb: HtbCard };
+const Component = pickCardComponent(registry, card.kind);
+---
+
+<Component card={card} />

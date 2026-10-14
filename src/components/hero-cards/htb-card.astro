@@ -1,0 +1,23 @@
+---
+import "../../styles/htb-card.css";
+import HtbStadistics from "../htb-stadistics.astro";
+import type { HeroRichCard } from "../../domain/entities/hero-card.ts";
+
+interface Props {
+  card: HeroRichCard;
+}
+
+const { card } = Astro.props;
+---
+
+<article class="hero-card hero-card--rich" data-color-token={card.colorToken}>
+  <header class="card-header">
+    <p class="card-title">{card.title}</p>
+  </header>
+
+  <div class="hero-card__body">
+    <HtbStadistics server:defer>
+      <p class="hero-card__loading" slot="fallback">Cargando estadísticas de HTB...</p>
+    </HtbStadistics>
+  </div>
+</article>

@@ -3,7 +3,7 @@ import "../../styles/tokens.css";
 import "../../styles/hero-section.css";
 import "../../styles/profile-card.css";
 
-import HeroCard from "../hero-card.astro";
+import HeroGridCard from "../hero-cards/hero-grid-card.astro";
 
 import { HeroCardsRepository } from "../../domain/repositories/hero-cards-repository.ts";
 import { HeroProfileRepository } from "../../domain/repositories/hero-profile-repository.ts";
@@ -51,7 +51,7 @@ const profile = new HeroProfileRepository().getProfile();
     <!-- Tarjetas -->
     {
       heroCards.map(card => (
-        <HeroCard card={card} />
+        <HeroGridCard card={card} />
       ))
     }
   </div>

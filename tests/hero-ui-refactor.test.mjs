@@ -126,7 +126,9 @@ test('REQ-09-03: HeroCard aplica el fondo con data-color-token y sin estilos inl
 
 test('REQ-09-03 (integración): cada colorToken de hero-cards.json tiene su regla en hero-card.css', () => {
   const cards = JSON.parse(readFileSync(HERO_CARDS_JSON, 'utf8'));
-  assert.ok(Array.isArray(cards) && cards.length === 12, 'hero-cards.json no entrega 12 tarjetas');
+  // Ajuste feature 92 (REQ-92-14, petición humana 2026-10-14, precedente REQ-43-06): 12 de icono + 1 htb.
+  assert.ok(Array.isArray(cards) && cards.length === 13, 'hero-cards.json no entrega 12 tarjetas de icono + 1 htb');
+  assert.equal(cards.filter((card) => card.kind === 'htb').length, 1, 'hero-cards.json no entrega 1 tarjeta htb');
   const css = readFileSync(HERO_CARD_CSS, 'utf8');
   for (const card of cards) {
     assert.ok(card.colorToken, `la tarjeta ${card.id} no tiene colorToken`);

@@ -49,6 +49,8 @@
   --color-marca-twitch-bottom: #7B29D6;
   --color-marca-typescript: #215BC7;
   --color-marca-css: #6E29C8;
+  --color-marca-htb: #1A2332;
+  --color-marca-htb-accent: #9FEF00;
 
   /* Color de la tarjeta de perfil — overlay, píldora del username, badge
      verificado y scrollbar (valores actuales de hero.css, extraídos como

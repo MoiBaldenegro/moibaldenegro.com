@@ -56,7 +56,7 @@ test('REQ-79-06/07/16/17/18: hoja con modo hamburguesa acotado a móvil con JS',
 });
 
 test('REQ-79-08/35/36: hojas compartidas sin cambios y archivos <= 100 líneas', () => {
-  assert.equal(lines(read('src/styles/tokens.css')), 97);
+  assert.equal(lines(read('src/styles/tokens.css')), 99); // Ajuste feature 92 (precedente REQ-43-06): 97 + --color-marca-htb/-accent (REQ-92-02).
   assert.equal(lines(read('src/styles/layout.css')), 99);
   assert.doesNotMatch(read('src/styles/search-bar.css'), /site-menu/);
   for (const rel of ['src/layouts/Layout.astro', 'src/components/site-menu/site-menu.astro', 'src/styles/site-menu.css', 'tests/mobile-hamburger-menu.test.mjs']) assert.ok(lines(read(rel)) <= 100, rel);

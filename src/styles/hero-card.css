@@ -66,6 +66,7 @@
 [data-color-token="github-bottom"] { --card-bg: var(--color-marca-github-bottom); --card-column: 7 / span 4; --card-row: 7 / span 2; --icon-width: 165px; --icon-rotation: 0deg; }
 [data-color-token="youtube-bottom"] { --card-bg: var(--color-marca-youtube-bottom); --card-column: 11 / span 2; --card-row: 7 / span 2; --icon-width: 120px; --icon-rotation: -5deg; }
 [data-color-token="twitch-bottom"] { --card-bg: var(--color-marca-twitch-bottom); --card-column: 1 / span 8; --card-row: 9 / span 2; --icon-width: 170px; --icon-rotation: -6deg; }
+[data-color-token="htb"] { --card-bg: var(--color-marca-htb); --card-column: 9 / span 4; --card-row: 9 / span 2; }
 
 /* Responsive */
 @media (max-width: 1200px) {

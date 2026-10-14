@@ -10,10 +10,11 @@ const lines = (s) => s.split('\n').length - (s.endsWith('\n') ? 1 : 0);
 const tokens = read('src/styles/tokens.css');
 const layout = read('src/styles/layout.css');
 
-test('REQ-77-01/02: --header-height vale 64px y tokens.css sigue en 97 líneas', () => {
+test('REQ-77-01/02: --header-height vale 64px y tokens.css sigue en 99 líneas (97 + 2 tokens HTB de la feature 92)', () => {
   assert.match(tokens, /--header-height:[ ]*64px;/);
   assert.match(tokens, /--header-height-mobile:[ ]*170px;/);
-  assert.equal(lines(tokens), 97);
+  // Ajuste feature 92 (precedente REQ-43-06): tokens.css pasa de 97 a 99 (--color-marca-htb y --color-marca-htb-accent, REQ-92-02).
+  assert.equal(lines(tokens), 99);
 });
 
 test('REQ-77-03/08: el nav usa el token, centrado, y scroll-padding-top usa var(--header-height)', () => {
