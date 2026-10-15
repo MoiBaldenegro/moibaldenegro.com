@@ -75,3 +75,29 @@ site-footer.css, Layout.astro y site-footer.astro no se tocan.
 
 Complejidad simple (un archivo CSS + test): **1 feature**, id 94 `sticky-footer`, pending, sin depends_on
 (la 89 ya está done; no hace falta declararla porque no es implementable antes). Cabe en ≤ 100 líneas.
+
+## Ronda 2 — corrección por regresión del header (spec_author, 2026-10-14)
+
+Decisión humana (literal): «oye pero rompiste el header ya no se va nunca se queda pegado». Interpretación del
+líder: el humano quiere el comportamiento del header anterior a la 94 (HEAD~1 de 268e9ad): pegado arriba durante
+el primer viewport y luego se va con la página.
+
+- **Causa** (medida por el implementer, progress/impl_sticky-footer.md, «Ronda 2»): quitar `height: 100%` del reset
+  hizo crecer el body con el contenido, que es el bloque contenedor del header sticky, así que el header ya no se va
+  nunca. Antes, con el body fijado a un viewport (800 px), el header se iba a partir de scrollY 735: top 0 tras 500 px
+  y top −1265 tras 2000 px en / y en /posts/04-ciclo-de-vida-y-arquitectura a 375/800/1280 px.
+- **Cambios en la spec**:
+  - REQ-94-04 reescrito: el reset `html, body` **declara** `height: 100%` (se revoca quitarlo).
+  - REQ-94-08 reescrito: header con top 0 tras `scrollTo(0, 500)` y −1265 (±1) tras `scrollTo(0, 2000)` en / y en el
+    post 04 a 375/800/1280 px con 800 px de alto, igual que antes de la 94 (antes pedía top 0 tras dos viewports).
+  - REQ-94-14 nuevo (sale del antiguo REQ-94-08): header de 65 px a 800/1000/1280.
+  - REQ-94-12 precisa que en la ronda 2 el test que se ve en rojo es el de REQ-94-04 invertido.
+  - Se mantienen: sticky footer con body flex column + min-height 100vh/100dvh + `body > main { flex: 1 0 auto }`;
+    footer pegado abajo en /search, /search?q=zzzz y /404 (diferencia 0 con el borde del viewport) y tras el
+    contenido en las largas; layout.css en 99 líneas exactas.
+- **Para el implementer**: invertir en tests/sticky-footer.test.mjs el test de REQ-94-04 (el reset declara
+  `height: 100%`) y verlo en rojo; luego el cambio de una línea en layout.css (sin superar 99 líneas; el comentario de
+  la línea 6 que cita REQ-94-04 se ajusta en la misma línea). El arreglo ya se verificó en el navegador inyectando la
+  regla (tabla de la Ronda 2): header igual que HEAD~1 y sticky footer intacto.
+- Riesgo: ninguno nuevo; el hero, el pin horizontal, track-dom.ts y scrollHeight no dependen de la altura del body
+  (medido en la Ronda 2).

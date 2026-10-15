@@ -1,5 +1,5 @@
 // Feature 94 (sticky-footer): footer pegado abajo en páginas cortas, solo CSS en layout.css.
-// Spec: specs/94_sticky-footer/ (REQ-94-01..13). Medición de navegador en progress/impl_sticky-footer.md.
+// Spec: specs/94_sticky-footer/ (REQ-94-01..14). Medición de navegador en progress/impl_sticky-footer.md.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -40,11 +40,11 @@ test('REQ-94-03: body > main crece con flex 1 0 auto', () => {
   assert.match(main, /flex:\s*1 0 auto\s*;/);
 });
 
-test('REQ-94-04: el reset html, body no declara height', () => {
+test('REQ-94-04: el reset html, body declara height 100%', () => {
   const reset = rule(LAYOUT, 'html, body');
   assert.ok(reset, 'layout.css debe conservar el reset html, body');
   assert.match(reset, /margin:\s*0/);
-  assert.doesNotMatch(reset, /(^|[;\s])height\s*:/);
+  assert.match(reset, /(^|[;\s])height:\s*100%\s*;/);
 });
 
 test('REQ-94-05: layout.css mide exactamente 99 líneas', () => {

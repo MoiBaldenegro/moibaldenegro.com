@@ -26,14 +26,20 @@ en hero-section.css y latest-horizontal.css (`min-height: 100vh`). No se crean t
 - Decisión 1: body como columna flex con `min-height: 100vh; min-height: 100dvh;` (fallback + barra de URL
   móvil) y `body > main { flex: 1 0 auto; }`. main absorbe el espacio libre y empuja el footer al fondo sin
   tocar el marcado ni site-footer.css.
-- Decisión 2: quitar `height: 100%` de `html, body`. Con alto fijo el contenido largo desborda el body y el
-  rectángulo del header sticky queda limitado a un viewport; `min-height` lo sustituye.
+- Decisión 2 (corregida en la ronda 2, decisión humana 2026-10-14: «oye pero rompiste el header ya no se va nunca
+  se queda pegado»): **conservar** `height: 100%` en `html, body` (se revoca quitarlo). El alto fijo limita el bloque
+  contenedor del header sticky a un viewport, así que el header se queda pegado durante el primer viewport y luego
+  se va con la página, como antes de la 94 (HEAD~1 de 268e9ad): top 0 tras 500 px y top −1265 tras 2000 px en / y
+  en /posts/04-ciclo-de-vida-y-arquitectura a 375/800/1280 px con 800 px de alto. `min-height: 100vh/100dvh` y
+  `body > main { flex: 1 0 auto }` siguen dando el sticky footer: en páginas cortas main rellena el hueco; en las
+  largas los ítems flex (`flex-shrink: 0`) desbordan el body igual que antes y el footer queda tras el contenido.
+  Arreglo de una línea verificado en el navegador (progress/impl_sticky-footer.md, Ronda 2).
 - Decisión 3: layout.css se queda en **99 líneas exactas** (compactar `background`/`color`/`font-family` en
   una línea y comentar la feature en línea) para no editar tests/mobile-hamburger-menu.test.mjs, que exige
   `=== 99` y está modificado sin commitear por la feature 93. Bosquejo orientativo:
 
   ```css
-  html, body { margin: 0; width: 100%; }
+  html, body { margin: 0; width: 100%; height: 100%; }
   body {
     display: flex; flex-direction: column; min-height: 100vh; min-height: 100dvh; /* feature 94: sticky footer */
     background: var(--color-background); color: var(--color-text); font-family: var(--font-sans);
@@ -45,14 +51,18 @@ en hero-section.css y latest-horizontal.css (`min-height: 100vh`). No se crean t
   «Ajuste feature 94 (REQ-94-01..05, precedente REQ-43-06)». site-menu.css sigue en la lista.
 - Verificación de navegador (Chrome headless, anotada en progress/impl_sticky-footer.md): a 375, 800 y 1280 px,
   `footer.getBoundingClientRect().bottom` = `innerHeight` (±1 px) en /search, /search?q=zzzz y /404; en un
-  post largo y en / el footer empieza tras el main y `scrollHeight` no se reduce; header 65 px a 800/1000/1280 y
-  `top` 0 tras `scrollTo(0, 2 * innerHeight)`; menú móvil a 375 abre/cierra sin `scrollWidth > clientWidth`;
+  post largo y en / el footer empieza tras el main y `scrollHeight` no se reduce; header 65 px a 800/1000/1280; con
+  800 px de alto, header `top` 0 tras `scrollTo(0, 500)` y −1265 (±1) tras `scrollTo(0, 2000)` en / y en el post 04 a
+  375/800/1280; menú móvil a 375 abre/cierra sin `scrollWidth > clientWidth`;
   hero y sección horizontal con el mismo alto y pin que antes; navegar con ClientRouter de / a /search deja el
   footer abajo.
 - Restricciones: solo CSS, sin JS ni dependencias, sin `position: fixed`, estilos fuera del `.astro`,
   archivos ≤ 100 líneas, no tocar Layout.astro ni site-footer.css (ni nada de la feature 93).
 
 ## Alternativa descartada
+
+- Quitar `height: 100%` de `html, body` (ronda 1): el body crece con el contenido y el header sticky ya no se va
+  nunca; el humano lo reporta como rotura (ronda 2).
 
 - `position: fixed; bottom: 0` en el footer: tapa contenido en páginas largas y el footer mide cientos de px;
   no es lo pedido («pegado abajo» cuando sobra espacio).
