@@ -38,6 +38,13 @@
 // Ajuste feature 45 (precedente REQ-43-06): los slugs pasan a ASCII
 // (03-principios-solid, 01-diseno-detallado, 04-ciclo-de-vida-y-arquitectura);
 // las URLs antiguas redirigen con 301 desde astro.config.mjs.
+//
+// Ajuste feature 95 (precedente REQ-43-06): la portada pasa de 3 a 4 artículos
+// (LATEST_POSTS_LIMIT = 4, decisión humana 2026-10-15). REQ-30-01/02/03/04/13
+// esperan 4; cada aserción ajustada lleva la nota junto a ella.
+//
+// Ajuste feature 96 (precedente REQ-43-06): decisión humana 2026-10-15 «reestablece a 3»; la
+// portada vuelve a LATEST_POSTS_LIMIT = 3 y REQ-30-01/02/03/04/13 vuelven a esperar 3.
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -149,27 +156,29 @@ function latestArticlesSection(html) {
   return html.slice(start, end);
 }
 
-test('REQ-30-01: con ocho artículos la función de dominio devuelve exactamente tres', () => {
+test('REQ-30-01: con ocho artículos la función de dominio devuelve exactamente tres (ajuste feature 96)', () => {
   const posts = fakePosts(8);
   const result = latestPosts(posts);
+  // Ajuste feature 96 (precedente REQ-43-06): 4 -> 3 (la 95 lo había subido de 3 a 4).
   assert.equal(result.length, 3, `latestPosts devolvió ${result.length} artículos en vez de 3 (REQ-30-01)`);
-  assert.deepEqual(result.map((post) => post.id), ['p-0', 'p-1', 'p-2'], 'el corte no toma los tres primeros (REQ-30-01)');
-  for (const total of [3, 4, 5, 8, 20]) {
+  assert.deepEqual(result.map((post) => post.id), ['p-0', 'p-1', 'p-2'], 'el corte no toma los tres primeros (REQ-30-01)'); // Ajuste feature 96 (precedente REQ-43-06).
+  for (const total of [3, 4, 5, 8, 20]) { // Ajuste feature 96 (precedente REQ-43-06): vuelve a [3, 4, 5, 8, 20].
     assert.equal(latestPosts(fakePosts(total)).length, 3, `con ${total} artículos no devuelve 3 (REQ-30-01)`);
   }
 });
 
-test('REQ-30-02: los tres son los más recientes por created, en orden descendente', async () => {
+test('REQ-30-02: los tres (ajuste feature 96) son los más recientes por created, en orden descendente', async () => {
   const repository = new PostsRepository(async () => REAL_SLUGS_BY_NEWEST.map(entryFor));
   const posts = await repository.getPosts();
   const result = latestPosts(posts);
   assert.deepEqual(
     result.map((post) => post.id),
-    REAL_SLUGS_BY_NEWEST.slice(0, 3),
+    REAL_SLUGS_BY_NEWEST.slice(0, 3), // Ajuste feature 96 (precedente REQ-43-06): slice(0, 4) -> slice(0, 3).
     `la portada no muestra los tres más recientes: ${result.map((post) => post.id).join(', ')} (REQ-30-02)`
   );
   assert.deepEqual(
     result.map((post) => post.created),
+    // Ajuste feature 96 (precedente REQ-43-06): se retira la fecha de la 4.ª.
     ['28 Septiembre 2026', '24 Septiembre 2026', '19 Septiembre 2026'],
     'los tres pintados no van en orden descendente de created (REQ-30-02)'
   );
@@ -182,21 +191,22 @@ test('REQ-30-03: devuelve el orden recibido sin reordenar ni mutar la entrada', 
     fakePost('b', '2 Enero 2021'),
     fakePost('c', '3 Enero 2022'),
     fakePost('d', '4 Enero 2023'),
+    fakePost('e', '5 Enero 2024'), // Ajuste feature 96 (precedente REQ-43-06): se conservan 5 entradas (el corte a 3 se observa).
   ];
   const snapshot = JSON.parse(JSON.stringify(oldestFirst));
   const result = latestPosts(oldestFirst);
   assert.deepEqual(
     result.map((post) => post.id),
-    ['a', 'b', 'c'],
+    ['a', 'b', 'c'], // Ajuste feature 96 (precedente REQ-43-06): vuelve a los 3 primeros.
     `la función reordenó la entrada: ${result.map((post) => post.id).join(', ')} (REQ-30-03)`
   );
-  assert.equal(oldestFirst.length, 4, 'la función mutó el arreglo de entrada (REQ-30-03)');
+  assert.equal(oldestFirst.length, 5, 'la función mutó el arreglo de entrada (REQ-30-03)'); // Ajuste feature 95 (precedente REQ-43-06): 4 -> 5 entradas.
   assert.deepEqual(oldestFirst, snapshot, 'la función mutó el contenido de la entrada (REQ-30-03)');
   assert.notEqual(result, oldestFirst, 'la función devuelve la misma referencia de la entrada (REQ-30-03)');
 });
 
-test('REQ-30-04: con menos de tres artículos devuelve todas las entradas sin lanzar', () => {
-  for (const total of [0, 1, 2]) {
+test('REQ-30-04: con menos de tres (ajuste feature 96) artículos devuelve todas las entradas sin lanzar', () => {
+  for (const total of [0, 1, 2]) { // Ajuste feature 96 (precedente REQ-43-06): vuelve a [0, 1, 2].
     const posts = fakePosts(total);
     let result;
     assert.doesNotThrow(() => {
@@ -275,18 +285,19 @@ test('REQ-30-09/10: los tests de inspección existentes no documentan ajuste por
   }
 });
 
-test('REQ-30-13: el build real de la portada emite exactamente tres cards con los tres más recientes', () => {
+test('REQ-30-13: el build real de la portada emite exactamente tres cards con los tres más recientes (ajuste feature 96)', () => {
   assert.ok(existsSync(ASTRO_BIN), 'node_modules/astro/bin/astro.mjs no existe (build no ejecutable)');
   const build = astroBuild();
   assert.equal(build.status, 0, `astro build falló (REQ-30-13):\n${build.stdout}\n${build.stderr}`);
   assert.ok(existsSync(DIST_HOME_PATH), 'el build no generó dist/client/index.html (REQ-30-13)');
   const section = latestArticlesSection(readFileSync(DIST_HOME_PATH, 'utf8'));
   const cards = section.match(/class="latest-articles__card"/g) ?? [];
+  // Ajuste feature 96 (precedente REQ-43-06): 4 -> 3 cards.
   assert.equal(cards.length, 3, `la portada pinta ${cards.length} cards en vez de 3 (REQ-30-13)`);
   const hrefs = [...section.matchAll(/href="(\/posts\/[^"]+)"/g)].map((match) => match[1]);
   assert.deepEqual(
     hrefs,
-    REAL_SLUGS_BY_NEWEST.slice(0, 3).map((slug) => `/posts/${slug}`),
+    REAL_SLUGS_BY_NEWEST.slice(0, 3).map((slug) => `/posts/${slug}`), // Ajuste feature 96 (precedente REQ-43-06): slice(0, 4) -> slice(0, 3).
     `la portada enlaza ${hrefs.join(', ')} en vez de los tres artículos más recientes (REQ-30-13)`
   );
 });

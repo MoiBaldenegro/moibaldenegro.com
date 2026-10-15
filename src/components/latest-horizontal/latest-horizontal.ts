@@ -4,15 +4,18 @@
 // hasta que se ven las dos últimas. Sin JS o fuera de la consulta queda el layout apilado.
 // Feature 73: sin el pin de ScrollTrigger (cambiaba a fixed un frame tarde con rueda real y el
 // encabezado saltaba); ScrollTrigger solo hace el scrub de x. Cifras de src/domain (feature 71/73).
+// Feature 96: la entrada y la salida laterales de las cards (cards-motion.ts) se registran en el
+// mismo gsap.matchMedia, en el horizontal y en el apilado (<=1200 px); sustituyen a la 75.
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { edgeOffsets, focusScrollTarget, pairInset, pinScrollLength, trackOffset } from '../../domain/latest-horizontal.ts';
-import { entranceEase, entranceState } from '../../domain/latest-entrance.ts';
-import { clearTrack, restoreScroll } from './track-dom.ts';
+import { horizontalCardsMotion, stackedCardsMotion } from './cards-motion.ts';
+import { clearTrack, refreshWhenShown, restoreScroll } from './track-dom.ts';
 
 gsap.registerPlugin(ScrollTrigger);
 
 const DESKTOP = '(min-width: 1201px) and (prefers-reduced-motion: no-preference)';
+const STACKED = '(max-width: 1200px) and (prefers-reduced-motion: no-preference)';
 const HORIZONTAL = 'latest-articles--horizontal';
 let mm: gsap.MatchMedia | null = null;
 
@@ -31,20 +34,26 @@ export function init(): void {
   const track = section?.querySelector<HTMLElement>('.latest-articles__list');
   if (!section || !track) return;
   const cards = [...track.querySelectorAll<HTMLElement>('.latest-articles__card')];
-  if (cards.length < 3) return; // REQ-73-19/26: con 2 cards el par ya lo muestra todo
+  if (!cards.length) return;
   mm = gsap.matchMedia();
-  mm.add(DESKTOP, () => setup(section, track, cards));
+  mm.add(STACKED, (ctx) => {
+    const stopCards = stackedCardsMotion(cards, ctx);
+    const stopRefresh = refreshWhenShown(section, () => ScrollTrigger.refresh());
+    return () => { stopCards(); stopRefresh(); };
+  });
+  if (cards.length < 3) return; // REQ-73-19/26: con 2 cards el par ya lo muestra todo
+  mm.add(DESKTOP, (ctx) => setup(section, track, cards, ctx));
 }
 
-function setup(section: HTMLElement, track: HTMLElement, cards: HTMLElement[]): () => void {
+function setup(section: HTMLElement, track: HTMLElement, cards: HTMLElement[], ctx: gsap.Context): () => void {
   const n = cards.length;
   const wrapper = document.createElement('div');
   wrapper.className = 'latest-articles--horizontal-pin';
   section.before(wrapper);
   wrapper.append(section);
   section.classList.add(HORIZONTAL);
-  // Feature 75: el track puede estar escalado por la entrada; el ancho real es el medido / la escala.
-  const cardWidth = (): number => cards[0].getBoundingClientRect().width / (Number(gsap.getProperty(track, 'scale')) || 1);
+  // Feature 96: la card puede estar escalada por su entrada; el ancho real es el medido / su escala.
+  const cardWidth = (): number => cards[0].getBoundingClientRect().width / (Number(gsap.getProperty(cards[0], 'scale')) || 1);
   const gap = (): number => parseFloat(getComputedStyle(track).columnGap) || 0;
   const length = (): number => pinScrollLength(cardWidth(), gap(), n);
   // REQ-73-20: el envoltorio mide sección + recorrido; se fija antes de que ScrollTrigger mida.
@@ -60,36 +69,24 @@ function setup(section: HTMLElement, track: HTMLElement, cards: HTMLElement[]): 
   });
   tween.to(track, { x: () => trackOffset(1, cardWidth(), gap(), n), ease: 'none' }, 0);
   for (const i of [0, n - 1]) tween.fromTo(cards[i], { x: () => edgeOffsets(0, n, inset(), gap())[i] }, { x: () => edgeOffsets(1, n, inset(), gap())[i] }, 0);
-  // Feature 75: entrada desde arriba ligada al scroll; termina EXACTAMENTE en el inicio del
-  // tramo fijado (y 0, scale 1, opacity 1), así que el horizontal arranca sin salto.
-  gsap.fromTo(track, {
-    y: () => entranceState(0, window.innerHeight).y,
-    scale: () => entranceState(0, window.innerHeight).scale,
-    opacity: () => entranceState(0, window.innerHeight).opacity,
-  }, {
-    y: 0, scale: 1, opacity: 1,
-    ease: entranceEase,
-    scrollTrigger: { trigger: wrapper, start: 'top bottom', end: 'top top', scrub: true, invalidateOnRefresh: true, toggleClass: { targets: section, className: 'latest-articles--entering' } },
-  });
+  // Feature 96: entrada y salida laterales por tiempo (llegada, cruce del borde y salida).
+  const stopCards = horizontalCardsMotion(wrapper, cards, tween, ctx);
   const trigger = tween.scrollTrigger;
   const onFocus = (event: FocusEvent): void => {
     const index = cards.findIndex((card) => card.contains(event.target as Node));
     if (index >= 0 && trigger) window.scrollTo({ top: focusScrollTarget(index, n, trigger.start, trigger.end), behavior: 'instant' });
   };
   track.addEventListener('focusin', onFocus);
-  const landing = wrapper.closest('[data-landing-sections]');
-  const observer = new MutationObserver(() => {
-    if (!landing?.hasAttribute('hidden')) ScrollTrigger.refresh();
-  });
-  if (landing) observer.observe(landing, { attributes: true, attributeFilter: ['hidden'] });
+  const stopRefresh = refreshWhenShown(wrapper, () => ScrollTrigger.refresh());
   ScrollTrigger.refresh();
   restoreScroll();
   return () => {
     ScrollTrigger.removeEventListener('refreshInit', sizeWrapper);
     track.removeEventListener('focusin', onFocus);
-    observer.disconnect();
+    stopCards();
+    stopRefresh();
     wrapper.replaceWith(section); // REQ-73-25: la sección vuelve a su sitio
-    queueMicrotask(() => clearTrack(track)); // REQ-75-20: tras revertir los tweens de x y de la entrada
+    queueMicrotask(() => clearTrack(track)); // REQ-75-20: tras revertir los tweens de x y de las cards
     section.classList.remove(HORIZONTAL);
   };
 }

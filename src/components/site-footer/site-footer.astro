@@ -5,12 +5,12 @@ import '../../styles/site-footer.css';
 import { AboutRepository } from '../../domain/repositories/about-repository.ts';
 import { HeroProfileRepository } from '../../domain/repositories/hero-profile-repository.ts';
 import { PostsRepository } from '../../domain/repositories/posts-repository.ts';
-import { latestPosts } from '../../domain/latest-posts.ts';
+import { FOOTER_LATEST_POSTS_LIMIT, latestPosts } from '../../domain/latest-posts.ts';
 import { copyrightLine, footerColumns } from '../../domain/site-footer.ts';
 
 const about = new AboutRepository().getProfile();
 const profile = new HeroProfileRepository().getProfile();
-const posts = latestPosts(await new PostsRepository().getPosts());
+const posts = latestPosts(await new PostsRepository().getPosts(), FOOTER_LATEST_POSTS_LIMIT);
 const [navigation, social] = footerColumns(about);
 ---
 

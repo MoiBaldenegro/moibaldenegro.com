@@ -56,12 +56,14 @@ test('REQ-76-01..04/11/25: hoja sin clip-path, overflow clip y transición sin t
 
 // Ronda 2 (review_76): el test ata la x de las cards al bloque de la línea de tiempo del horizontal y
 // exige la limpieza real de las cards en clearTrack (no basta con que aparezcan las cadenas).
+// Ajuste feature 96 (precedente REQ-43-06): la entrada del track de la 75 sale; el bloque de la línea de tiempo
+// termina ahora en la llamada a horizontalCardsMotion (la entrada y salida laterales de cards-motion.ts).
 test('REQ-76-10/12/13: x de las cards extremas en el mismo ScrollTrigger y limpieza de las cards', () => {
   const mod = read(MOD);
   assert.match(mod, /import [{][^}]*edgeOffsets[^}]*[}] from ['"][.][.][/][.][.][/]domain[/]latest-horizontal[.]ts['"]/);
   assert.ok(mod.includes('pairInset') || mod.includes('restMargin'));
-  const from = mod.indexOf('gsap.timeline('), to = mod.indexOf('gsap.fromTo(track');
-  assert.ok(from >= 0 && to > from, 'falta la línea de tiempo antes de la entrada');
+  const from = mod.indexOf('gsap.timeline('), to = mod.indexOf('horizontalCardsMotion('); // Ajuste feature 96 (precedente REQ-43-06)
+  assert.ok(from >= 0 && to > from, 'falta la línea de tiempo antes de horizontalCardsMotion');
   const block = mod.slice(from, to);
   for (const s of ["start: 'top top'", 'pinScrollLength', 'scrub: true', 'invalidateOnRefresh: true', "ease: 'none'", 'edgeOffsets(0,', 'edgeOffsets(1,', 'cards[']) assert.ok(block.includes(s), `línea de tiempo sin ${s}`);
   const outside = mod.slice(0, from) + mod.slice(to);

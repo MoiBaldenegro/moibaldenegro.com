@@ -1,0 +1,7 @@
+/* latest-cards-motion.css — Feature 96: las cards entran y salen por los laterales con GSAP
+   (cards-motion.ts). Esta hoja solo recorta en X la portada para que una card desplazada no
+   cree scroll horizontal; clip no crea contenedor de scroll (el sticky de la 73 sigue
+   funcionando) y overflow-y queda visible. Sin estado oculto: sin JS las cards se ven quietas. */
+.home__landing {
+  overflow-x: clip;
+}

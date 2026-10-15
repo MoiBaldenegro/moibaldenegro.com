@@ -1,4 +1,4 @@
-// Utilidades de DOM del scroll horizontal de la portada (features 73 y 75), separadas de
+// Utilidades de DOM del scroll horizontal de la portada (features 73, 75 y 96), separadas de
 // latest-horizontal.ts para respetar el límite de 100 líneas.
 
 // Los tweens revertidos dejan un transform neutro en línea; sin efecto el track no lleva estilos.
@@ -22,4 +22,15 @@ function clearInline(el: HTMLElement): void {
 export function restoreScroll(): void {
   const saved = (history.state as { scrollY?: unknown } | null)?.scrollY;
   if (typeof saved === 'number' && Math.abs(window.scrollY - saved) > 2) window.scrollTo(0, saved);
+}
+
+// La portada oculta sus secciones durante una búsqueda ([data-landing-sections] hidden); al volver
+// a mostrarse se mide de nuevo (features 73 y 96). Devuelve la función que deja de observar.
+export function refreshWhenShown(el: Element, refresh: () => void): () => void {
+  const landing = el.closest('[data-landing-sections]');
+  const observer = new MutationObserver(() => {
+    if (!landing?.hasAttribute('hidden')) refresh();
+  });
+  if (landing) observer.observe(landing, { attributes: true, attributeFilter: ['hidden'] });
+  return () => observer.disconnect();
 }

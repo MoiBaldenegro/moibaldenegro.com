@@ -3,7 +3,7 @@
 //
 // Aplica a los artículos que entrega PostsRepository.getPosts() la política
 // editorial de la sección «Últimos artículos» de la portada: pintar solo los
-// `limit` primeros (= 3) y, si la colección tiene menos, todos los
+// `limit` primeros (= 3, de nuevo desde la feature 96) y, si la colección tiene menos, todos los
 // disponibles. NO reordena: el orden canónico por created lo fija el
 // comparador byCreatedDesc del repositorio (una sola verdad) y NO muta la
 // entrada (slice devuelve copia). Un límite que no sea entero positivo
@@ -11,10 +11,14 @@
 // dominio, no en el repositorio (ya está en 100/100 líneas, REQ-30-14) ni en el
 // frontmatter del componente (regla 8: el frontmatter solo hace imports y paso
 // de datos).
+//
+// Feature 95 (REQ-95-01/02): el footer (feature 89) pasa FOOTER_LATEST_POSTS_LIMIT (3) de
+// forma explícita. Feature 96 (REQ-96-01/02): la portada vuelve al límite por defecto 3.
 
 import type { Post } from './entities/post.ts';
 
 export const LATEST_POSTS_LIMIT = 3;
+export const FOOTER_LATEST_POSTS_LIMIT = 3;
 
 export function latestPosts(posts: readonly Post[], limit: number = LATEST_POSTS_LIMIT): Post[] {
   if (!Number.isInteger(limit) || limit <= 0) return [];

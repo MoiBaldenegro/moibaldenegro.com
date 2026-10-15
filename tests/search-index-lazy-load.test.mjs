@@ -83,7 +83,7 @@ test('REQ-47-02 (error): un fetch fallido no queda cacheado', async () => {
   assert.equal(calls, 2);
 });
 
-test('REQ-47-01/06 (build): sin índice embebido y portada < 40 000 bytes', () => {
+test('REQ-47-01/06 (build): sin índice embebido y portada < 40 000 bytes (ajuste feature 96)', () => {
   assert.doesNotMatch(read('src/pages/[...term].astro'), /id="search-index"/);
   const out = mkdtempSync(join(tmpdir(), 'lazy-build-'));
   try {
@@ -93,6 +93,7 @@ test('REQ-47-01/06 (build): sin índice embebido y portada < 40 000 bytes', () =
       assert.doesNotMatch(readFileSync(join(out, 'client', rel), 'utf8'), /id="search-index"/, rel);
     }
     const size = statSync(join(out, 'client', 'index.html')).size;
+    // Ajuste feature 96 (precedente REQ-43-06): vuelven 3 cards y sale la hoja de la 95; umbral original 40 000 B (peso en impl_latest-cards-gsap-motion.md).
     assert.ok(size < 40000, `index.html pesa ${size} bytes`);
   } finally {
     rmSync(out, { recursive: true, force: true });

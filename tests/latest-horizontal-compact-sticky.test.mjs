@@ -86,7 +86,8 @@ test('REQ-73-18/19/20/22: efecto con envoltorio sticky, sin pin', () => {
   assert.match(mod, /end: [(][)] =>[^\n]*pinScrollLength/);
 });
 
-test('REQ-73-33/34: LATEST_POSTS_LIMIT sigue en 3 y archivos <= 100 líneas', () => {
+test('REQ-73-33/34: LATEST_POSTS_LIMIT vuelve a 3 (feature 96) y archivos <= 100 líneas', () => {
+  // Ajuste feature 96 (precedente REQ-43-06): decisión humana «reestablece a 3» (la 95 lo había subido a 4).
   assert.match(read('src/domain/latest-posts.ts'), /export const LATEST_POSTS_LIMIT = 3;/);
   for (const rel of ['src/domain/latest-horizontal.ts', MOD, CSS, 'tests/latest-horizontal-compact-sticky.test.mjs']) {
     const s = read(rel); assert.ok(s.split('\n').length - (s.endsWith('\n') ? 1 : 0) <= 100, rel);
