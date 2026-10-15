@@ -6,10 +6,10 @@
 //   gsap.matchMedia, así que mm.revert() (astro:before-swap) lo mata y revierte aunque esté en curso.
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { CARDS_ENTER, CARDS_EXIT, CARDS_HORIZONTAL, CARDS_STACKED, cardPhase, offsetPercent, phaseState, type CardPhase } from '../../domain/latest-cards-motion.ts';
+import { CARDS_ENTER, CARDS_EXIT, CARDS_HORIZONTAL, CARDS_STACKED, offsetPercent, type CardPhase } from '../../domain/latest-cards-motion.ts';
+import { coalesce, phaseSync, stop, type Phases } from './cards-sync.ts';
 
 type Side = 1 | -1;
-type Phases = Map<Element, CardPhase>;
 
 // clamp(): al fondo de la página el punto de salida puede caer en el scroll máximo o pasarlo;
 // clamp lo limita a él y el rango de 0 px se alcanza (onLeave al bajar, onEnterBack al subir).
@@ -21,14 +21,16 @@ const hide = (cards: HTMLElement[]): gsap.core.Tween => gsap.set(cards, { xPerce
 
 /** Tweens de entrada y salida; side 1 = lateral derecho, −1 = izquierdo. killTweensOf solo por
  *  xPercent/scale/opacity: overwrite true mataría también el fromTo de x de la 76 (REQ-96-22). */
-function tweens(ctx: gsap.Context, phases: Phases = new Map()) {
-  const mark = (els: Element[], phase: CardPhase): void => els.forEach((el) => phases.set(el, phase));
-  const enter = (els: Element[], side: Side) => (mark(els, 'rest'), ctx.add(() => (gsap.killTweensOf(els, 'xPercent,scale,opacity'), gsap.fromTo(els,
+function tweens(ctx: gsap.Context, phases: Phases = new Map(), after = (): void => {}) {
+  let muted = false; // durante sync() los callbacks no crean tweens: la fase se fija con place()
+  const mark = (els: Element[], phase: CardPhase): boolean => !muted && (els.forEach((el) => phases.set(el, phase)), after(), true);
+  const enter = (els: Element[], side: Side) => (mark(els, 'rest') && ctx.add(() => (gsap.killTweensOf(stop(els), 'xPercent,scale,opacity'), gsap.fromTo(els,
     { xPercent: pct(side * CARDS_ENTER.offsetPx), scale: CARDS_ENTER.scale, opacity: CARDS_ENTER.opacity },
     { xPercent: 0, scale: 1, opacity: 1, duration: CARDS_ENTER.duration, ease: CARDS_ENTER.ease, stagger: CARDS_ENTER.stagger }))));
-  const exit = (els: Element[], side: Side) => (mark(els, side > 0 ? 'before' : 'gone'), ctx.add(() => (gsap.killTweensOf(els, 'xPercent,scale,opacity'), gsap.to(els,
-    { xPercent: pct(side * CARDS_EXIT.offsetPx), opacity: CARDS_EXIT.opacity, duration: CARDS_EXIT.duration, ease: CARDS_EXIT.ease, stagger: CARDS_EXIT.stagger }))));
-  return { enter, exit };
+  const exit = (els: Element[], side: Side) => (mark(els, side > 0 ? 'before' : 'gone') && ctx.add(() => (gsap.killTweensOf(stop(els), 'xPercent,scale,opacity'), gsap.to(els,
+    { xPercent: pct(side * CARDS_EXIT.offsetPx), scale: 1, opacity: CARDS_EXIT.opacity, duration: CARDS_EXIT.duration, ease: CARDS_EXIT.ease, stagger: CARDS_EXIT.stagger }))));
+  const silently = (fn: () => void): void => { muted = true; fn(); muted = false; };
+  return { enter, exit, silently };
 }
 
 /** Con teclado, la card enfocada que aún no ha entrado se muestra (REQ-96-36). */
@@ -37,7 +39,7 @@ function revealOnFocus(cards: HTMLElement[], ctx: gsap.Context): () => void {
   const onFocus = (event: FocusEvent): void => {
     const card = cards.find((item) => item.contains(event.target as Node));
     if (!card || Number(gsap.getProperty(card, 'opacity')) >= 1) return;
-    ctx.add(() => (gsap.killTweensOf(card, 'xPercent,scale,opacity'), gsap.to(card, { xPercent: 0, scale: 1, opacity: 1, duration: CARDS_ENTER.duration, ease: CARDS_ENTER.ease })));
+    ctx.add(() => (gsap.killTweensOf(stop([card]), 'xPercent,scale,opacity'), gsap.to(card, { xPercent: 0, scale: 1, opacity: 1, duration: CARDS_ENTER.duration, ease: CARDS_ENTER.ease })));
   };
   parent?.addEventListener('focusin', onFocus);
   return () => parent?.removeEventListener('focusin', onFocus);
@@ -55,13 +57,16 @@ export function stackedCardsMotion(cards: HTMLElement[], ctx: gsap.Context): () 
   return revealOnFocus(cards, ctx);
 }
 
-/** Estado de la card en su fase, sin animar (REQ-96-51); x (73/76) no se toca. */
-const place = (el: HTMLElement, phase: CardPhase): void => (gsap.killTweensOf(el, 'xPercent,scale,opacity'), gsap.set(el, phaseState(phase, el.offsetWidth)), undefined);
-
-/** Modo horizontal (>=1201 px): llega el par inicial, se va el final tras el tramo y las que cruzan el borde usan la timeline como containerAnimation. */
+/**
+ * Modo horizontal (>=1201 px): el par inicial llega con el envoltorio, el par final se va después
+ * del tramo fijado y las cards que cruzan el borde de la sección durante el recorrido usan la
+ * línea de tiempo del track como containerAnimation (su x y la de la 76 son lineales en ella).
+ */
 export function horizontalCardsMotion(wrapper: HTMLElement, cards: HTMLElement[], timeline: gsap.core.Timeline, ctx: gsap.Context): () => void {
   const phases: Phases = new Map();
-  const { enter, exit } = tweens(ctx, phases);
+  // Tras una ráfaga de callbacks (salto de scroll) puede ganar uno que contradice el progress: se resincroniza.
+  let sync = (): void => {};
+  const { enter, exit, silently } = tweens(ctx, phases, coalesce(() => sync()));
   const n = cards.length;
   const [first, last] = [cards.slice(0, 2), cards.slice(n - 2)];
   const arrive = ScrollTrigger.create({ trigger: wrapper, start: CARDS_HORIZONTAL.arrive, onEnter: () => enter(first, 1), onLeaveBack: () => exit(first, 1) });
@@ -72,14 +77,8 @@ export function horizontalCardsMotion(wrapper: HTMLElement, cards: HTMLElement[]
   // Entran por la derecha las que no están en el par inicial; salen por la izquierda las que no están en el final.
   const enters = cards.map((card, i) => [i >= 2 ? cross(card, { onEnter: () => enter([card], 1), onLeaveBack: () => exit([card], 1) }) : arrive]);
   const exits = cards.map((card, i) => [i <= n - 3 ? cross(card, { onLeave: () => exit([card], -1), onEnterBack: () => enter([card], -1) }) : away]);
-  // Con containerAnimation, un trigger solo se actualiza en el onUpdate de la timeline, que al restaurar el
-  // scroll se recoloca sin eventos: al crear y en cada refresh se fuerza su update (lanza los callbacks) y
-  // la card toma la fase de su progress, solo si difiere de la pedida (no corta un tween en curso).
-  const triggers = [...new Set([...enters, ...exits].flat())];
-  const sync = (): void => { triggers.forEach((t) => t.update(false, false, true)); cards.forEach((card, i) => {
-    const phase = cardPhase(enters[i], exits[i]);
-    if (phases.get(card) !== phase) (phases.set(card, phase), place(card, phase));
-  }); };
+  // Al crear y en cada refresh cada card toma la fase de sus triggers (scroll restaurado, REQ-96-51; cards-sync.ts).
+  sync = phaseSync(cards, enters, exits, phases, silently);
   sync();
   // invalidateOnRefresh revierte la timeline en cada refresh y las extremas pierden xPercent y scale
   // (76): se guardan antes y se reponen al acabar; después se sincroniza la fase.
@@ -92,6 +91,7 @@ export function horizontalCardsMotion(wrapper: HTMLElement, cards: HTMLElement[]
   ScrollTrigger.addEventListener('refresh', onRefresh);
   const stopFocus = revealOnFocus(cards, ctx);
   return () => {
+    sync = (): void => {}; // una resincronización pendiente no toca las cards ya revertidas
     ScrollTrigger.removeEventListener('refreshInit', keep);
     ScrollTrigger.removeEventListener('refresh', onRefresh);
     stopFocus();

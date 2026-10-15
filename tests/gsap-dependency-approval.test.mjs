@@ -58,8 +58,9 @@ test('REQ-70-07: sin .npmrc apuntando al registro privado de GreenSock', () => {
 // Ajuste feature 72 (precedente REQ-43-06): el primer y único uso de gsap es latest-horizontal.ts.
 // Ajuste feature 81 (precedente REQ-43-06): pdf-lib 1.17.1, aprobada por el humano, se suma a dependencies.
 // Ajuste feature 85 (REQ-85-06): geist 1.7.2, aprobada por el humano, se suma a dependencies.
-// Ajuste feature 96 (precedente REQ-43-06): cards-motion.ts (entrada y salida de las cards) también importa gsap.
-test('REQ-70-08/09: solo se añade gsap y solo latest-horizontal.ts y cards-motion.ts lo importan', () => {
+// Ajuste feature 96 (precedente REQ-43-06): cards-motion.ts (entrada y salida de las cards) también importa gsap,
+// y su módulo hermano cards-sync.ts (revisión 4, REQ-96-42/51: fase de las cards con el scroll restaurado).
+test('REQ-70-08/09: solo se añade gsap y solo latest-horizontal.ts, cards-motion.ts y cards-sync.ts lo importan', () => {
   assert.deepEqual(Object.keys(pkg.dependencies).sort(), ['@astrojs/cloudflare', 'astro', 'geist', 'gsap', 'pdf-lib', 'wrangler']);
   assert.deepEqual(Object.keys(pkg.devDependencies), ['@cloudflare/workers-types']);
   assert.equal(pkg.dependencies.astro, '^7.3.8');
@@ -67,7 +68,7 @@ test('REQ-70-08/09: solo se añade gsap y solo latest-horizontal.ts y cards-moti
   assert.equal(pkg.dependencies.wrangler, '^4.149.0');
   assert.equal(pkg.devDependencies['@cloudflare/workers-types'], '^5.20261009.1');
   const walk = (dir) => readdirSync(dir).flatMap((n) => (statSync(join(dir, n)).isDirectory() ? walk(join(dir, n)) : [join(dir, n)]));
-  for (const file of walk(fileURLToPath(new URL('src', root))).filter((f) => /[.](ts|astro|mjs|js)$/.test(f) && !f.endsWith('latest-horizontal.ts') && !/[\\/]latest-horizontal[\\/]cards-motion[.]ts$/.test(f))) { // Ajuste feature 96 (precedente REQ-43-06)
+  for (const file of walk(fileURLToPath(new URL('src', root))).filter((f) => /[.](ts|astro|mjs|js)$/.test(f) && !f.endsWith('latest-horizontal.ts') && !/[\\/]latest-horizontal[\\/]cards-(motion|sync)[.]ts$/.test(f))) { // Ajuste feature 96 (precedente REQ-43-06)
     assert.doesNotMatch(readFileSync(file, 'utf8'), /from ['"]gsap/, file);
   }
 });

@@ -1835,7 +1835,7 @@
         "REQ-96-49/50 (solo rama H-integrado, revisión 3): Chrome headless + CDP a 1280x800 con movimiento y rueda real desde carga limpia: la x en línea de la card 1 pasa de 0 a −delta (edgeOffsets) y la de la card 3 de +delta a 0 a lo largo del tramo, y al final del tramo fijado el margen derecho de la tercera card (rect de la sección.right − rect de la card.right) es igual al left del título respecto a la sección (32 px ±1); tras recargar con el scroll restaurado al fondo y tras portada → artículo → history.back, al subir hasta que el par de llegada reposa (tweens terminados) la primera card queda con left respecto a la sección igual al del título (32 px ±1); cifras anotadas en progress/impl_latest-cards-gsap-motion.md",
         "REQ-96-51/52 (revisión 4): Chrome headless + CDP con movimiento, sin rueda tras restaurar y con los tweens terminados: tras recargar con el scroll restaurado y tras portada → artículo → history.back (incluido clic en la card 3 a y = 1815 y vuelta) a 1280x800 en y = 1510, 1815, 2000, 2280 y 2295, y a 375 en apilado con una card en vista, toda card cuyo trigger esté activo mide opacity 1, xPercent 0 y scale 1 (ninguna card invisible en su hueco dentro de la sección), las de antes o después del rango quedan en el estado de hide() o de salida que corresponde, y cada posición coincide (±2 px y ±0.05 de opacity) con la alcanzada con rueda real desde carga limpia hasta la misma y; el test estático exige que el estado inicial y el de cada refresh se decidan por trigger.isActive/progress (o los callbacks equivalentes) y no por un hide() incondicional; cifras en progress/impl_latest-cards-gsap-motion.md"
       ],
-      "status": "in_progress"
+      "status": "done"
     }
   ]
 }

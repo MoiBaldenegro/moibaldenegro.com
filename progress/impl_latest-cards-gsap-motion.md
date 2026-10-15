@@ -1,6 +1,6 @@
 # Informe de implementación — feature 96 latest-cards-gsap-motion
 
-Estado: implementada, pendiente de revisión (2026-10-15, implementer). `./init.sh` en verde.
+Estado: implementada, pendiente de revisión tras la ronda de revisión 2 (2026-10-15, implementer). `./init.sh` en verde.
 La sesión se cortó una vez por el límite de la API y se retomó desde el árbol que estaba en disco.
 
 ## Rama horizontal (REQ-96-30, anotada antes de escribir el test)
@@ -207,3 +207,175 @@ Sin regresión en lo aprobado (mismos scripts del reviewer, `rv96/main.mjs` y `r
     current.md (pendiente humano (c), 0,508), no esta feature.
 - Observación (no bloquea): tras recargar al fondo, la card 1 queda con op 1 al final del tramo. Está
   fuera de la sección (right ≈ 0), así que no se ve.
+
+## Ronda de revisión 2 (CHANGES_REQUESTED → REQ-96-51/52, design «Restauración del scroll (revisión 4)»)
+
+Defecto: a 1280×800, con el scroll restaurado (recarga o history.back) en y 1510/1815/2000/2280, la
+card 3 quedaba en op 0 con el estado de `hide()`.
+
+### Diagnóstico (Chrome headless + CDP, `ScrollTrigger.getAll()` tras la recarga en 1815)
+
+- Los triggers con `containerAnimation` solo se actualizan desde el onUpdate de la timeline
+  (gsap 3.15.0, ScrollTrigger.js:1240, `self.update(0, 0, 1)`; `update` sin forceFake hace return, :1644).
+  Al restaurar el scroll, el refresh recoloca la timeline sin eventos, así que el cruce de la card 3
+  se quedaba en progress 0 y el de salida de la card 1 también. Ni lanzaban callbacks ni se recuperaban
+  hasta volver al inicio del tramo. Medido: `c0:0 / c-1:0` tras la recarga, frente a `0.299 / 1` con rueda.
+- `isActive` no es fiable en estos triggers tras un refresh: progress 1 con isActive true, o 0.299 con
+  false. Por eso la fase se decide solo con `progress`, que es el valor del que ScrollTrigger deriva
+  isActive. Interpretación de REQ-96-51 («con trigger.isActive y trigger.progress o con los callbacks
+  equivalentes»), anotada para el reviewer.
+- Dos defectos aparecieron al verificar, cada uno con su test primero:
+  1. **killTweensOf por propiedades sobre un fromTo aún sin inicializar.** gsap-core.js:3020:
+     `_initted = (!_op || _pt) && !overwritten`. Si se le quitan todas las propiedades, el tween no se marca
+     como inicializado y reaplica su `startAt` («desde» +72 px / 0,96 / op 0) en cada frame. Pasaba al
+     volver con history.back: el onEnter de llegada y el onLeave de la card 1 en el mismo tick dejaban la
+     card 1 en +72 / 0,96 en vez de −60. Lo vi con un hook en `style.transform` y su pila.
+     Corrección: `stop(els)` mata enteros, solo para esas cards, los tweens propios (los que animan
+     opacity), antes de cada `killTweensOf(…, 'xPercent,scale,opacity')`, que se mantiene (REQ-96-22).
+     La x de la timeline de la 76 no tiene opacity y no se toca.
+  2. **Saltos de scroll que cruzan varios triggers.** El onEnterBack del cruce de la card 1 (que ahora sí
+     tiene su progress real) llegaba después del onLeaveBack de la llegada y la dejaba visible por encima
+     de la llegada (secuencia encadenada de `main.mjs`, `a_before`). Corrección: tras cada ráfaga de
+     callbacks se resincroniza una vez en un microtask (`coalesce`). En scroll normal los callbacks y el
+     progress coinciden y no hace nada.
+  3. Además, la salida va también a `scale: 1`. Un salto puede cortar la entrada a 0,96 (a 2295 la
+     card 2 quedaba en −60 con 0,96, 12 px fuera de tolerancia). En el flujo normal la card ya está a 1 y
+     no cambia nada (REQ-96-19 no fija la escala de salida).
+
+### Cambio
+
+- `src/domain/latest-cards-motion.ts` (41 líneas): `cardPhase(enters, exits)`, que devuelve 'before',
+  'rest' o 'gone' según progress, y `phaseState(phase, width)`, con el estado de hide(), el reposo y la
+  salida izquierda. Son puras, sin gsap ni DOM.
+- `src/components/latest-horizontal/cards-sync.ts` (nuevo, 42 líneas; es el módulo hermano que permite
+  REQ-96-42):
+  - `stop`.
+  - `coalesce`.
+  - `place`: `gsap.killTweensOf(stop([el]), 'xPercent,scale,opacity')` + `gsap.set(phaseState(...))`.
+  - `phaseSync`: fuerza `t.update(false, false, true)` de todos los triggers con los callbacks en
+    silencio y fija la fase de cada card solo si difiere de la última que pidió un callback, para no
+    cortar un tween en curso.
+- `src/components/latest-horizontal/cards-motion.ts` (99 líneas):
+  - Sin el `hide(cards)` incondicional del modo horizontal.
+  - `sync()` se llama tras crear los triggers y en `onRefresh = () => { restore(); sync(); }`.
+  - `tweens()` registra la fase pedida, expone `silently` y avisa a `coalesce`.
+  - La salida lleva `scale: 1`.
+  - La limpieza anula una resincronización pendiente.
+  - x nunca se toca y ningún tween usa overwrite.
+- Tests:
+  - Nuevo: `tests/latest-cards-scroll-restore.test.mjs` (78 líneas, 6 tests).
+  - En `tests/latest-cards-gsap-motion.test.mjs` (100 líneas) se ajustan tres aserciones propias de la 96:
+    - `hide tras crear los triggers` pasa a `onRefresh` con `restore(); sync();`.
+    - El patrón killTweensOf ahora es `stop(...)`.
+    - La lista de imports de gsap admite cards-sync.ts.
+  - `tests/gsap-dependency-approval.test.mjs` (REQ-70-08/09): la nota «Ajuste feature 96» ahora admite
+    también `cards-sync.ts`.
+- Sin tocar: la 93, la 95, `public/assets/svg/sprite.svg`, `tests/hack-the-box-sprite.test.mjs`,
+  `latest-horizontal.ts`, `track-dom.ts` y los congelados (REQ-96-39).
+
+### Rojo (test antes del código, `node --test` de los tests de la 96)
+
+```
+# 1. cardPhase/phaseState + sync sin hide (antes de tocar src/)
+✖ REQ-96-51: cardPhase … — TypeError: cardPhase is not a function
+✖ REQ-96-51: phaseState … — TypeError: phaseState is not a function
+✖ REQ-96-51: el modo horizontal sincroniza … — AssertionError: sin hide() incondicional en el modo horizontal
+✖ REQ-96-25..28/30 — AssertionError: … sin addEventListener('refresh', onRefresh)
+ℹ pass 8  ℹ fail 4
+# 2. progress en vez de isActive + update forzado
+✖ REQ-96-51: cardPhase … — AssertionError: isActive incoherente tras refresh: manda progress
+✖ REQ-96-51: … — AssertionError: sync fuerza update de los triggers antes de leer progress
+ℹ pass 1  ℹ fail 2
+# 3. callbacks en silencio durante el update
+✖ REQ-96-51: … — AssertionError: update forzado con los callbacks en silencio
+# 4. módulo hermano + stop()
+✖ REQ-96-13..17/22/23 — AssertionError: cada tween … precedido de killTweensOf por propiedades (revisión 4: tras stop)
+✖ REQ-96-51 / REQ-96-22/51 — Error: ENOENT … cards-sync.ts
+ℹ pass 9  ℹ fail 4
+# 5. salida a scale 1
+✖ REQ-96-52: la salida termina siempre en scale 1 … — The input did not match …
+# 6. resincronización tras una ráfaga
+✖ REQ-96-51: tras una ráfaga de callbacks … — AssertionError: coalesce con queueMicrotask
+```
+
+En las ejecuciones con el preview en marcha, REQ-96-04/05 también salía en rojo con `astro build`
+EPERM, porque el preview bloquea `dist/`. No es un rojo de lógica.
+
+REQ-70-08/09 no se puso en rojo antes: salió en rojo en la suite al crear cards-sync.ts (`AssertionError:
+…cards-sync.ts`) y después se amplió su lista con la nota.
+
+Hubo una ejecución de `./init.sh` con el bloque de tests en rojo justo después de matar el preview. Un
+`pnpm test` inmediato dio 1009/1009, y las ejecuciones siguientes de `./init.sh` salieron todas en
+verde. La causa probable es `dist/` aún bloqueado.
+
+### Verde
+
+- `node --test tests/latest-cards-scroll-restore.test.mjs tests/latest-cards-gsap-motion.test.mjs`: 15/15.
+- `pnpm test`: 1009/1009.
+- `./init.sh` (dos veces seguidas, sin servidores sobre `dist/`): EXIT 0, «El entorno está perfecto»,
+  con formato, tests al 100 % y build.
+- `dist/client/index.html` pesa 38 067 B (< 40 000).
+
+### Mediciones CDP
+
+Build de `./init.sh` y preview propio en :4347, ya parado. :4321 (pid 34400) no se tocó. Los scripts
+están en el scratchpad, `r4/`: copias de los del reviewer y los míos (`req52.mjs`, `back.mjs`, `diag.mjs`,
+`trace*.mjs`).
+
+**Aviso:** mi primera ejecución de `rv96/r4.mjs` (antes del arreglo) sobrescribió
+`rv96/shots2/back-card3-1815.png` con una captura equivalente del defecto. Las demás capturas van a
+`r4/shots/`.
+
+**REQ-96-52, 1280×800** (sin rueda tras restaurar y con los tweens terminados). Por card:
+[left, margen dcho., op, xPercent, scale], relativo a la sección. Recarga y history.back (vía enlace del
+footer) frente a rueda real desde carga limpia:
+
+| y | card 1 | card 2 | card 3 | rueda = recarga = back |
+|---|---|---|---|---|
+| 1510 | −282,25 / 956 / 1 / 0 / 1 | 336,88 / 336,88 / 1 / 0 / 1 | 956 / −282,25 / 1 / 0 / 1 | sí (0 px, 0 op) |
+| 1815 | −656,28 / 1330 / 0 / −10,07 / 1 | 31,75 / 642 / 1 / 0 / 1 | **642 / 31,75 / 1 / 0 / 1** | sí |
+| 2000 | igual que 1815 | igual | **642 / 31,75 / 1 / 0 / 1** | sí |
+| 2280 | igual que 1815 | igual | **642 / 31,75 / 1 / 0 / 1** | sí |
+| 2295 | −656,28 / 1330 / 0 / −10,07 / 1 | −28,28 / 702 / 0 / −10,07 / 1 | 581,97 / 91,78 / 0 / −10,07 / 1 | sí |
+
+- Caso del reviewer: carga limpia, rueda hasta 1815, clic en la card 3 y `history.back()`. Al volver
+  (y 1815): card 1 −656,28 / op 0, card 2 31,75 / op 1 y **card 3 642 / 31,75 / op 1**, igual que antes
+  del clic. Captura en `r4/shots/back-card3-1815.png`, con las dos cards visibles.
+  - Antes del arreglo: card 3 725,95 / op 0 y card 1 −596,25 / op 1.
+- Recarga en 1510: card 3 en 956 / op 1. Antes del arreglo: 1040 / op 0.
+
+**REQ-96-52, 375 (apilado).** Recarga y back frente a rueda, en y 3300 (card 1 en vista), 3900 (cards 1
+y 2) y 4500 (card 3): las tres coinciden. Las cards con trigger activo están en op 1 / xPercent 0 /
+scale 1, y las no alcanzadas en el estado de hide().
+
+**Sin regresiones** (scripts del reviewer, `r4/main.mjs`, `r3.mjs`, `r2.mjs` y `rest.mjs`):
+- **REQ-96-49:** carga limpia y rueda hasta 1815. El título está en 31,75 y la card 3 tiene margen
+  derecho 31,75.
+- **REQ-96-50:**
+  - Recarga en 2295, y back desde un artículo con 2295: al subir a 1815 la card 3 tiene margen 31,75, y en
+    1205 la **card 1 está en left 31,75** y la card 2 en 642.
+  - Recargas en 2280, 2000 y 1815: lo mismo, y además el estado justo tras recargar ya es el correcto.
+- **Secuencia apilada de la card 2** (375 / 768):
+  - Bajo el pliegue: 72 / op 0.
+  - Entrada a 200 ms: 39,5 / 0,45. A 1 s: 0 / 1.
+  - Salida: −60 / 0.
+  - Regreso a 200 ms: −42 / 0,40 (375) y −39 / 0,45 (768). A 1 s: 0 / 1.
+  - Por encima: +60 / 0.
+- **Horizontal 1280:**
+  - Llegada a 150 ms: 20,3 / 0,72 y 43 / 0,40. Termina en 32 / 642 con op 1.
+  - Salida del par final: −60 / 0. Regreso a 32 / 642 con op 1.
+  - Inicio del tramo subiendo: 30 / 640. Por encima de la llegada: +60 / op 0.
+  - En la carga encadenada (`a_before`, scroll heredado del fondo y salto instantáneo por encima de la
+    llegada) las tres cards quedan en op 0. Antes de la ronda, la card 3 quedaba en op 1 fuera de
+    pantalla, y con el cruce ya arreglado pero sin la resincronización la card 1 quedaba visible.
+- **Otros:**
+  - 3 cards y 3 `site-footer__post` a 375, 768, 1024 y 1280, sin scroll horizontal en ninguna posición.
+  - Tab (4 hasta la card 1, op 1) y `focus({preventScroll})` de la card 3, que pasa de op 0 a op 1.
+  - Reduced motion a 375 y 1280: 33 de 33 sin style y 0 ScrollTrigger.
+  - Sin JS: cards completas.
+  - Viewports altos (1440×1000 y 1920×1080): igual que antes.
+- **CLS:**
+  - Carga limpia: 375 → 0, 768 → 0, 1024 → 0,008, 1280 → 0 (`r2.mjs`).
+  - El 0,5125 de 1280 en la secuencia encadenada es el pendiente humano (c), igual que en la ronda 1.
+- **ScrollTrigger sin fugas** (ClientRouter, dos vueltas): 1280 da 5→0→5→0→5 y 375 da 3→0→3→0→3.
+- **Consola:** 0 errores en todos los scripts.

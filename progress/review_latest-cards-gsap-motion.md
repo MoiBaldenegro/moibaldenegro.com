@@ -1,24 +1,123 @@
 # Review — feature 96
 
-**Veredicto:** CHANGES_REQUESTED
+**Veredicto:** APPROVED
 
-> **Veredicto vigente: el de la Revisión 2** (abajo). La Revisión 1 se conserva debajo como histórico y su
-> Cambio requerido 1 queda resuelto.
+> **Veredicto vigente: el de la Revisión 3** (abajo). El Cambio requerido 1 de la Revisión 2 (card 3 invisible con el
+> scroll restaurado) queda resuelto. Las Revisiones 2 y 1 se conservan debajo como histórico.
 
-## Checkpoints (Revisión 2)
-- C1: [x]
-- C2: [x]
-- C3: [x]
-- C4: [x]
-- C5: [x]. cards-motion.ts tiene 98 líneas y el test 100.
-- C6: [x]
+## Checkpoints (Revisión 3)
+- C1: [x]. No hay CSS nuevo ni `<style>` en `.astro`.
+- C2: [x]. La lógica pura (`cardPhase` y `phaseState`) vive en `src/domain/latest-cards-motion.ts:22-41`, sin gsap, window
+  ni document (el test lo comprueba). El runtime está en `cards-motion.ts` y en el módulo hermano `cards-sync.ts`.
+- C3: [x]. No cambia.
+- C4: [x]. Sin valores sueltos en CSS. Los px de la animación salen de `CARDS_ENTER`/`CARDS_EXIT`.
+- C5: [x]. Líneas: cards-motion.ts 99, cards-sync.ts 42, latest-cards-motion.ts 41, latest-cards-gsap-motion.test.mjs
+  100, latest-cards-scroll-restore.test.mjs 78, gsap-dependency-approval.test.mjs 74.
+- C6: [x]. `package.json` y el lockfile no cambian. `cards-sync.ts` importa gsap y la nota «Ajuste feature 96» lo recoge
+  en REQ-70-08/09 (`tests/gsap-dependency-approval.test.mjs:61-73`).
 - C7: [x]. Ejecuté `./init.sh` yo mismo: EXIT 0, «El entorno está perfecto», tests al 100 % y build OK.
-- C8: [x]. El rojo del assert nuevo está documentado (`tests/latest-cards-gsap-motion.test.mjs:53`, «sin overwrite:
-  true ni auto»), igual que el verde 9/9 y el de la suite completa.
-- C9: [ ]. Razón: una card queda invisible al restaurar el scroll dentro o después del tramo horizontal (Cambio requerido 1).
-- C10: [x]
+- C8: [x]. El impl («Ronda de revisión 2», «Rojo») documenta seis rojos sucesivos antes del código: cardPhase y
+  phaseState, progress frente a isActive, silencio, `stop()` y cards-sync.ts, scale 1 y coalesce. También el verde:
+  15/15 en los tests de la 96, 1009/1009 en `pnpm test` y `./init.sh` verde. REQ-70-08/09 salió en rojo en la suite al
+  crear cards-sync.ts y se amplió con nota, lo que se acepta.
+- C9: [x]. La vista es correcta en desktop y móvil con el scroll restaurado y no hay errores de consola (ver abajo).
+- C10: [x]. La 96 sigue en `in_progress`. Los scripts de medición están en el scratchpad y no en el repo.
 
-# Revisión 2
+# Revisión 3
+
+Alcance: solo la feature 96, contra REQ-96-01..52 y design.md («Restauración del scroll (revisión 4)», :122). Quedan
+fuera `public/assets/svg/sprite.svg`, `tests/hack-the-box-sprite.test.mjs`, la 93 y la 95. La 96 no tiene `depends_on`.
+
+## Revisión del código
+- `cards-motion.ts:64-98` (horizontal):
+  - Ya no hay `hide(cards)` incondicional.
+  - `sync = phaseSync(...)` y `sync()` van después de crear los triggers (`:81-82`).
+  - En el refresh se hace `restore(); sync();` (`:90`), con alta y baja del listener (`:92`, `:95`).
+  - La limpieza anula una resincronización pendiente (`:94`).
+- `cards-sync.ts:33-41`: `phaseSync` fuerza `t.update(false, false, true)` con los callbacks en silencio, decide la fase
+  con `cardPhase` y solo coloca la card si su fase difiere de la última pedida, así que no corta un tween en curso.
+- `stop()` (`:12`) mata enteros solo los tweens con `opacity` de esas cards. La timeline de x de la 76 no tiene opacity y
+  no se toca. Sigue sin haber `overwrite` y x no se toca nunca (lo exige el test), así que REQ-96-22 se mantiene.
+- REQ-96-51 pide decidir «con trigger.isActive y trigger.progress o con los callbacks equivalentes». La implementación
+  usa solo `progress`, justificado y medido en el impl (isActive no es coherente tras un refresh con
+  containerAnimation). **Lo acepto** porque isActive se deriva de progress y la medida de REQ-96-52 cuadra.
+
+## Verificación independiente (Chrome headless + CDP)
+Sobre el build de `./init.sh`, con un preview propio en :4347 que ya he parado. No toqué :4321 (pid 34400). Scripts en
+`scratchpad/rv96/`: `r6.mjs`, `main.mjs`, `r2.mjs`, `r3.mjs` y `rest.mjs`.
+
+**REQ-96-52 a 1280×800** (`r6.mjs`). Para cada y se compara la rueda real desde carga limpia con la recarga (Page.reload)
+y con history.back desde un artículo vía footer, tras 2,5 s y sin rueda. Formato por card: [left respecto a la sección,
+opacity, tx de la matriz, scale]. El tx incluye la x de la 76.
+
+| y | card 1 | card 2 | card 3 | rueda = recarga = back |
+|---|---|---|---|---|
+| 1510 | −282,25 / 1 / −8,88 / 1 | 336,88 / 1 / 0 / 1 | 956 / 1 / 8,88 / 1 | sí (±0) |
+| 1815 | −656,28 / 0 / −77,78 / 1 | 31,75 / 1 / 0 / 1 | **642 / 1 / 0 / 1** | sí |
+| 2000 | igual que 1815 | igual | **642 / 1 / 0 / 1** | sí |
+| 2280 | igual que 1815 | igual | **642 / 1 / 0 / 1** | sí |
+| 2295 | −656,28 / 0 / −77,78 / 1 | −28,28 / 0 / −60,03 / 1 | 581,97 / 0 / −60,03 / 1 | sí |
+
+- En 1510 el tx de ±8,88 de las extremas es la x de la 76 y coincide con la rueda, así que xPercent es 0.
+- **Clic en la card 3 al final del tramo.** Carga limpia, rueda hasta 1815, clic en la card 3 (navega a
+  `/posts/01-procesos-memoria/`) y `history.back()`. Vuelve a y 1815 con card 1 op 0, card 2 en 31,75 / op 1 y **card 3
+  en 642 con margen derecho 31,75 y op 1**: idéntico a antes del clic. Al subir a 1205 quedan 31,75 / 642 con op 1, y al
+  bajar de nuevo a 1815 el margen de la card 3 sigue en 31,75. Captura: `rv96/shots3-back-card3-1815.png`.
+- **Apilado a 375.** En y 3106, 3713 y 4283 (una card a media pantalla) la recarga y el back coinciden con la rueda. Las
+  cards activas están en op 1 / tx 0 / scale 1, las no alcanzadas en el estado de hide() (+72 / 0,96 / op 0) y la salida
+  en −60 / op 0.
+
+**REQ-96-49/50** (`r3.mjs` y `r2.mjs`):
+- Carga limpia y rueda hasta 1815: título en 31,75 y card 3 con margen derecho 31,75.
+- Recarga en 2295, 2280, 2000 y 1815, y back desde 2295: al subir a 1815 la card 3 tiene margen 31,75, y en 1205 la
+  **card 1 está en left 31,75** y la card 2 en 642.
+- Al bajar otra vez a 1815 todo queda igual.
+
+**Lo esencial, sin regresiones:**
+- 3 cards y 3 `site-footer__post` a 375, 768, 1024 y 1280. Sin scroll horizontal en 15 posiciones por ancho.
+  `.latest-articles--horizontal-pin` solo existe a 1280.
+- Card 2 en apilado, 375 / 768, con tweens por tiempo:
+  - Bajo el pliegue: 72 / op 0.
+  - Entrada: 39,4 / 0,45 y 36,3 / 0,50 a ~200 ms, y 0 / 1 a 1 s.
+  - Salida: −60 / 0.
+  - Regreso: −38,8 / 0,45 y −42 / 0,41, y luego 0 / 1.
+  - Por encima: +60 / 0.
+- Horizontal a 1280:
+  - Llegada: 22,8 / 0,68 y 47,3 / 0,34 a ~150 ms, y luego 32 / 642 con op 1.
+  - Sticky: sección en top 0 / left 0 / right 1270 al final del tramo.
+  - Salida del par final: −60 / 0. Regreso a 32 / 642 con op 1.
+  - Por encima de la llegada: +60 / op 0.
+  - La x de la 76 no está congelada: card 1 va de −2,76 (1300) a −8,58 (1500) y card 3 de 9,17 a 3,35 y a 0 (1815),
+    con los mismos valores al volver.
+  - Viewports 1440×1000 y 1920×1080: el par final se ve al final del tramo y sale al fondo.
+- Tab: con 4 Tab se llega a la card 1 (op 1, identidad). `focus({preventScroll})` lleva la card 3 de op 0 a op 1.
+- Reduced motion a 375 y 1280: 33 de 33 muestras sin style, con transform none y op 1. 0 ScrollTrigger y sin pin.
+- Sin JS a 375 y 1280: style null, transform none y op 1.
+- CLS en carga limpia: 375 → 0, 768 → 0, 1024 → 0,008, 1280 → 0. El 0,5125 de la secuencia encadenada a 1280 sigue
+  siendo el pendiente humano (c), ajeno a la 96.
+- ScrollTrigger tras ida y vuelta con el ClientRouter (dos vueltas): 1280 da 5→0→5→0→5 y 375 da 3→0→3→0→3.
+- 0 errores de consola en todos los scripts.
+- `dist/client/index.html` pesa 38 063 B (< 40 000).
+
+## Observaciones (no bloqueantes)
+1. El texto de REQ-96-51 dice «con trigger.isActive y trigger.progress». La implementación usa solo progress, de forma
+   justificada. Conviene que `spec_author` alinee el texto («con trigger.progress…»), sin cambiar código.
+2. Parte de esta ronda ya está en el commit `3f8f06f`, previo a esta revisión: `src/domain/latest-cards-motion.ts` con
+   `cardPhase`/`phaseState`, la primera versión de `tests/latest-cards-scroll-restore.test.mjs` y REQ-96-51/52. El resto
+   (cards-motion.ts, cards-sync.ts y los tests ajustados) sigue sin commit. Lo dejo anotado para el líder, porque la
+   feature se commiteó parcialmente antes de aprobarla.
+3. `stop()` (`cards-sync.ts:12`) identifica los tweens propios por `'opacity' in t.vars`. Si en el futuro otro tween
+   anima opacity sobre las cards, también lo mataría. Hoy no hay ninguno. Convendría un comentario o una marca explícita
+   si se amplía.
+4. El impl avisa de que sobrescribió `rv96/shots2/back-card3-1815.png` (la captura del defecto de la Revisión 2). La
+   nueva captura de la Revisión 3 está en `rv96/shots3-back-card3-1815.png`.
+
+---
+
+# Revisión 2 (histórico; su Cambio requerido 1 quedó resuelto en la Revisión 3)
+
+**Veredicto (Revisión 2):** CHANGES_REQUESTED. Checkpoints: C1-C8 y C10 [x], C9 [ ] (card 3 invisible con el scroll
+restaurado).
 
 Alcance: solo la feature 96. Quedan fuera `public/assets/svg/sprite.svg`, `tests/hack-the-box-sprite.test.mjs`, la 93
 y la 95. La 96 no tiene `depends_on`.

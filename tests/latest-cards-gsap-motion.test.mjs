@@ -51,8 +51,8 @@ test('REQ-96-13..17/22/23: tweens por tiempo solo con xPercent, scale y opacity,
   assert.match(src, /offsetPercent\([^)]*offsetWidth\)/);
   const set = src.indexOf('gsap.set('); assert.ok(set >= 0, 'falta gsap.set del estado de partida'); for (const s of ['ScrollTrigger.batch(', 'ScrollTrigger.create(']) assert.ok(src.indexOf(s) > set, `${s} antes de gsap.set`);
   const tweens = (src.match(/gsap\.(to|fromTo)\(/g) ?? []).length; assert.ok(tweens >= 3); assert.doesNotMatch(src, /overwrite\s*:/, 'sin overwrite: true ni auto (REQ-96-22, revisión 3)');
-  assert.equal((src.match(/ctx\.add\(\(\) => \(gsap\.killTweensOf\([^,()]+, 'xPercent,scale,opacity'\), gsap\.(to|fromTo)\(/g) ?? []).length, tweens, 'cada tween en el contexto y precedido de killTweensOf por propiedades'); assert.doesNotMatch(cut(src, 'const keep', 'const stopFocus'), /'x'|\bx\b/, 'keep/restore no reponen x');
-  for (const f of srcFiles().filter((f) => f.endsWith('.ts') && f !== MOTION && f !== HZ)) assert.doesNotMatch(read(f), /from ['"]gsap/, f);
+  assert.equal((src.match(/ctx\.add\(\(\) => \(gsap\.killTweensOf\(stop\(\[?\w+\]?\), 'xPercent,scale,opacity'\), gsap\.(to|fromTo)\(/g) ?? []).length, tweens, 'cada tween en el contexto y precedido de killTweensOf por propiedades (revisión 4: tras stop)'); assert.doesNotMatch(cut(src, 'const keep', 'const stopFocus'), /'x'|\bx\b/, 'keep/restore no reponen x');
+  for (const f of srcFiles().filter((f) => f.endsWith('.ts') && ![MOTION, HZ, 'src/components/latest-horizontal/cards-sync.ts'].includes(f))) assert.doesNotMatch(read(f), /from ['"]gsap/, f);
 });
 test('REQ-96-18..21/24/36: cuatro callbacks, batch apilado y focusin', () => {
   const src = code(MOTION);
