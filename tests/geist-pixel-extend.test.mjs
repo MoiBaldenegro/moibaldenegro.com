@@ -27,7 +27,8 @@ const UNCHANGED = [
   'src/styles/site-menu.css', 'src/styles/search-bar.css',
   'src/styles/latest-articles.css', 'src/styles/latest-horizontal.css', 'src/styles/post-next.css',
   'src/styles/post-header.css', 'src/styles/search-results.css', // Layout.astro sale de la lista: monta SiteFooter (REQ-89-04, precedente REQ-43-06)
-  'src/components/hero-card.astro', 'src/components/latest-articles.astro', 'src/pages/posts/[id].astro',
+  // hero-card.astro sale de la lista: Ajuste feature 98 (precedente REQ-43-06): data-col-span/data-row-span (REQ-98-17)
+  'src/components/latest-articles.astro', 'src/pages/posts/[id].astro',
   'src/components/search-results/item-html.ts', 'tests/geist-pixel-display.test.mjs',
 ];
 

@@ -29,14 +29,11 @@ const ISLAND = 'src/components/htb-stadistics.astro';
 const ISLAND_CSS = 'src/styles/htb-stadistics.css';
 const COLOR_PROPS = /^(color|background|background-color|border|border-bottom|border-top|border-color)$/;
 
-test('REQ-92-01: hero-cards.json incluye la tarjeta htb tras twitch-bottom', () => {
+// Ajuste feature 97 (REQ-97-13, precedente REQ-43-06): la celda twitch-bottom pasa a cloudflare.
+// Ajuste feature 98 (precedente REQ-43-06): htb es la primera entrada y sin celda (la calcula el dominio).
+test('REQ-92-01: hero-cards.json incluye la tarjeta htb como primera entrada', () => {
   const data = JSON.parse(read('src/data/hero-cards.json'));
-  const index = data.findIndex((card) => card.id === 'twitch-bottom');
-  assert.ok(index >= 0, 'falta twitch-bottom');
-  assert.deepEqual(data[index + 1], {
-    id: 'htb', kind: 'htb', title: 'HACK THE BOX', colorToken: 'htb',
-    gridColumn: '9 / span 4', gridRow: '9 / span 2',
-  });
+  assert.deepEqual(data[0], { id: 'htb', kind: 'htb', title: 'HACK THE BOX', colorToken: 'htb' });
 });
 
 test('REQ-92-02: tokens.css declara los tokens de marca HTB sin superar 100 líneas', () => {
@@ -46,18 +43,19 @@ test('REQ-92-02: tokens.css declara los tokens de marca HTB sin superar 100 lín
   assert.ok(tokens.split('\n').length <= 100, 'tokens.css supera 100 líneas');
 });
 
-test('REQ-92-03: hero-card.css fija fondo y celda de la card htb', () => {
+// Ajuste feature 98 (precedente REQ-43-06): la regla solo da el fondo; el tamaño 5x4 llega por data-*-span.
+test('REQ-92-03: hero-card.css fija el fondo de la card htb sin celda', () => {
   const rule = read('src/styles/hero-card.css').match(/\[data-color-token="htb"\]\s*\{([^}]*)\}/)?.[1] ?? '';
   assert.match(rule, /--card-bg:\s*var\(--color-marca-htb\)/);
-  assert.match(rule, /--card-column:\s*9 \/ span 4/);
-  assert.match(rule, /--card-row:\s*9 \/ span 2/);
+  assert.doesNotMatch(rule, /--card-(column|row)/);
 });
 
 test('REQ-92-04: htb-card.astro pinta article.hero-card.hero-card--rich con p.card-title', () => {
   const content = read(CARD);
   assert.match(frontmatter(content), /interface\s+Props\s*\{[\s\S]*?\bcard\s*:\s*HeroRichCard\b/);
   assert.match(frontmatter(content), /import\s+["']\.\.\/\.\.\/styles\/htb-card\.css["']/);
-  assert.match(content, /<article\s+class="hero-card hero-card--rich"\s+data-color-token=\{card\.colorToken\}>/);
+  // Ajuste feature 98 (precedente REQ-43-06): el article gana data-col-span/data-row-span (REQ-98-17).
+  assert.match(content, /<article\s+class="hero-card hero-card--rich"\s+data-color-token=\{card\.colorToken\}\s+data-col-span=\{colSpan\}\s+data-row-span=\{rowSpan\}>/);
   assert.match(content, /<p\s+class="card-title">\{card\.title\}<\/p>/);
 });
 

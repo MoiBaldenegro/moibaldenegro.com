@@ -57,7 +57,7 @@ test('REQ-95-06/07/12: build con 3 cards (ajuste feature 96) (transition:name) y
 
 test('REQ-95-08: archivos congelados sin cambios frente a HEAD', () => {
   const frozen = ['src/styles/latest-articles.css', 'src/styles/latest-horizontal.css', 'src/components/latest-articles.astro',
-    'src/domain/latest-horizontal.ts', 'src/styles/tokens.css']; // Ajuste feature 96 (precedente REQ-43-06): sin latest-horizontal.ts ni latest-entrance.ts
+    'src/domain/latest-horizontal.ts']; // Ajuste feature 96 (precedente REQ-43-06): sin latest-horizontal.ts ni latest-entrance.ts. Ajuste feature 97 (precedente REQ-43-06): sin tokens.css
   assert.equal(spawnSync('git', ['diff', '--quiet', 'HEAD', '--', ...frozen], { cwd: ROOT }).status, 0, 'congelados modificados');
 });
 

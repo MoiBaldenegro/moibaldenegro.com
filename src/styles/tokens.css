@@ -40,23 +40,23 @@
   --color-marca-react: #0E6C82;
   --color-marca-html: #B74D05;
   --color-marca-node: #08783A;
-  --color-marca-node-bottom: #0A7C39;
   --color-marca-github: #091223;
-  --color-marca-github-bottom: #202A3A;
   --color-marca-youtube: #B61111;
-  --color-marca-youtube-bottom: #BF1616;
-  --color-marca-twitch: #6C20B6;
-  --color-marca-twitch-bottom: #7B29D6;
+  --color-marca-rust: #A33A16;
   --color-marca-typescript: #215BC7;
   --color-marca-css: #6E29C8;
+  --color-marca-aws: #232F3E;
+  --color-marca-claude-code: #5C2A1C;
+  --color-marca-nestjs: #A3132F;
+  --color-marca-cloudflare: #A8470C;
+  --color-marca-claude: #B4532F;
+  --color-marca-bun: #3D2B1F;
   --color-marca-htb: #1A2332;
   --color-marca-htb-accent: #9FEF00;
 
-  /* Color de la tarjeta de perfil — overlay, píldora del username, badge
+  /* Color de la tarjeta de perfil — píldora del username, badge
      verificado y scrollbar (valores actuales de hero.css, extraídos como
      tokens en la feature 4) */
-  --color-overlay-strong: rgba(0,0,0,.75);
-  --color-overlay-soft: rgba(0,0,0,.05);
   --color-username-bg: #081a28;
   --color-username-border: rgba(0,195,255,.35);
   --color-username-text: #5fd6ff;

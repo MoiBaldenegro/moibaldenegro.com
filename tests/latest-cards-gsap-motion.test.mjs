@@ -93,7 +93,7 @@ test('REQ-96-35/37/38: hoja mínima sin estado oculto y un solo sistema', () => 
   has(read(ASTRO), ["import '../../styles/latest-horizontal.css';", "import '../../styles/latest-cards-motion.css';"], 'latest-horizontal.astro'); assert.equal((read(ASTRO).match(/<script>/g) ?? []).length, 1);
 });
 test('REQ-96-39/40/42: congelados, notas de ajuste y archivos <= 100 líneas', () => {
-  assert.ok(unchanged('src/styles/latest-articles.css', 'src/styles/latest-horizontal.css', 'src/components/latest-articles.astro', 'src/domain/latest-horizontal.ts', 'src/styles/tokens.css'), 'congelados modificados');
+  assert.ok(unchanged('src/styles/latest-articles.css', 'src/styles/latest-horizontal.css', 'src/components/latest-articles.astro', 'src/domain/latest-horizontal.ts'), 'congelados modificados'); // Ajuste feature 97 (precedente REQ-43-06): sin tokens.css
   const adjusted = ['home-latest-articles-five', 'home-latest-articles-limit', 'latest-horizontal-compact-sticky', 'search-index-lazy-load', 'gsap-dependency-approval', 'latest-cards-entrance', 'latest-cards-full-bleed'];
   for (const t of adjusted) assert.ok(read(`tests/${t}.test.mjs`).includes('Ajuste feature 96 (precedente REQ-43-06)'), t);
   for (const rel of [DOMAIN, MOTION, HZ, CSS, ASTRO, 'src/components/latest-horizontal/track-dom.ts', 'src/domain/latest-posts.ts', 'tests/latest-cards-gsap-motion.test.mjs']) assert.ok(lines(read(rel)) <= 100, rel);

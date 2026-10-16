@@ -41,6 +41,14 @@
   gap: var(--gap-card);
 }
 
+/* Feature 98 (REQ-98-18): tamaño de cada card desde data-col-span/data-row-span (lo calcula
+   src/domain/hero-grid-layout.ts); sin línea de inicio, el auto-placement la coloca en orden. */
+[data-col-span="2"] { --card-column: span 2; }
+[data-col-span="4"] { --card-column: span 4; }
+[data-col-span="5"] { --card-column: span 5; }
+[data-row-span="2"] { --card-row: span 2; }
+[data-row-span="4"] { --card-row: span 4; }
+
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-6px); }

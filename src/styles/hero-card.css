@@ -1,5 +1,5 @@
 /* hero-card.css — Estilos de las tarjetas del hero (hero-card.astro).
-   Solo tokens de tokens.css. Fondos y posiciones por data-color-token. */
+   Solo tokens de tokens.css. Fondos e iconos por data-color-token. */
 
 /* Base */
 .hero-card {
@@ -53,24 +53,37 @@
 }
 .hero-card:hover .card-icon svg { transform: rotate(2deg) scale(calc(var(--icon-scale) * 1.12)); }
 
-/* Fondos por token y posiciones de grid (Decisiones 1 y 2 del design.md) */
-[data-color-token="react"] { --card-bg: var(--color-marca-react); --card-column: 6 / span 5; --card-row: 1 / span 2; --icon-width: 165px; --icon-rotation: -8deg; }
-[data-color-token="html"] { --card-bg: var(--color-marca-html); --card-column: 11 / span 2; --card-row: 1 / span 2; --icon-width: 115px; --icon-rotation: -7deg; }
-[data-color-token="node"] { --card-bg: var(--color-marca-node); --card-column: 6 / span 2; --card-row: 3 / span 2; --icon-width: 120px; --icon-rotation: -10deg; }
-[data-color-token="github"] { --card-bg: var(--color-marca-github); --card-column: 8 / span 5; --card-row: 3 / span 2; --icon-width: 190px; --icon-rotation: -12deg; }
-[data-color-token="youtube"] { --card-bg: var(--color-marca-youtube); --card-column: 6 / span 5; --card-row: 5 / span 2; --icon-width: 170px; --icon-rotation: -8deg; }
-[data-color-token="twitch"] { --card-bg: var(--color-marca-twitch); --card-column: 11 / span 2; --card-row: 5 / span 2; --icon-width: 115px; --icon-rotation: -8deg; }
-[data-color-token="typescript"] { --card-bg: var(--color-marca-typescript); --card-column: 1 / span 2; --card-row: 7 / span 2; --icon-width: 110px; --icon-rotation: -10deg; }
-[data-color-token="css"] { --card-bg: var(--color-marca-css); --card-column: 3 / span 2; --card-row: 7 / span 2; --icon-width: 105px; --icon-rotation: -8deg; }
-[data-color-token="node-bottom"] { --card-bg: var(--color-marca-node-bottom); --card-column: 5 / span 2; --card-row: 7 / span 2; --icon-width: 120px; --icon-rotation: -6deg; }
-[data-color-token="github-bottom"] { --card-bg: var(--color-marca-github-bottom); --card-column: 7 / span 4; --card-row: 7 / span 2; --icon-width: 165px; --icon-rotation: 0deg; }
-[data-color-token="youtube-bottom"] { --card-bg: var(--color-marca-youtube-bottom); --card-column: 11 / span 2; --card-row: 7 / span 2; --icon-width: 120px; --icon-rotation: -5deg; }
-[data-color-token="twitch-bottom"] { --card-bg: var(--color-marca-twitch-bottom); --card-column: 1 / span 8; --card-row: 9 / span 2; --icon-width: 170px; --icon-rotation: -6deg; }
-[data-color-token="htb"] { --card-bg: var(--color-marca-htb); --card-column: 9 / span 4; --card-row: 9 / span 2; }
+/* Fondo e icono por token (features 98/99: la celda la calcula src/domain/hero-grid-layout.ts y llega como
+   data-col-span/data-row-span; CLOUDFLARE a escala 1 para que el símbolo completo quepa, REQ-99-26) */
+[data-color-token="htb"] { --card-bg: var(--color-marca-htb); }
+[data-color-token="html"] { --card-bg: var(--color-marca-html); --icon-width: 115px; --icon-rotation: -7deg; }
+[data-color-token="node"] { --card-bg: var(--color-marca-node); --icon-width: 165px; --icon-rotation: -10deg; }
+[data-color-token="react"] { --card-bg: var(--color-marca-react); --icon-width: 115px; --icon-rotation: -8deg; }
+[data-color-token="rust"] { --card-bg: var(--color-marca-rust); --icon-width: 115px; --icon-rotation: -8deg; }
+[data-color-token="typescript"] { --card-bg: var(--color-marca-typescript); --icon-width: 150px; --icon-rotation: -10deg; }
+[data-color-token="css"] { --card-bg: var(--color-marca-css); --icon-width: 105px; --icon-rotation: -8deg; }
+[data-color-token="aws"] { --card-bg: var(--color-marca-aws); --icon-width: 120px; --icon-rotation: -6deg; }
+[data-color-token="claude-code"] { --card-bg: var(--color-marca-claude-code); --icon-width: 115px; --icon-rotation: 0deg; }
+[data-color-token="nestjs"] { --card-bg: var(--color-marca-nestjs); --icon-width: 160px; --icon-rotation: -5deg; }
+[data-color-token="cloudflare"] { --card-bg: var(--color-marca-cloudflare); --icon-width: 170px; --icon-rotation: 0deg; --icon-scale: 1; }
+[data-color-token="claude"] { --card-bg: var(--color-marca-claude); --icon-width: 110px; --icon-rotation: -8deg; }
+[data-color-token="bun"] { --card-bg: var(--color-marca-bun); --icon-width: 115px; --icon-rotation: -8deg; }
+[data-color-token="youtube"] { --card-bg: var(--color-marca-youtube); --icon-width: 115px; --icon-rotation: -8deg; }
+[data-color-token="github"] { --card-bg: var(--color-marca-github); --icon-width: 115px; --icon-rotation: -8deg; }
 
 /* Responsive */
 @media (max-width: 1200px) {
   .hero-card { grid-column: auto !important; grid-row: auto !important; }
+  /* Feature 97 (Decisión 5): título dentro de la card en columnas estrechas, sin partir palabras. */
+  .card-header { left: 14px; right: 14px; }
+  .card-title { font-size: 0.8rem; letter-spacing: 0.04em; }
+  /* Features 97/98 (Decisión 4): icono por tramo, logo reconocible y sin tapar el título. */
+  [data-color-token="github"] { --icon-width: 110px; --icon-scale: 2; --icon-rotation: 0deg; }
+  [data-color-token="rust"] { --icon-scale: 3; } [data-color-token="aws"] { --icon-scale: 3; } [data-color-token="claude-code"] { --icon-scale: 2; }
+  [data-color-token="cloudflare"] { --icon-width: 100px; --icon-rotation: 0deg; }
+  [data-color-token="claude"] { --icon-scale: 3; } [data-color-token="bun"] { --icon-scale: 3; --icon-rotation: 0deg; } [data-color-token="youtube"] { --icon-scale: 2; }
+  /* Feature 99: las cards grandes en escritorio y las que encogen, sin tapar el título en tablet y móvil. */
+  [data-color-token="node"] { --icon-scale: 3; } [data-color-token="nestjs"] { --icon-scale: 3; } [data-color-token="react"] { --icon-scale: 3; } [data-color-token="typescript"] { --icon-scale: 2; }
 }
 
 @media (max-width: 768px) {

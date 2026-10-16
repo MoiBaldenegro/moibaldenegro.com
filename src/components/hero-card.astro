@@ -4,12 +4,14 @@ import type { HeroCard } from "../domain/entities/hero-card.ts";
 
 interface Props {
   card: HeroCard;
+  colSpan: number;
+  rowSpan: number;
 }
 
-const { card } = Astro.props;
+const { card, colSpan, rowSpan } = Astro.props;
 ---
 
-<article class="hero-card" data-color-token={card.colorToken}>
+<article class="hero-card" data-color-token={card.colorToken} data-col-span={colSpan} data-row-span={rowSpan}>
   <header class="card-header">
     <p class="card-title">{card.title}</p>
   </header>

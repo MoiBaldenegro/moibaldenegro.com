@@ -4,7 +4,7 @@
 //   REQ-31-02 — HeroCardsRepository acepta un loader inyectable () => string y el
 //               default materializa src/data/hero-cards.json con un import con atributo.
 //   REQ-31-03 — el repositorio no importa módulos node ni usa el sufijo ?raw.
-//   REQ-31-05 — el default entrega las 12 entidades reales de src/data/hero-cards.json.
+//   REQ-31-05 — el default entrega las entidades reales de src/data/hero-cards.json.
 //   REQ-31-06 — loader que lanza, JSON inválido o forma inválida → HeroCardsDataError.
 //   REQ-31-08 — el repositorio no supera las 100 líneas.
 // Conserva los asserts de datos reales de la feature 6 (REQ-06-01/02/04) con node:fs:
@@ -27,47 +27,24 @@ const REPOSITORY_URL = new URL(
 );
 const TOKENS_URL = new URL('../src/styles/tokens.css', import.meta.url);
 
-// Las 12 tarjetas reales actuales (src/data/hero-cards.json, feature 6). Desde la
-// feature 90 (REQ-90-10, precedente REQ-43-06) el fixture sigue al dato entregado
-// por el repositorio: kind ausente en el JSON se entrega como kind icon.
-// Ajuste feature 92 (REQ-92-14, petición humana 2026-10-14, precedente REQ-43-06): el JSON
-// gana tras twitch-bottom la tarjeta rica htb (REQ-92-01); el dato pasa a 12 de icono + 1 htb.
-const EXPECTED_CARDS = [
-  { id: 'react', kind: 'icon', title: 'REACT', colorToken: 'react', icon: '/assets/svg/sprite.svg#react', gridColumn: '6 / span 5', gridRow: '1 / span 2', rotate: -8, scale: 5, iconWidth: '165px' },
-  { id: 'html', kind: 'icon', title: 'HTML', colorToken: 'html', icon: '/assets/svg/sprite.svg#html', gridColumn: '11 / span 2', gridRow: '1 / span 2', rotate: -7, scale: 5, iconWidth: '115px' },
-  { id: 'node', kind: 'icon', title: 'NODE JS', colorToken: 'node', icon: '/assets/svg/sprite.svg#node', gridColumn: '6 / span 2', gridRow: '3 / span 2', rotate: -10, scale: 5, iconWidth: '120px' },
-  { id: 'github', kind: 'icon', title: 'GITHUB ACTIONS', colorToken: 'github', icon: '/assets/svg/sprite.svg#github', gridColumn: '8 / span 5', gridRow: '3 / span 2', rotate: -12, scale: 5, iconWidth: '190px' },
-  { id: 'youtube', kind: 'icon', title: 'YOUTUBE', colorToken: 'youtube', icon: '/assets/svg/sprite.svg#youtube', gridColumn: '6 / span 5', gridRow: '5 / span 2', rotate: -8, scale: 5, iconWidth: '170px' },
-  { id: 'twitch', kind: 'icon', title: 'TWITCH', colorToken: 'twitch', icon: '/assets/svg/sprite.svg#twitch', gridColumn: '11 / span 2', gridRow: '5 / span 2', rotate: -8, scale: 5, iconWidth: '115px' },
-  { id: 'typescript', kind: 'icon', title: 'TYPESCRIPT', colorToken: 'typescript', icon: '/assets/svg/sprite.svg#typescript', gridColumn: '1 / span 2', gridRow: '7 / span 2', rotate: -10, scale: 5, iconWidth: '110px' },
-  { id: 'css', kind: 'icon', title: 'CSS', colorToken: 'css', icon: '/assets/svg/sprite.svg#css', gridColumn: '3 / span 2', gridRow: '7 / span 2', rotate: -8, scale: 5, iconWidth: '105px' },
-  { id: 'node-bottom', kind: 'icon', title: 'NODE JS', colorToken: 'node-bottom', icon: '/assets/svg/sprite.svg#node', gridColumn: '5 / span 2', gridRow: '7 / span 2', rotate: -6, scale: 5, iconWidth: '120px' },
-  { id: 'github-bottom', kind: 'icon', title: 'GITHUB ACTIONS', colorToken: 'github-bottom', icon: '/assets/svg/sprite.svg#github', gridColumn: '7 / span 4', gridRow: '7 / span 2', rotate: 0, scale: 5, iconWidth: '165px' },
-  { id: 'youtube-bottom', kind: 'icon', title: 'YOUTUBE', colorToken: 'youtube-bottom', icon: '/assets/svg/sprite.svg#youtube', gridColumn: '11 / span 2', gridRow: '7 / span 2', rotate: -5, scale: 5, iconWidth: '120px' },
-  { id: 'twitch-bottom', kind: 'icon', title: 'TWITCH', colorToken: 'twitch-bottom', icon: '/assets/svg/sprite.svg#twitch', gridColumn: '1 / span 8', gridRow: '9 / span 2', rotate: -6, scale: 5, iconWidth: '170px' },
-  { id: 'htb', kind: 'htb', title: 'HACK THE BOX', colorToken: 'htb', gridColumn: '9 / span 4', gridRow: '9 / span 2' },
-];
-
-test('REQ-06-01: src/data/hero-cards.json almacena las 12 tarjetas de icono + 1 htb (REQ-92-14)', () => {
+// Ajuste feature 98 (precedente REQ-43-06; antes: 12 de icono + 1 htb fijas, features 6/90/92/97): el
+// número y el orden salen de specs/98_hero-mosaic-layout/design.md (tests/hero-cards-unique-tech.test.mjs);
+// aquí quedan invariantes: tarjetas de icono + ricas, ids únicos y getCards() fiel al JSON.
+test('REQ-06-01: src/data/hero-cards.json almacena tarjetas de icono y ricas con ids únicos', () => {
   assert.ok(existsSync(DATA_URL), 'src/data/hero-cards.json no existe (REQ-06-01)');
   const data = JSON.parse(readFileSync(DATA_URL, 'utf8'));
-  assert.ok(Array.isArray(data), 'src/data/hero-cards.json no es un arreglo (REQ-06-01)');
-  assert.equal(data.length, 13, `se esperaban 13 tarjetas, hay ${data.length} (REQ-06-01/REQ-92-14)`);
-  assert.equal(data.filter((card) => card.kind === undefined).length, 12, 'se esperaban 12 tarjetas de icono (REQ-06-01)');
+  assert.ok(Array.isArray(data) && data.length > 0, 'src/data/hero-cards.json no es un arreglo con tarjetas (REQ-06-01)');
+  assert.ok(data.some((card) => card.kind === undefined), 'no hay tarjetas de icono (REQ-06-01)');
   assert.equal(data.filter((card) => card.kind === 'htb').length, 1, 'se esperaba 1 tarjeta htb (REQ-92-01)');
-  const ids = data.map((card) => card.id).sort();
-  assert.deepEqual(
-    ids,
-    EXPECTED_CARDS.map((card) => card.id).sort(),
-    'los ids de las tarjetas no coinciden con los actuales (REQ-06-01)',
-  );
+  assert.equal(new Set(data.map((card) => card.id)).size, data.length, 'hay ids repetidos (REQ-06-01)');
 });
 
 test('REQ-06-02: la entidad HeroCard tipa las tarjetas con campos readonly', () => {
   assert.ok(existsSync(ENTITY_URL), 'src/domain/entities/hero-card.ts no existe (REQ-06-02)');
   const content = readFileSync(ENTITY_URL, 'utf8');
   assert.match(content, /interface\s+HeroCard\s*\{/, 'falta interface HeroCard (REQ-06-02)');
-  for (const field of ['id', 'title', 'colorToken', 'icon', 'gridColumn', 'gridRow', 'rotate', 'scale', 'iconWidth']) {
+  // Ajuste feature 98 (precedente REQ-43-06): sin gridColumn/gridRow, con category (REQ-98-05/06).
+  for (const field of ['id', 'title', 'colorToken', 'icon', 'category', 'rotate', 'scale', 'iconWidth']) {
     assert.match(
       content,
       new RegExp(`readonly\\s+${field}\\s*:`),
@@ -76,9 +53,11 @@ test('REQ-06-02: la entidad HeroCard tipa las tarjetas con campos readonly', () 
   }
 });
 
-test('REQ-31-02/REQ-31-05: el loader por defecto entrega las 12 tarjetas de icono + 1 htb reales', () => {
-  const repository = new HeroCardsRepository();
-  assert.deepEqual(repository.getCards(), EXPECTED_CARDS, 'las tarjetas entregadas no coinciden');
+test('REQ-31-02/REQ-31-05: el loader por defecto entrega las tarjetas reales del JSON', () => {
+  const data = JSON.parse(readFileSync(DATA_URL, 'utf8'));
+  // Ajuste feature 99 (precedente REQ-43-06): las de icono salen con featured (false por defecto, REQ-99-03).
+  const expected = data.map((card) => (card.kind === undefined ? { kind: 'icon', category: 'tech', featured: false, ...card } : card));
+  assert.deepEqual(new HeroCardsRepository().getCards(), expected, 'las tarjetas entregadas no coinciden');
 });
 
 test('REQ-31-02: el repositorio lee a través del loader inyectable, no del filesystem', () => {
@@ -87,14 +66,13 @@ test('REQ-31-02: el repositorio lee a través del loader inyectable, no del file
     title: 'INYECTADA',
     colorToken: 'react',
     icon: '/assets/svg/sprite.svg#react',
-    gridColumn: '1 / span 1',
-    gridRow: '1 / span 1',
+    category: 'social',
     rotate: 0,
     scale: 5,
     iconWidth: '100px',
   };
   const repository = new HeroCardsRepository(() => JSON.stringify([injectedCard]));
-  assert.deepEqual(repository.getCards(), [{ ...injectedCard, kind: 'icon' }], 'el loader inyectado no se usa (REQ-31-02)');
+  assert.deepEqual(repository.getCards(), [{ ...injectedCard, kind: 'icon', featured: false }], 'el loader inyectado no se usa (REQ-31-02)');
 });
 
 test('REQ-06-04: los datos referencian el color por colorToken sin valores hex', () => {

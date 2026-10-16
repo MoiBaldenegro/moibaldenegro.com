@@ -5,10 +5,11 @@ import "../../styles/profile-card.css";
 
 import HeroGridCard from "../hero-cards/hero-grid-card.astro";
 
+import { layoutHeroCards } from "../../domain/hero-grid-layout.ts";
 import { HeroCardsRepository } from "../../domain/repositories/hero-cards-repository.ts";
 import { HeroProfileRepository } from "../../domain/repositories/hero-profile-repository.ts";
 
-const heroCards = new HeroCardsRepository().getCards();
+const heroCards = layoutHeroCards(new HeroCardsRepository().getCards());
 const profile = new HeroProfileRepository().getProfile();
 ---
 
@@ -50,8 +51,8 @@ const profile = new HeroProfileRepository().getProfile();
 
     <!-- Tarjetas -->
     {
-      heroCards.map(card => (
-        <HeroGridCard card={card} />
+      heroCards.map(({ card, colSpan, rowSpan }) => (
+        <HeroGridCard card={card} colSpan={colSpan} rowSpan={rowSpan} />
       ))
     }
   </div>

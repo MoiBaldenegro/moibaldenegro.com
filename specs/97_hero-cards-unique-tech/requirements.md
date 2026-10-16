@@ -1,0 +1,34 @@
+# Requisitos — Cards del hero sin tecnologías repetidas (feature 97 hero-cards-unique-tech)
+# Origen: petición humana 2026-10-15 (sprite con nuevos logos; sin cards repetidas; menos redes sociales; prioridad a tecnologías y herramientas). Análisis: progress/research/hero-cards-unique-tech.md.
+# Toca UI/presentación: ver design.md en esta carpeta (tabla celda → tecnología).
+# Valores por defecto revisables (anotados en progress/current.md): YouTube se queda como única red social; Bun queda fuera; colores de marca y ajuste del título en ≤ 1200 px.
+# Revisión 2026-10-15 (desbloqueo, decisión del líder opción 1): REQ-97-13 amplía el alcance a las listas de congelados de los tests de las features 95 y 96 (quitar tokens.css). REQ-97-16 a REQ-97-23 añaden la calidad visual del icono por tramo responsive (logo reconocible y sin tapar el título). El scroll horizontal a 800 px lo provoca el header de la feature 93 y queda fuera de alcance.
+# Valores por defecto revisables (humano) de los ajustes por tramo: ver design.md Decisión 4.
+# Revisión ronda 2 2026-10-15 (decisión del líder, opción 1 del implementer): la base de cloudflare de la tabla de design.md pasa a iconWidth 140px y rotate 0 (REQ-97-16 a 1280/1600: 62,3 % con 170px/-6, ~96 % con 140px/0). Por REQ-97-13 y REQ-97-20 el implementer la aplica en hero-cards.json, en la regla base de hero-card.css y en la fila cloudflare de tests/hero-cards-repository.test.mjs con nota. Los REQ no cambian de texto; contraste de #D97757 corregido a 3,12:1 en design.md.
+# Trazabilidad REQ → acceptance (índice en feature_list.json): REQ-97-01→1, REQ-97-02→1, REQ-97-03→2, REQ-97-04→2, REQ-97-05→3, REQ-97-06→3, REQ-97-07→4, REQ-97-08→4, REQ-97-09→5, REQ-97-10→5, REQ-97-11→6, REQ-97-12→6, REQ-97-13→7, REQ-97-14→8, REQ-97-15→8, REQ-97-16→9, REQ-97-17→9, REQ-97-18→10, REQ-97-19→11, REQ-97-20→11, REQ-97-21→11, REQ-97-22→12, REQ-97-23→12.
+
+## Requisitos
+
+REQ-97-01 El archivo src/data/hero-cards.json SHALL contener 12 tarjetas de icono cuyo fragmento de icon del sprite no se repite entre ellas.
+REQ-97-02 El archivo src/data/hero-cards.json SHALL dejar de contener tarjetas cuyo icon apunte a #twitch, #instagram, #x, #linkedin, #strava, #claude o #bun.
+REQ-97-03 Las cinco celdas que hoy ocupan twitch y las tarjetas -bottom en src/data/hero-cards.json SHALL pasar a las tarjetas rust, aws, claude-code, nestjs y cloudflare con id, title, colorToken e icon de la tabla de design.md.
+REQ-97-04 Cada tarjeta de src/data/hero-cards.json SHALL conservar el gridColumn, el gridRow y la posición en el array de la celda que ocupa según la tabla de design.md.
+REQ-97-05 La hoja src/styles/tokens.css SHALL declarar --color-marca-rust, --color-marca-aws, --color-marca-claude-code, --color-marca-nestjs y --color-marca-cloudflare con los hex de design.md sin superar 100 líneas.
+REQ-97-06 La hoja src/styles/tokens.css SHALL dejar de declarar --color-marca-twitch, --color-marca-twitch-bottom, --color-marca-node-bottom, --color-marca-github-bottom y --color-marca-youtube-bottom.
+REQ-97-07 La hoja src/styles/hero-card.css SHALL declarar una regla [data-color-token] por cada nueva tarjeta con --card-bg a su token de marca y la celda de su tabla en design.md.
+REQ-97-08 La hoja src/styles/hero-card.css SHALL dejar de declarar reglas para los colorToken twitch, twitch-bottom, node-bottom, github-bottom y youtube-bottom.
+REQ-97-09 Cada token de marca nuevo SHALL alcanzar un contraste de al menos 4,5:1 frente al blanco de --color-text.
+REQ-97-10 La celda htb de src/data/hero-cards.json y su regla de src/styles/hero-card.css SHALL permanecer sin cambios.
+REQ-97-11 WHILE el viewport mide 1280 o 1600 px de ancho, cada p.card-title del grid SHALL quedar con su borde derecho dentro del borde derecho de su card.
+REQ-97-12 WHILE el viewport mide 800 o 1024 o 375 px de ancho, cada p.card-title del grid SHALL quedar con su borde derecho dentro del borde derecho de su card sin partir palabras.
+REQ-97-13 Los tests que fijan ids o títulos o tokens de las cards o que congelan src/styles/tokens.css SHALL reapuntar a la tabla de design.md con nota en tests/hero-cards-repository.test.mjs y tests/hero-cards-styles.test.mjs y tests/design-tokens.test.mjs y tests/htb-hero-card.test.mjs y quitar 'src/styles/tokens.css' de las listas de congelados de tests/home-latest-articles-five.test.mjs (REQ-95-08) y tests/latest-cards-gsap-motion.test.mjs (REQ-96-39/40/42) con la nota «Ajuste feature 97 (precedente REQ-43-06)», WHERE la petición humana 2026-10-15 retira las cards repetidas y la feature 97 cambia tokens.css.
+REQ-97-14 WHEN se implemente la feature, el test tests/hero-cards-unique-tech.test.mjs SHALL observarse en rojo antes de cambiar el JSON, los tokens o las hojas.
+REQ-97-15 La suite completa del arnés y el script ./init.sh SHALL terminar en verde al cierre de la feature.
+REQ-97-16 WHILE el viewport mide 375 o 800 o 1024 o 1280 o 1600 px de ancho, la nube del símbolo cloudflare (región 0 0 165 76 de su viewBox 0 0 512 76) SHALL quedar proyectada con al menos el 90 % de su área dentro del article de la card CLOUDFLARE.
+REQ-97-17 WHILE el viewport mide 375 o 800 o 1024 o 1280 o 1600 px de ancho, el rectángulo proyectado del logo de cada card RUST y AWS y CLAUDE CODE y NESTJS SHALL quedar con su centro dentro del article de su card y al menos el 40 % de su área dentro de él.
+REQ-97-18 WHILE el viewport mide 375 o 800 o 1024 o 1280 o 1600 px de ancho, la parte visible del icono de cada card RUST y AWS y CLAUDE CODE y NESTJS y CLOUDFLARE y GITHUB ACTIONS SHALL tener intersección de área 0 con los rectángulos de las palabras de su p.card-title, WHERE algún fill del símbolo tiene un contraste inferior a 4,5:1 frente a --color-text.
+REQ-97-19 Los ajustes de icono por tramo responsive de la hoja src/styles/hero-card.css SHALL vivir solo dentro de sus bloques @media existentes como reglas [data-color-token] que declaran únicamente --icon-width o --icon-rotation o --icon-scale.
+REQ-97-20 Los campos iconWidth y rotate de cada tarjeta de src/data/hero-cards.json SHALL coincidir con el --icon-width y el --icon-rotation de su regla base fuera de @media en src/styles/hero-card.css.
+REQ-97-21 La feature SHALL dejar sin cambios src/styles/hero-section.css y la primera regla .hero-card { grid-column: auto !important; grid-row: auto !important; } del bloque @media (max-width: 1200px) de src/styles/hero-card.css.
+REQ-97-22 WHILE el viewport mide 375 o 800 o 1024 o 1280 o 1600 px de ancho, ningún article del grid del hero SHALL sobrepasar el borde derecho del viewport, WHERE el scroll horizontal que provoca el header a 800 px pertenece a la feature 93 y queda fuera de alcance.
+REQ-97-23 WHEN se ajusten los iconos por tramo, la medida CDP de REQ-97-16 y REQ-97-18 SHALL observarse en rojo a 800 px sobre el árbol previo al ajuste antes de editar hero-card.css.

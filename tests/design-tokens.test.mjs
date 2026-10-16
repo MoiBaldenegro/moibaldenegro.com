@@ -39,16 +39,19 @@ const MARCA_TOKENS = {
   '--color-marca-node': '#08783A',
   '--color-marca-github': '#091223',
   '--color-marca-youtube': '#B61111',
-  '--color-marca-twitch': '#6C20B6',
   '--color-marca-typescript': '#215BC7',
   '--color-marca-css': '#6E29C8',
-  // Variantes bottom de la paleta real de hero.data.ts: se incluyen como
-  // tokens propios para que las tarjetas bottom (feature 6) puedan
-  // referenciar colorToken sin perder su color actual.
-  '--color-marca-node-bottom': '#0A7C39',
-  '--color-marca-github-bottom': '#202A3A',
-  '--color-marca-youtube-bottom': '#BF1616',
-  '--color-marca-twitch-bottom': '#7B29D6',
+  // Ajuste feature 97 (REQ-97-13, petición humana 2026-10-15, precedente REQ-43-06): salen
+  // twitch y las variantes bottom; entran los tokens de la tabla de
+  // specs/97_hero-cards-unique-tech/design.md.
+  '--color-marca-rust': '#A33A16',
+  '--color-marca-aws': '#232F3E',
+  '--color-marca-claude-code': '#5C2A1C',
+  '--color-marca-nestjs': '#A3132F',
+  '--color-marca-cloudflare': '#A8470C',
+  // Ajuste feature 98 (precedente REQ-43-06): entran claude y bun (specs/98_hero-mosaic-layout/design.md).
+  '--color-marca-claude': '#B4532F',
+  '--color-marca-bun': '#3D2B1F',
 };
 
 function readTokensCss() {

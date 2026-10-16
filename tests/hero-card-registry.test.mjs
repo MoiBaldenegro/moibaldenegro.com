@@ -70,14 +70,16 @@ test('REQ-91-04: el registro es un único objeto literal que asocia icon con her
 test('REQ-91-05: new-hero.astro pinta cada tarjeta con HeroGridCard sin condicionales por tipo', () => {
   const content = read(NEW_HERO_URL);
   assert.match(content, /import\s+HeroGridCard\s+from\s*["']\.\.\/hero-cards\/hero-grid-card\.astro["']/);
-  assert.match(content, /heroCards\.map\(\s*\(?\s*card\s*\)?\s*=>\s*\(?\s*<HeroGridCard\s+card=\{card\}\s*\/>/);
+  // Ajuste feature 98 (precedente REQ-43-06): se recorre la salida de layoutHeroCards con su tamaño.
+  assert.match(content, /heroCards\.map\(\s*\(\s*\{\s*card,\s*colSpan,\s*rowSpan\s*\}\s*\)\s*=>\s*\(?\s*<HeroGridCard\s+card=\{card\}\s+colSpan=\{colSpan\}\s+rowSpan=\{rowSpan\}\s*\/>/);
   assert.doesNotMatch(content, /<HeroCard\b/, 'new-hero.astro sigue montando HeroCard directamente');
   assert.doesNotMatch(content, /card\.kind|kind\s*===|===\s*['"]icon['"]/, 'new-hero.astro compara por tipo');
 });
 
 test('REQ-91-06: hero-card.astro conserva article.hero-card, data-color-token y card: HeroCard', () => {
   const content = read(HERO_CARD_URL);
-  assert.match(content, /<article\s+class="hero-card"\s+data-color-token=\{card\.colorToken\}>/);
+  // Ajuste feature 98 (precedente REQ-43-06): el article gana data-col-span/data-row-span (REQ-98-17).
+  assert.match(content, /<article\s+class="hero-card"\s+data-color-token=\{card\.colorToken\}\s+data-col-span=\{colSpan\}\s+data-row-span=\{rowSpan\}>/);
   assert.match(frontmatter(content), /interface\s+Props\s*\{[\s\S]*?\bcard\s*:\s*HeroCard\b/);
 });
 
@@ -88,7 +90,8 @@ test('REQ-91-08: hero-section.css conserva la geometría del grid', () => {
   assert.match(css, /grid-template-columns:\s*1fr;\s*grid-auto-rows:\s*minmax\(190px,\s*auto\);/);
 });
 
-test('REQ-91-07: el build de la portada contiene las 12 tarjetas de icono en el orden del JSON', () => {
+// Ajuste feature 98 (precedente REQ-43-06): sin recuento fijo; el orden del JSON es el del mapa de design.md.
+test('REQ-91-07: el build de la portada contiene las tarjetas de icono en el orden del JSON', () => {
   const build = astroBuild();
   assert.equal(build.status, 0, `astro build falló: ${build.stderr}`);
   const html = read(DIST_HOME_URL);
@@ -98,6 +101,6 @@ test('REQ-91-07: el build de la portada contiene las 12 tarjetas de icono en el 
   // Ajuste feature 92 (REQ-92-14, precedente REQ-43-06): la tarjeta htb (hero-card--rich) se
   // excluye del recuento de icono; su presencia en el grid la cubre tests/htb-hero-card.test.mjs.
   const expected = JSON.parse(read(DATA_URL)).filter((card) => card.kind === undefined).map((card) => card.colorToken);
-  assert.equal(expected.length, 12);
+  assert.ok(expected.length > 0);
   assert.deepEqual(tokens, expected, 'las tarjetas del build no siguen el orden de hero-cards.json');
 });

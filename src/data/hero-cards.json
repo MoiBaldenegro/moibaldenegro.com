@@ -1,142 +1,17 @@
 [
-  {
-    "id": "react",
-    "title": "REACT",
-    "colorToken": "react",
-    "icon": "/assets/svg/sprite.svg#react",
-    "gridColumn": "6 / span 5",
-    "gridRow": "1 / span 2",
-    "rotate": -8,
-    "scale": 5,
-    "iconWidth": "165px"
-  },
-  {
-    "id": "html",
-    "title": "HTML",
-    "colorToken": "html",
-    "icon": "/assets/svg/sprite.svg#html",
-    "gridColumn": "11 / span 2",
-    "gridRow": "1 / span 2",
-    "rotate": -7,
-    "scale": 5,
-    "iconWidth": "115px"
-  },
-  {
-    "id": "node",
-    "title": "NODE JS",
-    "colorToken": "node",
-    "icon": "/assets/svg/sprite.svg#node",
-    "gridColumn": "6 / span 2",
-    "gridRow": "3 / span 2",
-    "rotate": -10,
-    "scale": 5,
-    "iconWidth": "120px"
-  },
-  {
-    "id": "github",
-    "title": "GITHUB ACTIONS",
-    "colorToken": "github",
-    "icon": "/assets/svg/sprite.svg#github",
-    "gridColumn": "8 / span 5",
-    "gridRow": "3 / span 2",
-    "rotate": -12,
-    "scale": 5,
-    "iconWidth": "190px"
-  },
-  {
-    "id": "youtube",
-    "title": "YOUTUBE",
-    "colorToken": "youtube",
-    "icon": "/assets/svg/sprite.svg#youtube",
-    "gridColumn": "6 / span 5",
-    "gridRow": "5 / span 2",
-    "rotate": -8,
-    "scale": 5,
-    "iconWidth": "170px"
-  },
-  {
-    "id": "twitch",
-    "title": "TWITCH",
-    "colorToken": "twitch",
-    "icon": "/assets/svg/sprite.svg#twitch",
-    "gridColumn": "11 / span 2",
-    "gridRow": "5 / span 2",
-    "rotate": -8,
-    "scale": 5,
-    "iconWidth": "115px"
-  },
-  {
-    "id": "typescript",
-    "title": "TYPESCRIPT",
-    "colorToken": "typescript",
-    "icon": "/assets/svg/sprite.svg#typescript",
-    "gridColumn": "1 / span 2",
-    "gridRow": "7 / span 2",
-    "rotate": -10,
-    "scale": 5,
-    "iconWidth": "110px"
-  },
-  {
-    "id": "css",
-    "title": "CSS",
-    "colorToken": "css",
-    "icon": "/assets/svg/sprite.svg#css",
-    "gridColumn": "3 / span 2",
-    "gridRow": "7 / span 2",
-    "rotate": -8,
-    "scale": 5,
-    "iconWidth": "105px"
-  },
-  {
-    "id": "node-bottom",
-    "title": "NODE JS",
-    "colorToken": "node-bottom",
-    "icon": "/assets/svg/sprite.svg#node",
-    "gridColumn": "5 / span 2",
-    "gridRow": "7 / span 2",
-    "rotate": -6,
-    "scale": 5,
-    "iconWidth": "120px"
-  },
-  {
-    "id": "github-bottom",
-    "title": "GITHUB ACTIONS",
-    "colorToken": "github-bottom",
-    "icon": "/assets/svg/sprite.svg#github",
-    "gridColumn": "7 / span 4",
-    "gridRow": "7 / span 2",
-    "rotate": 0,
-    "scale": 5,
-    "iconWidth": "165px"
-  },
-  {
-    "id": "youtube-bottom",
-    "title": "YOUTUBE",
-    "colorToken": "youtube-bottom",
-    "icon": "/assets/svg/sprite.svg#youtube",
-    "gridColumn": "11 / span 2",
-    "gridRow": "7 / span 2",
-    "rotate": -5,
-    "scale": 5,
-    "iconWidth": "120px"
-  },
-  {
-    "id": "twitch-bottom",
-    "title": "TWITCH",
-    "colorToken": "twitch-bottom",
-    "icon": "/assets/svg/sprite.svg#twitch",
-    "gridColumn": "1 / span 8",
-    "gridRow": "9 / span 2",
-    "rotate": -6,
-    "scale": 5,
-    "iconWidth": "170px"
-  },
-  {
-    "id": "htb",
-    "kind": "htb",
-    "title": "HACK THE BOX",
-    "colorToken": "htb",
-    "gridColumn": "9 / span 4",
-    "gridRow": "9 / span 2"
-  }
+  { "id": "htb", "kind": "htb", "title": "HACK THE BOX", "colorToken": "htb" },
+  { "id": "rust", "title": "RUST", "colorToken": "rust", "icon": "/assets/svg/sprite.svg#rust", "category": "tech", "rotate": -8, "scale": 5, "iconWidth": "115px" },
+  { "id": "aws", "title": "AWS", "colorToken": "aws", "icon": "/assets/svg/sprite.svg#aws", "category": "tech", "rotate": -6, "scale": 5, "iconWidth": "120px" },
+  { "id": "cloudflare", "title": "CLOUDFLARE", "colorToken": "cloudflare", "icon": "/assets/svg/sprite.svg#cloudflare", "category": "tech", "rotate": 0, "scale": 5, "iconWidth": "170px" },
+  { "id": "node", "title": "NODE JS", "colorToken": "node", "icon": "/assets/svg/sprite.svg#node", "category": "tech", "featured": true, "rotate": -10, "scale": 5, "iconWidth": "165px" },
+  { "id": "nestjs", "title": "NESTJS", "colorToken": "nestjs", "icon": "/assets/svg/sprite.svg#nestjs", "category": "tech", "featured": true, "rotate": -5, "scale": 5, "iconWidth": "160px" },
+  { "id": "css", "title": "CSS", "colorToken": "css", "icon": "/assets/svg/sprite.svg#css", "category": "tech", "rotate": -8, "scale": 5, "iconWidth": "105px" },
+  { "id": "react", "title": "REACT", "colorToken": "react", "icon": "/assets/svg/sprite.svg#react", "category": "tech", "rotate": -8, "scale": 5, "iconWidth": "115px" },
+  { "id": "html", "title": "HTML", "colorToken": "html", "icon": "/assets/svg/sprite.svg#html", "category": "tech", "rotate": -7, "scale": 5, "iconWidth": "115px" },
+  { "id": "claude-code", "title": "CLAUDE CODE", "colorToken": "claude-code", "icon": "/assets/svg/sprite.svg#claude-code", "category": "tech", "rotate": 0, "scale": 5, "iconWidth": "115px" },
+  { "id": "bun", "title": "BUN", "colorToken": "bun", "icon": "/assets/svg/sprite.svg#bun", "category": "tech", "rotate": -8, "scale": 5, "iconWidth": "115px" },
+  { "id": "claude", "title": "CLAUDE", "colorToken": "claude", "icon": "/assets/svg/sprite.svg#claude", "category": "tech", "rotate": -8, "scale": 5, "iconWidth": "110px" },
+  { "id": "typescript", "title": "TYPESCRIPT", "colorToken": "typescript", "icon": "/assets/svg/sprite.svg#typescript", "category": "tech", "featured": true, "rotate": -10, "scale": 5, "iconWidth": "150px" },
+  { "id": "youtube", "title": "YOUTUBE", "colorToken": "youtube", "icon": "/assets/svg/sprite.svg#youtube", "category": "social", "rotate": -8, "scale": 5, "iconWidth": "115px" },
+  { "id": "github", "title": "GITHUB", "colorToken": "github", "icon": "/assets/svg/sprite.svg#github", "category": "social", "rotate": -8, "scale": 5, "iconWidth": "115px" }
 ]

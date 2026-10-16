@@ -1,6 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
+import { layoutHeroCards } from '../src/domain/hero-grid-layout.ts';
+import { HeroCardsRepository } from '../src/domain/repositories/hero-cards-repository.ts';
 
 // Test de estilos de tarjetas y perfil del hero (REQ-04-01..05, feature 4 hero-cards-styles).
 //
@@ -19,13 +21,18 @@ const PROFILE_CARD_CSS = new URL('../src/styles/profile-card.css', import.meta.u
 const HERO_CSS = new URL('../src/styles/hero.css', import.meta.url);
 const HERO_CARD_ASTRO = new URL('../src/components/hero-card.astro', import.meta.url);
 const NEW_HERO_ASTRO = new URL('../src/components/new-hero/new-hero.astro', import.meta.url);
+const HERO_SECTION_CSS = new URL('../src/styles/hero-section.css', import.meta.url);
 
 // Tokens de marca de las 12 tarjetas (REQ-04-02), en correspondencia con
 // --color-marca-* de tokens.css (feature 2).
+// Ajuste feature 97 (REQ-97-13, petición humana 2026-10-15, precedente REQ-43-06): twitch,
+// node-bottom, github-bottom, youtube-bottom y twitch-bottom pasan a rust, aws, claude-code,
+// nestjs y cloudflare (tabla de specs/97_hero-cards-unique-tech/design.md).
 const CARD_TOKENS = [
-  'react', 'html', 'node', 'github', 'youtube', 'twitch',
+  'react', 'html', 'node', 'github', 'youtube', 'rust',
   'typescript', 'css',
-  'node-bottom', 'github-bottom', 'youtube-bottom', 'twitch-bottom',
+  'aws', 'claude-code', 'nestjs', 'cloudflare',
+  'claude', 'bun', // Ajuste feature 98 (precedente REQ-43-06): entran claude y bun (REQ-98-27).
 ];
 
 // Propiedades cuyo valor debe salir de var() (colores, radios, sombras y transiciones).
@@ -83,7 +90,7 @@ test('REQ-04-04: ambas hojas no superan las 100 líneas', () => {
   }
 });
 
-test('REQ-04-02: hero-card.css asigna el fondo por data-color-token (12 tarjetas)', () => {
+test('REQ-04-02: hero-card.css asigna el fondo por data-color-token (14 tarjetas de icono)', () => {
   const content = readCss(HERO_CARD_CSS, 'src/styles/hero-card.css');
   for (const token of CARD_TOKENS) {
     const pattern = new RegExp(
@@ -149,39 +156,22 @@ test('REQ-04-05: src/styles/hero.css ya no existe (Decisión 3 del design.md)', 
   );
 });
 
-test('design.md Decisión 2: hero-card.astro sin style inline y grid desde la hoja', () => {
+// Ajuste feature 98 (precedente REQ-43-06): la celda deja de salir de [data-color-token]; el tamaño
+// llega por data-col-span/data-row-span y hero-section.css lo traduce a span N (REQ-98-17..19).
+test('design.md Decisión 2 / REQ-98-18/19: sin style inline, spans en hero-section.css y sin celda por token', () => {
   const astro = readFileSync(HERO_CARD_ASTRO, 'utf8');
-  assert.doesNotMatch(
-    astro,
-    /\bstyle\s*=/,
-    'hero-card.astro conserva el atributo style inline'
-  );
-  assert.ok(
-    astro.includes('data-color-token={card.colorToken}'),
-    'hero-card.astro no aplica data-color-token={card.colorToken}'
-  );
-
+  assert.doesNotMatch(astro, /\bstyle\s*=/, 'hero-card.astro conserva el atributo style inline');
+  assert.ok(astro.includes('data-color-token={card.colorToken}'), 'hero-card.astro no aplica data-color-token');
   const css = readCss(HERO_CARD_CSS, 'src/styles/hero-card.css');
-  assert.match(
-    css,
-    /\.hero-card\s*\{[^}]*grid-column\s*:\s*var\(--card-column\)/s,
-    'grid-column no sale de --card-column en la hoja'
-  );
-  assert.match(
-    css,
-    /\.hero-card\s*\{[^}]*grid-row\s*:\s*var\(--card-row\)/s,
-    'grid-row no sale de --card-row en la hoja'
-  );
-  for (const token of CARD_TOKENS) {
-    assert.match(
-      css,
-      new RegExp(`\\[data-color-token="${token}"\\]\\s*\\{[^}]*--card-column\\s*:`),
-      `falta --card-column para [data-color-token="${token}"]`
-    );
-    assert.match(
-      css,
-      new RegExp(`\\[data-color-token="${token}"\\]\\s*\\{[^}]*--card-row\\s*:`),
-      `falta --card-row para [data-color-token="${token}"]`
-    );
+  assert.match(css, /\.hero-card\s*\{[^}]*grid-column\s*:\s*var\(--card-column\)/s, 'grid-column no sale de --card-column');
+  assert.match(css, /\.hero-card\s*\{[^}]*grid-row\s*:\s*var\(--card-row\)/s, 'grid-row no sale de --card-row');
+  for (const rule of css.match(/\[data-color-token="[^"]+"\]\s*\{[^}]*\}/g) ?? []) {
+    assert.doesNotMatch(rule, /--card-(column|row)\s*:/, `regla con celda: ${rule}`);
+  }
+  const section = readFileSync(HERO_SECTION_CSS, 'utf8');
+  for (const n of [2, 4, 5]) assert.match(section, new RegExp(`\\[data-col-span="${n}"\\]\\s*\\{\\s*--card-column:\\s*span ${n};\\s*\\}`));
+  for (const n of [2, 4]) assert.match(section, new RegExp(`\\[data-row-span="${n}"\\]\\s*\\{\\s*--card-row:\\s*span ${n};\\s*\\}`));
+  for (const p of layoutHeroCards(new HeroCardsRepository().getCards())) {
+    assert.ok(section.includes(`[data-col-span="${p.colSpan}"]`) && section.includes(`[data-row-span="${p.rowSpan}"]`), `${p.card.id} sin regla de span`);
   }
 });
