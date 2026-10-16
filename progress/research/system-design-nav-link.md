@@ -137,3 +137,108 @@ Recuento de artículos que devuelve cada término candidato (simulación del mat
 - Riesgo: algún test heredado puede fijar la lista de imports de Layout.astro o el texto exacto de los
   enlaces; si ocurre, reapunte con nota REQ-93-18 (precedente REQ-43-06).
 - Spec reescrita: REQ-93-01..19; feature 93 de `blocked` a `pending`.
+
+## Desbloqueo 3 — decisión humana 2026-10-16
+
+- Literal: «Has todo lo que tengas pendiente de una ves, y si vas atocar el menu hamburguesa mete diseño de
+  sitemas igual si cabe ese croe no es le problema, ya ves que ahorita estabamos rerecortando s solo "diseño"
+  ponlo completo tambien».
+- Concreción del orquestador: opción (a) de la ronda 2 (subir el corte del menú hamburguesa, ~850 px o el
+  mínimo necesario medido); etiqueta SIEMPRE completa «Diseño de sistemas» (barra y panel); se retira el
+  recorte (nav-label.css y span); ajuste de CSS congelado con nota «Ajuste feature 93 (precedente REQ-43-06)».
+
+### Medición del umbral (spec_author, Chrome headless + CDP sobre el dev server de localhost:4321)
+
+Método: sin tocar src/. Script `cdp93sa.mjs` (y `cdp93sa-fine.mjs`) en el scratchpad de la sesión
+(C:/Users/Moises/AppData/Local/Temp/claude/C--Users-Moises-Desktop-moibaldenegro-com/5a16f5af-f87c-46b3-b4a6-91a79cca298f/scratchpad).
+Por CSSOM desactiva nav-label.css, reescribe las media queries 768/769 de layout.css, site-menu.css y
+search-bar.css al umbral candidato, deja el enlace con texto plano «Diseño de sistemas» sin aria-label y,
+en la pasada final, añade `white-space: nowrap` a `.site-navbar nav a`. DPR 1, fuentes cargadas, `/` y
+`/posts/00-agilismo/` (mismos valores).
+
+Barrido en modo barra (etiqueta completa, sin nowrap):
+
+| Ancho | Header scrollW / clientW | Enlace w x h |
+|------:|------:|------|
+| 769 | 851 / 759 (+92) | 62 x 57 (3 líneas) |
+| 800 | 851 / 790 (+61) | 62 x 57 |
+| 850 | 853 / 840 (+13) | 62 x 57 |
+| 862 | 853 / 852 (+1) | 62 x 57 |
+| 865 | 855 / 855 | 62 x 57 |
+| 895 | 885 / 885 | 72 x 38 (2 líneas) |
+| 966 | 956 / 956 | 139 x 38 (2 líneas) |
+| 967 | 957 / 957 | 139 x 19 (1 línea) |
+| 970 | 960 / 960 | 139 x 19 |
+
+Con nowrap (siempre 1 línea, 139 x 19): desborda hasta 942 px (940: 932/930) y deja de desbordar desde 943,
+pero hasta 965 el contenido del nav (908 px) supera la caja del nav (95 %): el buscador llega al borde del
+header (sbRight 932 = clientWidth).
+
+Conclusión: ~850 px no basta (a 850 desborda +13 px y la etiqueta va en 3 líneas). El contenido natural del
+nav con la etiqueta completa mide 908 px y el nav mide 0,95 × (W − 10): cabe sin comprimir desde W ≈ 966-967.
+**Umbral elegido: menú hamburguesa a <= 969 px, barra desde 970 px** (primer múltiplo de 10 >= 967, 3-4 px
+de holgura, coincide con el 970 confirmado en la ronda 2). Se añade `white-space: nowrap` a `.site-navbar a`
+como red de seguridad entre motores (si la fuente mide unos px más, desborda unos px en el margen en vez de
+partir la etiqueta).
+
+Pasada final (umbral 969, nowrap, texto plano) — capturas en progress/research/nav93/:
+
+| Ancho | Modo | Header alto | Header scrollW / clientW | Documento | Panel abierto (scrollW / clientW) | Enlace en panel |
+|------:|------|------:|------:|------:|------:|------|
+| 375 | hamburguesa | 65 | 375 / 375 | 375 / 375 | 375 / 375 | «Diseño de sistemas», 356 x 44, 1 línea |
+| 768 | hamburguesa | 65 | 758 / 758 | 758 / 758 | 758 / 758 | 720 x 44 |
+| 800 | hamburguesa | 65 | 790 / 790 | 790 / 790 | 790 / 790 | 751 x 44 |
+| 850 | hamburguesa | 65 | 840 / 840 | 840 / 840 | 840 / 840 | 798 x 44 |
+| 900 | hamburguesa | 65 | 890 / 890 | 890 / 890 | 890 / 890 | 846 x 44 |
+| 969 | hamburguesa | 65 | 959 / 959 | 959 / 959 | 959 / 959 | 911 x 44 |
+| 970 | barra | 65 | 960 / 960 | 960 / 960 | — | 139 x 19, 1 línea |
+| 1024 | barra | 65 | 1014 / 1014 | 1014 / 1014 | — | 139 x 19 |
+| 1280 | barra | 65 | 1270 / 1270 | 1270 / 1270 | — | 139 x 19 |
+
+Orden del panel: About, Arquitectura, Diseño de sistemas, @moibaldenegro. aria-current="page" en
+/diseno-de-sistemas y /diseno-de-sistemas/; ausente en / y /arquitectura (1280 px).
+
+### Hallazgos
+
+- H1. Con el span `site-menu__label-rest`, en el panel abierto (`.site-menu a { display: flex }`) el texto y
+  el span son dos flex items y el espacio inicial se colapsa: «Diseñode sistemas» (primera pasada de la
+  simulación). Retirar el span es obligatorio, no solo estético.
+- H2. aria-label se retira: con el texto completo siempre visible el nombre accesible coincide con el texto
+  y el atributo es redundante (primera regla de ARIA).
+- H3. Además de layout.css y site-menu.css, el corte vive en search-bar.css (nav envuelto sin JS, <= 768) y
+  en site-menu.ts (`matchMedia('(max-width: 768px)')`, cierre al pasar a escritorio): los cuatro se mueven a
+  969/970 para que el modo sea coherente. Sin JS, de 0 a 969 px se ve el header envuelto (features 51/61).
+- H4. layout.css está congelado en 99 líneas (tests/sticky-footer.test.mjs, tests/mobile-hamburger-menu.test.mjs):
+  el nowrap entra en una línea existente de `.site-navbar a`.
+- H5. Tests a reapuntar: mobile-hamburger-menu (768 → 969), header-height-64 (768/769), header-anchor-offset-mobile
+  (bloque 768 de layout.css), geist-pixel-extend (site-menu.css y search-bar.css salen de UNCHANGED),
+  system-design-nav-link (reescritura).
+- H6. docs/conventions.md («breakpoint móvil en 768px») y el comentario de tokens.css (`--header-height-mobile`,
+  «<=768px») quedan desalineados para el header: excepción documentable por el líder; la spec no los toca
+  (tokens.css congelado en 99 líneas).
+
+### Spec reescrita
+
+- specs/93_system-design-nav-link/requirements.md: REQ-93-01..26 (sustituyen a los anteriores 01..19;
+  revocados el span, el aria-label, nav-label.css y el corte 959/969 de etiqueta).
+- specs/93_system-design-nav-link/design.md reescrito. Feature 93 de `blocked` a `pending`.
+
+## Ampliación 2026-10-16: apertura suave del menú hamburguesa
+
+- Literal humano (2026-10-16): «pon una apertura suave tmb por que se abre y se cierra de golpe horrible ese menu hamburguesa».
+- Estado actual: src/styles/site-menu.css oculta el panel con `display: none` y lo muestra con `display: flex`
+  bajo `header.site-navbar[data-menu='open']`; display no es animable, de ahí el golpe. site-menu.ts solo
+  alterna data-menu, aria-expanded y aria-label, y enfoca el primer enlace al abrir.
+- Solución CSS pura: panel siempre en flex absoluto en modo hamburguesa; cerrado con visibility hidden +
+  opacity 0 + translateY negativo; transición de opacity, transform y visibility con var(--transition-default)
+  (.28s cubic-bezier(.2,.8,.2,1), único token de transición existente). La interpolación discreta de
+  visibility mantiene el panel visible durante el cierre sin delay literal.
+- H7. La red global de reduced-motion de layout.css (feature 56) fija transition-duration a 0.01ms pero no
+  anula delays: se exige `transition: none` explícito en site-menu.css (REQ-93-36).
+- H8. visibility: hidden saca el panel del tab y del árbol de accesibilidad: no hace falta inert ni tocar
+  site-menu.ts. Riesgo: tests heredados que congelen `display: none` del panel (mobile-hamburger-menu) se
+  reapuntan con REQ-93-25.
+- H5 (nota del líder, = H6 de arriba): docs/conventions.md «breakpoint móvil en 768px» vs. header 969/970:
+  pasa a tarea de documentación del implementer (REQ-93-40, design.md).
+- Spec: REQ-93-27..40 añadidos a specs/93_system-design-nav-link/requirements.md; design.md con sección
+  «Apertura suave» y «Documentación»; 4 acceptance nuevos en feature_list.json (feature 93 sigue pending).
