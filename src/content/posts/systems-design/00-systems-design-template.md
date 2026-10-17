@@ -5,7 +5,7 @@ author: Moises Baldenegro Melendez
 img: design00.webp
 readtime: 4
 description: Describimos una secuencia de pasos para el diseño de sistemas.
-tags: "#arquitectura #agilismo #software-design"
+tags: "#diseño #system-desig #software-design"
 created: "16 Octubre 2026"
 updated: "16 Octubre 2026"
 next: /posts/01-diseno-detallado
