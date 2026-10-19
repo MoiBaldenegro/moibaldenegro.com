@@ -25,7 +25,7 @@ function defaultSearchWillHandle(event: Event): boolean {
 
 export function initSiteMenu(
   root: Root = document,
-  media: Media = window.matchMedia('(max-width: 768px)'),
+  media: Media = window.matchMedia('(max-width: 969px)'),
   searchWillHandle: (event: Event) => boolean = defaultSearchWillHandle,
 ): void {
   const header = root.querySelector('.site-navbar') as Header | null;

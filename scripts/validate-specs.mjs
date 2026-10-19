@@ -5,8 +5,9 @@ import { fileURLToPath } from 'node:url';
 const FEATURE_LIST_PATH = fileURLToPath(new URL('../feature_list.json', import.meta.url));
 const SPECS_ROOT = fileURLToPath(new URL('../specs/', import.meta.url));
 
-// Prefijo de id: REQ-18-01 <oración EARS>
-const REQ_PREFIX = /^REQ-(\d{2})-(\d{2})\s+(.+)$/;
+// Prefijo de id: REQ-18-01 / REQ-100-01 <oración EARS> (id de feature con 2 o
+// más dígitos, feature 100; secuencial <xx> de exactamente 2 dígitos)
+const REQ_PREFIX = /^REQ-(\d{2,})-(\d{2})\s+(.+)$/;
 // Patrón EARS completo (ubicuo + WHEN/WHILE/IF-THEN + WHERE opcional al final)
 const EARS = /^(?:(?:WHEN\s+[^,]+,|WHILE\s+[^,]+,|IF\s+[^,]+, THEN)\s*)?[^,]+?\s+SHALL\s+.+?(?:,\s*WHERE\s+.+)?$/i;
 // Conteo de SHALL (debe dar exactamente 1; SHALL NOT cuenta como un único SHALL)

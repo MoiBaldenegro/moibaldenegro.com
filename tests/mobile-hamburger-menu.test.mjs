@@ -42,18 +42,20 @@ test('REQ-79-04/05: componente con estilos y script de init', () => {
 
 test('REQ-79-06/07/16/17/18: hoja con modo hamburguesa acotado a móvil con JS', () => {
   const css = strip(read('src/styles/site-menu.css'));
-  const MQ = '@media (max-width: 768px) and (scripting: enabled)';
+  // Ajuste feature 93 (precedente REQ-43-06): corte del header a 969 px (REQ-93-09) y apertura suave (REQ-93-28/36).
+  const MQ = '@media (max-width: 969px) and (scripting: enabled)';
   const first = css.indexOf('@media');
   const base = css.slice(0, first);
   assert.match(base, /[.]site-menu[ ]*[{][^}]*display:[ ]*contents/);
   assert.match(base, /[.]site-menu__toggle[ ]*[{][^}]*display:[ ]*none/);
-  for (const m of css.slice(first).matchAll(/@media[^{]+/g)) assert.ok(m[0].includes('(max-width: 768px)') && m[0].includes('(scripting: enabled)'), m[0]);
+  for (const m of css.slice(first).matchAll(/@media[^{]+/g)) assert.ok((m[0].includes('(max-width: 969px)') && m[0].includes('(scripting: enabled)')) || m[0].includes('(prefers-reduced-motion: reduce)'), m[0]);
   assert.ok(css.includes(MQ));
-  assert.match(css, /@media [(]max-width: 768px[)] and [(]max-height: 500px[)] and [(]scripting: enabled[)][ ]*[{][^}]*header[.]site-navbar[ ]*[{][^}]*position:[ ]*relative/);
+  assert.match(css, /@media [(]max-width: 969px[)] and [(]max-height: 500px[)] and [(]scripting: enabled[)][ ]*[{][^}]*header[.]site-navbar[ ]*[{][^}]*position:[ ]*relative/);
   assert.match(css, /:root[ ]*[{][^}]*scroll-padding-top:[ ]*var[(]--header-height[)]/);
   assert.doesNotMatch(css, /#[0-9a-fA-F]{3,8}|rgba?[(]/);
   assert.doesNotMatch(css, /(padding|margin|gap|radius)[^:;{]*:[^;]*[0-9]px/);
-  assert.doesNotMatch(css, /transition|animation/);
+  assert.doesNotMatch(css, /animation/);
+  for (const m of css.matchAll(/transition:([^;]*);/g)) assert.match(m[1], /^[ ]*(none|(opacity|transform|visibility|color) var[(]--transition-default[)](,[ ]*(opacity|transform|visibility) var[(]--transition-default[)])*)$/, m[0]);
 });
 
 test('REQ-79-08/35/36: hojas compartidas sin cambios y archivos <= 100 líneas', () => {

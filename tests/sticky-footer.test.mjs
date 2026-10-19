@@ -56,8 +56,10 @@ test('REQ-94-10: site-footer.css sin cambios y sin position fixed', () => {
   assert.doesNotMatch(read('src/styles/site-footer.css'), /position:\s*fixed/);
 });
 
-test('REQ-94-11: site-menu.css sin cambios frente a HEAD', () => {
-  assert.ok(unchanged('src/styles/site-menu.css'), 'site-menu.css cambió frente a HEAD');
+// Ajuste feature 93 (precedente REQ-43-06): site-menu.css cambia por el corte 969 px y la apertura suave (REQ-93-09/27);
+// se conserva lo que la 94 protegía: la hoja del menú no toca body, main ni el footer.
+test('REQ-94-11: site-menu.css no toca body, main ni el footer', () => {
+  assert.doesNotMatch(strip(read('src/styles/site-menu.css')), /body|main|footer/);
 });
 
 test('REQ-94-01..05: layout.css sigue usando solo tokens para colores', () => {

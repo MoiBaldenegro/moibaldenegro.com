@@ -2,7 +2,6 @@
 import "../styles/tokens.css";
 import "../styles/layout.css";
 import "../styles/typography.css";
-import "../styles/nav-label.css";
 import { Font } from 'astro:assets';
 import { ClientRouter } from 'astro:transitions';
 import SearchBar from '../components/search-bar/search-bar.astro';
@@ -64,7 +63,7 @@ const social = socialMeta({ title: pageTitle, description, pathname: Astro.url.p
         <div class="site-menu" id="site-menu" data-site-menu>
           <a aria-current={Astro.url.pathname === '/about' || Astro.url.pathname === '/about/' ? 'page' : undefined} href="/about">About</a>
           <a aria-current={Astro.url.pathname === '/arquitectura' || Astro.url.pathname === '/arquitectura/' ? 'page' : undefined} href="/arquitectura">Arquitectura</a>
-          <a aria-current={Astro.url.pathname === '/diseno-de-sistemas' || Astro.url.pathname === '/diseno-de-sistemas/' ? 'page' : undefined} aria-label="Diseño de sistemas" href="/diseno-de-sistemas">Diseño<span class="site-menu__label-rest"> de sistemas</span></a>
+          <a aria-current={Astro.url.pathname === '/diseno-de-sistemas' || Astro.url.pathname === '/diseno-de-sistemas/' ? 'page' : undefined} href="/diseno-de-sistemas">Diseño de sistemas</a>
           <a href="https://x.com/moibaldenegro">@moibaldenegro<span class="visually-hidden"> (X, sitio externo)</span></a>
           <SearchBar />
         </div>

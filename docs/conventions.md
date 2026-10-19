@@ -35,7 +35,8 @@
 - **Una spec por feature** en `specs/<NN>_<name>/`: `requirements.md`
   (SIEMPRE, EARS estricto: una línea = un requerimiento = exactamente un
   `SHALL`, IDs `REQ-<NN>-<xx>`, sin verbos vagos) y `design.md` (solo si la
-  feature toca UI/presentación). `<NN>` = id con padding a 2 dígitos,
+  feature toca UI/presentación). `<NN>` = id con padding mínimo a 2 dígitos
+  (`07`; admite 3 o más dígitos desde el id 100, p. ej. `100`),
   `<name>` = slug kebab-case del `name` de la feature. Las plantillas viven
   en `specs/_template/`.
 
@@ -63,6 +64,9 @@
   `src/styles/tokens.css`.
 - Media queries y estados (hover/active) al final del archivo CSS.
 - Responsive: breakpoint móvil en 768px, en orden móvil-primero.
+  Excepción (feature 93): el header (menú hamburguesa, nav envuelto sin JS y logo de
+  escritorio) corta en 969/970 px (`max-width: 969px` / `min-width: 970px`) para que
+  «Diseño de sistemas» quepa en una línea; el resto de hojas sigue en 768px.
 
 ## Commits
 

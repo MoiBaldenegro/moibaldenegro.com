@@ -25,22 +25,23 @@ test('REQ-77-03/08: el nav usa el token, centrado, y scroll-padding-top usa var(
   assert.match(layout, /html[ ]*[{][^}]*scroll-padding-top:[ ]*var[(]--header-height[)]/);
 });
 
+// Ajuste feature 93 (precedente REQ-43-06): el corte del header pasa de 768/769 a 969/970 px (REQ-93-09/10).
 test('REQ-77-10: móvil conserva --header-height-mobile y padding-block del nav', () => {
-  const mobile = layout.slice(layout.indexOf('@media (max-width: 768px)'));
+  const mobile = layout.slice(layout.indexOf('@media (max-width: 969px)'));
   assert.match(mobile, /scroll-padding-top:[ ]*var[(]--header-height-mobile[)]/);
   assert.match(mobile, /padding-block:[ ]*var[(]--gap-card[)]/);
 });
 
 // Ronda 2 (review_77): la regla del logo (display: block) solo en escritorio, con test propio.
-test('REQ-77-06: el logo es block solo dentro de @media (min-width: 769px), al final del archivo', () => {
-  const at = layout.indexOf('@media (min-width: 769px)');
-  assert.ok(at >= 0, 'falta @media (min-width: 769px)');
+test('REQ-77-06: el logo es block solo dentro de @media (min-width: 970px), al final del archivo', () => {
+  const at = layout.indexOf('@media (min-width: 970px)');
+  assert.ok(at >= 0, 'falta @media (min-width: 970px)');
   const block = layout.slice(at, layout.indexOf('} }', at) + 3);
   assert.match(block, /[.]site-navbar a img[ ]*[{][ ]*display:[ ]*block;?[ ]*[}]/);
   assert.equal(layout.split('.site-navbar a img').length - 1, 1, 'la regla del logo aparece fuera del bloque de escritorio');
-  const mobile = layout.slice(layout.indexOf('@media (max-width: 768px)'), layout.indexOf('}', layout.indexOf('.site-navbar a {', layout.indexOf('@media (max-width: 768px)'))) + 1);
+  const mobile = layout.slice(layout.indexOf('@media (max-width: 969px)'), layout.indexOf('}', layout.indexOf('.site-navbar a {', layout.indexOf('@media (max-width: 969px)'))) + 1);
   assert.ok(!mobile.includes('img'), 'la regla del logo está en el bloque móvil');
-  assert.ok(at > layout.indexOf('@media (max-width: 768px)'), 'la media query debe ir con las demás, al final del archivo');
+  assert.ok(at > layout.indexOf('@media (max-width: 969px)'), 'la media query debe ir con las demás, al final del archivo');
 });
 
 test('REQ-77-13: archivos tocados <= 100 líneas', () => {

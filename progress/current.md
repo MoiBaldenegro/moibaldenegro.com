@@ -4,13 +4,32 @@
 
 ### Feature en curso
 
-- (ninguna: feature 99 en done; 93 de nuevo en pending (desbloqueo 3); 10 en blocked a la espera de decisión humana)
+- Feature en curso: 100 — specs-three-digit-ids (implementer 2026-10-16)
+- (La 93 — system-design-nav-link sigue in_progress con APPROVED pendiente de cierre; no se toca.)
+
+### Plan 100
+
+- Test tests/specs-three-digit-ids.test.mjs (REQ-100-01..07, 11) en rojo antes del cambio.
+- scripts/validate-specs.mjs:9: primer grupo de REQ_PREFIX a (\d{2,}); el segundo sigue en (\d{2}).
+- Aclarar <NN> (padding mínimo a 2 dígitos; 3 o más desde el id 100) en docs/conventions.md y specs/_template/requirements.md.
+- Verificar check-format (código 0) y ./init.sh (solo los 4 fallos ajenos del post sin design00.webp); informe en progress/impl_specs-three-digit-ids.md.
 
 ### Plan
 
-- (vacío)
+- Test nuevo de REQ-93-01..40 en rojo y reapunte de los tests heredados (nota Ajuste feature 93).
+- Etiqueta completa sin span ni aria-label; borrar nav-label.css; corte 969/970 en layout/site-menu/search-bar/site-menu.ts; nowrap.
+- Apertura suave solo CSS en site-menu.css (visibility/opacity/translateY, var(--transition-default), reduced-motion).
+- docs/conventions.md (REQ-93-40); verificación CDP en :4393 con capturas en progress/research/nav93/impl/.
 
 ### Bitácora
+
+- implementer 2026-10-16 (100): implementada; informe en progress/impl_specs-three-digit-ids.md. Test nuevo en rojo (pass 3 / fail 6) y en verde (9/9). REQ_PREFIX con (\d{2,}); <NN> aclarado en docs/conventions.md y specs/_template/requirements.md. check-format exit 0; cv-pdf-endpoint 11/11. ./init.sh: solo los 4 fallos ajenos del post sin design00.webp (REQ-33-05, REQ-30-13, REQ-95-06/07/12, REQ-96-04/05). Pendiente de reviewer.
+
+- spec_author 2026-10-16 (features 100 specs-three-digit-ids y 101 hero-cards-polish): Análisis en curso: desbloqueo del alta del pulido del hero. scripts/validate-specs.mjs:9 rechaza los ids de feature de 3 dígitos. Plan (decisión del líder, mantenimiento del arnés): renumerar el pulido del hero a la 101; dar de alta la 100 de arnés (primer grupo de REQ_PREFIX a \d{2,}, test-first); la 101 depende de la 100. Resultado: specs/100_hero-cards-polish/ renombrada a specs/101_hero-cards-polish/ (REQ-101-01..21; además se quitaron las comas antes del SHALL en REQ-101-04/05/06/08..12/17, que no cumplían el patrón EARS); spec nueva specs/100_specs-three-digit-ids/requirements.md (REQ-100-01..12, sin design.md); análisis en progress/research/specs-three-digit-ids.md, sección de la 101 actualizada en progress/research/hero-cards-polish.md. Alta en feature_list.json de la 100 (pending) y la 101 (pending, depends_on [100]). AVISO HUEVO Y GALLINA: node scripts/check-format.mjs queda en ROJO (código 1) SOLO por 33 errores «falta el prefijo REQ-<NN>-<xx>» (12 de specs/100_*, 21 de specs/101_*), y tests/cv-pdf-endpoint.test.mjs cae por el mismo motivo. No es un backlog roto: es el estado de partida de la 100. Comprobado con una copia parcheada del validador en el scratchpad: con (\d{2,}) las dos specs y el backlog completo validan sin errores. Desaparece cuando el implementer aplique la 100 test-first. La 93 (in_progress) no se ha tocado.
+
+- spec_author 2026-10-16 (feature 100 hero-cards-polish): Análisis en curso: pulido de las cards del hero (observaciones 1-5 del reviewer de la 99; literal humano «Has todo lo que tengas pendiente de una ves»). Plan: logos grandes y token NestJS; 0 px² título/logo en 375/769/800/1024/1200/1280/1600; aviso HTB sin recorte; limpieza de --card-column/--card-row; punto 5 descartado (prueba: con anchos {4,2,2,2,2} siempre coinciden >= 2 cards entre filas 7-8 y 9-10). Spec escrita: specs/100_hero-cards-polish/requirements.md (REQ-100-01..21) y design.md; análisis en progress/research/hero-cards-polish.md. BLOQUEO: scripts/validate-specs.mjs usa REQ_PREFIX = /^REQ-(\d{2})-(\d{2})\s+(.+)$/ y rechaza los prefijos REQ-100-xx (check-format en rojo con la feature dada de alta), así que la feature 100 NO está en feature_list.json (alta revertida para no dejar el backlog roto). Desbloqueo propuesto al líder: cambiar a (\d{2,}) en el primer grupo (con su test) y re-ejecutar el alta preparada en el scratchpad (add100.cjs).
+
+- implementer 2026-10-16 (93, ronda 3): implementada; informe en progress/impl_system-design-nav-link.md («Ronda 3»). Test nuevo en rojo (pass 4 / fail 10) y en verde (15/15); CDP a 375..1280 OK (umbral 969/970, etiqueta en 1 línea, header 65 px, sin scroll horizontal, animación medida, foco, Escape, reduced-motion y ClientRouter). Dos correcciones a design.md halladas al medir, para REQ-93-34: visibility sin transición al abrir y transición solo de color en los enlaces del panel. ./init.sh: 4 fallos ajenos por el post src/content/posts/systems-design/00-systems-design-template.md (falta design00.webp y la portada lo muestra como artículo más reciente: REQ-33-05, REQ-30-13, REQ-95-06/07/12, REQ-96-04/05), sin tocar por indicación del líder.
 
 - spec_author 2026-10-16: Análisis en curso: desbloqueo 3 de la feature 93 (system-design-nav-link). Plan: medir el umbral del menú hamburguesa con la etiqueta completa (Chrome headless + CDP, simulación CSSOM); reescribir REQ-93-01..26 y design.md; actualizar acceptance y pasar la 93 a pending. Decisión humana 2026-10-16 (literal): «Has todo lo que tengas pendiente de una ves, y si vas atocar el menu hamburguesa mete diseño de sitemas igual si cabe ese croe no es le problema, ya ves que ahorita estabamos rerecortando s solo "diseño" ponlo completo tambien». Resultado: umbral medido hamburguesa <= 969 px / barra >= 970 px (a ~850 px el header aún desborda +13 px y la etiqueta va en 3 líneas; cabe en una línea desde 967 px); etiqueta siempre completa sin span ni aria-label; nav-label.css se borra; white-space: nowrap en .site-navbar a; 768/769 -> 969/970 en layout.css, site-menu.css, search-bar.css y site-menu.ts. Feature 93 de blocked a pending; spec specs/93_system-design-nav-link/ (requirements.md REQ-93-01..26, design.md) reescrita; análisis en progress/research/system-design-nav-link.md (Desbloqueo 3) y capturas de la simulación en progress/research/nav93/. Pendiente del líder (no bloquea): docs/conventions.md dice «breakpoint móvil en 768px»; el header pasa a 969/970 (excepción a documentar).
 

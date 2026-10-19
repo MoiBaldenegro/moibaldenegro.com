@@ -228,3 +228,140 @@ línea, así que desde nav-label.css no se puede recortar más sin quitar el enl
   REQ-93-01/07.
 
 El cambio sigue en el árbol de trabajo (Layout.astro, nav-label.css, artículo 05 y los dos tests) con `./init.sh` en verde.
+
+## Ronda 3 (desbloqueo 3 y ampliación 2026-10-16)
+
+Literales humanos (2026-10-16): «si vas a tocar el menu hamburguesa mete diseño de sistemas igual si cabe… ponlo completo
+también» y «pon una apertura suave tmb por que se abre y se cierra de golpe horrible ese menu hamburguesa». Spec:
+specs/93_system-design-nav-link/ (REQ-93-01..40).
+
+### Cambios
+
+- `src/layouts/Layout.astro`: el enlace pasa a `<a aria-current=… href="/diseno-de-sistemas">Diseño de sistemas</a>`
+  (sin span ni aria-label) y se quita `import "../styles/nav-label.css";` (79 líneas).
+- `src/styles/nav-label.css`: borrado.
+- `src/styles/layout.css` (sigue en 99 líneas): `white-space: nowrap;` en la línea `text-decoration: none;` de
+  `.site-navbar a`; `@media (max-width: 768px)` → `969px`; `@media (min-width: 769px)` del logo → `970px`.
+- `src/styles/search-bar.css`: `@media (max-width: 768px)` → `969px`.
+- `src/components/site-menu/site-menu.ts`: `matchMedia('(max-width: 969px)')`.
+- `src/styles/site-menu.css` (89 líneas): las dos consultas pasan a 969 px. El panel es siempre `display: flex` y
+  `position: absolute`. Cerrado: `visibility: hidden; opacity: 0; transform: translateY(-0.5rem); pointer-events: none`,
+  con `transition: opacity/transform/visibility var(--transition-default)`. Abierto: `visible / 1 / none / auto`. Al
+  final, `@media (prefers-reduced-motion: reduce)` con `transition: none` para el panel cerrado y para el abierto. Las
+  reglas de los enlaces y del buscador del panel ya no dependen de `[data-menu='open']`, para que el panel no cambie de
+  forma mientras se cierra.
+- `docs/conventions.md`: anotada la excepción 969/970 px del header (feature 93) junto a «breakpoint móvil en 768px».
+- Tests reapuntados con la nota «Ajuste feature 93 (precedente REQ-43-06)»:
+  - mobile-hamburger-menu: MQ 969; acepta el bloque reduced-motion; la prohibición de transiciones pasa a «sin
+    animation y solo transiciones con var(--transition-default) o none».
+  - header-height-64: 969/970.
+  - header-anchor-offset-mobile: bloque 969.
+  - geist-pixel-extend: site-menu.css y search-bar.css salen de UNCHANGED.
+  - sticky-footer: REQ-94-11 pasa de «site-menu.css sin cambios» a «site-menu.css no toca body, main ni footer».
+- `tests/system-design-nav-link.test.mjs`: reescrito contra REQ-93-01..40 (15 tests).
+
+### Dos desviaciones de design.md, encontradas al medir
+
+El navegador mostró que REQ-93-34 (foco en el primer enlace al abrir) no se cumplía con el diseño tal cual. Las dos
+correcciones están solo en site-menu.css.
+
+1. **El foco no llegaba al primer enlace (quedaba en BODY).** En el instante 0 de una transición de visibility el valor
+   todavía es `hidden`. Por eso `focus()` desde site-menu.ts fallaba: medido con `getComputedStyle` justo después del
+   `click()`, salía `hidden` y el foco en BODY. Arreglo: la regla abierta declara `transition: opacity …, transform …`
+   sin visibility. Al abrir, visibility cambia al instante. Al cerrar manda la transición de la regla cerrada (con
+   visibility), así que el panel sigue visible durante todo el cierre (REQ-93-30).
+2. **Los enlaces animaban su propia visibility.** `.site-navbar a` de layout.css declara `transition:
+   var(--transition-default)`, que equivale a `all`. Cada enlace animaba así su visibility heredada y seguía en `hidden`
+   en t=0. Arreglo: dentro del modo hamburguesa, `header.site-navbar .site-menu a { transition: color
+   var(--transition-default); }`. Se conserva la transición de color del hover. El regex de mobile-hamburger-menu admite
+   `color`.
+
+También corregí un caso límite. Con texto en el buscador, `.search-bar.is-filled .search-bar__clear` declara
+`visibility: visible`, y la X se habría quedado visible y enfocable dentro del panel cerrado. Con el menú cerrado,
+`header.site-navbar:not([data-menu='open']) .site-menu .search-bar.is-filled .search-bar__clear { visibility: inherit; }`.
+Medido en `/search?q=rust` a 375 px: la X sale `hidden` y Tab no la alcanza.
+
+### Rojo (antes de implementar)
+
+`node --test tests/system-design-nav-link.test.mjs` con los tests escritos y el código de HEAD: **pass 4 / fail 10**.
+- Fallan: REQ-93-01/05, 06/07/08, 09/10, 11, 12/24, 23, 27/31, 28/29/30, 36 y 40.
+- Pasan, porque son guardas de regresión: 02/03, 04/21/22, 13 y 37.
+
+Segundo rojo, tras medir en el navegador: dos aserciones nuevas, que la regla abierta no transicione visibility y que
+reduced-motion cubra también la regla abierta, dieron **pass 13 / fail 2** (REQ-93-34 y REQ-93-36). Tercer rojo: la
+aserción `transition: color` en los enlaces del panel dio **pass 14 / fail 1** (REQ-93-34). Cada rojo se corrigió hasta
+verde (`pass 15 / fail 0`, más mobile-hamburger-menu: 19/19 en conjunto).
+
+### Verde
+
+- `pnpm test`: **1033 pass / 4 fail** (1037 tests). Ninguno de los 4 fallos es de la feature 93, y no los toqué porque
+  así lo indicó el líder. Los causa el post del humano
+  `src/content/posts/systems-design/00-systems-design-template.md`, que está en HEAD (commit cc6bec9):
+  - REQ-33-05 (broken-resources-fix): falta `public/assets/content/design00.webp`. Reproducido igual en un worktree
+    limpio de HEAD.
+  - REQ-30-13, REQ-95-06/07/12 y REQ-96-04/05: la portada enlaza ahora `/posts/00-systems-design-template` como artículo
+    más reciente y deja fuera los tres que esperan esos tests.
+- `./init.sh`: entorno, formato y build en verde; el bloque de tests en rojo solo por esos 4.
+
+### Mediciones (Chrome headless + CDP, DPR 1, fuentes cargadas, `pnpm build` + `pnpm preview --port 4393`)
+
+Servidor propio en :4393, parado al terminar; no toqué el dev server de :4321. Script ad hoc `cdp93r3.mjs` en el
+scratchpad de la sesión. Valores iguales en `/` y `/posts/00-agilismo/`.
+
+| Ancho | Header alto (cerrado) | Header sW/cW | Documento sW/cW | Botón ☰ | Enlace en barra | Panel abierto: texto, líneas, panel sW/cW, doc sW/cW, foco |
+|------:|------:|------:|------:|------|------|------|
+| 375 | 65 | 375/375 | 375/375 | sí | no | Diseño de sistemas, 1, 375/375, 375/375, /about |
+| 768 | 65 | 758/758 | 758/758 | sí | no | Diseño de sistemas, 1, 758/758, 758/758, /about |
+| 800 | 65 | 790/790 | 790/790 | sí | no | Diseño de sistemas, 1, 790/790, 790/790, /about |
+| 850 | 65 | 840/840 | 840/840 | sí | no | Diseño de sistemas, 1, 840/840, 840/840, /about |
+| 900 | 65 | 890/890 | 890/890 | sí | no | Diseño de sistemas, 1, 890/890, 890/890, /about |
+| 969 | 65 | 959/959 | 959/959 | sí | no | Diseño de sistemas, 1, 959/959, 959/959, /about |
+| 970 | 65 | 960/960 | 960/960 | no | Diseño de sistemas, 139 x 19, 1 línea | — |
+| 1024 | 65 | 1014/1014 | 1014/1014 | no | Diseño de sistemas, 139 x 19, 1 línea | — |
+| 1280 | 65 | 1270/1270 | 1270/1270 | no | Diseño de sistemas, 139 x 19, 1 línea | — |
+
+- Las líneas se cuentan como tops distintos de los rects del rango del texto del enlace.
+- Orden del panel: About, Arquitectura, Diseño de sistemas, @moibaldenegro.
+- Enlace sin hijos y sin aria-label.
+- REQ-93-20: a 970 px no hay corte ni desborde, así que no hubo que parar.
+- aria-current: `page` en `/diseno-de-sistemas` y en `/diseno-de-sistemas/`; ausente en `/` y en `/arquitectura`.
+- `/diseno-de-sistemas`: 200, «1 resultado para "diseno-de-sistemas"», 1 elemento y la lista visible.
+
+### Apertura suave (a 375 y 900 px; muestreo con rAF durante 600 ms, 36-37 muestras)
+
+| Acción | Opacity intermedia (0<o<1) | Ejemplo intermedio | Final | transitionend en el panel | Header | Foco |
+|------|------|------|------|------|------|------|
+| Abrir (botón) | 15 muestras | t≈41 ms: 0,464, translateY −4,29 px, visible | 1 / none / visible | opacity, transform | 65 fijo | /about (primer enlace) |
+| Cerrar (botón) | 15 | t≈36 ms: 0,536, −3,71 px, visible | 0 / −8 px / hidden | opacity, transform, visibility | 65 fijo | — |
+| Cerrar (Escape) | 15 | t≈37-46 ms: 0,536, visible | 0 / −8 px / hidden | opacity, transform, visibility | 65 fijo | botón .site-menu__toggle |
+| Cerrar (clic fuera) | 15 | t≈39-43 ms: 0,537 | 0 / −8 px / hidden | opacity, transform, visibility | 65 fijo | — |
+
+- La primera muestra tras abrir ya da `visible` con opacity 0, así que el foco entra durante la transición (REQ-93-34).
+- Al cerrar, visibility sigue `visible` hasta el final y luego pasa a `hidden` (REQ-93-30).
+- aria-expanded vale `false` cerrado, `true` abierto y `false` tras Escape.
+- Clic real con `Input.dispatchMouseEvent` sobre el botón: el foco termina en /about.
+- Menú cerrado: 8 pulsaciones de Tab desde el botón no alcanzan ningún elemento del panel; pasan por las cards, el CV
+  y el footer.
+- Árbol de accesibilidad (`Accessibility.getFullAXTree`): con el menú cerrado no aparecen About, Arquitectura, Diseño
+  de sistemas ni @moibaldenegro del panel (los About y Arquitectura que salen son los del footer). Con el menú abierto sí
+  aparecen.
+- Frames a 1/10 de velocidad (`Animation.setPlaybackRate`):
+  - a mitad de la apertura: opacity 0,401 (375) y 0,521 (900);
+  - a mitad del cierre: 0,578 y 0,479.
+- **prefers-reduced-motion: reduce** (emulado): `transition-property: none` y 0 muestras intermedias al abrir y al
+  cerrar. El cambio es inmediato, visibility incluida (primera muestra: 1/visible al abrir, 0/hidden al cerrar), sin
+  transitionend y con el foco en /about.
+- **ClientRouter**: `/` → clic en un enlace a `/posts/00-agilismo/` → `history.back()`. El marcador `window.__mark93`
+  sobrevive, así que no hay recarga.
+  - En cada página el menú arranca `data-menu="closed"`, visibility hidden y aria-expanded false.
+  - Al abrir y cerrar se muestrean de nuevo 15 opacities intermedias con transitionend, a la ida y a la vuelta.
+- Consola: 0 excepciones y 0 `console.error`. El único error de red es el 404 de `/assets/content/design00.webp`, la
+  portada del post ajeno de systems-design.
+
+### Capturas (progress/research/nav93/impl/)
+
+- `header-{375,768,800,850,900,969,970,1024,1280}.png`: franja del header cerrado.
+- `menu-open-{375,768,800,850,900,969}.png`: panel abierto.
+- `m375-open-mid.png`, `m375-open-end.png`, `m375-close-mid.png`, `m375-close-end.png` y lo mismo con `m900-*`: frames
+  de la apertura y del cierre.
+- `router-back-open.png`: menú abierto tras la ida y vuelta.

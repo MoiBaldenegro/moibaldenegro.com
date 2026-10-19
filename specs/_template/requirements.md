@@ -1,8 +1,9 @@
 # Plantilla de requisitos (EARS estricto)
 
 > Copia esta plantilla a `specs/<NN>_<name>/requirements.md` para **cada**
-> feature del backlog. `<NN>` = id de la feature con padding a 2 dígitos
-> (`padStart(2, '0')`, p. ej. `07`); `<name>` = slug kebab-case del `name` de
+> feature del backlog. `<NN>` = id de la feature con padding mínimo a 2 dígitos
+> (`padStart(2, '0')`, p. ej. `07`; admite 3 o más dígitos desde el id 100,
+> p. ej. `100`); `<name>` = slug kebab-case del `name` de
 > la feature (p. ej. `cards-section`). Este archivo se crea SIEMPRE, antes del
 > alta en `feature_list.json`. Si la feature toca UI, además se crea
 > `design.md` (ver `specs/_template/design.md`).
@@ -20,7 +21,8 @@
 ## Reglas
 
 - Una línea = un requerimiento = exactamente un `SHALL`.
-- IDs: `REQ-<NN>-<xx>`; `<NN>` = id de la feature con padding a 2 dígitos;
+- IDs: `REQ-<NN>-<xx>`; `<NN>` = id de la feature con padding mínimo a 2
+  dígitos (admite 3 o más dígitos desde el id 100: `REQ-100-01`);
   `<xx>` = secuencial de 2 dígitos (01, 02, ...).
 - Mínimo 3-4 REQ por feature; en español.
 - Sin verbos vagos: prohibidos `soportar`, `mejorar` y "debe ser".

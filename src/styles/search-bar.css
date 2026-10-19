@@ -75,7 +75,7 @@
   color: var(--color-accent);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 969px) { /* feature 93 (REQ-93-09): corte del header */
   .site-navbar nav {
     flex-wrap: wrap;
     justify-content: center;

@@ -10,10 +10,11 @@ const tokens = readFileSync(new URL('../src/styles/tokens.css', import.meta.url)
 const layout = readFileSync(new URL('../src/styles/layout.css', import.meta.url), 'utf8');
 const MEASURED_HEADER_320 = 165; // px medidos a 320 px con el padding nuevo (impl_61.md)
 
-/** Cuerpo del bloque @media (max-width: 768px) de layout.css (llaves balanceadas). */
+/** Cuerpo del bloque @media (max-width: 969px) de layout.css (llaves balanceadas).
+    Ajuste feature 93 (precedente REQ-43-06): el corte del header pasa de 768 a 969 px (REQ-93-09). */
 function mobileBlock(css) {
-  const start = css.indexOf('@media (max-width: 768px)');
-  assert.ok(start >= 0, 'layout.css debe tener @media (max-width: 768px)');
+  const start = css.indexOf('@media (max-width: 969px)');
+  assert.ok(start >= 0, 'layout.css debe tener @media (max-width: 969px)');
   let depth = 0;
   for (let i = css.indexOf('{', start); i < css.length; i++) {
     if (css[i] === '{') depth++;

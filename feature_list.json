@@ -1772,7 +1772,7 @@
         "REQ-93-40: docs/conventions.md documenta que el header usa el corte 969/970 px como excepción al breakpoint móvil de 768 px."
       ],
       "depends_on": [],
-      "status": "pending"
+      "status": "in_progress"
     },
     {
       "id": 94,
@@ -1915,6 +1915,43 @@
         "REQ-99-34: la suite completa y ./init.sh terminan en verde con cada archivo tocado en 100 líneas o menos."
       ],
       "status": "done"
+    },
+    {
+      "id": 100,
+      "name": "specs-three-digit-ids",
+      "title": "El validador de specs acepta ids de feature de 2 o más dígitos",
+      "description": "Bloqueo de arnés (decisión del líder 2026-10-16, mantenimiento sin decisión humana, Node stdlib, sin dependencias): el backlog llega al id 100 y scripts/validate-specs.mjs:9 (REQ_PREFIX = /^REQ-(\\d{2})-(\\d{2})\\s+(.+)$/) rechaza los prefijos REQ-100-xx con «falta el prefijo REQ-<NN>-<xx>». Cambio: primer grupo a (\\d{2,}), segundo grupo (<xx>) en (\\d{2}); la carpeta ya se resuelve con String(id).padStart(2, '0') y la comparación con expectedNn sigue exacta. Es el único regex de ids de feature en scripts/ (revisados check-format, validate-feature-list, validate-progress, validate-dependencies, audit-design-tokens e init.sh). Textos a aclarar: docs/conventions.md y specs/_template/requirements.md («padding mínimo a 2 dígitos; 3 o más desde el id 100»). Huevo y gallina: mientras la 100 no esté aplicada, check-format queda en rojo SOLO por los prefijos REQ-100-xx (esta spec) y REQ-101-xx (feature 101 hero-cards-polish, que depende de esta) y tests/cv-pdf-endpoint.test.mjs (exige check-format con código 0) también; es el estado de partida esperado, no un backlog roto. Test-first: tests/specs-three-digit-ids.test.mjs en rojo antes del cambio. Sin design.md (no toca UI); no tocar src/. Spec: specs/100_specs-three-digit-ids/requirements.md; análisis: progress/research/specs-three-digit-ids.md.",
+      "acceptance": [
+        "REQ-100-01/07: un test de texto comprueba que scripts/validate-specs.mjs declara REQ_PREFIX con (\\d{2,}) en el primer grupo y (\\d{2}) en el segundo, y que EARS, SHALL_COUNT y VAGUE no cambian frente al estado previo.",
+        "REQ-100-02/03: validateRequirements devuelve [] para una línea EARS válida con prefijo REQ-100-01 y expectedNn \"100\", y para una con prefijo REQ-07-01 y expectedNn \"07\".",
+        "REQ-100-04/05: validateRequirements devuelve el error de prefijo que no coincide para REQ-10-01 con \"100\" y para REQ-100-01 con \"10\", y el error «falta el prefijo REQ-<NN>-<xx>» para REQ-7-01 y para REQ-07-001.",
+        "REQ-100-06: con fixtures en os.tmpdir(), validateSpecs devuelve [] para una feature pending con id 100 cuya spec válida está en specs/100_<slug>/requirements.md y para otra con id 7 en specs/07_<slug>/requirements.md, y reporta «falta specs/100_<slug>/requirements.md» si se borra la de la 100.",
+        "REQ-100-08/09/10: tests/specs-three-digit-ids.test.mjs usa solo node:test y la stdlib, su salida en rojo (antes del cambio) y en verde queda en progress/impl_specs-three-digit-ids.md, y node scripts/check-format.mjs termina con código 0 con las features 100 y 101 en el backlog.",
+        "REQ-100-11/12: docs/conventions.md y specs/_template/requirements.md describen <NN> como padding mínimo a 2 dígitos con 3 o más desde el id 100 (test de texto), y git diff de la feature solo toca los archivos de REQ-100-12."
+      ],
+      "status": "in_progress"
+    },
+    {
+      "id": 101,
+      "name": "hero-cards-polish",
+      "title": "Pulido de las cards del hero: logos grandes, NestJS legible, títulos sin tapar y HTB sin recorte",
+      "description": "Origen: observaciones no bloqueantes 1-5 del reviewer de la 99 (progress/review_hero-os-panel-mosaic.md) y petición humana 2026-10-16 (literal): «Has todo lo que tengas pendiente de una ves». Hoy, medido por CDP: los logos de NODE JS (5x2), NESTJS (4x2) y TYPESCRIPT (4x2) apenas superan a los de una 2x2 en escritorio; NESTJS tiene logo #E0234E sobre fondo #A3132F (1,68:1); CSS y HTML tapan su título a 800/1024 px (456 y 606 px², siguen con --icon-scale 5 en <= 1200 px); el aviso «Estadísticas no disponibles» de HTB se corta a 800 px; hero-card.css arrastra grid-column/grid-row con --card-column/--card-row sin definir desde la 98. Valores por defecto revisables: --color-marca-nestjs #3A0D18 (blanco 16,79:1, logo 3,61:1); --icon-width de escritorio node 240px, nestjs 230px, typescript 220px (calibrables) con los de tablet fijados en el @media a 165/160/150 px; css y html con --icon-scale 3 en <= 1200 px; paddings HTB reducidos en <= 1200 px. Se mantienen YouTube como red, el resto de colores de marca, qué cards son grandes y la geometría de la 99 (dominio y JSON sin cambios). El punto 5 opcional (menos alineación en columnas 9-12 entre filas 7-8 y 9-10) queda fuera: con anchos {4,2,2,2,2} siempre coinciden >= 2 cards (prueba en el análisis). Tokens, <= 100 líneas por hoja (partir en src/styles/hero-card-icons.css si hace falta), sin style inline, sin JS; no tocar archivos de la 93. Spec: specs/101_hero-cards-polish/requirements.md y design.md; análisis: progress/research/hero-cards-polish.md.",
+      "acceptance": [
+        "REQ-101-01/02/03: tokens.css declara --color-marca-nestjs con el hex de design.md (no #A3132F) y un test calcula contraste >= 4,5:1 frente a --color-text y >= 3:1 frente a #E0234E.",
+        "REQ-101-04/05/06: las reglas base de node, nestjs y typescript declaran el --icon-width de escritorio de design.md y, medido por CDP a 1280 y 1600, el área visible del logo de cada grande es >= 1,5 x la mediana de las 2x2 de icono, con centro dentro y >= 40 % visible.",
+        "REQ-101-07: el @media (max-width: 1200px) declara para node, nestjs, typescript, css y html el --icon-width y el --icon-scale de tablet de design.md (test sobre el texto de la hoja).",
+        "REQ-101-08/09/10: medido por CDP a 375, 769, 800, 1024, 1200, 1280 y 1600, las 14 cards de icono tapan 0 px² de su título, su logo tiene centro dentro y >= 40 % visible, y cada palabra de los 15 títulos queda dentro de su article en una sola caja.",
+        "REQ-101-11/12/13: medido por CDP en los mismos 7 anchos, cada palabra de «Estadísticas no disponibles» queda dentro del article HTB en una sola caja y .htb-stadistics__empty no interseca el título; los cambios están solo en htb-card.css/htb-stadistics.css con tokens.",
+        "REQ-101-14: src/styles/hero-card.css no contiene --card-column ni --card-row (test de texto).",
+        "REQ-101-15/16: cada hoja tocada o creada mide <= 100 líneas y sin colores sueltos; si se crea src/styles/hero-card-icons.css la importa src/components/hero-card.astro.",
+        "REQ-101-17/18: hero-grid-layout.ts, hero-grid-template.ts y hero-cards.json quedan sin diff frente a la 99 y por CDP a 1280/1600 cada article coincide con el mapa de specs/99_hero-os-panel-mosaic/design.md sin huecos ni solapes.",
+        "REQ-101-19/20: sin atributo style ni script nuevos y 0 errores de consola en 375/800/1024/1280/1600; los tests ajustados llevan la nota «Ajuste feature 101 (precedente REQ-43-06)».",
+        "REQ-101-21: existen progress/research/hero101/hero-grid-{375,800,1024,1280,1600}.png de la verificación."
+      ],
+      "depends_on": [
+        100
+      ],
+      "status": "pending"
     }
   ]
 }
