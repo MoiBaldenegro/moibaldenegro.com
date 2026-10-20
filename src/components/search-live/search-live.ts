@@ -78,8 +78,10 @@ export function initSearchLive(
   landing: Element | null = document.querySelector('[data-landing-sections]'),
   load: IndexLoader = loadSearchIndex,
 ): void {
-  if (panel === null) return;
+  // REQ-10-11: el manejador de la visita anterior se retira también sin panel.
   if (changeHandler !== null) document.removeEventListener(changeEventName(), changeHandler);
+  changeHandler = null;
+  if (panel === null) return;
   const show = liveShow(panel, landing, applyLive, load); // estado, carrera y errores: live-search.ts
   changeHandler = (event: Event): void => show((event as CustomEvent<{ term?: string }>).detail?.term ?? '');
   document.addEventListener(changeEventName(), changeHandler);

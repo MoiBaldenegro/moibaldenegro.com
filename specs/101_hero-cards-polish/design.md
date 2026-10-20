@@ -20,18 +20,20 @@ Alternativas de fondo NestJS medidas (logo / blanco): #2A0A12 3,93 / 18,25; #330
 
 | Card | Escritorio >= 1201 px (regla base) | Tablet <= 1200 px (@media) |
 |------|-----------------------------------|-----------------------------|
-| node | --icon-width 240px (antes 165), scale 5 | --icon-width 165px, --icon-scale 3 |
-| nestjs | --icon-width 230px (antes 160), scale 5 | --icon-width 160px, --icon-scale 3 |
-| typescript | --icon-width 220px (antes 150), scale 5 | --icon-width 150px, --icon-scale 2 |
+| node | --icon-width 240px (antes 165), scale 7 (medido; antes 5) | --icon-width 165px, --icon-scale 3 |
+| nestjs | --icon-width 230px (antes 160), scale 7 (medido; antes 5) | --icon-width 160px, --icon-scale 3 |
+| typescript | --icon-width 220px (antes 150), scale 7 (medido; antes 5) | --icon-width 150px, --icon-scale 2 |
 | css | sin cambios (105px, scale 5) | --icon-width 105px, --icon-scale 3 (nuevo) |
 | html | sin cambios (115px, scale 5) | --icon-width 115px, --icon-scale 3 (nuevo) |
 | resto | sin cambios (valores 97/98/99) | sin cambios |
 
 A <= 768 px sigue rigiendo `.card-icon svg { width: 110px !important; }`. Si la medida pide otro valor para cumplir REQ-101-05/06/08/09, el implementer lo ajusta y actualiza esta tabla con el valor medido (precedente de la 93).
 
+Medido por el implementer (CDP, 1280/1600): el `--icon-width` no agranda el logo, porque el `<svg>` mide 32px de alto (atributo) y el viewBox se ajusta por altura; el ancho solo desplaza el centro. Con scale 5 las grandes daban 1,11-1,25x la mediana de las 2x2; con scale 7 dan 1,96-2,09x (6 daba 1,50x en NODE JS, sin margen; 8, 2,4x).
+
 ## Card HTB en <= 1200 px
 
-- Dentro de `@media (max-width: 1200px)` en htb-card.css: padding del cuerpo reducido (partida: superior calc(var(--gap-card) * 3.5), laterales calc(var(--gap-card) / 2)) para dejar libre el título de 2 líneas.
+- Dentro de `@media (max-width: 1200px)` en htb-card.css: padding del cuerpo reducido (medido: superior calc(var(--gap-card) * 4.5), laterales e inferior calc(var(--gap-card) / 2); con * 3.5 el aviso tocaba el título de 2 líneas a 769/800, 79 px²) para dejar libre el título de 2 líneas.
 - En htb-stadistics.css (mismo tramo): `.htb-stadistics__empty` con padding calc(var(--gap-card) / 2), font-size 0.75rem y sin partir palabras, de forma que «Estadísticas», «no» y «disponibles» quepan en la card de 113 px a 800.
 - Valores calibrables con la medida de REQ-101-11/12.
 

@@ -1,0 +1,43 @@
+/* latest-horizontal-reserve.css — Feature 104 (home-cls-fix). Reserva el layout horizontal de
+   «Últimos artículos» desde el primer pintado, antes de que latest-horizontal.ts añada la clase
+   .latest-articles--horizontal y el envoltorio, para que la restauración del scroll del
+   ClientRouter no desplace el footer (CLS). Misma consulta que DESKTOP de latest-horizontal.ts más
+   (scripting: enabled): sin JS el layout queda apilado. Copia las declaraciones de layout de
+   latest-horizontal.css sin sticky, opacity ni transform (REQ-96-35/37) y añade como margin-bottom
+   el recorrido de pinScrollLength, (n - 2) * (W + G), con una regla por cada n entre 3 y
+   LATEST_POSTS_LIMIT (latest-articles.astro está congelado y no puede pasar n). En cuanto el JS
+   añade la clase, :not() la desactiva y manda latest-horizontal.css. */
+
+@media (min-width: 1201px) and (prefers-reduced-motion: no-preference) and (scripting: enabled) {
+  .latest-articles:not(.latest-articles--horizontal):has(> .latest-articles__list > .latest-articles__card:nth-child(3)) {
+    --latest-card-width: min(calc((min(var(--container-max), 95%) - var(--gap-card)) / 2), calc((100vh - 30rem) * 16 / 9 + 3.5rem));
+    --latest-pair-inset: calc((100% - 2 * var(--latest-card-width) - var(--gap-card)) / 2);
+    width: 100%;
+    min-height: 100vh;
+    overflow: clip;
+  }
+
+  .latest-articles:not(.latest-articles--horizontal):has(> .latest-articles__list > .latest-articles__card:nth-child(3)) .latest-articles__heading {
+    width: calc(2 * var(--latest-card-width) + var(--gap-card));
+    margin-inline: auto;
+  }
+
+  .latest-articles:not(.latest-articles--horizontal):has(> .latest-articles__list > .latest-articles__card:nth-child(3)) .latest-articles__list {
+    display: flex;
+    gap: var(--gap-card);
+  }
+
+  .latest-articles:not(.latest-articles--horizontal):has(> .latest-articles__list > .latest-articles__card:nth-child(3)) .latest-articles__card {
+    flex: 0 0 var(--latest-card-width);
+    width: var(--latest-card-width);
+  }
+
+  .latest-articles:not(.latest-articles--horizontal):has(> .latest-articles__list > .latest-articles__card:nth-child(3)) .latest-articles__card:first-child {
+    margin-inline-start: var(--latest-pair-inset);
+  }
+
+  /* Recorrido reservado (pinScrollLength): una regla por cada n entre 3 y LATEST_POSTS_LIMIT (hoy 3). */
+  .latest-articles:not(.latest-articles--horizontal):has(> .latest-articles__list > .latest-articles__card:nth-child(3):last-child) {
+    margin-bottom: calc((3 - 2) * (var(--latest-card-width) + var(--gap-card)));
+  }
+}

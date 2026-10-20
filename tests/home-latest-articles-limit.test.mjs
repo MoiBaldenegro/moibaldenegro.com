@@ -50,8 +50,9 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { latestPosts } from '../src/domain/latest-posts.ts';
+import { latestPosts, LATEST_POSTS_LIMIT } from '../src/domain/latest-posts.ts'; // Ajuste feature 102 (precedente REQ-43-06): LATEST_POSTS_LIMIT
 import { astroBuild } from './helpers/astro-build.mjs';
+import { latestRealPostIds } from './helpers/latest-real-posts.mjs'; // Ajuste feature 102 (precedente REQ-43-06)
 import { PostsRepository } from '../src/domain/repositories/posts-repository.ts';
 
 const COMPONENT_PATH = new URL('../src/components/latest-articles.astro', import.meta.url);
@@ -70,8 +71,9 @@ const EXISTING_INSPECTION_TESTS = [
   'visual-polish-refactor',
 ];
 
-// Los 8 artículos reales con su created real (verificados en el frontmatter de
-// src/content/posts/*/*.md). Los tres más recientes van primero.
+// Fixture de la feature 30 inyectado al repositorio (REQ-30-01/02): 8 artículos con
+// el created que tenían en la feature 30, más recientes primero. NO es la lista del
+// contenido actual (REQ-30-13 la deriva con latestRealPostIds). Ajuste feature 102 (precedente REQ-43-06).
 const REAL_SLUGS_BY_NEWEST = [
   '05-diseno-arquitectonico-vs-diseno-detallado',
   '04-ciclo-de-vida-y-arquitectura',
@@ -285,7 +287,9 @@ test('REQ-30-09/10: los tests de inspección existentes no documentan ajuste por
   }
 });
 
-test('REQ-30-13: el build real de la portada emite exactamente tres cards con los tres más recientes (ajuste feature 96)', () => {
+test('REQ-30-13: el build real de la portada emite exactamente tres cards con los tres más recientes (ajuste feature 96)', async () => { // Ajuste feature 102 (precedente REQ-43-06): async
+  const newest = await latestRealPostIds(LATEST_POSTS_LIMIT); // Ajuste feature 102 (precedente REQ-43-06)
+  assert.equal(newest.length, 3, `el helper deriva ${newest.length} ids en vez de 3 (REQ-30-13)`); // Ajuste feature 102 (precedente REQ-43-06)
   assert.ok(existsSync(ASTRO_BIN), 'node_modules/astro/bin/astro.mjs no existe (build no ejecutable)');
   const build = astroBuild();
   assert.equal(build.status, 0, `astro build falló (REQ-30-13):\n${build.stdout}\n${build.stderr}`);
@@ -297,7 +301,7 @@ test('REQ-30-13: el build real de la portada emite exactamente tres cards con lo
   const hrefs = [...section.matchAll(/href="(\/posts\/[^"]+)"/g)].map((match) => match[1]);
   assert.deepEqual(
     hrefs,
-    REAL_SLUGS_BY_NEWEST.slice(0, 3).map((slug) => `/posts/${slug}`), // Ajuste feature 96 (precedente REQ-43-06): slice(0, 4) -> slice(0, 3).
+    newest.map((slug) => `/posts/${slug}`), // Ajuste feature 96 (precedente REQ-43-06): slice(0, 4) -> slice(0, 3). Ajuste feature 102 (precedente REQ-43-06): del helper, no del fixture.
     `la portada enlaza ${hrefs.join(', ')} en vez de los tres artículos más recientes (REQ-30-13)`
   );
 });

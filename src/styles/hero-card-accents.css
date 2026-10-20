@@ -1,0 +1,49 @@
+/* hero-card-accents.css — Logos extra opcionales de las tarjetas de icono del hero (feature 103,
+   REQ-103-13..22; fondo revisado por la feature 105): icono pequeño en la esquina superior derecha
+   (.card-corner) y logo de fondo sutil anclado al borde inferior (.card-backdrop). Hoja aparte:
+   hero-card.css está en 99 líneas. Cada selector nombra .card-corner o .card-backdrop: una tarjeta
+   sin logos extra no recibe ninguna regla. Capas decorativas e inertes, por debajo del header
+   (z-index 4) y sin transform ni transición propios: el hover de la tarjeta (hero-card.css) no
+   cambia. Colores solo desde el sprite y los tokens. */
+
+/* Comunes: capas absolutas, sin eventos ni selección */
+.card-corner,
+.card-backdrop {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  line-height: 0;
+}
+
+/* Esquina superior derecha, por encima del icono principal y bajo el header */
+.card-corner { top: 16px; right: 16px; z-index: 3; }
+.card-corner svg { display: block; width: 22px; height: 22px; }
+
+/* El título deja sitio al icono de esquina (16 + 22 + 8 px); si no cabe, parte en dos líneas. */
+.hero-card:has(> .card-corner) .card-header { right: 46px; }
+
+/* Fondo (REQ-105-01..05): z-index 0 dentro del isolation de .hero-card; al ir antes que .card-icon
+   en el DOM, el icono principal se pinta encima. Más ancho que la card (desborda por los lados y lo
+   recorta el overflow de .hero-card) y anclado abajo: sin height, el alto lo da el aspect-ratio. */
+.card-backdrop {
+  --card-backdrop-opacity: 0.06;
+  left: -16px; right: -16px; bottom: 0;
+  z-index: 0;
+  opacity: var(--card-backdrop-opacity);
+}
+.card-backdrop svg { display: block; width: 100%; height: auto; aspect-ratio: 4 / 1; }
+
+/* Ratio exacto del viewBox de cada symbol (REQ-105-06): con <use> manda el meet centrado del
+   symbol, así el glifo llena el svg y su borde inferior coincide con el de la card. El trazo de
+   anthropic-wordmark acaba en y = 22 de 24: el margen negativo (2 de 182 unidades del ancho, en %
+   del ancho de .card-backdrop) baja esas 2 unidades para que el glifo toque el borde (REQ-105-07). */
+.card-backdrop:has(use[href$="#anthropic-wordmark"]) svg { aspect-ratio: 182 / 24; margin-bottom: calc(-100% * 2 / 182); }
+.card-backdrop:has(use[href$="#github-wordmark"]) svg { aspect-ratio: 249.1 / 67.5; }
+
+/* Responsive: márgenes más estrechos en columnas estrechas */
+@media (max-width: 1200px) {
+  .card-corner { top: 14px; right: 14px; }
+  .card-corner svg { width: 18px; height: 18px; }
+  .hero-card:has(> .card-corner) .card-header { right: 40px; }
+  .card-backdrop { left: -10px; right: -10px; }
+}

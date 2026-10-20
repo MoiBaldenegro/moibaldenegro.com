@@ -52,3 +52,12 @@
   background: var(--color-surface);
   border-radius: var(--radius-card);
 }
+
+/* Feature 101 (REQ-101-11): aviso compacto en la card estrecha de <= 1200 px, una palabra por línea sin partirla. */
+@media (max-width: 1200px) {
+  .htb-stadistics__empty {
+    padding: calc(var(--gap-card) / 2);
+    font-size: 0.75rem;
+    overflow-wrap: normal;
+  }
+}

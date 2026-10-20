@@ -22,7 +22,8 @@ const TABLE = [
   ['youtube', 'YOUTUBE', 'social', '115px', -8], ['github', 'GITHUB', 'social', '115px', -8],
 ];
 const FEATURED = ['node', 'nestjs', 'typescript'];
-const TOKENS = { rust: '#A33A16', aws: '#232F3E', 'claude-code': '#5C2A1C', nestjs: '#A3132F', cloudflare: '#A8470C', claude: '#B4532F', bun: '#3D2B1F' };
+// Ajuste feature 101 (precedente REQ-43-06): NestJS a #3A0D18 y su ancho base de escritorio a 230px (REQ-101-01/04).
+const TOKENS = { rust: '#A33A16', aws: '#232F3E', 'claude-code': '#5C2A1C', nestjs: '#3A0D18', cloudflare: '#A8470C', claude: '#B4532F', bun: '#3D2B1F' };
 const OLD_TOKENS = ['twitch', 'twitch-bottom', 'node-bottom', 'github-bottom', 'youtube-bottom', 'overlay-strong', 'overlay-soft'];
 const HTB = { id: 'htb', kind: 'htb', title: 'HACK THE BOX', colorToken: 'htb' };
 const ruleOf = (css, token) => css.match(new RegExp(`\\[data-color-token="${token}"\\]\\s*\\{([^}]*)\\}`))?.[1];
@@ -70,8 +71,8 @@ test('REQ-97-05/06 y REQ-98-24/26: tokens de marca nuevos, sin los retirados y t
 
 test('REQ-97-07/08 y REQ-98-27: hero-card.css tiene una regla por token con su fondo e icono base', () => {
   const css = base();
-  for (const [id, , , iconWidth, rotate] of TABLE.filter(([id]) => id in TOKENS)) {
-    const rule = ruleOf(css, id);
+  for (const [id, , , tableWidth, rotate] of TABLE.filter(([id]) => id in TOKENS)) {
+    const rule = ruleOf(css, id); const iconWidth = id === 'nestjs' ? '230px' : tableWidth; // Ajuste feature 101 (precedente REQ-43-06)
     assert.ok(rule, `falta [data-color-token="${id}"]`);
     assert.match(rule, new RegExp(`--card-bg:\\s*var\\(--color-marca-${id}\\);`), `${id}: --card-bg`);
     assert.match(rule, new RegExp(`--icon-width:\\s*${iconWidth};`), `${id}: --icon-width ${iconWidth}`);

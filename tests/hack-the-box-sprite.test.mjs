@@ -61,6 +61,18 @@ test('el sprite expone el logo de Cloudflare como símbolo SVG limpio', () => {
   assert.equal((sprite.match(/<symbol id="cloudflare"/g) ?? []).length, 1);
 });
 
+test('el sprite expone la nube de Cloudflare como símbolo SVG limpio', () => {
+  const sprite = readFileSync(SPRITE_URL, 'utf8');
+  const symbol = sprite.match(/<symbol id="cloudflare-cloud"[\s\S]*?<\/symbol>/)?.[0] ?? '';
+
+  assert.match(symbol, /<symbol id="cloudflare-cloud" viewBox="0 0 256 116">/);
+  assert.match(symbol, /<path fill="#FFF" d="m202\.357 49\.394/);
+  assert.match(symbol, /<path fill="#F4811F" d="M176\.332 108\.348/);
+  assert.match(symbol, /<path fill="#FAAD3F" d="M205\.544 48\.863/);
+  assert.doesNotMatch(symbol, /<title|<style|class=|width=|height=|xmlns=|preserveAspectRatio|xml:/);
+  assert.equal((sprite.match(/<symbol id="cloudflare-cloud"/g) ?? []).length, 1);
+});
+
 test('el sprite expone el logo de Rust como símbolo SVG limpio', () => {
   const sprite = readFileSync(SPRITE_URL, 'utf8');
   const symbol = sprite.match(/<symbol id="rust"[\s\S]*?<\/symbol>/)?.[0] ?? '';
@@ -102,4 +114,44 @@ test('el sprite expone el logo de Claude Code como símbolo SVG limpio', () => {
   assert.match(symbol, /<path fill="#D97757" fill-rule="evenodd" d="M20\.998 10\.949/);
   assert.doesNotMatch(symbol, /<title|<style|class=|clip-rule=|xml:/);
   assert.equal((sprite.match(/<symbol id="claude-code"/g) ?? []).length, 1);
+});
+
+test('el sprite expone el wordmark de GitHub como símbolo SVG limpio', () => {
+  const sprite = readFileSync(SPRITE_URL, 'utf8');
+  const symbol = sprite.match(/<symbol id="github-wordmark"[\s\S]*?<\/symbol>/)?.[0] ?? '';
+
+  assert.match(symbol, /<symbol id="github-wordmark" viewBox="0 0 249\.1 67\.5">/);
+  assert.match(symbol, /<path fill="#fff" d="M103\.4 55\.9/);
+  assert.doesNotMatch(symbol, /<title|<style|class=|xml:|space-preserve/);
+  assert.equal((sprite.match(/<symbol id="github-wordmark"/g) ?? []).length, 1);
+});
+
+test('el sprite expone el wordmark de Anthropic como símbolo SVG limpio', () => {
+  const sprite = readFileSync(SPRITE_URL, 'utf8');
+  const symbol = sprite.match(/<symbol id="anthropic-wordmark"[\s\S]*?<\/symbol>/)?.[0] ?? '';
+
+  assert.match(symbol, /<symbol id="anthropic-wordmark" viewBox="0 0 182 24">/);
+  assert.match(symbol, /<path fill="#ffff" fill-rule="evenodd" d="M38\.247 15\.874/);
+  assert.doesNotMatch(symbol, /<title|<style|class=|xml:|line-height|flex:/);
+  assert.equal((sprite.match(/<symbol id="anthropic-wordmark"/g) ?? []).length, 1);
+});
+
+test('el sprite expone el logo de Bash como símbolo SVG limpio', () => {
+  const sprite = readFileSync(SPRITE_URL, 'utf8');
+  const symbol = sprite.match(/<symbol id="bash"[\s\S]*?<\/symbol>/)?.[0] ?? '';
+
+  assert.match(symbol, /<symbol id="bash" viewBox="0 0 32 32">/);
+  assert.match(symbol, /<path fill="#fff" fill-rule="evenodd" d="M28\.057 6\.53/);
+  assert.doesNotMatch(symbol, /<title|<style|class=|width=|height=|xmlns=|xml:/);
+  assert.equal((sprite.match(/<symbol id="bash"/g) ?? []).length, 1);
+});
+
+test('el sprite expone el logo de WebAssembly como símbolo SVG limpio', () => {
+  const sprite = readFileSync(SPRITE_URL, 'utf8');
+  const symbol = sprite.match(/<symbol id="webassembly"[\s\S]*?<\/symbol>/)?.[0] ?? '';
+
+  assert.match(symbol, /<symbol id="webassembly" viewBox="0 0 24 24">/);
+  assert.match(symbol, /<path fill="#654FF0" d="M14\.745,0c0,0\.042/);
+  assert.doesNotMatch(symbol, /<title|<style|role=|xmlns=|xml:/);
+  assert.equal((sprite.match(/<symbol id="webassembly"/g) ?? []).length, 1);
 });

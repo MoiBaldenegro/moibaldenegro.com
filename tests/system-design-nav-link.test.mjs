@@ -63,19 +63,34 @@ test('REQ-93-12/24: .site-navbar a con white-space: nowrap y layout.css en 99 l�
   assert.equal(lines(read(HEADER[0])), 99);
 });
 
-test('REQ-93-13: las media queries del resto de src/styles no cambian frente a HEAD', { skip: !existsSync(new URL('.git', ROOT)) }, () => {
-  const others = srcFiles('src/styles/').filter((f) => f.endsWith('.css') && !HEADER.includes(f));
-  for (const rel of others) {
-    let head = ''; try { head = git(['show', `HEAD:${rel}`]); } catch { continue; }
-    assert.deepEqual(media(read(rel)), media(head), `${rel} cambió sus media queries`);
+// Ajuste feature 101 (precedente REQ-43-06): REQ-93-13/37 comparaban el árbol de trabajo con HEAD y fallaban con cambios
+// legítimos sin commitear de features posteriores (tokens.css y @media de las hojas HTB, REQ-101-01/11); ahora comprueban
+// los commits de la 93 (268e9ad ronda 1, 6b75e45 ronda 3), como REQ-93-04/21/22 en la 102. Los archivos creados o
+// borrados por la propia 93 (nav-label.css) se saltan, como antes los que no estaban en HEAD.
+const COMMITS_93 = ['268e9ad', '6b75e45']; // Ajuste feature 101 (precedente REQ-43-06)
+const at = (c, rel) => { try { return git(['show', `${c}:${rel}`]); } catch { return null; } }; // Ajuste feature 101 (precedente REQ-43-06)
+const has93 = (c) => at(c, 'package.json') !== null; // Ajuste feature 101 (precedente REQ-43-06): skip sin los commits
+test('REQ-93-13: la 93 no cambia las media queries del resto de src/styles', { skip: !existsSync(new URL('.git', ROOT)) || !COMMITS_93.every(has93) }, () => { // Ajuste feature 101 (precedente REQ-43-06)
+  for (const c of COMMITS_93) {
+    const others = git(['diff', '--name-only', `${c}^`, c, '--', 'src/styles']).trim().split('\n').filter((f) => f.endsWith('.css') && !HEADER.includes(f));
+    for (const rel of others) {
+      const [before, after] = [at(`${c}^`, rel), at(c, rel)]; if (before === null || after === null) continue;
+      assert.deepEqual(media(after), media(before), `${c}: ${rel} cambió sus media queries`);
+    }
   }
 });
 
-test('REQ-93-04/21/22: el artículo 05 lleva el tag, la ruta responde 200 y solo cambia el tag', { skip: !existsSync(new URL('.git', ROOT)) }, () => {
+// Ajuste feature 102 (precedente REQ-43-06): la guarda de alcance deja de leer `git diff HEAD` (dependía del árbol de trabajo
+// del humano) y comprueba el commit que cerró la 93 (268e9ad, junto a la 94): en src/content/posts solo tocó POST y solo su tags.
+const CLOSED_93 = '268e9ad'; const hasCommit = (c) => { try { git(['cat-file', '-e', `${c}^{commit}`]); return true; } catch { return false; } };
+test('REQ-93-04/21/22: el artículo 05 lleva el tag, la ruta responde 200 y solo cambia el tag', { skip: !existsSync(new URL('.git', ROOT)) || !hasCommit(CLOSED_93) }, () => { // Ajuste feature 102 (precedente REQ-43-06): skip sin el commit
   assert.match(tags(read(POST)), /#diseno-de-sistemas\b/);
   assert.equal(statusForTermPath('/diseno-de-sistemas'), 200); assert.equal(statusForTermPath('/diseno-de-sistemas/'), 200);
-  const names = git(['diff', 'HEAD', '--name-only', '--', 'src/content/posts']).trim();
-  assert.ok(names === '' || names === POST, `la feature toca otros artículos: ${names}`);
+  const names = git(['diff', '--name-only', `${CLOSED_93}^`, CLOSED_93, '--', 'src/content/posts']).trim(); // Ajuste feature 102 (precedente REQ-43-06)
+  assert.equal(names, POST, `la feature toca otros artículos: ${names}`); // Ajuste feature 102 (precedente REQ-43-06)
+  const diff = git(['diff', '-U0', `${CLOSED_93}^`, CLOSED_93, '--', POST]).split('\n').filter((l) => /^[-+](?![-+]{2} )/.test(l)); // Ajuste feature 102 (precedente REQ-43-06)
+  const [before, after] = diff.map((l) => l.trimEnd()); assert.equal(diff.length, 2, 'la 93 cambió más de una línea del post'); assert.match(before, /^-tags: "/); // Ajuste feature 102 (precedente REQ-43-06)
+  assert.equal(after, `+${before.slice(1).replace(/"$/, ' #diseno-de-sistemas"')}`, 'la 93 cambió algo más que añadir el tag'); // Ajuste feature 102 (precedente REQ-43-06)
 });
 
 test('REQ-93-23: Layout.astro sin <style>/<script> ni import de nav-label y <= 100 líneas', () => {
@@ -117,8 +132,8 @@ test('REQ-93-36: con prefers-reduced-motion: reduce el panel declara transition:
   for (const x of ['header.site-navbar .site-menu', "header.site-navbar[data-menu='open'] .site-menu"]) assert.ok(sel.includes(x), x);
 });
 
-test('REQ-93-37: sin dependencias nuevas ni cambios en tokens.css; site-menu.css <= 100 líneas', { skip: !existsSync(new URL('.git', ROOT)) }, () => {
-  assert.equal(git(['diff', 'HEAD', '--name-only', '--', 'src/styles/tokens.css', 'package.json', 'pnpm-lock.yaml']).trim(), '');
+test('REQ-93-37: sin dependencias nuevas ni cambios en tokens.css; site-menu.css <= 100 líneas', { skip: !existsSync(new URL('.git', ROOT)) || !COMMITS_93.every(has93) }, () => { // Ajuste feature 101 (precedente REQ-43-06)
+  for (const c of COMMITS_93) assert.equal(git(['diff', '--name-only', `${c}^`, c, '--', 'src/styles/tokens.css', 'package.json', 'pnpm-lock.yaml']).trim(), '', c); // Ajuste feature 101 (precedente REQ-43-06)
   assert.ok(lines(read('src/styles/site-menu.css')) <= 100); assert.equal(lines(read('src/styles/tokens.css')), 99);
 });
 

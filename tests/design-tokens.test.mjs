@@ -47,7 +47,7 @@ const MARCA_TOKENS = {
   '--color-marca-rust': '#A33A16',
   '--color-marca-aws': '#232F3E',
   '--color-marca-claude-code': '#5C2A1C',
-  '--color-marca-nestjs': '#A3132F',
+  '--color-marca-nestjs': '#3A0D18', // Ajuste feature 101 (precedente REQ-43-06): logo #E0234E distinguible (REQ-101-01).
   '--color-marca-cloudflare': '#A8470C',
   // Ajuste feature 98 (precedente REQ-43-06): entran claude y bun (specs/98_hero-mosaic-layout/design.md).
   '--color-marca-claude': '#B4532F',

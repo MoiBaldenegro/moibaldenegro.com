@@ -2,10 +2,10 @@
 slug: 00-systems-design-template
 title:  Mi plantilla para diseñar sistemas
 author: Moises Baldenegro Melendez
-img: design00.webp
+img: arch00.webp
 readtime: 4
 description: Describimos una secuencia de pasos para el diseño de sistemas.
-tags: "#diseño #system-desig #software-design"
+tags: "#diseno-de-sistemas #arquitectura #software-design"
 created: "16 Octubre 2026"
 updated: "16 Octubre 2026"
 next: /posts/01-diseno-detallado

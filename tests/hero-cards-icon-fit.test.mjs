@@ -50,7 +50,10 @@ const EXPECTED_1200 = {
   claude: { '--icon-scale': '3' }, bun: { '--icon-scale': '3', '--icon-rotation': '0deg' }, youtube: { '--icon-scale': '2' },
   // Ajuste feature 99 (precedente REQ-43-06): CLOUDFLARE completo a 100px (REQ-99-26/27), YOUTUBE a 2 y las cards que
   // cambian de tamaño sin tapar el título a 800/1024 (medida CDP en progress/impl_hero-os-panel-mosaic.md).
-  node: { '--icon-scale': '3' }, nestjs: { '--icon-scale': '3' }, react: { '--icon-scale': '3' }, typescript: { '--icon-scale': '2' },
+  // Ajuste feature 101 (precedente REQ-43-06): las grandes fijan en tablet su ancho previo (crecen solo en escritorio)
+  // y CSS/HTML pasan a escala 3 para no tapar su título a 769-1200 px (REQ-101-07, tabla de specs/101_hero-cards-polish/design.md).
+  node: { '--icon-width': '165px', '--icon-scale': '3' }, nestjs: { '--icon-width': '160px', '--icon-scale': '3' }, react: { '--icon-scale': '3' },
+  typescript: { '--icon-width': '150px', '--icon-scale': '2' }, css: { '--icon-width': '105px', '--icon-scale': '3' }, html: { '--icon-width': '115px', '--icon-scale': '3' },
 };
 
 test('REQ-97-19 (design.md Decisión 4): ajustes por defecto en @media (max-width: 1200px) tras la primera regla', () => {
@@ -66,8 +69,12 @@ test('REQ-97-20 / REQ-98-35: iconWidth y rotate del JSON coinciden con la regla 
   const all = JSON.parse(read('src/data/hero-cards.json'));
   const cards = all.filter((c) => c.iconWidth !== undefined);
   assert.equal(cards.length, all.filter((c) => c.kind === undefined).length);
+  // Ajuste feature 101 (precedente REQ-43-06): el JSON no cambia (REQ-101-17); el iconWidth de las featured es ahora
+  // su ancho de tablet (@media 1200) y la regla base lleva el de escritorio de design.md (REQ-101-04).
+  const tablet = Object.fromEntries(tokenRules(media('max-width: 1200px').body).map((r) => [r.token, r.decl]));
   for (const c of cards) {
-    assert.equal(base[c.colorToken]?.['--icon-width'], c.iconWidth, `${c.id} --icon-width base`);
+    const width = c.featured ? tablet[c.colorToken]?.['--icon-width'] : base[c.colorToken]?.['--icon-width'];
+    assert.equal(width, c.iconWidth, `${c.id} --icon-width ${c.featured ? 'tablet' : 'base'}`);
     assert.equal(base[c.colorToken]?.['--icon-rotation'], `${c.rotate}deg`, `${c.id} --icon-rotation base`);
   }
 });

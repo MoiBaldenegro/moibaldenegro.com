@@ -1,7 +1,8 @@
-// Parseo y validación de src/data/hero-cards.json (REQ-90-04..08, feature 90; category
-// REQ-98-05..07, feature 98; featured REQ-99-03/04, feature 99). Módulo hermano de hero-cards-repository.ts para mantener ambos
-// en <=100 líneas (precedente about-parse.ts). Todo fallo lanza HeroCardsDataError nombrando
-// hero-cards.json, el índice de la tarjeta y el campo o valor culpable.
+// Parseo y validación de src/data/hero-cards.json (REQ-90-04..08, feature 90; category REQ-98-05..07,
+// feature 98; featured REQ-99-03/04, feature 99; logos extra REQ-103-02..04, feature 103; showOnMobile
+// REQ-106-02..05, feature 106). Módulo hermano de hero-cards-repository.ts para mantener ambos en <=100 líneas
+// (precedente about-parse.ts); los lectores de campos viven en hero-cards-fields-parse.ts (REQ-106-07). Todo
+// fallo lanza HeroCardsDataError nombrando hero-cards.json, el índice de la tarjeta y el campo o valor culpable.
 
 import {
   HERO_CARD_CATEGORIES,
@@ -10,15 +11,18 @@ import {
   type HeroGridCard,
   type HeroRichCard,
 } from '../entities/hero-card.ts';
+import {
+  HeroCardsDataError,
+  asCard,
+  expectNumber,
+  expectString,
+  readBoolean,
+  readOption,
+  readSpriteRef,
+  type Entry,
+} from './hero-cards-fields-parse.ts';
 
-export class HeroCardsDataError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'HeroCardsDataError';
-  }
-}
-
-type Entry = Record<string, unknown>;
+export { HeroCardsDataError };
 
 export function parseHeroCards(data: unknown): HeroGridCard[] {
   if (!Array.isArray(data)) {
@@ -31,18 +35,7 @@ export function parseHeroCards(data: unknown): HeroGridCard[] {
   });
 }
 
-// Campo de catálogo cerrado: ausente = primer valor del catálogo (kind icon, category tech).
-function readOption<T extends string>(card: Entry, field: string, options: readonly T[], index: number): T {
-  if (!(field in card)) return options[0];
-  const value = card[field];
-  if (!options.includes(value as T)) {
-    throw new HeroCardsDataError(
-      `hero-cards.json: la tarjeta ${index} declara un ${field} inválido "${String(value)}"`,
-    );
-  }
-  return value as T;
-}
-
+// showOnMobile ausente: false en las de icono, true en las ricas (petición humana 2026-10-20, REQ-106-03/04).
 function parseIconCard(card: Entry, index: number): HeroCard {
   return {
     id: expectString(card, 'id', index),
@@ -51,10 +44,13 @@ function parseIconCard(card: Entry, index: number): HeroCard {
     colorToken: expectString(card, 'colorToken', index),
     icon: expectString(card, 'icon', index),
     category: readOption(card, 'category', HERO_CARD_CATEGORIES, index),
-    featured: 'featured' in card ? (expectType(card, 'featured', index, 'boolean') as boolean) : false,
+    featured: readBoolean(card, 'featured', index, false),
     rotate: expectNumber(card, 'rotate', index),
     scale: expectNumber(card, 'scale', index),
     iconWidth: expectString(card, 'iconWidth', index),
+    showOnMobile: readBoolean(card, 'showOnMobile', index, false),
+    ...readSpriteRef(card, 'cornerIcon', index),
+    ...readSpriteRef(card, 'backgroundIcon', index),
   };
 }
 
@@ -64,31 +60,6 @@ function parseRichCard(card: Entry, kind: HeroRichCard['kind'], index: number): 
     kind,
     title: expectString(card, 'title', index),
     colorToken: expectString(card, 'colorToken', index),
+    showOnMobile: readBoolean(card, 'showOnMobile', index, true),
   };
-}
-
-function asCard(entry: unknown, index: number): Entry {
-  if (typeof entry !== 'object' || entry === null || Array.isArray(entry)) {
-    throw new HeroCardsDataError(`hero-cards.json: la tarjeta ${index} no es un objeto`);
-  }
-  return entry as Entry;
-}
-
-const TYPE_LABELS = { string: 'texto', number: 'número', boolean: 'booleano' } as const;
-
-function expectType(card: Entry, field: string, index: number, type: keyof typeof TYPE_LABELS): unknown {
-  if (typeof card[field] !== type) {
-    throw new HeroCardsDataError(
-      `hero-cards.json: la tarjeta ${index} tiene un campo "${field}" que debe ser ${TYPE_LABELS[type]}`,
-    );
-  }
-  return card[field];
-}
-
-function expectString(card: Entry, field: string, index: number): string {
-  return expectType(card, field, index, 'string') as string;
-}
-
-function expectNumber(card: Entry, field: string, index: number): number {
-  return expectType(card, field, index, 'number') as number;
 }

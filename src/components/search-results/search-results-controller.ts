@@ -28,7 +28,11 @@ export function pageLabel(page: number, totalPages: number): string {
 }
 // Feature 47: el índice llega del loader (fetch de /search-index.json, una vez
 // por sesión) en lugar del script embebido; si falla, se anuncia el error.
+// REQ-10-10: el listener astro:page-load sigue vivo en toda la sesión; sin la
+// vista de resultados (marcador [data-search-guide], el mismo que usa
+// search-escape.ts) no toca document.title ni pide el índice (p. ej. /about).
 export function initSearchResults(load: IndexLoader = loadSearchIndex): void {
+  if (document.querySelector('[data-search-guide]') === null) return;
   const q = queryTerm(window.location.search);
   const term = q !== '' ? q : termFromPathname(window.location.pathname);
   wireClear(document.title, q !== '');

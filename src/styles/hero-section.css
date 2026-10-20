@@ -48,6 +48,8 @@
 [data-col-span="5"] { --card-column: span 5; }
 [data-row-span="2"] { --card-row: span 2; }
 [data-row-span="4"] { --card-row: span 4; }
+/* Feature 101 (REQ-101-14): la celda se aplica aquí, junto a los spans (antes en hero-card.css). */
+.hero-grid > .hero-card { grid-column: var(--card-column); grid-row: var(--card-row); }
 
 @keyframes float {
   0%, 100% { transform: translateY(0); }
@@ -58,6 +60,9 @@
 @media (max-width: 1200px) {
   .hero-grid { grid-template-columns: repeat(6, 1fr); grid-auto-rows: minmax(140px, auto); }
 }
+/* Feature 106 (REQ-106-09): en móvil solo las cards con showOnMobile true; display none las saca del
+   layout (sin huecos), del árbol de accesibilidad y del orden de tabulación. */
 @media (max-width: 768px) {
   .hero-grid { grid-template-columns: 1fr; grid-auto-rows: minmax(190px, auto); }
+  .hero-grid > .hero-card[data-show-on-mobile="false"] { display: none; }
 }

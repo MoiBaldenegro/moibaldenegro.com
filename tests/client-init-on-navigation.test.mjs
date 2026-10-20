@@ -106,7 +106,7 @@ test('REQ-10-07: sin el DOM del panel la re-inicialización es un no-op seguro',
   try {
     initSearchLive();
     assert.equal(calls.add.length, 0, 'sin panel no debe registrar listeners');
-    assert.equal(calls.listeners.size, 0, 'sin panel no debe quedar ningún listener');
+    assert.equal([...calls.listeners.values()].flat().length, 0, 'sin panel no debe quedar ningún listener');
   } finally {
     delete globalThis.document;
   }

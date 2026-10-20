@@ -5,15 +5,13 @@ author: Moises Baldenegro Melendez
 img: spring00.webp
 readtime: 12
 description: Veremos como crear un servicio RESTful con Spring Boot y JAVA 21.
-tags: "#spring #java #software-design"
+tags: "#diseno-de-sistemas #spring #java #software-design"
 created: "16 Septiembre 2026"
 updated: "16 Septiembre 2026"
 next: /posts/01-diseno-detallado
 related: [/posts/02-principios-del-diseno-de-software]
 
 ---
-
-# API REST de Productos con Spring Boot, JPA y H2: guía por capas
 
 En este post construimos (y explicamos) una API REST de productos en **Spring Boot**
 siguiendo una arquitectura por capas. El proyecto se llama **`lamar-api`** y usa:

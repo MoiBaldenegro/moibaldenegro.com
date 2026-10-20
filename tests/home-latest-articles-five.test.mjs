@@ -10,6 +10,7 @@ import { readFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { astroBuild } from './helpers/astro-build.mjs';
+import { latestRealPostIds } from './helpers/latest-real-posts.mjs'; // Ajuste feature 102 (precedente REQ-43-06)
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
 const url = (rel) => new URL(`../${rel}`, import.meta.url);
@@ -17,7 +18,7 @@ const read = (rel) => readFileSync(url(rel), 'utf8');
 const lines = (t) => t.split(/\r?\n/).filter((l, i, all) => i < all.length - 1 || l !== '').length;
 const [MODULE, FOOTER] = ['src/domain/latest-posts.ts', 'src/components/site-footer/site-footer.astro'];
 const HZ = 'src/components/latest-horizontal/latest-horizontal.astro'; // Ajuste feature 96 (precedente REQ-43-06): sin SLIDE
-const NEWEST = ['05-diseno-arquitectonico-vs-diseno-detallado', '04-ciclo-de-vida-y-arquitectura', '01-procesos-memoria']; // Ajuste feature 96 (precedente REQ-43-06): sin la 4.ª
+// Ajuste feature 96 (precedente REQ-43-06): sin la 4.ª. Ajuste feature 102 (precedente REQ-43-06): NEWEST sale; lo esperado se deriva del contenido con latestRealPostIds.
 const load = async () => import(url(MODULE).href);
 const fake = (n) => Array.from({ length: n }, (_, i) => ({ id: `p-${i}`, created: `${i + 1} Enero 2020` }));
 const cut = (html, open, close) => { const at = html.indexOf(open); assert.notEqual(at, -1, open); return html.slice(at, html.indexOf(close, at)); };
@@ -43,13 +44,14 @@ test('REQ-95-04/05: 3 primeros (ajuste feature 96) sin mutar; con menos, todos s
   for (const n of [0, 1, 2]) assert.doesNotThrow(() => assert.equal(latestPosts(fake(n)).length, n), `con ${n}`);
 });
 
-test('REQ-95-06/07/12: build con 3 cards (ajuste feature 96) (transition:name) y footer con 3', () => {
+test('REQ-95-06/07/12: build con 3 cards (ajuste feature 96) (transition:name) y footer con 3', async () => { // Ajuste feature 102 (precedente REQ-43-06): async
+  const newest = await latestRealPostIds((await load()).LATEST_POSTS_LIMIT); assert.equal(newest.length, 3, 'el helper no deriva 3 ids'); // Ajuste feature 102 (precedente REQ-43-06)
   const build = astroBuild();
   assert.equal(build.status, 0, `astro build falló:\n${build.stdout}\n${build.stderr}`);
   const html = read('dist/client/index.html');
   const section = cut(html, '<section class="latest-articles"', '</section>');
   assert.equal((section.match(/class="latest-articles__card"/g) ?? []).length, 3, 'no hay 3 cards'); // Ajuste feature 96 (precedente REQ-43-06)
-  assert.deepEqual([...section.matchAll(/href="(\/posts\/[^"]+)"/g)].map((m) => m[1]), NEWEST.map((s) => `/posts/${s}`));
+  assert.deepEqual([...section.matchAll(/href="(\/posts\/[^"]+)"/g)].map((m) => m[1]), newest.map((s) => `/posts/${s}`)); // Ajuste feature 102 (precedente REQ-43-06)
   assert.equal((section.match(/data-astro-transition-scope=/g) ?? []).length, 6, 'img y h3 sin transition:name'); // Ajuste feature 96 (precedente REQ-43-06)
   assert.ok((read('src/components/latest-articles.astro').match(/transition:name=/g) ?? []).length >= 2);
   assert.equal((cut(html, '<footer class="site-footer"', '</footer>').match(/\bsite-footer__post\b/g) ?? []).length, 3, 'el footer no tiene 3 enlaces');

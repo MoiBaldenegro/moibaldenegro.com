@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { astroBuild } from './helpers/astro-build.mjs';
+import { astroBuild } from './helpers/astro-build.mjs'; import { latestRealPostIds } from './helpers/latest-real-posts.mjs'; // Ajuste feature 102 (precedente REQ-43-06)
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
 const url = (rel) => new URL(`../${rel}`, import.meta.url);
@@ -27,10 +27,10 @@ test('REQ-96-01/02/03: límite 3 en portada, 3 explícito en el footer y corte s
   for (const n of [3, 4, 8, 20]) { const posts = fake(n), snap = structuredClone(posts); assert.deepEqual(latestPosts(posts).map((p) => p.id), ['p-0', 'p-1', 'p-2'], `con ${n}`); assert.deepEqual(posts, snap); }
   for (const n of [0, 1, 2]) assert.equal(latestPosts(fake(n)).length, n, `con ${n}`);
 });
-test('REQ-96-04/05: build real con 3 cards (transition:name) y footer con 3', () => {
-  const build = astroBuild(); assert.equal(build.status, 0, `astro build falló:\n${build.stdout}\n${build.stderr}`);
-  const html = read('dist/client/index.html'); const section = cut(html, '<section class="latest-articles"', '</section>');
-  assert.deepEqual([...section.matchAll(/href="(\/posts\/[^"]+)"/g)].map((m) => m[1]), ['05-diseno-arquitectonico-vs-diseno-detallado', '04-ciclo-de-vida-y-arquitectura', '01-procesos-memoria'].map((s) => `/posts/${s}`));
+test('REQ-96-04/05: build real con 3 cards (transition:name) y footer con 3', async () => { // Ajuste feature 102 (precedente REQ-43-06): async
+  const newest = await latestRealPostIds((await import(url('src/domain/latest-posts.ts').href)).LATEST_POSTS_LIMIT); assert.equal(newest.length, 3); // Ajuste feature 102 (precedente REQ-43-06)
+  const build = astroBuild(); assert.equal(build.status, 0, `astro build falló:\n${build.stdout}\n${build.stderr}`); const html = read('dist/client/index.html'); const section = cut(html, '<section class="latest-articles"', '</section>');
+  assert.deepEqual([...section.matchAll(/href="(\/posts\/[^"]+)"/g)].map((m) => m[1]), newest.map((s) => `/posts/${s}`)); // Ajuste feature 102 (precedente REQ-43-06)
   assert.equal((section.match(/class="latest-articles__card"/g) ?? []).length, 3); assert.equal((section.match(/data-astro-transition-scope=/g) ?? []).length, 6);
   assert.equal((cut(html, '<footer class="site-footer"', '</footer>').match(/\bsite-footer__post\b/g) ?? []).length, 3);
 });

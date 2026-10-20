@@ -20,3 +20,11 @@
   color: var(--color-text-secondary);
   font-family: var(--font-mono);
 }
+
+/* Feature 101 (REQ-101-11/12): en <= 1200 px la card es estrecha y el título ocupa 2 líneas;
+   menos padding para que el aviso quepa entero debajo del título. */
+@media (max-width: 1200px) {
+  .hero-card--rich .hero-card__body {
+    padding: calc(var(--gap-card) * 4.5) calc(var(--gap-card) / 2) calc(var(--gap-card) / 2);
+  }
+}

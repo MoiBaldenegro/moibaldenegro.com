@@ -163,8 +163,12 @@ test('design.md Decisión 2 / REQ-98-18/19: sin style inline, spans en hero-sect
   assert.doesNotMatch(astro, /\bstyle\s*=/, 'hero-card.astro conserva el atributo style inline');
   assert.ok(astro.includes('data-color-token={card.colorToken}'), 'hero-card.astro no aplica data-color-token');
   const css = readCss(HERO_CARD_CSS, 'src/styles/hero-card.css');
-  assert.match(css, /\.hero-card\s*\{[^}]*grid-column\s*:\s*var\(--card-column\)/s, 'grid-column no sale de --card-column');
-  assert.match(css, /\.hero-card\s*\{[^}]*grid-row\s*:\s*var\(--card-row\)/s, 'grid-row no sale de --card-row');
+  // Ajuste feature 101 (precedente REQ-43-06): grid-column/grid-row con --card-column/--card-row salen de hero-card.css
+  // (REQ-101-14) y pasan a hero-section.css junto a las reglas de span, que es donde se definen.
+  assert.doesNotMatch(css, /--card-(column|row)/, 'hero-card.css sigue referenciando --card-column/--card-row');
+  const grid = readFileSync(HERO_SECTION_CSS, 'utf8');
+  assert.match(grid, /\.hero-grid > \.hero-card\s*\{[^}]*grid-column\s*:\s*var\(--card-column\)/s, 'grid-column no sale de --card-column');
+  assert.match(grid, /\.hero-grid > \.hero-card\s*\{[^}]*grid-row\s*:\s*var\(--card-row\)/s, 'grid-row no sale de --card-row');
   for (const rule of css.match(/\[data-color-token="[^"]+"\]\s*\{[^}]*\}/g) ?? []) {
     assert.doesNotMatch(rule, /--card-(column|row)\s*:/, `regla con celda: ${rule}`);
   }

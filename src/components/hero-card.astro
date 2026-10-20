@@ -1,5 +1,6 @@
 ---
 import "../styles/hero-card.css";
+import "../styles/hero-card-accents.css";
 import type { HeroCard } from "../domain/entities/hero-card.ts";
 
 interface Props {
@@ -11,14 +12,30 @@ interface Props {
 const { card, colSpan, rowSpan } = Astro.props;
 ---
 
-<article class="hero-card" data-color-token={card.colorToken} data-col-span={colSpan} data-row-span={rowSpan}>
+<article class="hero-card" data-color-token={card.colorToken} data-col-span={colSpan} data-row-span={rowSpan} data-show-on-mobile={String(card.showOnMobile)}>
   <header class="card-header">
     <p class="card-title">{card.title}</p>
   </header>
+
+  {card.backgroundIcon && (
+    <div class="card-backdrop">
+      <svg aria-hidden="true" focusable="false">
+        <use xlink:href={card.backgroundIcon} href={card.backgroundIcon}/>
+      </svg>
+    </div>
+  )}
 
   <div class="card-icon">
     <svg width="32px" height="32px" aria-hidden="true" focusable="false">
       <use xlink:href={card.icon} href={card.icon}/>
     </svg>
   </div>
+
+  {card.cornerIcon && (
+    <div class="card-corner">
+      <svg aria-hidden="true" focusable="false">
+        <use xlink:href={card.cornerIcon} href={card.cornerIcon}/>
+      </svg>
+    </div>
+  )}
 </article>

@@ -10,8 +10,6 @@
   border: 1px solid var(--color-border);
   box-shadow: var(--shadow-card-rest);
   transition: var(--transition-default);
-  grid-column: var(--card-column);
-  grid-row: var(--card-row);
 }
 
 .hero-card:hover {
@@ -54,17 +52,18 @@
 .hero-card:hover .card-icon svg { transform: rotate(2deg) scale(calc(var(--icon-scale) * 1.12)); }
 
 /* Fondo e icono por token (features 98/99: la celda la calcula src/domain/hero-grid-layout.ts y llega como
-   data-col-span/data-row-span; CLOUDFLARE a escala 1 para que el símbolo completo quepa, REQ-99-26) */
+   data-col-span/data-row-span; CLOUDFLARE a escala 1, REQ-99-26). Feature 101: grandes con logo mayor en escritorio
+   (REQ-101-04/05): el tamaño lo da la escala (svg de 32px de alto, viewBox ajustado por altura); el ancho mueve el centro. */
 [data-color-token="htb"] { --card-bg: var(--color-marca-htb); }
 [data-color-token="html"] { --card-bg: var(--color-marca-html); --icon-width: 115px; --icon-rotation: -7deg; }
-[data-color-token="node"] { --card-bg: var(--color-marca-node); --icon-width: 165px; --icon-rotation: -10deg; }
+[data-color-token="node"] { --card-bg: var(--color-marca-node); --icon-width: 240px; --icon-rotation: -10deg; --icon-scale: 7; }
 [data-color-token="react"] { --card-bg: var(--color-marca-react); --icon-width: 115px; --icon-rotation: -8deg; }
 [data-color-token="rust"] { --card-bg: var(--color-marca-rust); --icon-width: 115px; --icon-rotation: -8deg; }
-[data-color-token="typescript"] { --card-bg: var(--color-marca-typescript); --icon-width: 150px; --icon-rotation: -10deg; }
+[data-color-token="typescript"] { --card-bg: var(--color-marca-typescript); --icon-width: 220px; --icon-rotation: -10deg; --icon-scale: 7; }
 [data-color-token="css"] { --card-bg: var(--color-marca-css); --icon-width: 105px; --icon-rotation: -8deg; }
 [data-color-token="aws"] { --card-bg: var(--color-marca-aws); --icon-width: 120px; --icon-rotation: -6deg; }
 [data-color-token="claude-code"] { --card-bg: var(--color-marca-claude-code); --icon-width: 115px; --icon-rotation: 0deg; }
-[data-color-token="nestjs"] { --card-bg: var(--color-marca-nestjs); --icon-width: 160px; --icon-rotation: -5deg; }
+[data-color-token="nestjs"] { --card-bg: var(--color-marca-nestjs); --icon-width: 230px; --icon-rotation: -5deg; --icon-scale: 7; }
 [data-color-token="cloudflare"] { --card-bg: var(--color-marca-cloudflare); --icon-width: 170px; --icon-rotation: 0deg; --icon-scale: 1; }
 [data-color-token="claude"] { --card-bg: var(--color-marca-claude); --icon-width: 110px; --icon-rotation: -8deg; }
 [data-color-token="bun"] { --card-bg: var(--color-marca-bun); --icon-width: 115px; --icon-rotation: -8deg; }
@@ -82,8 +81,10 @@
   [data-color-token="rust"] { --icon-scale: 3; } [data-color-token="aws"] { --icon-scale: 3; } [data-color-token="claude-code"] { --icon-scale: 2; }
   [data-color-token="cloudflare"] { --icon-width: 100px; --icon-rotation: 0deg; }
   [data-color-token="claude"] { --icon-scale: 3; } [data-color-token="bun"] { --icon-scale: 3; --icon-rotation: 0deg; } [data-color-token="youtube"] { --icon-scale: 2; }
-  /* Feature 99: las cards grandes en escritorio y las que encogen, sin tapar el título en tablet y móvil. */
-  [data-color-token="node"] { --icon-scale: 3; } [data-color-token="nestjs"] { --icon-scale: 3; } [data-color-token="react"] { --icon-scale: 3; } [data-color-token="typescript"] { --icon-scale: 2; }
+  /* Features 99/101: las grandes conservan en tablet su ancho previo y CSS/HTML bajan a escala 3 (REQ-101-07). */
+  [data-color-token="node"] { --icon-width: 165px; --icon-scale: 3; } [data-color-token="nestjs"] { --icon-width: 160px; --icon-scale: 3; }
+  [data-color-token="typescript"] { --icon-width: 150px; --icon-scale: 2; } [data-color-token="react"] { --icon-scale: 3; }
+  [data-color-token="css"] { --icon-width: 105px; --icon-scale: 3; } [data-color-token="html"] { --icon-width: 115px; --icon-scale: 3; }
 }
 
 @media (max-width: 768px) {

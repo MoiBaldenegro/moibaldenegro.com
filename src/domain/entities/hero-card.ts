@@ -29,6 +29,12 @@ export interface HeroCard {
   readonly rotate: number;
   readonly scale: number;
   readonly iconWidth: string;
+  // Visible en móvil (<= 768 px) o no (REQ-106-01, feature 106); el parse lo rellena si el JSON lo omite.
+  readonly showOnMobile: boolean;
+  // Logos extra opcionales y decorativos (REQ-103-01, feature 103): esquina superior derecha y
+  // fondo inferior de baja opacidad; si el JSON los omite, la clave no existe y la card queda como antes.
+  readonly cornerIcon?: string;
+  readonly backgroundIcon?: string;
 }
 
 // Tarjeta rica (otro diseño o con datos propios) que hereda las reglas del grid.
@@ -37,6 +43,7 @@ export interface HeroRichCard {
   readonly kind: Exclude<HeroCardKind, 'icon'>;
   readonly title: string;
   readonly colorToken: string;
+  readonly showOnMobile: boolean;
 }
 
 // Unión que entrega HeroCardsRepository.getCards() (REQ-90-04).

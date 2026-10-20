@@ -1,0 +1,175 @@
+{
+ "W": 1280,
+ "H": 800,
+ "cases": {
+  "reload-bottom": {
+   "target": 2275,
+   "before": {
+    "y": 2275,
+    "docH": 3075,
+    "pin": true,
+    "cards": 3,
+    "sr": "manual",
+    "ops": [
+     0,
+     0,
+     0
+    ]
+   },
+   "after": {
+    "y": 2275,
+    "docH": 3075,
+    "pin": true,
+    "cards": 3,
+    "sr": "manual",
+    "ops": [
+     0,
+     0,
+     0
+    ]
+   },
+   "cls": 0,
+   "entries": []
+  },
+  "reload-mid": {
+   "target": 1510,
+   "before": {
+    "y": 1510,
+    "docH": 3075,
+    "pin": true,
+    "cards": 3,
+    "sr": "manual",
+    "ops": [
+     1,
+     1,
+     1
+    ]
+   },
+   "after": {
+    "y": 1510,
+    "docH": 3075,
+    "pin": true,
+    "cards": 3,
+    "sr": "manual",
+    "ops": [
+     1,
+     1,
+     1
+    ]
+   },
+   "cls": 0,
+   "entries": []
+  },
+  "back-bottom": {
+   "target": 2275,
+   "before": {
+    "y": 2275,
+    "docH": 3075,
+    "pin": true,
+    "cards": 3,
+    "sr": "manual",
+    "ops": [
+     0,
+     0,
+     0
+    ]
+   },
+   "href": "/posts/00-systems-design-template",
+   "post": "/posts/00-systems-design-template/",
+   "path": "/",
+   "after": {
+    "y": 2275,
+    "docH": 3075,
+    "pin": true,
+    "cards": 3,
+    "sr": "manual",
+    "ops": [
+     0,
+     0,
+     0
+    ]
+   },
+   "cls": 0.4837,
+   "entries": [
+    {
+     "t": 5196,
+     "v": 0.4837,
+     "input": false,
+     "y": 2275,
+     "docH": 3075,
+     "src": [
+      {
+       "n": "footer.site-footer",
+       "prev": [
+        0,
+        0,
+        0,
+        0
+       ],
+       "cur": [
+        0,
+        410,
+        1270,
+        389
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "back-mid": {
+   "target": 1510,
+   "before": {
+    "y": 1510,
+    "docH": 3075,
+    "pin": true,
+    "cards": 3,
+    "sr": "manual",
+    "ops": [
+     1,
+     1,
+     1
+    ]
+   },
+   "href": "/posts/00-systems-design-template",
+   "post": "/posts/00-systems-design-template/",
+   "path": "/",
+   "after": {
+    "y": 1510,
+    "docH": 3075,
+    "pin": true,
+    "cards": 3,
+    "sr": "manual",
+    "ops": [
+     1,
+     1,
+     1
+    ]
+   },
+   "cls": 0,
+   "entries": []
+  }
+ },
+ "clean": {
+  "cls": 0,
+  "entries": [],
+  "state": {
+   "y": 0,
+   "docH": 3075,
+   "pin": true,
+   "cards": 3,
+   "sr": "manual",
+   "ops": [
+    0,
+    0,
+    0
+   ]
+  }
+ },
+ "geo": {
+  "start": 1205,
+  "len": 610,
+  "max": 2275
+ },
+ "logs": []
+}
