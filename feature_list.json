@@ -1,0 +1,43 @@
+{
+  "project": "moibaldenegro.com — sitio personal de Moisés Baldenegro",
+  "description": "Backlog regenerado desde cero (ciclo actual): feature_list.json estuvo ausente y se regenera limpio con el esqueleto minimo (project, description, rules, features). El array features solo contiene las features nuevas del ciclo (pendientes o en trabajo) y sus ids arrancan en 1. El historial de features ya cerradas vive unicamente en progress/history.md y en los artefactos permanentes (specs/<NN>_*, progress/impl_*.md, progress/review_*.md, progress/research/).",
+  "rules": {
+    "one_feature_at_a_time": true,
+    "require_tests_to_close": true,
+    "valid_status": ["pending", "in_progress", "done", "blocked"]
+  },
+  "features": [
+    {
+      "id": 1,
+      "name": "hero-grid-explicit-rows",
+      "title": "El mosaico del hero se coloca por filas declaradas en los datos",
+      "description": "El motor del mosaico (src/domain/hero-grid-layout.ts, 95 líneas) reparte hoy las tarjetas por dos colas globales (las tecnologías con featured a los huecos grandes, el resto a los pequeños, las redes sociales las últimas), así que las franjas visuales no existen en el modelo: son un efecto del orden de src/data/hero-cards.json. La fila de herramientas que pide el humano (bash, webassembly, astro, opencode, tauri) no se puede declarar con ese modelo: al añadir las 5 tarjetas al JSON la simulación del motor deja bash y webassembly en la franja anterior y la última franja mezcla la fila nueva con youtube y github. Esta feature añade el campo opcional row (entero >= 1) a la tarjeta de icono, lo parsea con error nombrado (HeroCardsDataError) y hace que el motor agrupe las tarjetas que comparten row en una franja visual completa de 5 tarjetas (la featured en el hueco grande de 4 columnas, las demás en los huecos pequeños en orden de JSON), con las validaciones por fila: 5 tarjetas exactas, 1 featured exacta, tarjetas social solo en la última fila y zona superior completa. Los datos migran declarando row en las 10 tarjetas de las franjas inferiores y el mosaico visible NO cambia: es la base de dominio/datos de la feature 2. Spec: specs/01_hero-grid-explicit-rows/requirements.md (REQ-01-01..14) y design.md. Análisis: progress/research/hero-fila-nueva-tools.md.",
+      "acceptance": [
+        "El parseo de hero-cards.json acepta el campo opcional \"row\" (entero >= 1) y lo expone en la entidad de tarjeta; con un valor 0, negativo, decimal o texto lanza HeroCardsDataError nombrando hero-cards.json y el índice de la tarjeta.",
+        "Con las tarjetas actuales declaradas por filas, layoutHeroCards devuelve la misma colocación que antes de la migración (misma franja, mismo span y misma columna para las 15 tarjetas actuales) y las tarjetas que comparten \"row\" caen en la misma franja con la \"featured\" en el hueco grande de 4 columnas y las demás en los huecos pequeños en el orden del JSON.",
+        "Las tarjetas de icono sin \"row\" ocupan los huecos de la zona superior con la única \"featured\" en el hueco grande; una zona superior incompleta o con dos \"featured\" lanza HeroGridLayoutError.",
+        "Una fila declarada con 4 o 6 tarjetas, con 0 o 2 \"featured\", con una tarjeta \"social\" en una fila que no sea la última, o con una \"social\" que declare \"featured\" lanza HeroGridLayoutError.",
+        "El cambio respeta el límite de 100 líneas por archivo: hero-grid-layout.ts se reparte en módulos hermanos (hero-grid-rows.ts, hero-grid-template.ts, hero-grid-error.ts) y ningún archivo del proyecto supera las 100 líneas."
+      ],
+      "status": "done"
+    },
+    {
+      "id": 2,
+      "name": "hero-row-new-tools",
+      "title": "Fila nueva del hero con bash, webassembly, astro, opencode y tauri",
+      "description": "Petición humana (2026-10-21): «En las cards del hero pon una nueva fila con los los sprites de bash, web assembly, astro, opencode, y tauri, la card grande sera la de astro.» Esta feature añade al mosaico del hero la franja de cinco tarjetas bash, webassembly, astro, opencode y tauri, declarada como fila 2 con el campo row (feature 1), con astro en el hueco grande (4 columnas x 2 filas) y las otras cuatro en los huecos pequeños en ese orden; la franja de las redes sociales pasa a fila 3 para mantenerlas en la esquina inferior derecha. También añade los tokens de color de marca y la hoja de estilos con las reglas data-color-token y la geometría del icono de cada tarjeta nueva: tokens.css está en 99 líneas (hay que compactar el bloque de marcas para que quepan los 5 tokens) y hero-card.css también (las reglas nuevas van en src/styles/hero-card-brands.css, importada por src/components/hero-card.astro). Los symbols bash, webassembly, astro, opencode y tauri ya existen en public/assets/svg/sprite.svg, que no se modifica. Spec: specs/02_hero-row-new-tools/requirements.md (REQ-02-01..13) y design.md. Análisis: progress/research/hero-fila-nueva-tools.md.",
+      "acceptance": [
+        "hero-cards.json declara las tarjetas bash, webassembly, astro, opencode y tauri con su icono del sprite, su colorToken, \"row\": 2, \"featured\" solo en astro y \"showOnMobile\": false; la fila de las redes sociales (bun, claude, typescript, youtube, github) pasa a \"row\": 3.",
+        "Con los datos actuales, la fila 2 del mosaico contiene bash, webassembly, astro, opencode y tauri en ese orden, con astro en el hueco grande (colSpan 4) y las otras cuatro en huecos de 2 columnas, formando una franja de 12 columnas.",
+        "tokens.css define --color-marca-bash, --color-marca-webassembly, --color-marca-astro, --color-marca-opencode y --color-marca-tauri, y ningún color nuevo aparece fuera de tokens.css (scripts/audit-design-tokens.mjs en verde).",
+        "Existe una regla [data-color-token] para cada una de las cinco marcas nuevas que asigna --card-bg: var(--color-marca-<marca>) a la tarjeta.",
+        "La regla de astro define --icon-width y --icon-scale propios, mayores que los de las cuatro tarjetas pequeñas de su fila.",
+        "La hoja de estilos del mosaico incluye el breakpoint de 1200 px con la escala del icono de las cinco tarjetas nuevas reducida.",
+        "public/assets/svg/sprite.svg no ha cambiado respecto al repositorio (git diff vacío) y contiene los symbols bash, webassembly, astro, opencode y tauri.",
+        "La regresión visual a 375, 768 y 1280 px muestra la fila nueva completa, sin huecos ni solapamientos, con el icono de astro legible en su hueco grande y sin errores en la consola del navegador."
+      ],
+      "depends_on": [1],
+      "status": "done"
+    }
+  ]
+}

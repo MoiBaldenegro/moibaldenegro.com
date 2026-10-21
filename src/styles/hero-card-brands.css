@@ -1,0 +1,24 @@
+/* hero-card-brands.css — Marcas de la fila nueva de herramientas del hero (feature 2, REQ-02-08..11):
+   bash, webassembly, astro, opencode y tauri. Cada tarjeta lleva el fondo de su token de marca
+   (--color-marca-<marca> en tokens.css) y la geometría de su icono (--icon-width, --icon-rotation,
+   --icon-scale). Hoja aparte: hero-card.css está en 99 líneas (Decisión 4 del design.md) y la importa
+   src/components/hero-card.astro. Geometría según la Decisión 6 del design.md: manda el alto del <svg>
+   (28 px), así que el ancho mueve el centro y la escala el tamaño; la escala 5 de las cuatro pequeñas
+   es la que ya daba la base .hero-card y se declara aquí para que la comparación del REQ-02-10 sea
+   verificable en el fichero. Colores solo desde tokens.css. */
+
+[data-color-token="bash"] { --card-bg: var(--color-marca-bash); --icon-width: 115px; --icon-rotation: -8deg; --icon-scale: 5; }
+[data-color-token="webassembly"] { --card-bg: var(--color-marca-webassembly); --icon-width: 110px; --icon-rotation: -8deg; --icon-scale: 5; }
+[data-color-token="astro"] { --card-bg: var(--color-marca-astro); --icon-width: 200px; --icon-rotation: -8deg; --icon-scale: 6; }
+[data-color-token="opencode"] { --card-bg: var(--color-marca-opencode); --icon-width: 110px; --icon-rotation: 0deg; --icon-scale: 5; }
+[data-color-token="tauri"] { --card-bg: var(--color-marca-tauri); --icon-width: 115px; --icon-rotation: -8deg; --icon-scale: 5; }
+
+/* Responsive: a 1200 px el mosaico pasa a 6 columnas y las cuatro pequeñas bajan a escala 3; astro
+   (symbol alto 85×107) baja a 150px de ancho y escala 3, como node, nestjs y typescript. */
+@media (max-width: 1200px) {
+  [data-color-token="bash"] { --icon-scale: 3; }
+  [data-color-token="webassembly"] { --icon-scale: 3; }
+  [data-color-token="astro"] { --icon-width: 150px; --icon-scale: 3; }
+  [data-color-token="opencode"] { --icon-scale: 3; }
+  [data-color-token="tauri"] { --icon-scale: 3; }
+}

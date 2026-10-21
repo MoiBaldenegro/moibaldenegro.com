@@ -1,4 +1,5 @@
-// Lectores de campos de src/data/hero-cards.json (REQ-106-07, feature 106): módulo hermano de hero-cards-parse.ts
+// Lectores de campos de src/data/hero-cards.json (REQ-106-07, feature 106; fila del mosaico REQ-01-01/02,
+// feature 1 hero-grid-explicit-rows): módulo hermano de hero-cards-parse.ts
 // para mantener ambos en <=100 líneas. Reúne el error del dominio, los lectores de campos obligatorios y los de
 // campos opcionales (catálogo cerrado, booleano con valor por defecto y referencia al sprite). Todo fallo lanza
 // HeroCardsDataError nombrando hero-cards.json, el índice de la tarjeta y el campo o valor culpable.
@@ -72,4 +73,15 @@ export function readHref(card: Entry, index: number): string | null {
   const value = card.href ?? null;
   if (value === null || (typeof value === 'string' && HREF.test(value))) return value;
   throw new HeroCardsDataError(`hero-cards.json: la tarjeta ${index} tiene un campo "href" que debe ser null, https://… o /<ruta>`);
+}
+
+// Fila del mosaico (REQ-01-01/02, feature 1 hero-grid-explicit-rows): ausente = zona superior;
+// presente = entero >= 1 (la fila donde cae la tarjeta).
+export function readRow(card: Entry, index: number): { row?: number } {
+  if (!('row' in card)) return {};
+  const value = card.row;
+  if (typeof value === 'number' && Number.isInteger(value) && value >= 1) return { row: value };
+  throw new HeroCardsDataError(
+    `hero-cards.json: la tarjeta ${index} declara un "row" inválido "${String(value)}": debe ser un entero >= 1`,
+  );
 }

@@ -1,6 +1,7 @@
 // Parseo y validación de src/data/hero-cards.json (REQ-90-04..08, feature 90; category REQ-98-05..07,
 // feature 98; featured REQ-99-03/04, feature 99; logos extra REQ-103-02..04, feature 103; showOnMobile
-// REQ-106-02..05, feature 106; href REQ-107-02..04, feature 107; backgroundIconSize REQ-108-02..04, feature 108). Módulo hermano de hero-cards-repository.ts para mantener ambos en <=100 líneas
+// REQ-106-02..05, feature 106; href REQ-107-02..04, feature 107; backgroundIconSize REQ-108-02..04, feature 108;
+// fila del mosaico REQ-01-02, feature 1 hero-grid-explicit-rows). Módulo hermano de hero-cards-repository.ts para mantener ambos en <=100 líneas
 // (precedente about-parse.ts); los lectores de campos viven en hero-cards-fields-parse.ts (REQ-106-07). Todo
 // fallo lanza HeroCardsDataError nombrando hero-cards.json, el índice de la tarjeta y el campo o valor culpable.
 
@@ -21,6 +22,7 @@ import {
   readBoolean,
   readHref,
   readOption,
+  readRow,
   readSpriteRef,
   type Entry,
 } from './hero-cards-fields-parse.ts';
@@ -48,6 +50,7 @@ function parseIconCard(card: Entry, index: number): HeroCard {
     icon: expectString(card, 'icon', index),
     category: readOption(card, 'category', HERO_CARD_CATEGORIES, index),
     featured: readBoolean(card, 'featured', index, false),
+    ...readRow(card, index),
     rotate: expectNumber(card, 'rotate', index),
     scale: expectNumber(card, 'scale', index),
     iconWidth: expectString(card, 'iconWidth', index),

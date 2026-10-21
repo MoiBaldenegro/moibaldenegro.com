@@ -36,23 +36,21 @@
   --color-navbar: rgba(8, 8, 18, 0.75);
 
   /* Color de marca — paleta real de las tarjetas del hero (migrada a
-     src/data/hero-cards.json en la feature 6, con colorToken por tarjeta) */
-  --color-marca-react: #0E6C82;
-  --color-marca-html: #B74D05;
-  --color-marca-node: #08783A;
-  --color-marca-github: #091223;
-  --color-marca-youtube: #B61111;
-  --color-marca-rust: #A33A16;
-  --color-marca-typescript: #215BC7;
-  --color-marca-css: #6C387A;
-  --color-marca-aws: #232F3E;
-  --color-marca-claude-code: #5C2A1C;
-  --color-marca-nestjs: #3A0D18; /* Feature 101: logo #E0234E 3,61:1, título blanco 16,79:1 */
-  --color-marca-cloudflare: #A8470C;
-  --color-marca-claude: #B4532F;
-  --color-marca-bun: #3D2B1F;
-  --color-marca-htb: #1A2332;
-  --color-marca-htb-accent: #9FEF00;
+     src/data/hero-cards.json en la feature 6, con colorToken por tarjeta).
+     Feature 2: dos marcas por línea para que quepan las cinco nuevas. */
+  --color-marca-react: #0E6C82; --color-marca-html: #B74D05;
+  --color-marca-node: #08783A; --color-marca-github: #091223;
+  --color-marca-youtube: #B61111; --color-marca-rust: #A33A16;
+  --color-marca-typescript: #215BC7; --color-marca-css: #6C387A;
+  --color-marca-aws: #232F3E; --color-marca-claude-code: #5C2A1C;
+  /* Feature 101: nestjs, logo #E0234E 3,61:1, título blanco 16,79:1 */
+  --color-marca-nestjs: #3A0D18; --color-marca-cloudflare: #A8470C;
+  --color-marca-claude: #B4532F; --color-marca-bun: #3D2B1F;
+  --color-marca-htb: #1A2332; --color-marca-htb-accent: #9FEF00;
+  /* Feature 2: fila nueva de herramientas (bash, webassembly, astro, opencode, tauri) */
+  --color-marca-bash: #252A31; --color-marca-webassembly: #241A5C;
+  --color-marca-astro: #2E1039; --color-marca-opencode: #101114;
+  --color-marca-tauri: #0F2C36;
 
   /* Color de la tarjeta de perfil — píldora del username, badge
      verificado y scrollbar (valores actuales de hero.css, extraídos como

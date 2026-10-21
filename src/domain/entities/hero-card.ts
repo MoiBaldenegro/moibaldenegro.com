@@ -1,7 +1,8 @@
 // Entidad del dominio: tarjeta del hero (REQ-06-02, feature 6 hero-cards-domain;
 // tipos de tarjeta REQ-90-01..04, feature 90 hero-card-kinds-domain; category y celda
 // calculada por src/domain/hero-grid-layout.ts, REQ-98-05/06, feature 98 hero-mosaic-layout; featured
-// marca las tecnologías más relevantes, que van a los huecos grandes, REQ-99-02, feature 99).
+// marca las tecnologías más relevantes, que van a los huecos grandes, REQ-99-02, feature 99; row
+// declara la franja del mosaico, REQ-01-01, feature 1 hero-grid-explicit-rows).
 // Tipa las tarjetas de src/data/hero-cards.json. Inmutable: todos los campos
 // son readonly. colorToken referencia el token de marca --color-marca-<token>
 // de src/styles/tokens.css (Decisión 1 de specs/04_hero-cards-styles/design.md),
@@ -31,6 +32,8 @@ export interface HeroCard {
   readonly icon: string;
   readonly category: HeroCardCategory;
   readonly featured: boolean;
+  // Fila del mosaico (REQ-01-01, feature 1 hero-grid-explicit-rows): entero >= 1; ausente = zona superior.
+  readonly row?: number;
   readonly rotate: number;
   readonly scale: number;
   readonly iconWidth: string;

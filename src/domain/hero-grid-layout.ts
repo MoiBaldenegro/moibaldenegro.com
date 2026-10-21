@@ -1,12 +1,17 @@
 // Colocación del mosaico del hero (REQ-99-05..14, feature 99 hero-os-panel-mosaic, sobre REQ-98-11..14 de la
-// feature 98; mapa en specs/99_hero-os-panel-mosaic/design.md). Recorre los huecos de la plantilla
-// (src/domain/hero-grid-template.ts): llena los primeros con las personalizadas, los grandes con las
-// tecnologías featured y los pequeños con el resto de tecnologías y después las redes (orden del JSON en
-// cada cola), y calcula la celda de inicio que produce el auto-placement disperso de CSS Grid. El marcado
-// solo emite el tamaño (data-col-span/data-row-span). Si el mosaico no cierra, lanza HeroGridLayoutError.
+// feature 98; franjas declaradas REQ-01-03..14, feature 1 hero-grid-explicit-rows; mapa en
+// specs/01_hero-grid-explicit-rows/design.md). Reparte los huecos de la plantilla (hero-grid-template.ts):
+// la zona superior (tarjetas de icono sin "row", con la tarjeta rica) y las franjas declaradas por "row"
+// (cinco tarjetas cada una, la featured en el hueco grande). Después calcula la celda de inicio que produce
+// el auto-placement disperso de CSS Grid. El marcado solo emite el tamaño (data-col-span/data-row-span).
+// Si el mosaico no cierra, lanza HeroGridLayoutError.
 
 import type { HeroCard, HeroGridCard } from './entities/hero-card.ts';
-import { buildSlots, ROW_LENGTH, TOP_SLOTS, type HeroGridSlot } from './hero-grid-template.ts';
+import { HeroGridLayoutError } from './hero-grid-error.ts';
+import { groupRows, splitFeatured, validateRows } from './hero-grid-rows.ts';
+import { assignToSlots, rowSlots, TOP_SLOTS, type HeroGridSlot } from './hero-grid-template.ts';
+
+export { HeroGridLayoutError };
 
 export interface PlacedHeroCard {
   readonly card: HeroGridCard;
@@ -16,13 +21,6 @@ export interface PlacedHeroCard {
   readonly row: number;
 }
 
-export class HeroGridLayoutError extends Error {
-  constructor(message: string) {
-    super(`hero-grid-layout: ${message}`);
-    this.name = 'HeroGridLayoutError';
-  }
-}
-
 const GRID_COLUMNS = 12;
 // Perfil reservado: refleja profile-card.css (grid-column 1 / span 5, grid-row 1 / span 6).
 const PROFILE = { column: 1, row: 1, colSpan: 5, rowSpan: 6 } as const;
@@ -30,45 +28,31 @@ const PROFILE = { column: 1, row: 1, colSpan: 5, rowSpan: 6 } as const;
 /** Ordena, dimensiona y coloca las tarjetas del hero; lanza HeroGridLayoutError si no cierran. */
 export function layoutHeroCards(cards: readonly HeroGridCard[]): PlacedHeroCard[] {
   const custom = cards.filter((card) => card.kind !== 'icon');
+  const icons = cards.filter((card): card is HeroCard => card.kind === 'icon');
   if (custom.length > TOP_SLOTS.length) {
     throw new HeroGridLayoutError(
       `hay ${custom.length} tarjetas personalizadas (kind distinto de icon); el máximo es ${TOP_SLOTS.length}`,
     );
   }
-  const bottom = Math.max(0, cards.length - TOP_SLOTS.length);
-  if (bottom % ROW_LENGTH !== 0) {
+  const top = icons.filter((card) => card.row === undefined);
+  const rows = groupRows(icons);
+  validateRows(rows, top);
+  const topSlots = TOP_SLOTS.slice(custom.length);
+  if (top.length !== topSlots.length) {
     throw new HeroGridLayoutError(
-      `se recibieron ${cards.length} tarjetas: las ${bottom} tras la zona superior no completan filas de ${ROW_LENGTH}`,
+      `la zona superior tiene ${top.length} tarjetas de icono y necesita ${topSlots.length}`,
     );
   }
-  const icons = cards.filter((card): card is HeroCard => card.kind === 'icon');
-  const social = icons.filter((card) => card.category === 'social');
-  const flagged = social.find((card) => card.featured);
-  if (flagged) throw new HeroGridLayoutError(`la red social "${flagged.id}" declara featured y no puede ir en un hueco grande`);
-  const featured = icons.filter((card) => card.category === 'tech' && card.featured);
-  const small = [...icons.filter((card) => card.category === 'tech' && !card.featured), ...social];
-  const slots = buildSlots(cards.length);
-  const indexes = slots.map((_, index) => index).filter((index) => index >= custom.length);
-  const smallIndexes = indexes.filter((index) => !slots[index].large);
-  const lastRowStart = slots.length - ROW_LENGTH;
-  social.forEach((card, offset) => {
-    const index = smallIndexes[small.length - social.length + offset];
-    if (index !== undefined && (bottom === 0 || index < lastRowStart)) {
-      throw new HeroGridLayoutError(`la red social "${card.id}" queda fuera de la última fila`);
-    }
-  });
-  const large = indexes.length - smallIndexes.length;
-  if (featured.length !== large) {
-    throw new HeroGridLayoutError(
-      `hay ${featured.length} tecnologías con featured y la plantilla tiene ${large} huecos grandes libres`,
-    );
-  }
-  const bigQueue = featured.values();
-  const smallQueue = small.values();
-  return place(slots.map((slot, index): readonly [HeroGridCard, HeroGridSlot] => {
-    if (index < custom.length) return [custom[index], slot];
-    return [(slot.large ? bigQueue : smallQueue).next().value as HeroCard, slot];
-  }));
+  const zone = splitFeatured(top, 'la zona superior');
+  const ordered: readonly (readonly [HeroGridCard, HeroGridSlot])[] = [
+    ...custom.map((card, index) => [card, TOP_SLOTS[index]] as const),
+    ...assignToSlots(zone.featured, zone.others, topSlots),
+    ...rows.flatMap((row) => {
+      const split = splitFeatured(row.cards, `la fila ${row.row}`);
+      return assignToSlots(split.featured, split.others, rowSlots(row.row));
+    }),
+  ];
+  return place(ordered);
 }
 
 // Auto-placement disperso (grid-auto-flow: row): el cursor avanza por columnas y, si la

@@ -1,0 +1,62 @@
+{
+  "bash": {
+    "cardBg": "rgb(37, 42, 49)",
+    "iconWidth": "115px",
+    "iconScale": "5",
+    "iconRotation": "-8deg",
+    "svgWidth": "115px",
+    "svgTransform": "matrix(4.95134, -0.695866, 0.695866, 4.95134, 0, 0)",
+    "title": "BASH",
+    "display": "block",
+    "w": 189,
+    "h": 204
+  },
+  "webassembly": {
+    "cardBg": "rgb(36, 26, 92)",
+    "iconWidth": "110px",
+    "iconScale": "5",
+    "iconRotation": "-8deg",
+    "svgWidth": "110px",
+    "svgTransform": "matrix(4.95134, -0.695866, 0.695866, 4.95134, 0, 0)",
+    "title": "WEB ASSEMBLY",
+    "display": "block",
+    "w": 189,
+    "h": 204
+  },
+  "astro": {
+    "cardBg": "rgb(46, 16, 57)",
+    "iconWidth": "200px",
+    "iconScale": "6",
+    "iconRotation": "-8deg",
+    "svgWidth": "200px",
+    "svgTransform": "matrix(5.94161, -0.835039, 0.835039, 5.94161, 0, 0)",
+    "title": "ASTRO",
+    "display": "block",
+    "w": 393,
+    "h": 204
+  },
+  "opencode": {
+    "cardBg": "rgb(16, 17, 20)",
+    "iconWidth": "110px",
+    "iconScale": "5",
+    "iconRotation": "0deg",
+    "svgWidth": "110px",
+    "svgTransform": "matrix(5, 0, 0, 5, 0, 0)",
+    "title": "OPENCODE",
+    "display": "block",
+    "w": 189,
+    "h": 204
+  },
+  "tauri": {
+    "cardBg": "rgb(15, 44, 54)",
+    "iconWidth": "115px",
+    "iconScale": "5",
+    "iconRotation": "-8deg",
+    "svgWidth": "115px",
+    "svgTransform": "matrix(4.95134, -0.695866, 0.695866, 4.95134, 0, 0)",
+    "title": "TAURI",
+    "display": "block",
+    "w": 189,
+    "h": 204
+  }
+}

@@ -24,16 +24,18 @@
 ## Verificación
 
 - [x] `./init.sh` termina en verde (entorno, formato, tests al 100%, build).
-      ← verificado al cierre del ciclo 30 (2026-08-14): suite 221/221,
-      harness-kit 7/7, build OK.
-- [ ] La página se ve correcta en desktop y móvil (≤768px) sin errores en consola.
-      ← pendiente inspección visual en navegador (no verificada por el reviewer).
+      ← verificado al cierre del ciclo 31 (2026-10-21): suite 18/18,
+      formato ✔, `audit-design-tokens` ✔, build ✔.
+- [x] La página se ve correcta en desktop y móvil (≤768px) sin errores en consola.
+      ← verificado por el reviewer de la feature 2 con Chrome headless (CDP) a
+      375/768/1024/1280 px: 0 errores de consola y capturas en
+      `progress/research/hero-row-new-tools/`.
 
 ## Harness
 
-- [ ] `feature_list.json` tiene la tarea en `done` (y ninguna otra a medias).
-      ← features 1-38 `done`, conservadas en el array (historial completo del
-      ciclo 30; ninguna a medias).
+- [x] `feature_list.json` tiene la tarea en `done` (y ninguna otra a medias).
+      ← ciclo 31 (backlog regenerado): features 1 `hero-grid-explicit-rows` y
+      2 `hero-row-new-tools` `done`, conservadas en el array; ninguna a medias.
 - [x] `progress/current.md` documenta la sesión y `progress/history.md` está
       al día.
 - [x] No quedan archivos temporales, `print()` de debug ni TODOs sin contexto.

@@ -1,0 +1,116 @@
+{
+  "ancho": 768,
+  "viewport": {
+    "w": 768,
+    "h": 1700,
+    "scrollH": 4621
+  },
+  "fila2": [
+    {
+      "id": "bash",
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0,
+      "op": "1",
+      "disp": "none",
+      "visible": false
+    },
+    {
+      "id": "webassembly",
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0,
+      "op": "1",
+      "disp": "none",
+      "visible": false
+    },
+    {
+      "id": "astro",
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0,
+      "op": "1",
+      "disp": "none",
+      "visible": false
+    },
+    {
+      "id": "opencode",
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0,
+      "op": "1",
+      "disp": "none",
+      "visible": false
+    },
+    {
+      "id": "tauri",
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0,
+      "op": "1",
+      "disp": "none",
+      "visible": false
+    }
+  ],
+  "solapes": [],
+  "huecos": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "anchoTotal": 0,
+  "svgsFila": [
+    {
+      "marca": "bash",
+      "svg": {
+        "w": 0,
+        "h": 0,
+        "left": 0,
+        "top": 0
+      }
+    },
+    {
+      "marca": "webassembly",
+      "svg": {
+        "w": 0,
+        "h": 0,
+        "left": 0,
+        "top": 0
+      }
+    },
+    {
+      "marca": "astro",
+      "svg": {
+        "w": 0,
+        "h": 0,
+        "left": 0,
+        "top": 0
+      }
+    },
+    {
+      "marca": "opencode",
+      "svg": {
+        "w": 0,
+        "h": 0,
+        "left": 0,
+        "top": 0
+      }
+    },
+    {
+      "marca": "tauri",
+      "svg": {
+        "w": 0,
+        "h": 0,
+        "left": 0,
+        "top": 0
+      }
+    }
+  ],
+  "errores": []
+}
