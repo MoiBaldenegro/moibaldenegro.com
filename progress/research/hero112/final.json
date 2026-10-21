@@ -1,0 +1,4376 @@
+{
+ "375": {
+  "mosaicSame": true,
+  "iconsSame": true,
+  "mosaic": [
+   [
+    "htb",
+    9,
+    437,
+    347,
+    190
+   ],
+   [
+    "rust",
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    "aws",
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    "cloudflare",
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    "node",
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    "nestjs",
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    "css",
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    "react",
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    "html",
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    "claude-code",
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    "bun",
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    "claude",
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    "typescript",
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    "youtube",
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    "github",
+    0,
+    0,
+    0,
+    0
+   ]
+  ],
+  "rest": {
+   "card": {
+    "l": 9.1,
+    "t": 437.3,
+    "r": 355.9,
+    "b": 627.3,
+    "w": 346.8,
+    "h": 190
+   },
+   "title": {
+    "l": 24.1,
+    "t": 456.3,
+    "r": 340.9,
+    "b": 473.3,
+    "w": 316.8,
+    "h": 17
+   },
+   "body": {
+    "l": 10.1,
+    "t": 438.3,
+    "r": 354.9,
+    "b": 538.3,
+    "w": 344.8,
+    "h": 100
+   },
+   "iconBox": {
+    "l": 10.1,
+    "t": 438.3,
+    "r": 354.9,
+    "b": 626.3,
+    "w": 344.8,
+    "h": 188
+   },
+   "svg": {
+    "l": 126.6,
+    "t": 515.8,
+    "r": 465.1,
+    "b": 644.9,
+    "w": 338.5,
+    "h": 129.1
+   },
+   "use": {
+    "l": 32.8,
+    "t": 593.8,
+    "r": 214.4,
+    "b": 626.3,
+    "w": 181.5,
+    "h": 32.5
+   },
+   "backdrop": {
+    "l": 20.1,
+    "t": 589.8,
+    "r": 227,
+    "b": 626.3,
+    "w": 206.8,
+    "h": 36.5
+   },
+   "useBottomGap": 1,
+   "useTitleOverlap": 0,
+   "cubeTitleOverlap": 0,
+   "iconOpacity": "0.16",
+   "iconPE": "none",
+   "svgPE": "none",
+   "svgTransform": "matrix(2.9708, -0.417519, 0.417519, 2.9708, 0, 0)",
+   "svgWidth": "110px",
+   "vars": [
+    "150px",
+    "-8deg",
+    "3"
+   ],
+   "bdOpacity": "0.06",
+   "bdPE": "none",
+   "bdSize": "sm",
+   "svgAspect": "300 / 58.8",
+   "overflow": "hidden",
+   "filter": "none",
+   "order": [
+    "card-header",
+    "card-backdrop",
+    "card-icon",
+    "hero-card__body"
+   ],
+   "z": {
+    "backdrop": "0",
+    "icon": "auto",
+    "header": "4",
+    "body": "5"
+   },
+   "hits": [
+    {
+     "fx": 0.5,
+     "fy": 0.5,
+     "hit": "body"
+    },
+    {
+     "fx": 0.15,
+     "fy": 0.3,
+     "hit": "body"
+    },
+    {
+     "fx": 0.85,
+     "fy": 0.8,
+     "hit": "body"
+    },
+    {
+     "fx": 0.5,
+     "fy": 0.95,
+     "hit": "body"
+    },
+    {
+     "cubeCenter": true,
+     "hit": "article"
+    }
+   ],
+   "display": "block",
+   "scrollW": 365,
+   "innerW": 375,
+   "contrast": [
+    {
+     "text": "HACK THE BOX",
+     "color": "rgb(255, 255, 255)",
+     "fgUsed": [
+      255,
+      255,
+      255
+     ],
+     "worstBg": [
+      40,
+      49,
+      63
+     ],
+     "min": 13.11
+    },
+    {
+     "text": "Estadísticas no disponibles",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      184,
+      184,
+      197
+     ],
+     "worstBg": [
+      32,
+      41,
+      56
+     ],
+     "min": 7.45
+    }
+   ]
+  },
+  "variant": "empty",
+  "hover": {
+   "card": {
+    "l": 9.1,
+    "t": 433.3,
+    "r": 355.9,
+    "b": 623.3,
+    "w": 346.8,
+    "h": 190
+   },
+   "title": {
+    "l": 24.1,
+    "t": 452.3,
+    "r": 340.9,
+    "b": 469.3,
+    "w": 316.8,
+    "h": 17
+   },
+   "body": {
+    "l": 10.1,
+    "t": 434.3,
+    "r": 354.9,
+    "b": 534.3,
+    "w": 344.8,
+    "h": 100
+   },
+   "iconBox": {
+    "l": 10.1,
+    "t": 434.3,
+    "r": 354.9,
+    "b": 622.3,
+    "w": 344.8,
+    "h": 188
+   },
+   "svg": {
+    "l": 109.5,
+    "t": 522.9,
+    "r": 482.2,
+    "b": 629.8,
+    "w": 372.7,
+    "h": 106.9
+   },
+   "use": {
+    "l": 32.8,
+    "t": 589.8,
+    "r": 214.4,
+    "b": 622.3,
+    "w": 181.5,
+    "h": 32.5
+   },
+   "backdrop": {
+    "l": 20.1,
+    "t": 585.8,
+    "r": 227,
+    "b": 622.3,
+    "w": 206.8,
+    "h": 36.5
+   },
+   "useBottomGap": 1,
+   "useTitleOverlap": 0,
+   "cubeTitleOverlap": 0,
+   "iconOpacity": "0.16",
+   "iconPE": "none",
+   "svgPE": "none",
+   "svgTransform": "matrix(3.35795, 0.117262, -0.117262, 3.35795, 0, 0)",
+   "svgWidth": "110px",
+   "vars": [
+    "150px",
+    "-8deg",
+    "3"
+   ],
+   "bdOpacity": "0.06",
+   "bdPE": "none",
+   "bdSize": "sm",
+   "svgAspect": "300 / 58.8",
+   "overflow": "hidden",
+   "filter": "contrast(1.4)",
+   "order": [
+    "card-header",
+    "card-backdrop",
+    "card-icon",
+    "hero-card__body"
+   ],
+   "z": {
+    "backdrop": "0",
+    "icon": "auto",
+    "header": "4",
+    "body": "5"
+   },
+   "hits": [
+    {
+     "fx": 0.5,
+     "fy": 0.5,
+     "hit": "body"
+    },
+    {
+     "fx": 0.15,
+     "fy": 0.3,
+     "hit": "body"
+    },
+    {
+     "fx": 0.85,
+     "fy": 0.8,
+     "hit": "body"
+    },
+    {
+     "fx": 0.5,
+     "fy": 0.95,
+     "hit": "body"
+    },
+    {
+     "cubeCenter": true,
+     "hit": "article"
+    }
+   ],
+   "display": "block",
+   "scrollW": 365,
+   "innerW": 375,
+   "hoverRules": [
+    ".hero-card:hover .card-icon svg"
+   ],
+   "contrast": [
+    {
+     "text": "HACK THE BOX",
+     "color": "rgb(255, 255, 255)",
+     "fgUsed": [
+      255,
+      255,
+      255
+     ],
+     "worstBg": [
+      4,
+      16,
+      36
+     ],
+     "min": 19.01
+    },
+    {
+     "text": "Estadísticas no disponibles",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      207,
+      207,
+      225
+     ],
+     "worstBg": [
+      0,
+      6,
+      27
+     ],
+     "min": 13.12
+    }
+   ]
+  },
+  "expectedHover": "matrix(3.357953, 0.117262, -0.117262, 3.357953, 0, 0)",
+  "altVariant": "list",
+  "alt": {
+   "geo": {
+    "card": {
+     "l": 9.1,
+     "t": 437.3,
+     "r": 355.9,
+     "b": 627.3,
+     "w": 346.8,
+     "h": 190
+    },
+    "title": {
+     "l": 24.1,
+     "t": 456.3,
+     "r": 340.9,
+     "b": 473.3,
+     "w": 316.8,
+     "h": 17
+    },
+    "body": {
+     "l": 10.1,
+     "t": 438.3,
+     "r": 354.9,
+     "b": 601.3,
+     "w": 344.8,
+     "h": 163
+    },
+    "iconBox": {
+     "l": 10.1,
+     "t": 438.3,
+     "r": 354.9,
+     "b": 626.3,
+     "w": 344.8,
+     "h": 188
+    },
+    "svg": {
+     "l": 126.6,
+     "t": 515.8,
+     "r": 465.1,
+     "b": 644.9,
+     "w": 338.5,
+     "h": 129.1
+    },
+    "use": {
+     "l": 32.8,
+     "t": 593.8,
+     "r": 214.4,
+     "b": 626.3,
+     "w": 181.5,
+     "h": 32.5
+    },
+    "backdrop": {
+     "l": 20.1,
+     "t": 589.8,
+     "r": 227,
+     "b": 626.3,
+     "w": 206.8,
+     "h": 36.5
+    },
+    "useBottomGap": 1,
+    "useTitleOverlap": 0,
+    "cubeTitleOverlap": 0,
+    "iconOpacity": "0.16",
+    "iconPE": "none",
+    "svgPE": "none",
+    "svgTransform": "matrix(2.9708, -0.417519, 0.417519, 2.9708, 0, 0)",
+    "svgWidth": "110px",
+    "vars": [
+     "150px",
+     "-8deg",
+     "3"
+    ],
+    "bdOpacity": "0.06",
+    "bdPE": "none",
+    "bdSize": "sm",
+    "svgAspect": "300 / 58.8",
+    "overflow": "hidden",
+    "filter": "none",
+    "order": [
+     "card-header",
+     "card-backdrop",
+     "card-icon",
+     "hero-card__body"
+    ],
+    "z": {
+     "backdrop": "0",
+     "icon": "auto",
+     "header": "4",
+     "body": "5"
+    },
+    "hits": [
+     {
+      "fx": 0.5,
+      "fy": 0.5,
+      "hit": "body"
+     },
+     {
+      "fx": 0.15,
+      "fy": 0.3,
+      "hit": "body"
+     },
+     {
+      "fx": 0.85,
+      "fy": 0.8,
+      "hit": "body"
+     },
+     {
+      "fx": 0.5,
+      "fy": 0.95,
+      "hit": "body"
+     },
+     {
+      "cubeCenter": true,
+      "hit": "body"
+     }
+    ],
+    "display": "block",
+    "scrollW": 365,
+    "innerW": 375
+   },
+   "rest": [
+    {
+     "text": "HACK THE BOX",
+     "color": "rgb(255, 255, 255)",
+     "fgUsed": [
+      255,
+      255,
+      255
+     ],
+     "worstBg": [
+      40,
+      49,
+      63
+     ],
+     "min": 13.11
+    },
+    {
+     "text": "Nivel",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      184,
+      184,
+      197
+     ],
+     "worstBg": [
+      30,
+      38,
+      53
+     ],
+     "min": 7.73
+    },
+    {
+     "text": "Hacker",
+     "color": "rgb(159, 239, 0)",
+     "fgUsed": [
+      159,
+      239,
+      0
+     ],
+     "worstBg": [
+      33,
+      41,
+      55
+     ],
+     "min": 10.31
+    },
+    {
+     "text": "Puntos",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      184,
+      184,
+      197
+     ],
+     "worstBg": [
+      26,
+      35,
+      50
+     ],
+     "min": 8.04
+    },
+    {
+     "text": "120",
+     "color": "rgb(159, 239, 0)",
+     "fgUsed": [
+      159,
+      239,
+      0
+     ],
+     "worstBg": [
+      39,
+      47,
+      61
+     ],
+     "min": 9.5
+    },
+    {
+     "text": "Owns",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      184,
+      184,
+      197
+     ],
+     "worstBg": [
+      26,
+      35,
+      50
+     ],
+     "min": 8.04
+    },
+    {
+     "text": "20 user / 18 root",
+     "color": "rgb(159, 239, 0)",
+     "fgUsed": [
+      159,
+      239,
+      0
+     ],
+     "worstBg": [
+      63,
+      81,
+      58
+     ],
+     "min": 6.05
+    }
+   ],
+   "hoverGeo": {
+    "card": {
+     "l": 9.1,
+     "t": 433.3,
+     "r": 355.9,
+     "b": 623.3,
+     "w": 346.8,
+     "h": 190
+    },
+    "title": {
+     "l": 24.1,
+     "t": 452.3,
+     "r": 340.9,
+     "b": 469.3,
+     "w": 316.8,
+     "h": 17
+    },
+    "body": {
+     "l": 10.1,
+     "t": 434.3,
+     "r": 354.9,
+     "b": 597.3,
+     "w": 344.8,
+     "h": 163
+    },
+    "iconBox": {
+     "l": 10.1,
+     "t": 434.3,
+     "r": 354.9,
+     "b": 622.3,
+     "w": 344.8,
+     "h": 188
+    },
+    "svg": {
+     "l": 109.5,
+     "t": 522.9,
+     "r": 482.2,
+     "b": 629.8,
+     "w": 372.7,
+     "h": 106.9
+    },
+    "use": {
+     "l": 32.8,
+     "t": 589.8,
+     "r": 214.4,
+     "b": 622.3,
+     "w": 181.5,
+     "h": 32.5
+    },
+    "backdrop": {
+     "l": 20.1,
+     "t": 585.8,
+     "r": 227,
+     "b": 622.3,
+     "w": 206.8,
+     "h": 36.5
+    },
+    "useBottomGap": 1,
+    "useTitleOverlap": 0,
+    "cubeTitleOverlap": 0,
+    "iconOpacity": "0.16",
+    "iconPE": "none",
+    "svgPE": "none",
+    "svgTransform": "matrix(3.35795, 0.117262, -0.117262, 3.35795, 0, 0)",
+    "svgWidth": "110px",
+    "vars": [
+     "150px",
+     "-8deg",
+     "3"
+    ],
+    "bdOpacity": "0.06",
+    "bdPE": "none",
+    "bdSize": "sm",
+    "svgAspect": "300 / 58.8",
+    "overflow": "hidden",
+    "filter": "contrast(1.4)",
+    "order": [
+     "card-header",
+     "card-backdrop",
+     "card-icon",
+     "hero-card__body"
+    ],
+    "z": {
+     "backdrop": "0",
+     "icon": "auto",
+     "header": "4",
+     "body": "5"
+    },
+    "hits": [
+     {
+      "fx": 0.5,
+      "fy": 0.5,
+      "hit": "body"
+     },
+     {
+      "fx": 0.15,
+      "fy": 0.3,
+      "hit": "body"
+     },
+     {
+      "fx": 0.85,
+      "fy": 0.8,
+      "hit": "body"
+     },
+     {
+      "fx": 0.5,
+      "fy": 0.95,
+      "hit": "body"
+     },
+     {
+      "cubeCenter": true,
+      "hit": "body"
+     }
+    ],
+    "display": "block",
+    "scrollW": 365,
+    "innerW": 375
+   },
+   "hover": [
+    {
+     "text": "HACK THE BOX",
+     "color": "rgb(255, 255, 255)",
+     "fgUsed": [
+      255,
+      255,
+      255
+     ],
+     "worstBg": [
+      5,
+      18,
+      37
+     ],
+     "min": 18.76
+    },
+    {
+     "text": "Nivel",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      207,
+      207,
+      225
+     ],
+     "worstBg": [
+      0,
+      2,
+      23
+     ],
+     "min": 13.38
+    },
+    {
+     "text": "Hacker",
+     "color": "rgb(159, 239, 0)",
+     "fgUsed": [
+      172,
+      255,
+      0
+     ],
+     "worstBg": [
+      0,
+      6,
+      27
+     ],
+     "min": 16.37
+    },
+    {
+     "text": "Puntos",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      207,
+      207,
+      225
+     ],
+     "worstBg": [
+      0,
+      0,
+      19
+     ],
+     "min": 13.54
+    },
+    {
+     "text": "120",
+     "color": "rgb(159, 239, 0)",
+     "fgUsed": [
+      172,
+      255,
+      0
+     ],
+     "worstBg": [
+      4,
+      15,
+      34
+     ],
+     "min": 15.56
+    },
+    {
+     "text": "Owns",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      207,
+      207,
+      225
+     ],
+     "worstBg": [
+      0,
+      0,
+      19
+     ],
+     "min": 13.54
+    },
+    {
+     "text": "20 user / 18 root",
+     "color": "rgb(159, 239, 0)",
+     "fgUsed": [
+      172,
+      255,
+      0
+     ],
+     "worstBg": [
+      37,
+      62,
+      30
+     ],
+     "min": 9.55
+    }
+   ]
+  }
+ },
+ "800": {
+  "mosaicSame": true,
+  "iconsSame": true,
+  "mosaic": [
+   [
+    "htb",
+    20,
+    462,
+    113,
+    140
+   ],
+   [
+    "rust",
+    147,
+    462,
+    113,
+    140
+   ],
+   [
+    "aws",
+    275,
+    462,
+    113,
+    140
+   ],
+   [
+    "cloudflare",
+    402,
+    462,
+    113,
+    140
+   ],
+   [
+    "node",
+    529,
+    462,
+    113,
+    140
+   ],
+   [
+    "nestjs",
+    657,
+    462,
+    113,
+    140
+   ],
+   [
+    "css",
+    20,
+    616,
+    113,
+    140
+   ],
+   [
+    "react",
+    147,
+    616,
+    113,
+    140
+   ],
+   [
+    "html",
+    275,
+    616,
+    113,
+    140
+   ],
+   [
+    "claude-code",
+    402,
+    616,
+    113,
+    140
+   ],
+   [
+    "bun",
+    529,
+    616,
+    113,
+    140
+   ],
+   [
+    "claude",
+    657,
+    616,
+    113,
+    140
+   ],
+   [
+    "typescript",
+    20,
+    770,
+    113,
+    140
+   ],
+   [
+    "youtube",
+    147,
+    770,
+    113,
+    140
+   ],
+   [
+    "github",
+    275,
+    770,
+    113,
+    140
+   ]
+  ],
+  "rest": {
+   "card": {
+    "l": 19.8,
+    "t": 462,
+    "r": 133.2,
+    "b": 602,
+    "w": 113.4,
+    "h": 140
+   },
+   "title": {
+    "l": 34.8,
+    "t": 481,
+    "r": 118.2,
+    "b": 515,
+    "w": 83.4,
+    "h": 34
+   },
+   "body": {
+    "l": 20.8,
+    "t": 463,
+    "r": 132.2,
+    "b": 579,
+    "w": 111.4,
+    "h": 116
+   },
+   "iconBox": {
+    "l": 20.8,
+    "t": 463,
+    "r": 132.2,
+    "b": 601,
+    "w": 111.4,
+    "h": 138
+   },
+   "svg": {
+    "l": -175.5,
+    "t": 482.1,
+    "r": 281.8,
+    "b": 627.9,
+    "w": 457.3,
+    "h": 145.8
+   },
+   "use": {
+    "l": 34.9,
+    "t": 590.5,
+    "r": 93.5,
+    "b": 601,
+    "w": 58.6,
+    "h": 10.5
+   },
+   "backdrop": {
+    "l": 30.8,
+    "t": 589.2,
+    "r": 97.6,
+    "b": 601,
+    "w": 66.8,
+    "h": 11.8
+   },
+   "useBottomGap": 1,
+   "useTitleOverlap": 0,
+   "cubeTitleOverlap": 2744.5,
+   "iconOpacity": "0.16",
+   "iconPE": "none",
+   "svgPE": "none",
+   "svgTransform": "matrix(2.9708, -0.417519, 0.417519, 2.9708, 0, 0)",
+   "svgWidth": "150px",
+   "vars": [
+    "150px",
+    "-8deg",
+    "3"
+   ],
+   "bdOpacity": "0.06",
+   "bdPE": "none",
+   "bdSize": "sm",
+   "svgAspect": "300 / 58.8",
+   "overflow": "hidden",
+   "filter": "none",
+   "order": [
+    "card-header",
+    "card-backdrop",
+    "card-icon",
+    "hero-card__body"
+   ],
+   "z": {
+    "backdrop": "0",
+    "icon": "auto",
+    "header": "4",
+    "body": "5"
+   },
+   "hits": [
+    {
+     "fx": 0.5,
+     "fy": 0.5,
+     "hit": "body"
+    },
+    {
+     "fx": 0.15,
+     "fy": 0.3,
+     "hit": "body"
+    },
+    {
+     "fx": 0.85,
+     "fy": 0.8,
+     "hit": "body"
+    },
+    {
+     "fx": 0.5,
+     "fy": 0.95,
+     "hit": "body"
+    },
+    {
+     "cubeCenter": true,
+     "hit": "body"
+    }
+   ],
+   "display": "block",
+   "scrollW": 790,
+   "innerW": 800,
+   "contrast": [
+    {
+     "text": "HACK THE BOX",
+     "color": "rgb(255, 255, 255)",
+     "fgUsed": [
+      255,
+      255,
+      255
+     ],
+     "worstBg": [
+      42,
+      49,
+      63
+     ],
+     "min": 13.05
+    },
+    {
+     "text": "Estadísticas no disponibles",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      184,
+      184,
+      197
+     ],
+     "worstBg": [
+      55,
+      74,
+      50
+     ],
+     "min": 4.89
+    }
+   ]
+  },
+  "variant": "empty",
+  "hover": {
+   "card": {
+    "l": 19.8,
+    "t": 458,
+    "r": 133.2,
+    "b": 598,
+    "w": 113.4,
+    "h": 140
+   },
+   "title": {
+    "l": 34.8,
+    "t": 477,
+    "r": 118.2,
+    "b": 511,
+    "w": 83.4,
+    "h": 34
+   },
+   "body": {
+    "l": 20.8,
+    "t": 459,
+    "r": 132.2,
+    "b": 575,
+    "w": 111.4,
+    "h": 116
+   },
+   "iconBox": {
+    "l": 20.8,
+    "t": 459,
+    "r": 132.2,
+    "b": 597,
+    "w": 111.4,
+    "h": 138
+   },
+   "svg": {
+    "l": -200.3,
+    "t": 495.2,
+    "r": 306.6,
+    "b": 606.8,
+    "w": 507,
+    "h": 111.6
+   },
+   "use": {
+    "l": 34.9,
+    "t": 586.5,
+    "r": 93.5,
+    "b": 597,
+    "w": 58.6,
+    "h": 10.5
+   },
+   "backdrop": {
+    "l": 30.8,
+    "t": 585.2,
+    "r": 97.6,
+    "b": 597,
+    "w": 66.8,
+    "h": 11.8
+   },
+   "useBottomGap": 1,
+   "useTitleOverlap": 0,
+   "cubeTitleOverlap": 1318.3,
+   "iconOpacity": "0.16",
+   "iconPE": "none",
+   "svgPE": "none",
+   "svgTransform": "matrix(3.35795, 0.117262, -0.117262, 3.35795, 0, 0)",
+   "svgWidth": "150px",
+   "vars": [
+    "150px",
+    "-8deg",
+    "3"
+   ],
+   "bdOpacity": "0.06",
+   "bdPE": "none",
+   "bdSize": "sm",
+   "svgAspect": "300 / 58.8",
+   "overflow": "hidden",
+   "filter": "contrast(1.4)",
+   "order": [
+    "card-header",
+    "card-backdrop",
+    "card-icon",
+    "hero-card__body"
+   ],
+   "z": {
+    "backdrop": "0",
+    "icon": "auto",
+    "header": "4",
+    "body": "5"
+   },
+   "hits": [
+    {
+     "fx": 0.5,
+     "fy": 0.5,
+     "hit": "body"
+    },
+    {
+     "fx": 0.15,
+     "fy": 0.3,
+     "hit": "body"
+    },
+    {
+     "fx": 0.85,
+     "fy": 0.8,
+     "hit": "body"
+    },
+    {
+     "fx": 0.5,
+     "fy": 0.95,
+     "hit": "body"
+    },
+    {
+     "cubeCenter": true,
+     "hit": "body"
+    }
+   ],
+   "display": "block",
+   "scrollW": 790,
+   "innerW": 800,
+   "hoverRules": [
+    ".hero-card:hover .card-icon svg"
+   ],
+   "contrast": [
+    {
+     "text": "HACK THE BOX",
+     "color": "rgb(255, 255, 255)",
+     "fgUsed": [
+      255,
+      255,
+      255
+     ],
+     "worstBg": [
+      6,
+      18,
+      39
+     ],
+     "min": 18.69
+    },
+    {
+     "text": "Estadísticas no disponibles",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      207,
+      207,
+      225
+     ],
+     "worstBg": [
+      26,
+      53,
+      19
+     ],
+     "min": 8.75
+    }
+   ]
+  },
+  "expectedHover": "matrix(3.357953, 0.117262, -0.117262, 3.357953, 0, 0)",
+  "github": {
+   "transform": "matrix(2.23864, 0.0781749, -0.0781749, 2.23864, 0, 0)",
+   "expected": "matrix(2.238635, 0.078175, -0.078175, 2.238635, 0, 0)",
+   "rules": [
+    ".hero-card:hover .card-icon svg"
+   ]
+  },
+  "altVariant": "list",
+  "alt": {
+   "geo": {
+    "card": {
+     "l": 19.8,
+     "t": 462,
+     "r": 133.2,
+     "b": 708,
+     "w": 113.4,
+     "h": 246
+    },
+    "title": {
+     "l": 34.8,
+     "t": 481,
+     "r": 118.2,
+     "b": 515,
+     "w": 83.4,
+     "h": 34
+    },
+    "body": {
+     "l": 20.8,
+     "t": 463,
+     "r": 132.2,
+     "b": 707,
+     "w": 111.4,
+     "h": 244
+    },
+    "iconBox": {
+     "l": 20.8,
+     "t": 463,
+     "r": 132.2,
+     "b": 707,
+     "w": 111.4,
+     "h": 244
+    },
+    "svg": {
+     "l": -175.5,
+     "t": 588.1,
+     "r": 281.8,
+     "b": 733.9,
+     "w": 457.3,
+     "h": 145.8
+    },
+    "use": {
+     "l": 34.9,
+     "t": 696.5,
+     "r": 93.5,
+     "b": 707,
+     "w": 58.6,
+     "h": 10.5
+    },
+    "backdrop": {
+     "l": 30.8,
+     "t": 695.2,
+     "r": 97.6,
+     "b": 707,
+     "w": 66.8,
+     "h": 11.8
+    },
+    "useBottomGap": 1,
+    "useTitleOverlap": 0,
+    "cubeTitleOverlap": 0,
+    "iconOpacity": "0.16",
+    "iconPE": "none",
+    "svgPE": "none",
+    "svgTransform": "matrix(2.9708, -0.417519, 0.417519, 2.9708, 0, 0)",
+    "svgWidth": "150px",
+    "vars": [
+     "150px",
+     "-8deg",
+     "3"
+    ],
+    "bdOpacity": "0.06",
+    "bdPE": "none",
+    "bdSize": "sm",
+    "svgAspect": "300 / 58.8",
+    "overflow": "hidden",
+    "filter": "none",
+    "order": [
+     "card-header",
+     "card-backdrop",
+     "card-icon",
+     "hero-card__body"
+    ],
+    "z": {
+     "backdrop": "0",
+     "icon": "auto",
+     "header": "4",
+     "body": "5"
+    },
+    "hits": [
+     {
+      "fx": 0.5,
+      "fy": 0.5,
+      "hit": "body"
+     },
+     {
+      "fx": 0.15,
+      "fy": 0.3,
+      "hit": "body"
+     },
+     {
+      "fx": 0.85,
+      "fy": 0.8,
+      "hit": "body"
+     },
+     {
+      "fx": 0.5,
+      "fy": 0.95,
+      "hit": "body"
+     },
+     {
+      "cubeCenter": true,
+      "hit": "body"
+     }
+    ],
+    "display": "block",
+    "scrollW": 790,
+    "innerW": 800
+   },
+   "rest": [
+    {
+     "text": "HACK THE BOX",
+     "color": "rgb(255, 255, 255)",
+     "fgUsed": [
+      255,
+      255,
+      255
+     ],
+     "worstBg": [
+      41,
+      50,
+      64
+     ],
+     "min": 12.93
+    },
+    {
+     "text": "Nivel",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      184,
+      184,
+      197
+     ],
+     "worstBg": [
+      33,
+      42,
+      56
+     ],
+     "min": 7.36
+    },
+    {
+     "text": "Hacker",
+     "color": "rgb(159, 239, 0)",
+     "fgUsed": [
+      159,
+      239,
+      0
+     ],
+     "worstBg": [
+      29,
+      38,
+      52
+     ],
+     "min": 10.75
+    },
+    {
+     "text": "Puntos",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      184,
+      184,
+      197
+     ],
+     "worstBg": [
+      33,
+      42,
+      56
+     ],
+     "min": 7.36
+    },
+    {
+     "text": "120",
+     "color": "rgb(159, 239, 0)",
+     "fgUsed": [
+      159,
+      239,
+      0
+     ],
+     "worstBg": [
+      34,
+      43,
+      57
+     ],
+     "min": 10.06
+    },
+    {
+     "text": "Owns",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      184,
+      184,
+      197
+     ],
+     "worstBg": [
+      58,
+      76,
+      52
+     ],
+     "min": 4.73
+    },
+    {
+     "text": "20 user / 18 root",
+     "color": "rgb(159, 239, 0)",
+     "fgUsed": [
+      159,
+      239,
+      0
+     ],
+     "worstBg": [
+      62,
+      80,
+      56
+     ],
+     "min": 6.15
+    }
+   ],
+   "hoverGeo": {
+    "card": {
+     "l": 19.8,
+     "t": 458,
+     "r": 133.2,
+     "b": 704,
+     "w": 113.4,
+     "h": 246
+    },
+    "title": {
+     "l": 34.8,
+     "t": 477,
+     "r": 118.2,
+     "b": 511,
+     "w": 83.4,
+     "h": 34
+    },
+    "body": {
+     "l": 20.8,
+     "t": 459,
+     "r": 132.2,
+     "b": 703,
+     "w": 111.4,
+     "h": 244
+    },
+    "iconBox": {
+     "l": 20.8,
+     "t": 459,
+     "r": 132.2,
+     "b": 703,
+     "w": 111.4,
+     "h": 244
+    },
+    "svg": {
+     "l": -200.3,
+     "t": 601.2,
+     "r": 306.6,
+     "b": 712.8,
+     "w": 507,
+     "h": 111.6
+    },
+    "use": {
+     "l": 34.9,
+     "t": 692.5,
+     "r": 93.5,
+     "b": 703,
+     "w": 58.6,
+     "h": 10.5
+    },
+    "backdrop": {
+     "l": 30.8,
+     "t": 691.2,
+     "r": 97.6,
+     "b": 703,
+     "w": 66.8,
+     "h": 11.8
+    },
+    "useBottomGap": 1,
+    "useTitleOverlap": 0,
+    "cubeTitleOverlap": 0,
+    "iconOpacity": "0.16",
+    "iconPE": "none",
+    "svgPE": "none",
+    "svgTransform": "matrix(3.35795, 0.117262, -0.117262, 3.35795, 0, 0)",
+    "svgWidth": "150px",
+    "vars": [
+     "150px",
+     "-8deg",
+     "3"
+    ],
+    "bdOpacity": "0.06",
+    "bdPE": "none",
+    "bdSize": "sm",
+    "svgAspect": "300 / 58.8",
+    "overflow": "hidden",
+    "filter": "contrast(1.4)",
+    "order": [
+     "card-header",
+     "card-backdrop",
+     "card-icon",
+     "hero-card__body"
+    ],
+    "z": {
+     "backdrop": "0",
+     "icon": "auto",
+     "header": "4",
+     "body": "5"
+    },
+    "hits": [
+     {
+      "fx": 0.5,
+      "fy": 0.5,
+      "hit": "body"
+     },
+     {
+      "fx": 0.15,
+      "fy": 0.3,
+      "hit": "body"
+     },
+     {
+      "fx": 0.85,
+      "fy": 0.8,
+      "hit": "body"
+     },
+     {
+      "fx": 0.5,
+      "fy": 0.95,
+      "hit": "body"
+     },
+     {
+      "cubeCenter": true,
+      "hit": "body"
+     }
+    ],
+    "display": "block",
+    "scrollW": 790,
+    "innerW": 800
+   },
+   "hover": [
+    {
+     "text": "HACK THE BOX",
+     "color": "rgb(255, 255, 255)",
+     "fgUsed": [
+      255,
+      255,
+      255
+     ],
+     "worstBg": [
+      6,
+      19,
+      39
+     ],
+     "min": 18.58
+    },
+    {
+     "text": "Nivel",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      207,
+      207,
+      225
+     ],
+     "worstBg": [
+      0,
+      8,
+      27
+     ],
+     "min": 13.01
+    },
+    {
+     "text": "Hacker",
+     "color": "rgb(159, 239, 0)",
+     "fgUsed": [
+      172,
+      255,
+      0
+     ],
+     "worstBg": [
+      0,
+      2,
+      22
+     ],
+     "min": 16.72
+    },
+    {
+     "text": "Puntos",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      207,
+      207,
+      225
+     ],
+     "worstBg": [
+      0,
+      9,
+      29
+     ],
+     "min": 12.93
+    },
+    {
+     "text": "120",
+     "color": "rgb(159, 239, 0)",
+     "fgUsed": [
+      172,
+      255,
+      0
+     ],
+     "worstBg": [
+      0,
+      9,
+      29
+     ],
+     "min": 16.14
+    },
+    {
+     "text": "Owns",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      207,
+      207,
+      225
+     ],
+     "worstBg": [
+      32,
+      57,
+      25
+     ],
+     "min": 8.23
+    },
+    {
+     "text": "20 user / 18 root",
+     "color": "rgb(159, 239, 0)",
+     "fgUsed": [
+      172,
+      255,
+      0
+     ],
+     "worstBg": [
+      36,
+      61,
+      27
+     ],
+     "min": 9.7
+    }
+   ]
+  }
+ },
+ "1024": {
+  "mosaicSame": true,
+  "iconsSame": true,
+  "mosaic": [
+   [
+    "htb",
+    25,
+    462,
+    149,
+    140
+   ],
+   [
+    "rust",
+    188,
+    462,
+    149,
+    140
+   ],
+   [
+    "aws",
+    351,
+    462,
+    149,
+    140
+   ],
+   [
+    "cloudflare",
+    514,
+    462,
+    149,
+    140
+   ],
+   [
+    "node",
+    677,
+    462,
+    149,
+    140
+   ],
+   [
+    "nestjs",
+    840,
+    462,
+    149,
+    140
+   ],
+   [
+    "css",
+    25,
+    616,
+    149,
+    140
+   ],
+   [
+    "react",
+    188,
+    616,
+    149,
+    140
+   ],
+   [
+    "html",
+    351,
+    616,
+    149,
+    140
+   ],
+   [
+    "claude-code",
+    514,
+    616,
+    149,
+    140
+   ],
+   [
+    "bun",
+    677,
+    616,
+    149,
+    140
+   ],
+   [
+    "claude",
+    840,
+    616,
+    149,
+    140
+   ],
+   [
+    "typescript",
+    25,
+    770,
+    149,
+    140
+   ],
+   [
+    "youtube",
+    188,
+    770,
+    149,
+    140
+   ],
+   [
+    "github",
+    351,
+    770,
+    149,
+    140
+   ]
+  ],
+  "rest": {
+   "card": {
+    "l": 25.3,
+    "t": 462.3,
+    "r": 174.2,
+    "b": 602.3,
+    "w": 148.9,
+    "h": 140
+   },
+   "title": {
+    "l": 40.3,
+    "t": 481.3,
+    "r": 159.2,
+    "b": 498.3,
+    "w": 118.9,
+    "h": 17
+   },
+   "body": {
+    "l": 26.3,
+    "t": 463.3,
+    "r": 173.2,
+    "b": 579.3,
+    "w": 146.9,
+    "h": 116
+   },
+   "iconBox": {
+    "l": 26.3,
+    "t": 463.3,
+    "r": 173.2,
+    "b": 601.3,
+    "w": 146.9,
+    "h": 138
+   },
+   "svg": {
+    "l": -134.4,
+    "t": 482.3,
+    "r": 322.9,
+    "b": 628.2,
+    "w": 457.3,
+    "h": 145.8
+   },
+   "use": {
+    "l": 41.8,
+    "t": 587.4,
+    "r": 119.1,
+    "b": 601.2,
+    "w": 77.3,
+    "h": 13.9
+   },
+   "backdrop": {
+    "l": 36.3,
+    "t": 585.7,
+    "r": 124.5,
+    "b": 601.3,
+    "w": 88.1,
+    "h": 15.5
+   },
+   "useBottomGap": 1,
+   "useTitleOverlap": 0,
+   "cubeTitleOverlap": 1890.7,
+   "iconOpacity": "0.16",
+   "iconPE": "none",
+   "svgPE": "none",
+   "svgTransform": "matrix(2.9708, -0.417519, 0.417519, 2.9708, 0, 0)",
+   "svgWidth": "150px",
+   "vars": [
+    "150px",
+    "-8deg",
+    "3"
+   ],
+   "bdOpacity": "0.06",
+   "bdPE": "none",
+   "bdSize": "sm",
+   "svgAspect": "300 / 58.8",
+   "overflow": "hidden",
+   "filter": "none",
+   "order": [
+    "card-header",
+    "card-backdrop",
+    "card-icon",
+    "hero-card__body"
+   ],
+   "z": {
+    "backdrop": "0",
+    "icon": "auto",
+    "header": "4",
+    "body": "5"
+   },
+   "hits": [
+    {
+     "fx": 0.5,
+     "fy": 0.5,
+     "hit": "body"
+    },
+    {
+     "fx": 0.15,
+     "fy": 0.3,
+     "hit": "body"
+    },
+    {
+     "fx": 0.85,
+     "fy": 0.8,
+     "hit": "body"
+    },
+    {
+     "fx": 0.5,
+     "fy": 0.95,
+     "hit": "body"
+    },
+    {
+     "cubeCenter": true,
+     "hit": "body"
+    }
+   ],
+   "display": "block",
+   "scrollW": 1014,
+   "innerW": 1024,
+   "contrast": [
+    {
+     "text": "HACK THE BOX",
+     "color": "rgb(255, 255, 255)",
+     "fgUsed": [
+      255,
+      255,
+      255
+     ],
+     "worstBg": [
+      42,
+      49,
+      63
+     ],
+     "min": 13.05
+    },
+    {
+     "text": "Estadísticas no disponibles",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      184,
+      184,
+      197
+     ],
+     "worstBg": [
+      39,
+      47,
+      61
+     ],
+     "min": 6.86
+    }
+   ]
+  },
+  "variant": "empty",
+  "hover": {
+   "card": {
+    "l": 25.3,
+    "t": 458.3,
+    "r": 174.2,
+    "b": 598.3,
+    "w": 148.9,
+    "h": 140
+   },
+   "title": {
+    "l": 40.3,
+    "t": 477.3,
+    "r": 159.2,
+    "b": 494.3,
+    "w": 118.9,
+    "h": 17
+   },
+   "body": {
+    "l": 26.3,
+    "t": 459.3,
+    "r": 173.2,
+    "b": 575.3,
+    "w": 146.9,
+    "h": 116
+   },
+   "iconBox": {
+    "l": 26.3,
+    "t": 459.3,
+    "r": 173.2,
+    "b": 597.3,
+    "w": 146.9,
+    "h": 138
+   },
+   "svg": {
+    "l": -159.3,
+    "t": 495.4,
+    "r": 347.7,
+    "b": 607.1,
+    "w": 507,
+    "h": 111.6
+   },
+   "use": {
+    "l": 41.8,
+    "t": 583.4,
+    "r": 119.1,
+    "b": 597.2,
+    "w": 77.3,
+    "h": 13.9
+   },
+   "backdrop": {
+    "l": 36.3,
+    "t": 581.7,
+    "r": 124.5,
+    "b": 597.3,
+    "w": 88.1,
+    "h": 15.5
+   },
+   "useBottomGap": 1,
+   "useTitleOverlap": 0,
+   "cubeTitleOverlap": 0,
+   "iconOpacity": "0.16",
+   "iconPE": "none",
+   "svgPE": "none",
+   "svgTransform": "matrix(3.35795, 0.117262, -0.117262, 3.35795, 0, 0)",
+   "svgWidth": "150px",
+   "vars": [
+    "150px",
+    "-8deg",
+    "3"
+   ],
+   "bdOpacity": "0.06",
+   "bdPE": "none",
+   "bdSize": "sm",
+   "svgAspect": "300 / 58.8",
+   "overflow": "hidden",
+   "filter": "contrast(1.4)",
+   "order": [
+    "card-header",
+    "card-backdrop",
+    "card-icon",
+    "hero-card__body"
+   ],
+   "z": {
+    "backdrop": "0",
+    "icon": "auto",
+    "header": "4",
+    "body": "5"
+   },
+   "hits": [
+    {
+     "fx": 0.5,
+     "fy": 0.5,
+     "hit": "body"
+    },
+    {
+     "fx": 0.15,
+     "fy": 0.3,
+     "hit": "body"
+    },
+    {
+     "fx": 0.85,
+     "fy": 0.8,
+     "hit": "body"
+    },
+    {
+     "fx": 0.5,
+     "fy": 0.95,
+     "hit": "body"
+    },
+    {
+     "cubeCenter": true,
+     "hit": "body"
+    }
+   ],
+   "display": "block",
+   "scrollW": 1014,
+   "innerW": 1024,
+   "hoverRules": [
+    ".hero-card:hover .card-icon svg"
+   ],
+   "contrast": [
+    {
+     "text": "HACK THE BOX",
+     "color": "rgb(255, 255, 255)",
+     "fgUsed": [
+      255,
+      255,
+      255
+     ],
+     "worstBg": [
+      6,
+      18,
+      39
+     ],
+     "min": 18.69
+    },
+    {
+     "text": "Estadísticas no disponibles",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      207,
+      207,
+      225
+     ],
+     "worstBg": [
+      4,
+      15,
+      34
+     ],
+     "min": 12.46
+    }
+   ]
+  },
+  "expectedHover": "matrix(3.357953, 0.117262, -0.117262, 3.357953, 0, 0)",
+  "github": {
+   "transform": "matrix(2.23864, 0.0781749, -0.0781749, 2.23864, 0, 0)",
+   "expected": "matrix(2.238635, 0.078175, -0.078175, 2.238635, 0, 0)",
+   "rules": [
+    ".hero-card:hover .card-icon svg"
+   ]
+  },
+  "altVariant": "list",
+  "alt": {
+   "geo": {
+    "card": {
+     "l": 25.3,
+     "t": 462.3,
+     "r": 174.2,
+     "b": 678.3,
+     "w": 148.9,
+     "h": 216
+    },
+    "title": {
+     "l": 40.3,
+     "t": 481.3,
+     "r": 159.2,
+     "b": 498.3,
+     "w": 118.9,
+     "h": 17
+    },
+    "body": {
+     "l": 26.3,
+     "t": 463.3,
+     "r": 173.2,
+     "b": 677.3,
+     "w": 146.9,
+     "h": 214
+    },
+    "iconBox": {
+     "l": 26.3,
+     "t": 463.3,
+     "r": 173.2,
+     "b": 677.3,
+     "w": 146.9,
+     "h": 214
+    },
+    "svg": {
+     "l": -134.4,
+     "t": 558.3,
+     "r": 322.9,
+     "b": 704.2,
+     "w": 457.3,
+     "h": 145.8
+    },
+    "use": {
+     "l": 41.8,
+     "t": 663.4,
+     "r": 119.1,
+     "b": 677.2,
+     "w": 77.3,
+     "h": 13.9
+    },
+    "backdrop": {
+     "l": 36.3,
+     "t": 661.7,
+     "r": 124.5,
+     "b": 677.3,
+     "w": 88.1,
+     "h": 15.5
+    },
+    "useBottomGap": 1,
+    "useTitleOverlap": 0,
+    "cubeTitleOverlap": 0,
+    "iconOpacity": "0.16",
+    "iconPE": "none",
+    "svgPE": "none",
+    "svgTransform": "matrix(2.9708, -0.417519, 0.417519, 2.9708, 0, 0)",
+    "svgWidth": "150px",
+    "vars": [
+     "150px",
+     "-8deg",
+     "3"
+    ],
+    "bdOpacity": "0.06",
+    "bdPE": "none",
+    "bdSize": "sm",
+    "svgAspect": "300 / 58.8",
+    "overflow": "hidden",
+    "filter": "none",
+    "order": [
+     "card-header",
+     "card-backdrop",
+     "card-icon",
+     "hero-card__body"
+    ],
+    "z": {
+     "backdrop": "0",
+     "icon": "auto",
+     "header": "4",
+     "body": "5"
+    },
+    "hits": [
+     {
+      "fx": 0.5,
+      "fy": 0.5,
+      "hit": "body"
+     },
+     {
+      "fx": 0.15,
+      "fy": 0.3,
+      "hit": "body"
+     },
+     {
+      "fx": 0.85,
+      "fy": 0.8,
+      "hit": "body"
+     },
+     {
+      "fx": 0.5,
+      "fy": 0.95,
+      "hit": "body"
+     },
+     {
+      "cubeCenter": true,
+      "hit": "body"
+     }
+    ],
+    "display": "block",
+    "scrollW": 1014,
+    "innerW": 1024
+   },
+   "rest": [
+    {
+     "text": "HACK THE BOX",
+     "color": "rgb(255, 255, 255)",
+     "fgUsed": [
+      255,
+      255,
+      255
+     ],
+     "worstBg": [
+      40,
+      49,
+      63
+     ],
+     "min": 13.11
+    },
+    {
+     "text": "Nivel",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      184,
+      184,
+      197
+     ],
+     "worstBg": [
+      31,
+      40,
+      55
+     ],
+     "min": 7.55
+    },
+    {
+     "text": "Hacker",
+     "color": "rgb(159, 239, 0)",
+     "fgUsed": [
+      159,
+      239,
+      0
+     ],
+     "worstBg": [
+      32,
+      41,
+      56
+     ],
+     "min": 10.32
+    },
+    {
+     "text": "Puntos",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      184,
+      184,
+      197
+     ],
+     "worstBg": [
+      30,
+      39,
+      54
+     ],
+     "min": 7.65
+    },
+    {
+     "text": "120",
+     "color": "rgb(159, 239, 0)",
+     "fgUsed": [
+      159,
+      239,
+      0
+     ],
+     "worstBg": [
+      33,
+      42,
+      56
+     ],
+     "min": 10.2
+    },
+    {
+     "text": "Owns",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      184,
+      184,
+      197
+     ],
+     "worstBg": [
+      32,
+      41,
+      56
+     ],
+     "min": 7.45
+    },
+    {
+     "text": "20 user / 18 root",
+     "color": "rgb(159, 239, 0)",
+     "fgUsed": [
+      159,
+      239,
+      0
+     ],
+     "worstBg": [
+      62,
+      80,
+      56
+     ],
+     "min": 6.15
+    }
+   ],
+   "hoverGeo": {
+    "card": {
+     "l": 25.3,
+     "t": 458.3,
+     "r": 174.2,
+     "b": 674.3,
+     "w": 148.9,
+     "h": 216
+    },
+    "title": {
+     "l": 40.3,
+     "t": 477.3,
+     "r": 159.2,
+     "b": 494.3,
+     "w": 118.9,
+     "h": 17
+    },
+    "body": {
+     "l": 26.3,
+     "t": 459.3,
+     "r": 173.2,
+     "b": 673.3,
+     "w": 146.9,
+     "h": 214
+    },
+    "iconBox": {
+     "l": 26.3,
+     "t": 459.3,
+     "r": 173.2,
+     "b": 673.3,
+     "w": 146.9,
+     "h": 214
+    },
+    "svg": {
+     "l": -159.3,
+     "t": 571.4,
+     "r": 347.7,
+     "b": 683.1,
+     "w": 507,
+     "h": 111.6
+    },
+    "use": {
+     "l": 41.8,
+     "t": 659.4,
+     "r": 119.1,
+     "b": 673.2,
+     "w": 77.3,
+     "h": 13.9
+    },
+    "backdrop": {
+     "l": 36.3,
+     "t": 657.7,
+     "r": 124.5,
+     "b": 673.3,
+     "w": 88.1,
+     "h": 15.5
+    },
+    "useBottomGap": 1,
+    "useTitleOverlap": 0,
+    "cubeTitleOverlap": 0,
+    "iconOpacity": "0.16",
+    "iconPE": "none",
+    "svgPE": "none",
+    "svgTransform": "matrix(3.35795, 0.117262, -0.117262, 3.35795, 0, 0)",
+    "svgWidth": "150px",
+    "vars": [
+     "150px",
+     "-8deg",
+     "3"
+    ],
+    "bdOpacity": "0.06",
+    "bdPE": "none",
+    "bdSize": "sm",
+    "svgAspect": "300 / 58.8",
+    "overflow": "hidden",
+    "filter": "contrast(1.4)",
+    "order": [
+     "card-header",
+     "card-backdrop",
+     "card-icon",
+     "hero-card__body"
+    ],
+    "z": {
+     "backdrop": "0",
+     "icon": "auto",
+     "header": "4",
+     "body": "5"
+    },
+    "hits": [
+     {
+      "fx": 0.5,
+      "fy": 0.5,
+      "hit": "body"
+     },
+     {
+      "fx": 0.15,
+      "fy": 0.3,
+      "hit": "body"
+     },
+     {
+      "fx": 0.85,
+      "fy": 0.8,
+      "hit": "body"
+     },
+     {
+      "fx": 0.5,
+      "fy": 0.95,
+      "hit": "body"
+     },
+     {
+      "cubeCenter": true,
+      "hit": "body"
+     }
+    ],
+    "display": "block",
+    "scrollW": 1014,
+    "innerW": 1024
+   },
+   "hover": [
+    {
+     "text": "HACK THE BOX",
+     "color": "rgb(255, 255, 255)",
+     "fgUsed": [
+      255,
+      255,
+      255
+     ],
+     "worstBg": [
+      5,
+      18,
+      37
+     ],
+     "min": 18.76
+    },
+    {
+     "text": "Nivel",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      207,
+      207,
+      225
+     ],
+     "worstBg": [
+      0,
+      5,
+      26
+     ],
+     "min": 13.18
+    },
+    {
+     "text": "Hacker",
+     "color": "rgb(159, 239, 0)",
+     "fgUsed": [
+      172,
+      255,
+      0
+     ],
+     "worstBg": [
+      0,
+      6,
+      27
+     ],
+     "min": 16.37
+    },
+    {
+     "text": "Puntos",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      207,
+      207,
+      225
+     ],
+     "worstBg": [
+      0,
+      4,
+      25
+     ],
+     "min": 13.25
+    },
+    {
+     "text": "120",
+     "color": "rgb(159, 239, 0)",
+     "fgUsed": [
+      172,
+      255,
+      0
+     ],
+     "worstBg": [
+      0,
+      9,
+      29
+     ],
+     "min": 16.14
+    },
+    {
+     "text": "Owns",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      207,
+      207,
+      225
+     ],
+     "worstBg": [
+      0,
+      6,
+      27
+     ],
+     "min": 13.12
+    },
+    {
+     "text": "20 user / 18 root",
+     "color": "rgb(159, 239, 0)",
+     "fgUsed": [
+      172,
+      255,
+      0
+     ],
+     "worstBg": [
+      36,
+      61,
+      27
+     ],
+     "min": 9.7
+    }
+   ]
+  }
+ },
+ "1280": {
+  "mosaicSame": true,
+  "iconsSame": true,
+  "mosaic": [
+   [
+    "htb",
+    540,
+    97,
+    495,
+    422
+   ],
+   [
+    "rust",
+    1049,
+    97,
+    189,
+    204
+   ],
+   [
+    "aws",
+    1049,
+    315,
+    189,
+    204
+   ],
+   [
+    "cloudflare",
+    540,
+    533,
+    189,
+    204
+   ],
+   [
+    "node",
+    744,
+    533,
+    495,
+    204
+   ],
+   [
+    "nestjs",
+    32,
+    751,
+    393,
+    204
+   ],
+   [
+    "css",
+    439,
+    751,
+    189,
+    204
+   ],
+   [
+    "react",
+    642,
+    751,
+    189,
+    204
+   ],
+   [
+    "html",
+    845,
+    751,
+    189,
+    204
+   ],
+   [
+    "claude-code",
+    1049,
+    751,
+    189,
+    204
+   ],
+   [
+    "bun",
+    32,
+    969,
+    189,
+    204
+   ],
+   [
+    "claude",
+    235,
+    969,
+    189,
+    204
+   ],
+   [
+    "typescript",
+    439,
+    969,
+    393,
+    204
+   ],
+   [
+    "youtube",
+    845,
+    969,
+    189,
+    204
+   ],
+   [
+    "github",
+    1049,
+    969,
+    189,
+    204
+   ]
+  ],
+  "rest": {
+   "card": {
+    "l": 540.3,
+    "t": 97,
+    "r": 1034.8,
+    "b": 519,
+    "w": 494.5,
+    "h": 422
+   },
+   "title": {
+    "l": 563.3,
+    "t": 116,
+    "r": 687,
+    "b": 135,
+    "w": 123.8,
+    "h": 19
+   },
+   "body": {
+    "l": 541.3,
+    "t": 98,
+    "r": 1033.8,
+    "b": 203,
+    "w": 492.5,
+    "h": 105
+   },
+   "iconBox": {
+    "l": 541.3,
+    "t": 98,
+    "r": 1033.8,
+    "b": 518,
+    "w": 492.5,
+    "h": 420
+   },
+   "svg": {
+    "l": 497.5,
+    "t": 326.2,
+    "r": 1412.1,
+    "b": 617.8,
+    "w": 914.6,
+    "h": 291.6
+   },
+   "use": {
+    "l": 575.4,
+    "t": 471.5,
+    "r": 834.8,
+    "b": 518,
+    "w": 259.4,
+    "h": 46.5
+   },
+   "backdrop": {
+    "l": 557.3,
+    "t": 465.9,
+    "r": 852.8,
+    "b": 518,
+    "w": 295.5,
+    "h": 52.1
+   },
+   "useBottomGap": 1,
+   "useTitleOverlap": 0,
+   "cubeTitleOverlap": 0,
+   "iconOpacity": "0.16",
+   "iconPE": "none",
+   "svgPE": "none",
+   "svgTransform": "matrix(5.94161, -0.835039, 0.835039, 5.94161, 0, 0)",
+   "svgWidth": "150px",
+   "vars": [
+    "150px",
+    "-8deg",
+    "6"
+   ],
+   "bdOpacity": "0.06",
+   "bdPE": "none",
+   "bdSize": "sm",
+   "svgAspect": "300 / 58.8",
+   "overflow": "hidden",
+   "filter": "none",
+   "order": [
+    "card-header",
+    "card-backdrop",
+    "card-icon",
+    "hero-card__body"
+   ],
+   "z": {
+    "backdrop": "0",
+    "icon": "auto",
+    "header": "4",
+    "body": "5"
+   },
+   "hits": [
+    {
+     "fx": 0.5,
+     "fy": 0.5,
+     "hit": "body"
+    },
+    {
+     "fx": 0.15,
+     "fy": 0.3,
+     "hit": "body"
+    },
+    {
+     "fx": 0.85,
+     "fy": 0.8,
+     "hit": "body"
+    },
+    {
+     "fx": 0.5,
+     "fy": 0.95,
+     "hit": "body"
+    },
+    {
+     "cubeCenter": true,
+     "hit": "article"
+    }
+   ],
+   "display": "block",
+   "scrollW": 1270,
+   "innerW": 1280,
+   "contrast": [
+    {
+     "text": "HACK THE BOX",
+     "color": "rgb(255, 255, 255)",
+     "fgUsed": [
+      255,
+      255,
+      255
+     ],
+     "worstBg": [
+      42,
+      51,
+      64
+     ],
+     "min": 12.76
+    },
+    {
+     "text": "Estadísticas no disponibles",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      184,
+      184,
+      197
+     ],
+     "worstBg": [
+      39,
+      47,
+      61
+     ],
+     "min": 6.86
+    }
+   ]
+  },
+  "variant": "empty",
+  "hover": {
+   "card": {
+    "l": 540.3,
+    "t": 93,
+    "r": 1034.8,
+    "b": 515,
+    "w": 494.5,
+    "h": 422
+   },
+   "title": {
+    "l": 563.3,
+    "t": 112,
+    "r": 687,
+    "b": 131,
+    "w": 123.8,
+    "h": 19
+   },
+   "body": {
+    "l": 541.3,
+    "t": 94,
+    "r": 1033.8,
+    "b": 199,
+    "w": 492.5,
+    "h": 105
+   },
+   "iconBox": {
+    "l": 541.3,
+    "t": 94,
+    "r": 1033.8,
+    "b": 514,
+    "w": 492.5,
+    "h": 420
+   },
+   "svg": {
+    "l": 447.9,
+    "t": 356.4,
+    "r": 1461.8,
+    "b": 579.6,
+    "w": 1014,
+    "h": 223.2
+   },
+   "use": {
+    "l": 575.4,
+    "t": 467.5,
+    "r": 834.8,
+    "b": 514,
+    "w": 259.4,
+    "h": 46.5
+   },
+   "backdrop": {
+    "l": 557.3,
+    "t": 461.9,
+    "r": 852.8,
+    "b": 514,
+    "w": 295.5,
+    "h": 52.1
+   },
+   "useBottomGap": 1,
+   "useTitleOverlap": 0,
+   "cubeTitleOverlap": 0,
+   "iconOpacity": "0.16",
+   "iconPE": "none",
+   "svgPE": "none",
+   "svgTransform": "matrix(6.71591, 0.234525, -0.234525, 6.71591, 0, 0)",
+   "svgWidth": "150px",
+   "vars": [
+    "150px",
+    "-8deg",
+    "6"
+   ],
+   "bdOpacity": "0.06",
+   "bdPE": "none",
+   "bdSize": "sm",
+   "svgAspect": "300 / 58.8",
+   "overflow": "hidden",
+   "filter": "contrast(1.4)",
+   "order": [
+    "card-header",
+    "card-backdrop",
+    "card-icon",
+    "hero-card__body"
+   ],
+   "z": {
+    "backdrop": "0",
+    "icon": "auto",
+    "header": "4",
+    "body": "5"
+   },
+   "hits": [
+    {
+     "fx": 0.5,
+     "fy": 0.5,
+     "hit": "body"
+    },
+    {
+     "fx": 0.15,
+     "fy": 0.3,
+     "hit": "body"
+    },
+    {
+     "fx": 0.85,
+     "fy": 0.8,
+     "hit": "body"
+    },
+    {
+     "fx": 0.5,
+     "fy": 0.95,
+     "hit": "body"
+    },
+    {
+     "cubeCenter": true,
+     "hit": "article"
+    }
+   ],
+   "display": "block",
+   "scrollW": 1270,
+   "innerW": 1280,
+   "hoverRules": [
+    ".hero-card:hover .card-icon svg"
+   ],
+   "contrast": [
+    {
+     "text": "HACK THE BOX",
+     "color": "rgb(255, 255, 255)",
+     "fgUsed": [
+      255,
+      255,
+      255
+     ],
+     "worstBg": [
+      8,
+      20,
+      39
+     ],
+     "min": 18.43
+    },
+    {
+     "text": "Estadísticas no disponibles",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      207,
+      207,
+      225
+     ],
+     "worstBg": [
+      4,
+      15,
+      34
+     ],
+     "min": 12.46
+    }
+   ]
+  },
+  "expectedHover": "matrix(6.715906, 0.234525, -0.234525, 6.715906, 0, 0)",
+  "github": {
+   "transform": "matrix(5.59659, 0.195437, -0.195437, 5.59659, 0, 0)",
+   "expected": "matrix(5.596589, 0.195437, -0.195437, 5.596589, 0, 0)",
+   "rules": [
+    ".hero-card:hover .card-icon svg"
+   ]
+  },
+  "altVariant": "list",
+  "alt": {
+   "geo": {
+    "card": {
+     "l": 540.3,
+     "t": 97,
+     "r": 1034.8,
+     "b": 519,
+     "w": 494.5,
+     "h": 422
+    },
+    "title": {
+     "l": 563.3,
+     "t": 116,
+     "r": 687,
+     "b": 135,
+     "w": 123.8,
+     "h": 19
+    },
+    "body": {
+     "l": 541.3,
+     "t": 98,
+     "r": 1033.8,
+     "b": 261,
+     "w": 492.5,
+     "h": 163
+    },
+    "iconBox": {
+     "l": 541.3,
+     "t": 98,
+     "r": 1033.8,
+     "b": 518,
+     "w": 492.5,
+     "h": 420
+    },
+    "svg": {
+     "l": 497.5,
+     "t": 326.2,
+     "r": 1412.1,
+     "b": 617.8,
+     "w": 914.6,
+     "h": 291.6
+    },
+    "use": {
+     "l": 575.4,
+     "t": 471.5,
+     "r": 834.8,
+     "b": 518,
+     "w": 259.4,
+     "h": 46.5
+    },
+    "backdrop": {
+     "l": 557.3,
+     "t": 465.9,
+     "r": 852.8,
+     "b": 518,
+     "w": 295.5,
+     "h": 52.1
+    },
+    "useBottomGap": 1,
+    "useTitleOverlap": 0,
+    "cubeTitleOverlap": 0,
+    "iconOpacity": "0.16",
+    "iconPE": "none",
+    "svgPE": "none",
+    "svgTransform": "matrix(5.94161, -0.835039, 0.835039, 5.94161, 0, 0)",
+    "svgWidth": "150px",
+    "vars": [
+     "150px",
+     "-8deg",
+     "6"
+    ],
+    "bdOpacity": "0.06",
+    "bdPE": "none",
+    "bdSize": "sm",
+    "svgAspect": "300 / 58.8",
+    "overflow": "hidden",
+    "filter": "none",
+    "order": [
+     "card-header",
+     "card-backdrop",
+     "card-icon",
+     "hero-card__body"
+    ],
+    "z": {
+     "backdrop": "0",
+     "icon": "auto",
+     "header": "4",
+     "body": "5"
+    },
+    "hits": [
+     {
+      "fx": 0.5,
+      "fy": 0.5,
+      "hit": "body"
+     },
+     {
+      "fx": 0.15,
+      "fy": 0.3,
+      "hit": "body"
+     },
+     {
+      "fx": 0.85,
+      "fy": 0.8,
+      "hit": "body"
+     },
+     {
+      "fx": 0.5,
+      "fy": 0.95,
+      "hit": "body"
+     },
+     {
+      "cubeCenter": true,
+      "hit": "article"
+     }
+    ],
+    "display": "block",
+    "scrollW": 1270,
+    "innerW": 1280
+   },
+   "rest": [
+    {
+     "text": "HACK THE BOX",
+     "color": "rgb(255, 255, 255)",
+     "fgUsed": [
+      255,
+      255,
+      255
+     ],
+     "worstBg": [
+      42,
+      51,
+      64
+     ],
+     "min": 12.76
+    },
+    {
+     "text": "Nivel",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      184,
+      184,
+      197
+     ],
+     "worstBg": [
+      39,
+      47,
+      61
+     ],
+     "min": 6.86
+    },
+    {
+     "text": "Hacker",
+     "color": "rgb(159, 239, 0)",
+     "fgUsed": [
+      159,
+      239,
+      0
+     ],
+     "worstBg": [
+      39,
+      47,
+      61
+     ],
+     "min": 9.5
+    },
+    {
+     "text": "Puntos",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      184,
+      184,
+      197
+     ],
+     "worstBg": [
+      35,
+      44,
+      58
+     ],
+     "min": 7.17
+    },
+    {
+     "text": "120",
+     "color": "rgb(159, 239, 0)",
+     "fgUsed": [
+      159,
+      239,
+      0
+     ],
+     "worstBg": [
+      35,
+      44,
+      58
+     ],
+     "min": 9.93
+    },
+    {
+     "text": "Owns",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      184,
+      184,
+      197
+     ],
+     "worstBg": [
+      31,
+      40,
+      55
+     ],
+     "min": 7.55
+    },
+    {
+     "text": "20 user / 18 root",
+     "color": "rgb(159, 239, 0)",
+     "fgUsed": [
+      159,
+      239,
+      0
+     ],
+     "worstBg": [
+      31,
+      40,
+      55
+     ],
+     "min": 10.46
+    }
+   ],
+   "hoverGeo": {
+    "card": {
+     "l": 540.3,
+     "t": 93,
+     "r": 1034.8,
+     "b": 515,
+     "w": 494.5,
+     "h": 422
+    },
+    "title": {
+     "l": 563.3,
+     "t": 112,
+     "r": 687,
+     "b": 131,
+     "w": 123.8,
+     "h": 19
+    },
+    "body": {
+     "l": 541.3,
+     "t": 94,
+     "r": 1033.8,
+     "b": 257,
+     "w": 492.5,
+     "h": 163
+    },
+    "iconBox": {
+     "l": 541.3,
+     "t": 94,
+     "r": 1033.8,
+     "b": 514,
+     "w": 492.5,
+     "h": 420
+    },
+    "svg": {
+     "l": 447.9,
+     "t": 356.4,
+     "r": 1461.8,
+     "b": 579.6,
+     "w": 1014,
+     "h": 223.2
+    },
+    "use": {
+     "l": 575.4,
+     "t": 467.5,
+     "r": 834.8,
+     "b": 514,
+     "w": 259.4,
+     "h": 46.5
+    },
+    "backdrop": {
+     "l": 557.3,
+     "t": 461.9,
+     "r": 852.8,
+     "b": 514,
+     "w": 295.5,
+     "h": 52.1
+    },
+    "useBottomGap": 1,
+    "useTitleOverlap": 0,
+    "cubeTitleOverlap": 0,
+    "iconOpacity": "0.16",
+    "iconPE": "none",
+    "svgPE": "none",
+    "svgTransform": "matrix(6.71591, 0.234525, -0.234525, 6.71591, 0, 0)",
+    "svgWidth": "150px",
+    "vars": [
+     "150px",
+     "-8deg",
+     "6"
+    ],
+    "bdOpacity": "0.06",
+    "bdPE": "none",
+    "bdSize": "sm",
+    "svgAspect": "300 / 58.8",
+    "overflow": "hidden",
+    "filter": "contrast(1.4)",
+    "order": [
+     "card-header",
+     "card-backdrop",
+     "card-icon",
+     "hero-card__body"
+    ],
+    "z": {
+     "backdrop": "0",
+     "icon": "auto",
+     "header": "4",
+     "body": "5"
+    },
+    "hits": [
+     {
+      "fx": 0.5,
+      "fy": 0.5,
+      "hit": "body"
+     },
+     {
+      "fx": 0.15,
+      "fy": 0.3,
+      "hit": "body"
+     },
+     {
+      "fx": 0.85,
+      "fy": 0.8,
+      "hit": "body"
+     },
+     {
+      "fx": 0.5,
+      "fy": 0.95,
+      "hit": "body"
+     },
+     {
+      "cubeCenter": true,
+      "hit": "article"
+     }
+    ],
+    "display": "block",
+    "scrollW": 1270,
+    "innerW": 1280
+   },
+   "hover": [
+    {
+     "text": "HACK THE BOX",
+     "color": "rgb(255, 255, 255)",
+     "fgUsed": [
+      255,
+      255,
+      255
+     ],
+     "worstBg": [
+      8,
+      20,
+      39
+     ],
+     "min": 18.43
+    },
+    {
+     "text": "Nivel",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      207,
+      207,
+      225
+     ],
+     "worstBg": [
+      4,
+      15,
+      34
+     ],
+     "min": 12.46
+    },
+    {
+     "text": "Hacker",
+     "color": "rgb(159, 239, 0)",
+     "fgUsed": [
+      172,
+      255,
+      0
+     ],
+     "worstBg": [
+      4,
+      15,
+      34
+     ],
+     "min": 15.56
+    },
+    {
+     "text": "Puntos",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      207,
+      207,
+      225
+     ],
+     "worstBg": [
+      0,
+      11,
+      30
+     ],
+     "min": 12.81
+    },
+    {
+     "text": "120",
+     "color": "rgb(159, 239, 0)",
+     "fgUsed": [
+      172,
+      255,
+      0
+     ],
+     "worstBg": [
+      0,
+      11,
+      30
+     ],
+     "min": 15.99
+    },
+    {
+     "text": "Owns",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      207,
+      207,
+      225
+     ],
+     "worstBg": [
+      0,
+      5,
+      26
+     ],
+     "min": 13.18
+    },
+    {
+     "text": "20 user / 18 root",
+     "color": "rgb(159, 239, 0)",
+     "fgUsed": [
+      172,
+      255,
+      0
+     ],
+     "worstBg": [
+      0,
+      5,
+      26
+     ],
+     "min": 16.46
+    }
+   ]
+  }
+ },
+ "1600": {
+  "mosaicSame": true,
+  "iconsSame": true,
+  "mosaic": [
+   [
+    "htb",
+    676,
+    97,
+    617,
+    422
+   ],
+   [
+    "rust",
+    1307,
+    97,
+    238,
+    204
+   ],
+   [
+    "aws",
+    1307,
+    315,
+    238,
+    204
+   ],
+   [
+    "cloudflare",
+    676,
+    533,
+    238,
+    204
+   ],
+   [
+    "node",
+    928,
+    533,
+    617,
+    204
+   ],
+   [
+    "nestjs",
+    45,
+    751,
+    491,
+    204
+   ],
+   [
+    "css",
+    550,
+    751,
+    238,
+    204
+   ],
+   [
+    "react",
+    802,
+    751,
+    238,
+    204
+   ],
+   [
+    "html",
+    1054,
+    751,
+    238,
+    204
+   ],
+   [
+    "claude-code",
+    1307,
+    751,
+    238,
+    204
+   ],
+   [
+    "bun",
+    45,
+    969,
+    238,
+    204
+   ],
+   [
+    "claude",
+    297,
+    969,
+    238,
+    204
+   ],
+   [
+    "typescript",
+    550,
+    969,
+    491,
+    204
+   ],
+   [
+    "youtube",
+    1054,
+    969,
+    238,
+    204
+   ],
+   [
+    "github",
+    1307,
+    969,
+    238,
+    204
+   ]
+  ],
+  "rest": {
+   "card": {
+    "l": 675.8,
+    "t": 97,
+    "r": 1292.7,
+    "b": 519,
+    "w": 616.8,
+    "h": 422
+   },
+   "title": {
+    "l": 698.8,
+    "t": 116,
+    "r": 822.6,
+    "b": 135,
+    "w": 123.8,
+    "h": 19
+   },
+   "body": {
+    "l": 676.8,
+    "t": 98,
+    "r": 1291.7,
+    "b": 203,
+    "w": 614.8,
+    "h": 105
+   },
+   "iconBox": {
+    "l": 676.8,
+    "t": 98,
+    "r": 1291.7,
+    "b": 518,
+    "w": 614.8,
+    "h": 420
+   },
+   "svg": {
+    "l": 755.3,
+    "t": 326.2,
+    "r": 1670,
+    "b": 617.8,
+    "w": 914.6,
+    "h": 291.6
+   },
+   "use": {
+    "l": 715.5,
+    "t": 460,
+    "r": 1039.3,
+    "b": 518,
+    "w": 323.8,
+    "h": 58
+   },
+   "backdrop": {
+    "l": 692.8,
+    "t": 453,
+    "r": 1061.7,
+    "b": 518,
+    "w": 368.9,
+    "h": 65
+   },
+   "useBottomGap": 1,
+   "useTitleOverlap": 0,
+   "cubeTitleOverlap": 0,
+   "iconOpacity": "0.16",
+   "iconPE": "none",
+   "svgPE": "none",
+   "svgTransform": "matrix(5.94161, -0.835039, 0.835039, 5.94161, 0, 0)",
+   "svgWidth": "150px",
+   "vars": [
+    "150px",
+    "-8deg",
+    "6"
+   ],
+   "bdOpacity": "0.06",
+   "bdPE": "none",
+   "bdSize": "sm",
+   "svgAspect": "300 / 58.8",
+   "overflow": "hidden",
+   "filter": "none",
+   "order": [
+    "card-header",
+    "card-backdrop",
+    "card-icon",
+    "hero-card__body"
+   ],
+   "z": {
+    "backdrop": "0",
+    "icon": "auto",
+    "header": "4",
+    "body": "5"
+   },
+   "hits": [
+    {
+     "fx": 0.5,
+     "fy": 0.5,
+     "hit": "body"
+    },
+    {
+     "fx": 0.15,
+     "fy": 0.3,
+     "hit": "body"
+    },
+    {
+     "fx": 0.85,
+     "fy": 0.8,
+     "hit": "body"
+    },
+    {
+     "fx": 0.5,
+     "fy": 0.95,
+     "hit": "body"
+    },
+    {
+     "cubeCenter": true,
+     "hit": "article"
+    }
+   ],
+   "display": "block",
+   "scrollW": 1590,
+   "innerW": 1600,
+   "contrast": [
+    {
+     "text": "HACK THE BOX",
+     "color": "rgb(255, 255, 255)",
+     "fgUsed": [
+      255,
+      255,
+      255
+     ],
+     "worstBg": [
+      42,
+      51,
+      64
+     ],
+     "min": 12.76
+    },
+    {
+     "text": "Estadísticas no disponibles",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      184,
+      184,
+      197
+     ],
+     "worstBg": [
+      39,
+      47,
+      61
+     ],
+     "min": 6.86
+    }
+   ]
+  },
+  "variant": "empty",
+  "hover": {
+   "card": {
+    "l": 675.8,
+    "t": 93,
+    "r": 1292.7,
+    "b": 515,
+    "w": 616.8,
+    "h": 422
+   },
+   "title": {
+    "l": 698.8,
+    "t": 112,
+    "r": 822.6,
+    "b": 131,
+    "w": 123.8,
+    "h": 19
+   },
+   "body": {
+    "l": 676.8,
+    "t": 94,
+    "r": 1291.7,
+    "b": 199,
+    "w": 614.8,
+    "h": 105
+   },
+   "iconBox": {
+    "l": 676.8,
+    "t": 94,
+    "r": 1291.7,
+    "b": 514,
+    "w": 614.8,
+    "h": 420
+   },
+   "svg": {
+    "l": 705.7,
+    "t": 356.4,
+    "r": 1719.6,
+    "b": 579.6,
+    "w": 1014,
+    "h": 223.2
+   },
+   "use": {
+    "l": 715.5,
+    "t": 456,
+    "r": 1039.3,
+    "b": 514,
+    "w": 323.8,
+    "h": 58
+   },
+   "backdrop": {
+    "l": 692.8,
+    "t": 449,
+    "r": 1061.7,
+    "b": 514,
+    "w": 368.9,
+    "h": 65
+   },
+   "useBottomGap": 1,
+   "useTitleOverlap": 0,
+   "cubeTitleOverlap": 0,
+   "iconOpacity": "0.16",
+   "iconPE": "none",
+   "svgPE": "none",
+   "svgTransform": "matrix(6.71591, 0.234525, -0.234525, 6.71591, 0, 0)",
+   "svgWidth": "150px",
+   "vars": [
+    "150px",
+    "-8deg",
+    "6"
+   ],
+   "bdOpacity": "0.06",
+   "bdPE": "none",
+   "bdSize": "sm",
+   "svgAspect": "300 / 58.8",
+   "overflow": "hidden",
+   "filter": "contrast(1.4)",
+   "order": [
+    "card-header",
+    "card-backdrop",
+    "card-icon",
+    "hero-card__body"
+   ],
+   "z": {
+    "backdrop": "0",
+    "icon": "auto",
+    "header": "4",
+    "body": "5"
+   },
+   "hits": [
+    {
+     "fx": 0.5,
+     "fy": 0.5,
+     "hit": "body"
+    },
+    {
+     "fx": 0.15,
+     "fy": 0.3,
+     "hit": "body"
+    },
+    {
+     "fx": 0.85,
+     "fy": 0.8,
+     "hit": "body"
+    },
+    {
+     "fx": 0.5,
+     "fy": 0.95,
+     "hit": "body"
+    },
+    {
+     "cubeCenter": true,
+     "hit": "article"
+    }
+   ],
+   "display": "block",
+   "scrollW": 1590,
+   "innerW": 1600,
+   "hoverRules": [
+    ".hero-card:hover .card-icon svg"
+   ],
+   "contrast": [
+    {
+     "text": "HACK THE BOX",
+     "color": "rgb(255, 255, 255)",
+     "fgUsed": [
+      255,
+      255,
+      255
+     ],
+     "worstBg": [
+      8,
+      20,
+      39
+     ],
+     "min": 18.43
+    },
+    {
+     "text": "Estadísticas no disponibles",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      207,
+      207,
+      225
+     ],
+     "worstBg": [
+      4,
+      15,
+      34
+     ],
+     "min": 12.46
+    }
+   ]
+  },
+  "expectedHover": "matrix(6.715906, 0.234525, -0.234525, 6.715906, 0, 0)",
+  "github": {
+   "transform": "matrix(5.59659, 0.195437, -0.195437, 5.59659, 0, 0)",
+   "expected": "matrix(5.596589, 0.195437, -0.195437, 5.596589, 0, 0)",
+   "rules": [
+    ".hero-card:hover .card-icon svg"
+   ]
+  },
+  "altVariant": "list",
+  "alt": {
+   "geo": {
+    "card": {
+     "l": 675.8,
+     "t": 97,
+     "r": 1292.7,
+     "b": 519,
+     "w": 616.8,
+     "h": 422
+    },
+    "title": {
+     "l": 698.8,
+     "t": 116,
+     "r": 822.6,
+     "b": 135,
+     "w": 123.8,
+     "h": 19
+    },
+    "body": {
+     "l": 676.8,
+     "t": 98,
+     "r": 1291.7,
+     "b": 261,
+     "w": 614.8,
+     "h": 163
+    },
+    "iconBox": {
+     "l": 676.8,
+     "t": 98,
+     "r": 1291.7,
+     "b": 518,
+     "w": 614.8,
+     "h": 420
+    },
+    "svg": {
+     "l": 755.3,
+     "t": 326.2,
+     "r": 1670,
+     "b": 617.8,
+     "w": 914.6,
+     "h": 291.6
+    },
+    "use": {
+     "l": 715.5,
+     "t": 460,
+     "r": 1039.3,
+     "b": 518,
+     "w": 323.8,
+     "h": 58
+    },
+    "backdrop": {
+     "l": 692.8,
+     "t": 453,
+     "r": 1061.7,
+     "b": 518,
+     "w": 368.9,
+     "h": 65
+    },
+    "useBottomGap": 1,
+    "useTitleOverlap": 0,
+    "cubeTitleOverlap": 0,
+    "iconOpacity": "0.16",
+    "iconPE": "none",
+    "svgPE": "none",
+    "svgTransform": "matrix(5.94161, -0.835039, 0.835039, 5.94161, 0, 0)",
+    "svgWidth": "150px",
+    "vars": [
+     "150px",
+     "-8deg",
+     "6"
+    ],
+    "bdOpacity": "0.06",
+    "bdPE": "none",
+    "bdSize": "sm",
+    "svgAspect": "300 / 58.8",
+    "overflow": "hidden",
+    "filter": "none",
+    "order": [
+     "card-header",
+     "card-backdrop",
+     "card-icon",
+     "hero-card__body"
+    ],
+    "z": {
+     "backdrop": "0",
+     "icon": "auto",
+     "header": "4",
+     "body": "5"
+    },
+    "hits": [
+     {
+      "fx": 0.5,
+      "fy": 0.5,
+      "hit": "body"
+     },
+     {
+      "fx": 0.15,
+      "fy": 0.3,
+      "hit": "body"
+     },
+     {
+      "fx": 0.85,
+      "fy": 0.8,
+      "hit": "body"
+     },
+     {
+      "fx": 0.5,
+      "fy": 0.95,
+      "hit": "body"
+     },
+     {
+      "cubeCenter": true,
+      "hit": "article"
+     }
+    ],
+    "display": "block",
+    "scrollW": 1590,
+    "innerW": 1600
+   },
+   "rest": [
+    {
+     "text": "HACK THE BOX",
+     "color": "rgb(255, 255, 255)",
+     "fgUsed": [
+      255,
+      255,
+      255
+     ],
+     "worstBg": [
+      42,
+      51,
+      64
+     ],
+     "min": 12.76
+    },
+    {
+     "text": "Nivel",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      184,
+      184,
+      197
+     ],
+     "worstBg": [
+      39,
+      47,
+      61
+     ],
+     "min": 6.86
+    },
+    {
+     "text": "Hacker",
+     "color": "rgb(159, 239, 0)",
+     "fgUsed": [
+      159,
+      239,
+      0
+     ],
+     "worstBg": [
+      39,
+      47,
+      61
+     ],
+     "min": 9.5
+    },
+    {
+     "text": "Puntos",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      184,
+      184,
+      197
+     ],
+     "worstBg": [
+      35,
+      44,
+      58
+     ],
+     "min": 7.17
+    },
+    {
+     "text": "120",
+     "color": "rgb(159, 239, 0)",
+     "fgUsed": [
+      159,
+      239,
+      0
+     ],
+     "worstBg": [
+      35,
+      44,
+      58
+     ],
+     "min": 9.93
+    },
+    {
+     "text": "Owns",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      184,
+      184,
+      197
+     ],
+     "worstBg": [
+      31,
+      40,
+      55
+     ],
+     "min": 7.55
+    },
+    {
+     "text": "20 user / 18 root",
+     "color": "rgb(159, 239, 0)",
+     "fgUsed": [
+      159,
+      239,
+      0
+     ],
+     "worstBg": [
+      31,
+      40,
+      55
+     ],
+     "min": 10.46
+    }
+   ],
+   "hoverGeo": {
+    "card": {
+     "l": 675.8,
+     "t": 93,
+     "r": 1292.7,
+     "b": 515,
+     "w": 616.8,
+     "h": 422
+    },
+    "title": {
+     "l": 698.8,
+     "t": 112,
+     "r": 822.6,
+     "b": 131,
+     "w": 123.8,
+     "h": 19
+    },
+    "body": {
+     "l": 676.8,
+     "t": 94,
+     "r": 1291.7,
+     "b": 257,
+     "w": 614.8,
+     "h": 163
+    },
+    "iconBox": {
+     "l": 676.8,
+     "t": 94,
+     "r": 1291.7,
+     "b": 514,
+     "w": 614.8,
+     "h": 420
+    },
+    "svg": {
+     "l": 705.7,
+     "t": 356.4,
+     "r": 1719.6,
+     "b": 579.6,
+     "w": 1014,
+     "h": 223.2
+    },
+    "use": {
+     "l": 715.5,
+     "t": 456,
+     "r": 1039.3,
+     "b": 514,
+     "w": 323.8,
+     "h": 58
+    },
+    "backdrop": {
+     "l": 692.8,
+     "t": 449,
+     "r": 1061.7,
+     "b": 514,
+     "w": 368.9,
+     "h": 65
+    },
+    "useBottomGap": 1,
+    "useTitleOverlap": 0,
+    "cubeTitleOverlap": 0,
+    "iconOpacity": "0.16",
+    "iconPE": "none",
+    "svgPE": "none",
+    "svgTransform": "matrix(6.71591, 0.234525, -0.234525, 6.71591, 0, 0)",
+    "svgWidth": "150px",
+    "vars": [
+     "150px",
+     "-8deg",
+     "6"
+    ],
+    "bdOpacity": "0.06",
+    "bdPE": "none",
+    "bdSize": "sm",
+    "svgAspect": "300 / 58.8",
+    "overflow": "hidden",
+    "filter": "contrast(1.4)",
+    "order": [
+     "card-header",
+     "card-backdrop",
+     "card-icon",
+     "hero-card__body"
+    ],
+    "z": {
+     "backdrop": "0",
+     "icon": "auto",
+     "header": "4",
+     "body": "5"
+    },
+    "hits": [
+     {
+      "fx": 0.5,
+      "fy": 0.5,
+      "hit": "body"
+     },
+     {
+      "fx": 0.15,
+      "fy": 0.3,
+      "hit": "body"
+     },
+     {
+      "fx": 0.85,
+      "fy": 0.8,
+      "hit": "body"
+     },
+     {
+      "fx": 0.5,
+      "fy": 0.95,
+      "hit": "body"
+     },
+     {
+      "cubeCenter": true,
+      "hit": "article"
+     }
+    ],
+    "display": "block",
+    "scrollW": 1590,
+    "innerW": 1600
+   },
+   "hover": [
+    {
+     "text": "HACK THE BOX",
+     "color": "rgb(255, 255, 255)",
+     "fgUsed": [
+      255,
+      255,
+      255
+     ],
+     "worstBg": [
+      8,
+      20,
+      39
+     ],
+     "min": 18.43
+    },
+    {
+     "text": "Nivel",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      207,
+      207,
+      225
+     ],
+     "worstBg": [
+      4,
+      15,
+      34
+     ],
+     "min": 12.46
+    },
+    {
+     "text": "Hacker",
+     "color": "rgb(159, 239, 0)",
+     "fgUsed": [
+      172,
+      255,
+      0
+     ],
+     "worstBg": [
+      4,
+      15,
+      34
+     ],
+     "min": 15.56
+    },
+    {
+     "text": "Puntos",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      207,
+      207,
+      225
+     ],
+     "worstBg": [
+      0,
+      11,
+      30
+     ],
+     "min": 12.81
+    },
+    {
+     "text": "120",
+     "color": "rgb(159, 239, 0)",
+     "fgUsed": [
+      172,
+      255,
+      0
+     ],
+     "worstBg": [
+      0,
+      11,
+      30
+     ],
+     "min": 15.99
+    },
+    {
+     "text": "Owns",
+     "color": "rgb(184, 184, 197)",
+     "fgUsed": [
+      207,
+      207,
+      225
+     ],
+     "worstBg": [
+      0,
+      5,
+      26
+     ],
+     "min": 13.18
+    },
+    {
+     "text": "20 user / 18 root",
+     "color": "rgb(159, 239, 0)",
+     "fgUsed": [
+      172,
+      255,
+      0
+     ],
+     "worstBg": [
+      0,
+      5,
+      26
+     ],
+     "min": 16.46
+    }
+   ]
+  }
+ },
+ "errors": []
+}

@@ -33,7 +33,7 @@ const COLOR_PROPS = /^(color|background|background-color|border|border-bottom|bo
 // Ajuste feature 98 (precedente REQ-43-06): htb es la primera entrada y sin celda (la calcula el dominio).
 test('REQ-92-01: hero-cards.json incluye la tarjeta htb como primera entrada', () => {
   const data = JSON.parse(read('src/data/hero-cards.json'));
-  assert.deepEqual(data[0], { id: 'htb', kind: 'htb', title: 'HACK THE BOX', colorToken: 'htb' });
+  assert.deepEqual(data[0], { id: 'htb', kind: 'htb', title: 'HACK THE BOX', colorToken: 'htb', showOnMobile: true, href: null, icon: '/assets/svg/sprite.svg#htb', backgroundIcon: '/assets/svg/sprite.svg#htb-wordmark', backgroundIconSize: 'sm' }); // Ajuste feature 106 (precedente REQ-43-06); Ajuste feature 107 (precedente REQ-43-06): href null; Ajuste feature 112 (precedente REQ-43-06): logos (REQ-112-06)
 });
 
 test('REQ-92-02: tokens.css declara los tokens de marca HTB sin superar 100 líneas', () => {
@@ -54,8 +54,8 @@ test('REQ-92-04: htb-card.astro pinta article.hero-card.hero-card--rich con p.ca
   const content = read(CARD);
   assert.match(frontmatter(content), /interface\s+Props\s*\{[\s\S]*?\bcard\s*:\s*HeroRichCard\b/);
   assert.match(frontmatter(content), /import\s+["']\.\.\/\.\.\/styles\/htb-card\.css["']/);
-  // Ajuste feature 98 (precedente REQ-43-06): el article gana data-col-span/data-row-span (REQ-98-17).
-  assert.match(content, /<article\s+class="hero-card hero-card--rich"\s+data-color-token=\{card\.colorToken\}\s+data-col-span=\{colSpan\}\s+data-row-span=\{rowSpan\}>/);
+  // Ajuste feature 98 (precedente REQ-43-06): el article gana data-col-span/data-row-span (REQ-98-17). Ajuste feature 106 (precedente REQ-43-06): y data-show-on-mobile, solo "true" si showOnMobile (REQ-106-08/18).
+  assert.match(content, /<article\s+class="hero-card hero-card--rich"\s+data-color-token=\{card\.colorToken\}\s+data-col-span=\{colSpan\}\s+data-row-span=\{rowSpan\}\s+data-show-on-mobile=\{card\.showOnMobile \? 'true' : undefined\}>/);
   assert.match(content, /<p\s+class="card-title">\{card\.title\}<\/p>/);
 });
 

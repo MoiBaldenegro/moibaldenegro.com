@@ -1,11 +1,17 @@
 ---
 import '../../styles/search-bar.css';
+import '../../styles/search-bar-icon.css';
 ---
 
 <!-- Feature 57: landmark <search> y formulario GET a /search; sin JS también
      funciona (mejora progresiva). Con JS, search-bar.ts navega con view transitions. -->
 <search class="search-bar" data-search-bar>
   <form class="search-bar__form" action="/search" method="get">
+    <!-- Feature 114: lupa decorativa (el nombre accesible lo da el aria-label del input). -->
+    <svg class="search-bar__icon" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <circle cx="8.5" cy="8.5" r="7" />
+      <path d="M13.5 13.5 19 19" />
+    </svg>
     <input
       class="search-bar__input"
       type="search"

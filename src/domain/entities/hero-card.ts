@@ -17,6 +17,11 @@ export const HERO_CARD_CATEGORIES = ['tech', 'social'] as const;
 
 export type HeroCardCategory = (typeof HERO_CARD_CATEGORIES)[number];
 
+// Catálogo cerrado de tamaños del logo de fondo (REQ-108-01, feature 108); md = geometría de la feature 105.
+export const HERO_BACKDROP_SIZES = ['sm', 'md', 'lg'] as const;
+
+export type HeroBackdropSize = (typeof HERO_BACKDROP_SIZES)[number];
+
 // Tarjeta de icono + título de marca (tipo por defecto cuando el JSON omite kind).
 export interface HeroCard {
   readonly id: string;
@@ -31,10 +36,14 @@ export interface HeroCard {
   readonly iconWidth: string;
   // Visible en móvil (<= 768 px) o no (REQ-106-01, feature 106); el parse lo rellena si el JSON lo omite.
   readonly showOnMobile: boolean;
+  // Liga de la card (REQ-107-01, feature 107): https://… externa o /ruta interna; null = card no clicable.
+  readonly href: string | null;
   // Logos extra opcionales y decorativos (REQ-103-01, feature 103): esquina superior derecha y
   // fondo inferior de baja opacidad; si el JSON los omite, la clave no existe y la card queda como antes.
   readonly cornerIcon?: string;
   readonly backgroundIcon?: string;
+  // Tamaño del logo de fondo (REQ-108-01..03, feature 108): solo con backgroundIcon; ausente = sin clave (md en CSS).
+  readonly backgroundIconSize?: HeroBackdropSize;
 }
 
 // Tarjeta rica (otro diseño o con datos propios) que hereda las reglas del grid.
@@ -44,6 +53,11 @@ export interface HeroRichCard {
   readonly title: string;
   readonly colorToken: string;
   readonly showOnMobile: boolean;
+  readonly href: string | null;
+  // Logos bajo el contenido (REQ-112-01, feature 112): cubo con el hover de las de icono y logo de fondo; ausente = sin clave.
+  readonly icon?: string;
+  readonly backgroundIcon?: string;
+  readonly backgroundIconSize?: HeroBackdropSize;
 }
 
 // Unión que entrega HeroCardsRepository.getCards() (REQ-90-04).

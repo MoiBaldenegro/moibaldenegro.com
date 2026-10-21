@@ -68,7 +68,7 @@ test('REQ-70-08/09: solo se añade gsap y solo latest-horizontal.ts, cards-motio
   assert.equal(pkg.dependencies.wrangler, '^4.149.0');
   assert.equal(pkg.devDependencies['@cloudflare/workers-types'], '^5.20261009.1');
   const walk = (dir) => readdirSync(dir).flatMap((n) => (statSync(join(dir, n)).isDirectory() ? walk(join(dir, n)) : [join(dir, n)]));
-  for (const file of walk(fileURLToPath(new URL('src', root))).filter((f) => /[.](ts|astro|mjs|js)$/.test(f) && !f.endsWith('latest-horizontal.ts') && !/[\\/]latest-horizontal[\\/]cards-(motion|sync)[.]ts$/.test(f))) { // Ajuste feature 96 (precedente REQ-43-06)
+  for (const file of walk(fileURLToPath(new URL('src', root))).filter((f) => /[.](ts|astro|mjs|js)$/.test(f) && !f.endsWith('latest-horizontal.ts') && !/[\\/]latest-horizontal[\\/]cards-(motion|sync)[.]ts$/.test(f) && !/[\\/]new-hero[\\/]hero-cards-(motion|lego)[.]ts$/.test(f))) { // Ajuste feature 96 (precedente REQ-43-06); Ajuste feature 115 (precedente REQ-43-06): runtime lego del hero (REQ-115-06)
     assert.doesNotMatch(readFileSync(file, 'utf8'), /from ['"]gsap/, file);
   }
 });

@@ -1,0 +1,63 @@
+/* search-bar-icon.css — Lupa animada de la search bar (feature 114,
+   REQ-114-01..07/11). «Lupa que escanea»: gris en reposo, ciruela con foco
+   (escala 1.12 + halo en el input), escaneo en bucle mientras hay foco y
+   texto, ciruela quieta con texto sin foco. CSS puro (:focus-within,
+   :placeholder-shown y :has()); solo tokens existentes, sin colores sueltos.
+   Duraciones y distancias son literales locales (design.md Decisión 3). */
+
+.search-bar__icon {
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  width: 16px;
+  height: 16px;
+  color: var(--color-text-secondary);
+  transform: translateY(-50%);
+  transform-origin: 40% 40%;
+  pointer-events: none;
+  transition: var(--transition-default);
+}
+
+/* Foco (REQ-114-03): lupa y borde en acento + halo; el outline global de
+   layout.css (REQ-37-02) no se toca. */
+.search-bar:focus-within .search-bar__icon {
+  color: var(--color-accent);
+  transform: translateY(-50%) scale(1.12);
+}
+
+.search-bar:focus-within .search-bar__input {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 4px var(--color-glow);
+}
+
+/* Con texto y sin foco (REQ-114-05): búsqueda activa, lupa quieta. */
+.search-bar__form:has(.search-bar__input:not(:placeholder-shown)) .search-bar__icon {
+  color: var(--color-accent);
+}
+
+/* Foco + texto (REQ-114-04): la lupa recorre el texto en bucle. */
+.search-bar:focus-within .search-bar__form:has(.search-bar__input:not(:placeholder-shown)) .search-bar__icon {
+  animation: search-bar-scan 1.6s ease-in-out infinite;
+}
+
+@keyframes search-bar-scan {
+  0%,
+  100% {
+    transform: translate(0, -50%) rotate(0deg) scale(1.12);
+  }
+  33% {
+    transform: translate(3px, -50%) rotate(-10deg) scale(1.12);
+  }
+  66% {
+    transform: translate(-2px, -50%) rotate(10deg) scale(1.12);
+  }
+}
+
+/* REQ-114-06: sin movimiento si el usuario lo pide. */
+@media (prefers-reduced-motion: reduce) {
+  .search-bar__icon,
+  .search-bar:focus-within .search-bar__form:has(.search-bar__input:not(:placeholder-shown)) .search-bar__icon {
+    animation: none;
+    transition: none;
+  }
+}

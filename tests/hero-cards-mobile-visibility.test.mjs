@@ -1,4 +1,4 @@
-// Feature 106 hero-cards-mobile-visibility (REQ-106-01..17; specs/106_hero-cards-mobile-visibility/). En móvil
+// Feature 106 hero-cards-mobile-visibility (REQ-106-01..19; specs/106_hero-cards-mobile-visibility/). En móvil
 // (<= 768 px) solo se ven las cards con showOnMobile true; la medida en navegador (REQ-106-10..12/14) va con CDP (impl).
 import { test } from 'node:test'; import assert from 'node:assert/strict'; import { readFileSync, existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
@@ -52,21 +52,24 @@ test('REQ-106-07: el parse queda partido en hero-cards-parse.ts y un hermano, am
   const real = new HeroCardsRepository().getCards(); assert.equal(real.length, 15);
   assert.deepEqual(real.filter((c) => c.showOnMobile).map((c) => c.id), ['htb']);
 });
-test('REQ-106-08 (build): data-show-on-mobile en cada article del hero y plantillas sin style ni script', () => {
+const COND = /data-show-on-mobile=\{card\.showOnMobile \? 'true' : undefined\}/;
+test('REQ-106-08/18/19 (build): data-show-on-mobile="true" solo en HTB, sin atributo en las de icono, sin style ni script y portada < 40 000 B', () => {
   const build = astroBuild(); assert.equal(build.status, 0, `astro build falló: ${build.stderr}`);
   const html = read('dist/client/index.html'); const arts = [...html.matchAll(/<article class="hero-card[^"]*"[^>]*>/g)].map((m) => m[0]);
-  assert.equal(arts.length, 15);
-  for (const a of arts) assert.match(a, / data-show-on-mobile="(true|false)"/, a);
-  assert.deepEqual(arts.filter((a) => a.includes('data-show-on-mobile="true"')).map((a) => a.match(/data-color-token="([^"]+)"/)[1]), ['htb']);
+  assert.equal(arts.length, 15); const token = (a) => a.match(/data-color-token="([^"]+)"/)[1];
+  assert.deepEqual(arts.filter((a) => a.includes(' data-show-on-mobile="true"')).map(token), ['htb']);
+  assert.deepEqual(arts.filter((a) => a.includes('data-show-on-mobile')).map(token), ['htb'], 'una card de icono lleva data-show-on-mobile');
   for (const rel of ['src/components/hero-card.astro', 'src/components/hero-cards/htb-card.astro']) {
-    const src = read(rel); assert.match(src, /data-show-on-mobile=\{String\(card\.showOnMobile\)\}/, rel); assert.doesNotMatch(src, /\bstyle\s*=|<script\b/, rel);
+    const src = read(rel); assert.match(src, COND, rel); assert.doesNotMatch(src, /\bstyle\s*=|<script\b/, rel);
   }
+  const bytes = Buffer.byteLength(html); assert.ok(bytes < Number(read('tests/search-index-lazy-load.test.mjs').match(/assert\.ok\(size < (\d+),/)[1]), `index.html pesa ${bytes} bytes (REQ-106-19)`); // Ajuste feature 112 (precedente REQ-43-06): umbral vigente de REQ-47-06
 });
-test('REQ-106-09: display none para las cards false solo dentro de @media (max-width: 768px)', () => {
+test('REQ-106-09: display none para las cards sin el atributo solo dentro de @media (max-width: 768px)', () => {
   const css = read('src/styles/hero-section.css').replace(/\/\*[\s\S]*?\*\//g, ''); const all = blocks(css);
-  const sel = '.hero-grid > .hero-card[data-show-on-mobile="false"]';
+  const sel = '.hero-grid > .hero-card:not([data-show-on-mobile])';
   const inner = all.filter((b) => b.head === '@media (max-width: 768px)').flatMap((b) => blocks(b.body));
   assert.equal(Object.assign({}, ...inner.filter((b) => b.head === sel).map((b) => decls(b.body))).display, 'none');
+  assert.ok(inner.every((b) => !b.head.includes('[data-show-on-mobile="false"]')), 'regla con [data-show-on-mobile="false"]');
   assert.ok(all.filter((b) => b.head !== '@media (max-width: 768px)').every((b) => !b.head.includes('data-show-on-mobile') && !b.body.includes('data-show-on-mobile')));
   assert.ok(lines('src/styles/hero-section.css') <= 100);
 });
@@ -80,5 +83,6 @@ test('REQ-106-13/17: la feature no toca el dominio del mosaico y los archivos to
 });
 test('REQ-106-14/16: capturas por ancho y tests heredados ajustados con la nota', () => {
   for (const w of [375, 800, 1024, 1280, 1600]) assert.ok(existsSync(new URL(`progress/research/hero106/hero-${w}.png`, ROOT)), `falta hero-${w}.png`);
-  for (const rel of ['tests/hero-cards-extra-logos.test.mjs', 'tests/htb-hero-card.test.mjs']) assert.match(read(rel), NOTE, rel);
+  for (const f of ['hero-card-kinds-domain', 'hero-card-registry', 'hero-cards-extra-logos', 'hero-cards-polish', 'hero-cards-repository', 'hero-cards-unique-tech',
+    'hero-mosaic-layout', 'htb-hero-card']) assert.match(read(`tests/${f}.test.mjs`), NOTE, f);
 });

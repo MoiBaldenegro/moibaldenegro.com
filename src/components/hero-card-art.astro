@@ -1,0 +1,31 @@
+---
+import "../styles/hero-card.css";
+import "../styles/hero-card-accents.css";
+import type { HeroGridCard } from "../domain/entities/hero-card.ts";
+
+// Feature 112 (REQ-112-08/09): capas de logo compartidas por las cards de icono (hero-card.astro, HTML idéntico
+// al previo) y las ricas (hero-cards/htb-card.astro): logo de fondo (.card-backdrop) y icono principal (.card-icon).
+// Feature 107 (REQ-107-29): cada elemento use solo con href (el atributo con prefijo está obsoleto en SVG 2).
+// Feature 108 (REQ-108-06/07): data-backdrop-size solo si el JSON declara backgroundIconSize (Astro omite undefined).
+interface Props {
+  card: HeroGridCard;
+}
+
+const { card } = Astro.props;
+---
+
+{card.backgroundIcon && (
+  <div class="card-backdrop" data-backdrop-size={card.backgroundIconSize}>
+    <svg aria-hidden="true" focusable="false">
+      <use href={card.backgroundIcon}/>
+    </svg>
+  </div>
+)}
+
+{card.icon && (
+  <div class="card-icon">
+    <svg width="28px" height="28px" aria-hidden="true" focusable="false">
+      <use href={card.icon}/>
+    </svg>
+  </div>
+)}

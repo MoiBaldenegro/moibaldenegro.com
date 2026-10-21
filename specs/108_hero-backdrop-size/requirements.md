@@ -31,3 +31,5 @@ REQ-108-13 La verificación SHALL anotar en progress/impl_hero-backdrop-size.md 
 REQ-108-14 La verificación SHALL dejar progress/research/hero108/<card>-<tamaño>-<w>.png por card, tamaño y ancho.
 REQ-108-15 El test tests/hero-backdrop-size.test.mjs SHALL usar solo node:test y la stdlib con 100 líneas o menos y su salida en rojo y en verde anotada en progress/impl_hero-backdrop-size.md.
 REQ-108-16 El git diff de la feature SHALL dejar sin tocar public/assets/svg/sprite.svg, src/content/posts, tests/hack-the-box-sprite.test.mjs, src/styles/hero-card.css y src/styles/tokens.css con cada archivo tocado en 100 líneas o menos y ./init.sh terminando con código 0.
+REQ-108-17 El build de la feature SHALL dejar dist/client/index.html por debajo de 40 000 bytes medido antes y después de la feature sin cambiar el umbral de REQ-47-06 en tests/search-index-lazy-load.test.mjs.
+REQ-108-18 IF la feature no puede dejar dist/client/index.html por debajo de 40 000 bytes sin debilitar su propósito, THEN el implementer SHALL parar con la feature en blocked y anotar en progress/impl_hero-backdrop-size.md el peso medido antes y después.

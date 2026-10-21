@@ -60,9 +60,9 @@
 @media (max-width: 1200px) {
   .hero-grid { grid-template-columns: repeat(6, 1fr); grid-auto-rows: minmax(140px, auto); }
 }
-/* Feature 106 (REQ-106-09): en móvil solo las cards con showOnMobile true; display none las saca del
+/* Feature 106 (REQ-106-09): en móvil solo las cards con data-show-on-mobile (showOnMobile true); display none saca las demás del
    layout (sin huecos), del árbol de accesibilidad y del orden de tabulación. */
 @media (max-width: 768px) {
   .hero-grid { grid-template-columns: 1fr; grid-auto-rows: minmax(190px, auto); }
-  .hero-grid > .hero-card[data-show-on-mobile="false"] { display: none; }
+  .hero-grid > .hero-card:not([data-show-on-mobile]) { display: none; }
 }

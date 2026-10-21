@@ -72,7 +72,7 @@ test('REQ-31-02: el repositorio lee a través del loader inyectable, no del file
     iconWidth: '100px',
   };
   const repository = new HeroCardsRepository(() => JSON.stringify([injectedCard]));
-  assert.deepEqual(repository.getCards(), [{ ...injectedCard, kind: 'icon', featured: false }], 'el loader inyectado no se usa (REQ-31-02)');
+  assert.deepEqual(repository.getCards(), [{ ...injectedCard, kind: 'icon', featured: false, showOnMobile: false, href: null }], 'el loader inyectado no se usa (REQ-31-02)'); // Ajuste feature 106 (precedente REQ-43-06); Ajuste feature 107 (precedente REQ-43-06): href null por omisión
 });
 
 test('REQ-06-04: los datos referencian el color por colorToken sin valores hex', () => {

@@ -1,0 +1,64 @@
+/* hero-card-link.css — Cards clicables del hero (feature 107, REQ-107-12..21). El a.card-link es el
+   último hijo del article (hermano, nunca contenedor: sin enlaces anidados) y cubre la card entera por
+   encima de .hero-card__body (z-index 5 en htb-card.css). La flecha ↗ solo aparece con hover o foco de
+   teclado. Hoja aparte: hero-card.css está en 99 líneas. Cada selector nombra .card-link o
+   .card-link__arrow: una card sin href no recibe ninguna regla. Colores solo desde tokens.css. */
+
+/* Enlace extendido */
+.card-link {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  border-radius: var(--radius-card);
+  color: var(--color-text);
+}
+
+/* Foco: el overflow hidden de .hero-card recorta el outline global (offset 2px); offset negativo. */
+.card-link:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -4px;
+  border-radius: var(--radius-card);
+}
+
+/* Flecha en la esquina superior derecha, oculta en reposo */
+.card-link__arrow {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: var(--color-text);
+  opacity: 0;
+  transition: opacity var(--transition-default), transform var(--transition-default);
+}
+
+.hero-card:hover .card-link__arrow,
+.card-link:focus-visible .card-link__arrow {
+  opacity: 1;
+  transform: translate(2px, -2px);
+}
+
+/* Con icono de esquina (feature 103) la flecha va a su izquierda */
+.hero-card:has(> .card-corner) .card-link__arrow { right: 46px; }
+
+/* El título deja sitio a la flecha (y a la esquina si la hay) para que no lo tape en hover */
+.hero-card:has(> .card-link) .card-header { right: 46px; }
+.hero-card:has(> .card-link):has(> .card-corner) .card-header { right: 76px; }
+
+/* Responsive: márgenes de 14px en columnas estrechas, como .card-header y .card-corner */
+@media (max-width: 1200px) {
+  .card-link__arrow { top: 14px; right: 14px; font-size: 1.1rem; }
+  .hero-card:has(> .card-corner) .card-link__arrow { right: 40px; }
+  .hero-card:has(> .card-link) .card-header { right: 40px; }
+  .hero-card:has(> .card-link):has(> .card-corner) .card-header { right: 66px; }
+}
+
+/* Movimiento reducido: solo cambia la opacidad, sin transición ni desplazamiento */
+@media (prefers-reduced-motion: reduce) {
+  .card-link__arrow,
+  .hero-card:hover .card-link__arrow,
+  .card-link:focus-visible .card-link__arrow {
+    transition: none;
+    transform: none;
+  }
+}

@@ -1,0 +1,12 @@
+/* hero-cards-motion.css — Feature 115: las cards del hero entran y salen como piezas de lego (GSAP,
+   src/components/new-hero/hero-cards-lego.ts). GSAP solo anima las custom properties --hero-lego-* y
+   opacity; aquí se componen en las propiedades individuales translate, rotate y scale, que se suman al
+   transform del hover de hero-card.css sin pisarlo. transition-property se limita a lo que cambia el
+   hover para que la transición no interpole cada frame de la animación. Sin estado oculto: sin JS las
+   variables no existen y los respaldos (0px, 0deg, 1) dejan la card en reposo. */
+.hero-grid > .hero-card {
+  translate: 0 var(--hero-lego-y, 0px);
+  rotate: var(--hero-lego-rotate, 0deg);
+  scale: var(--hero-lego-scale, 1);
+  transition-property: transform, box-shadow, filter;
+}

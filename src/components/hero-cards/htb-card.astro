@@ -1,7 +1,10 @@
 ---
 import "../../styles/htb-card.css";
+import "../../styles/hero-card-link.css";
 import HtbStadistics from "../htb-stadistics.astro";
+import HeroCardArt from "../hero-card-art.astro";
 import type { HeroRichCard } from "../../domain/entities/hero-card.ts";
+import { cardLinkLabel } from "../../domain/hero-card-link.ts";
 
 interface Props {
   card: HeroRichCard;
@@ -10,16 +13,26 @@ interface Props {
 }
 
 const { card, colSpan, rowSpan } = Astro.props;
+// Feature 107 (REQ-107-08/09): la clasificación de la liga sale del dominio (src/domain/hero-card-link.ts).
+// Feature 110 (REQ-110-01..04): toda liga abre en pestaña nueva; el aviso accesible sale del dominio.
+// Feature 112 (REQ-112-11/12): cubo y wordmark tenues (hero-card-art.astro) bajo el cuerpo y la liga; sin logos en el JSON, sin capas.
+const label = cardLinkLabel(card.title, card.href);
 ---
 
-<article class="hero-card hero-card--rich" data-color-token={card.colorToken} data-col-span={colSpan} data-row-span={rowSpan} data-show-on-mobile={String(card.showOnMobile)}>
+<article class="hero-card hero-card--rich" data-color-token={card.colorToken} data-col-span={colSpan} data-row-span={rowSpan} data-show-on-mobile={card.showOnMobile ? 'true' : undefined}>
   <header class="card-header">
     <p class="card-title">{card.title}</p>
   </header>
+
+  {(card.icon || card.backgroundIcon) && <HeroCardArt card={card} />}
 
   <div class="hero-card__body">
     <HtbStadistics server:defer>
       <p class="hero-card__loading" slot="fallback">Cargando estadísticas de HTB...</p>
     </HtbStadistics>
   </div>
+
+  {card.href && (
+    <a class="card-link" href={card.href} target="_blank" rel="noopener noreferrer"><span class="visually-hidden">{label}</span><span class="card-link__arrow" aria-hidden="true">↗</span></a>
+  )}
 </article>

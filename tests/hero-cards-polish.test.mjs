@@ -63,7 +63,7 @@ test('REQ-101-11/12/13: HTB reduce paddings y aviso en <= 1200 px solo en sus do
   assert.match(empty.padding ?? '', /var\(--gap-card\)/, 'el aviso no reduce su padding con --gap-card');
   assert.ok(empty['font-size'], 'el aviso no reduce su tamaño de letra');
   for (const rel of ['src/components/hero-cards/htb-card.astro', 'src/components/htb-stadistics.astro']) {
-    assert.equal(git('diff', APPROVED_99, '--', rel), '', `${rel} cambió (los cambios HTB van solo en CSS)`);
+    assert.equal(read(rel).replace(" data-show-on-mobile={card.showOnMobile ? 'true' : undefined}", '').replace(/import "\.\.\/\.\.\/styles\/hero-card-link\.css";\n|import \{ (isExternalHref|cardLinkLabel) \} from "\.\.\/\.\.\/domain\/hero-card-link\.ts";\n|\/\/ Feature 1(07|10|12)[^\n]*\n|const (external|label)[^\n]*\n|\n {2}\{card\.href && \([\s\S]*?\n {2}\)\}\n|import HeroCardArt from "\.\.\/hero-card-art\.astro";\n|\n {2}\{\(card\.icon \|\| card\.backgroundIcon\) && <HeroCardArt card=\{card\} \/>\}\n/g, ''), git('show', `${APPROVED_99}:${rel}`), `${rel} cambió (los cambios HTB van solo en CSS)`); // Ajuste feature 106 (precedente REQ-43-06): salvo data-show-on-mobile; Ajuste feature 107 (precedente REQ-43-06): salvo el a.card-link (REQ-107-06) y el import de isExternalHref; Ajuste feature 110 (precedente REQ-43-06): o el de cardLinkLabel, const label y su comentario; Ajuste feature 112 (precedente REQ-43-06): salvo el import y el uso de HeroCardArt (REQ-112-11)
   }
 });
 
@@ -81,15 +81,15 @@ test('REQ-101-15/16: hojas tocadas <= 100 líneas, sin colores sueltos e iconos 
   if (heroSheets().includes(ICONS_CSS)) assert.match(read('src/components/hero-card.astro'), /import "\.\.\/styles\/hero-card-icons\.css";/);
 });
 
-test('REQ-101-17: dominio del mosaico y hero-cards.json sin cambios frente a la feature 99', () => { // Ajuste feature 103 (precedente REQ-43-06): JSON sin cornerIcon/backgroundIcon
+test('REQ-101-17: dominio del mosaico y hero-cards.json sin cambios frente a la feature 99', () => { // Ajuste feature 103 (precedente REQ-43-06): JSON sin cornerIcon/backgroundIcon; Ajuste feature 106 (precedente REQ-43-06): ni showOnMobile; Ajuste feature 107 (precedente REQ-43-06): ni href; Ajuste feature 108 (precedente REQ-43-06): ni backgroundIconSize; Ajuste feature 111 (precedente REQ-43-06): cloudflare congelada con los datos actuales (REQ-111-08); Ajuste feature 112 (precedente REQ-43-06): ni el icon de la rica htb (REQ-112-06)
   for (const rel of ['src/domain/hero-grid-layout.ts', 'src/domain/hero-grid-template.ts']) assert.equal(git('diff', APPROVED_99, '--', rel), '', `${rel} cambió`);
-  assert.deepEqual(JSON.parse(read('src/data/hero-cards.json')).map(({ cornerIcon, backgroundIcon, ...c }) => c), JSON.parse(git('show', `${APPROVED_99}:src/data/hero-cards.json`)), 'hero-cards.json cambió');
+  assert.deepEqual(JSON.parse(read('src/data/hero-cards.json')).map(({ cornerIcon, backgroundIcon, backgroundIconSize, showOnMobile, href, ...c }) => (c.kind === 'htb' ? (({ icon, ...r }) => r)(c) : c)), JSON.parse(git('show', `${APPROVED_99}:src/data/hero-cards.json`)).map((c) => (c.id === 'cloudflare' ? { ...c, icon: '/assets/svg/sprite.svg#cloudflare-cloud', scale: 8, iconWidth: '270px' } : c)), 'hero-cards.json cambió');
 });
 
 test('REQ-101-19: componentes del hero sin atributo style ni etiquetas script nuevas', () => {
   for (const rel of ['src/components/hero-card.astro', 'src/components/hero-cards/htb-card.astro', 'src/components/new-hero/new-hero.astro']) {
     assert.doesNotMatch(read(rel), /\bstyle\s*=/, `${rel} con style`);
-    assert.equal(scripts(read(rel)), scripts(git('show', `${APPROVED_99}:${rel}`)), `${rel} con script nuevo`);
+    assert.equal(scripts(read(rel)), scripts(git('show', `${APPROVED_99}:${rel}`)) + (rel.endsWith('new-hero.astro') ? 1 : 0), `${rel} con script nuevo`); // Ajuste feature 115 (precedente REQ-43-06): el <script> del runtime lego (REQ-115-06)
   }
 });
 

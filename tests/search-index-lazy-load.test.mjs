@@ -94,7 +94,8 @@ test('REQ-47-01/06 (build): sin índice embebido y portada < 40 000 bytes (ajust
     }
     const size = statSync(join(out, 'client', 'index.html')).size;
     // Ajuste feature 96 (precedente REQ-43-06): vuelven 3 cards y sale la hoja de la 95; umbral original 40 000 B (peso en impl_latest-cards-gsap-motion.md).
-    assert.ok(size < 40000, `index.html pesa ${size} bytes`);
+    // Ajuste feature 112 (precedente REQ-43-06): cubo y wordmark de HTB llevan la portada a 40 207 B; umbral a 42 000 B (tope de REQ-96-07) por aprobación humana de 2026-10-20 («queda aprobado subir lo permitido de lineas de codigo para la portada por que si seguiremos haciendo cosas»).
+    assert.ok(size < 42000, `index.html pesa ${size} bytes`);
   } finally {
     rmSync(out, { recursive: true, force: true });
   }

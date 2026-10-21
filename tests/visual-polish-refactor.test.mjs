@@ -80,8 +80,11 @@ test('REQ-37-02: hero-card.astro no renderiza un enlace con href vacío', () => 
     /<a\s+href=["']\s*["']/,
     'hero-card.astro conserva un <a href=""> vacío (REQ-37-02)'
   );
+  // Ajuste feature 107 (precedente REQ-43-06): la única ancla permitida es el a.card-link con href={card.href},
+  // pintado solo si card.href no es null (REQ-107-06/07); fuera de él no hay ningún ancla (el icono sigue siendo div).
+  assert.match(astro, /\{card\.href && \(\s*<a class="card-link" href=\{card\.href\}/, 'el a.card-link no está guardado por card.href');
   assert.doesNotMatch(
-    astro,
+    astro.replace(/\{card\.href && \(\s*<a class="card-link" href=\{card\.href\}[^\n]*<\/a>\s*\)\}/, ''),
     /<a\b/,
     'hero-card.astro conserva un ancla sin destino (REQ-37-02, design: el icono queda como div)'
   );

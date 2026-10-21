@@ -40,7 +40,7 @@ const MARCA_TOKENS = {
   '--color-marca-github': '#091223',
   '--color-marca-youtube': '#B61111',
   '--color-marca-typescript': '#215BC7',
-  '--color-marca-css': '#6E29C8',
+  '--color-marca-css': '#6C387A', // Ajuste feature 113 (precedente REQ-43-06): marca CSS al tono del logotipo (REQ-113-05).
   // Ajuste feature 97 (REQ-97-13, petición humana 2026-10-15, precedente REQ-43-06): salen
   // twitch y las variantes bottom; entran los tokens de la tabla de
   // specs/97_hero-cards-unique-tech/design.md.

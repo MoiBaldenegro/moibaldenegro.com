@@ -29,7 +29,7 @@ Tres opciones nuevas por card en `src/data/hero-cards.json`, leídas vía `HeroC
 ### 106 — showOnMobile
 
 - Campo booleano en ambos tipos de card; en el JSON se declara explícito en las 15 (htb `true`, resto `false`). Si falta: `true` para las ricas y `false` para las de icono (la regla del humano «normales false, personalizadas true» se cumple también para cards nuevas). Valor no booleano: `HeroCardsDataError`.
-- Mecanismo: atributo `data-show-on-mobile="true|false"` en el `article` de las dos cards y una regla en `hero-section.css` dentro de `@media (max-width: 768px)`: `.hero-grid > .hero-card[data-show-on-mobile="false"] { display: none; }`. `display: none` saca la card del layout (una columna sin huecos: el gap solo existe entre items visibles), del árbol de accesibilidad y del orden de tabulación. Sin JS.
+- Mecanismo (ajustado por el líder el 2026-10-20 tras el bloqueo de peso): atributo `data-show-on-mobile="true"` en el `article` de las dos cards **solo** cuando `showOnMobile` es `true` y una regla en `hero-section.css` dentro de `@media (max-width: 768px)`: `.hero-grid > .hero-card:not([data-show-on-mobile]) { display: none; }`. La versión inicial (`"true|false"` en las 15 + `[data-show-on-mobile="false"]`) llevaba la portada de 39 775 B a 40 194 B y rompía REQ-47-06 (< 40 000 B); la condicional suma ≈ 27 B (≈ 39 802 B). Umbral intacto. `display: none` saca la card del layout (una columna sin huecos: el gap solo existe entre items visibles), del árbol de accesibilidad y del orden de tabulación. Sin JS.
 - El dominio del mosaico (`hero-grid-layout.ts`, `hero-grid-template.ts`) no cambia: la plantilla de escritorio sigue con las 15.
 - En móvil quedan visibles el perfil y HACK THE BOX.
 
@@ -52,6 +52,8 @@ Tres opciones nuevas por card en `src/data/hero-cards.json`, leídas vía `HeroC
 
 ## Riesgos y trabas
 
+- **Presupuesto de peso de la portada (REQ-47-06, `tests/search-index-lazy-load.test.mjs`, `dist/client/index.html` < 40 000 B)**: tras la 106 queda ≈ 39 802 B (margen ≈ 198 B). La 107 suma dos `a.card-link` (≈ 350-380 B estimados: probablemente no cabe tal cual) y la 108 dos `data-backdrop-size="md"` (≈ 48 B). Ambas deben medir el peso antes y después y mantenerse < 40 000 B sin tocar el umbral; si no es posible sin debilitar su propósito, paran en `blocked` y reportan (REQ-107-27/28, REQ-108-17/18). Opciones a decidir entonces: recortar bytes de la portada en una feature previa o revisar el umbral por decisión explícita.
+
 - `hero-cards-parse.ts` en 99 líneas: la 106 lo parte (p. ej. `hero-cards-fields-parse.ts` con los lectores de campos opcionales y `readSpriteRef`).
 - Tests que fijan el marcado o la forma exacta y deberán ajustarse con nota «Ajuste feature 1xx (precedente REQ-43-06)»: regex de `<article … data-row-span="\d+">` (p. ej. `hero-cards-extra-logos.test.mjs:56`, `htb-hero-card.test.mjs:58`), `deepEqual` de `getCards()` (REQ-31-02, REQ-90-04/05, REQ-99-03), `REQ-101-17` (JSON sin las claves nuevas frente a 0c786e4), REQ-103-11 (YOUTUBE gana un hijo `a.card-link` en la 107). Varios están en 100 líneas (`hero-cards-polish`, `hero-cards-extra-logos`): compactar o test nuevo.
 - La reserva del header con `href` (46px/40px) puede partir títulos en tablet; HTB con `href: null` no cambia. La CDP mide solape 0 título/flecha y palabras en una sola caja.
@@ -60,3 +62,14 @@ Tres opciones nuevas por card en `src/data/hero-cards.json`, leídas vía `HeroC
 ## Verificación
 
 Chrome headless + CDP a 375/800/1024/1280/1600 con los scripts del scratchpad (`cdp105/`, `cdp103/m-r1.mjs` como base). Capturas en `progress/research/hero106/`, `hero107/` y `hero108/`.
+
+## Ajuste de la 107 tras el bloqueo por peso (spec_author, 2026-10-20)
+
+- Bloqueo (progress/impl_hero-cards-links.md): dist/client/index.html 39 798 B antes y 40 211 B con el marcado de la spec (+413 B); umbral REQ-47-06 < 40 000 sin tocar.
+- Decisión del líder (opción 1 del implementer, técnica): la 107 incluye la limpieza de los `xlink:href` del hero; el marcado del enlace no cambia.
+- Medición en el dist actual: **17** `<use>` (no 18) repiten `xlink:href` junto a `href`: 14 iconos principales, 2 fondos (anthropic-wordmark, github-wordmark) y 1 esquina (claude). `grep -o ' xlink:href="[^"]*"'` suma **767 B** → la 107 queda en ≈ 39 444 B (margen ≈ 556 B para la 108).
+- Origen único: src/components/hero-card.astro (3 `<use>`). htb-card.astro no tiene `<use>`. Fuera del hero no hay `xlink` en src/: about-hero.astro y site-footer.astro ya usan `<use href>` solo (4 en la portada), que es el precedente de soporte; no hay nada que ampliar.
+- Compatibilidad: el proyecto no declara browserslist ni baseline (package.json, astro.config.mjs, docs/). `href` en `<use>` es SVG 2 (Chrome 50+, Firefox 51+, Safari 12.1+). La comprobación en Chrome headless queda como REQ-107-32/33 (bbox > 0 de cada use a 1280 y a 375 con la regla de la 106 desactivada por CDP, porque en móvil las cards de icono están ocultas).
+- Tests que fijan xlink: solo tests/hero-cards-extra-logos.test.mjs:53 (REQ-103-09/10/11), en 100 líneas: el ajuste es en línea. hero-card-accents.css selecciona por `use[href$=…]` y no cambia. specs/103_hero-cards-extra-logos/design.md menciona `xlink:href` en el marcado (histórico, no se edita).
+- Spec: REQ-107-07 reformulado (los hijos cambian solo por el xlink retirado) y REQ-107-29..36 nuevos; design.md Decisión 7 y presupuesto actualizado. Feature 107 de blocked a pending (el árbol ya tiene la implementación del enlace; falta el recorte, los ajustes heredados y la CDP).
+- Nota para la 108: su descripción habla de margen ≈ 198 B; tras la 107 quedaría ≈ 556 B.

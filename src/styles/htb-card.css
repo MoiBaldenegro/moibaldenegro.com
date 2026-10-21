@@ -15,6 +15,11 @@
   color: var(--color-text);
 }
 
+/* Feature 112 (REQ-112-13/14, Decisiones 2-3 de specs/112_hero-rich-card-logos/design.md): el cubo #htb es fondo tenue e inerte
+   bajo el cuerpo (z 5) y la liga (z 6); posición y hover salen de .card-icon svg de hero-card.css. */
+.hero-card--rich .card-icon { opacity: 0.16; pointer-events: none; }
+.hero-card--rich[data-color-token="htb"] { --icon-width: 150px; --icon-rotation: -8deg; --icon-scale: 6; }
+
 .hero-card__loading {
   margin: 0;
   color: var(--color-text-secondary);
@@ -24,6 +29,7 @@
 /* Feature 101 (REQ-101-11/12): en <= 1200 px la card es estrecha y el título ocupa 2 líneas;
    menos padding para que el aviso quepa entero debajo del título. */
 @media (max-width: 1200px) {
+  .hero-card--rich[data-color-token="htb"] { --icon-scale: 3; }
   .hero-card--rich .hero-card__body {
     padding: calc(var(--gap-card) * 4.5) calc(var(--gap-card) / 2) calc(var(--gap-card) / 2);
   }

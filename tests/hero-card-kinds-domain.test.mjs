@@ -14,12 +14,12 @@ const REPOSITORY_URL = new URL('../src/domain/repositories/hero-cards-repository
 const DATA_URL = new URL('../src/data/hero-cards.json', import.meta.url);
 
 // Ajuste feature 98 (precedente REQ-43-06): sin gridColumn/gridRow (REQ-98-05), con category (REQ-98-06/07).
-// Ajuste feature 99 (precedente REQ-43-06): el parseo entrega featured (false por defecto, REQ-99-03).
+// Ajuste feature 99 (precedente REQ-43-06): el parseo entrega featured (false por defecto, REQ-99-03). Ajuste feature 106 (precedente REQ-43-06): y showOnMobile.
 const ICON = {
   id: 'react', title: 'REACT', colorToken: 'react', icon: '/assets/svg/sprite.svg#react',
-  category: 'tech', featured: false, rotate: 0, scale: 5, iconWidth: '100px',
+  category: 'tech', featured: false, rotate: 0, scale: 5, iconWidth: '100px', showOnMobile: false,
 };
-const RICH = { id: 'htb', kind: 'htb', title: 'HACK THE BOX', colorToken: 'htb' };
+const RICH = { id: 'htb', kind: 'htb', title: 'HACK THE BOX', colorToken: 'htb', showOnMobile: true };
 const repositoryWith = (cards) => new HeroCardsRepository(() => JSON.stringify(cards));
 const lineCount = (url) => readFileSync(url, 'utf8').split('\n').length;
 
@@ -53,11 +53,11 @@ test('REQ-90-03: HeroRichCard declara sus campos readonly con kind distinto de i
 
 test('REQ-90-04/05: getCards() respeta el orden del JSON; sin kind sale como icon', () => {
   const cards = repositoryWith([ICON, RICH, { ...ICON, id: 'html' }]).getCards();
-  assert.deepEqual(cards, [{ ...ICON, kind: 'icon' }, RICH, { ...ICON, id: 'html', kind: 'icon' }]);
+  assert.deepEqual(cards, [{ ...ICON, kind: 'icon', href: null }, { ...RICH, href: null }, { ...ICON, id: 'html', kind: 'icon', href: null }]); // Ajuste feature 107 (precedente REQ-43-06): href null por omisión (REQ-107-03)
 });
 
 test('REQ-90-04: una entrada con kind icon explícito sale como HeroCard', () => {
-  assert.deepEqual(repositoryWith([{ ...ICON, kind: 'icon' }]).getCards(), [{ ...ICON, kind: 'icon' }]);
+  assert.deepEqual(repositoryWith([{ ...ICON, kind: 'icon' }]).getCards(), [{ ...ICON, kind: 'icon', href: null }]); // Ajuste feature 107 (precedente REQ-43-06): href null por omisión (REQ-107-03)
 });
 
 test('REQ-90-06: kind desconocido → HeroCardsDataError con índice y valor', () => {
@@ -105,7 +105,7 @@ test('REQ-90-09: las tarjetas de icono de hero-cards.json no declaran kind ni ce
 
 test('REQ-98-06/07: category ausente sale como tech; un valor fuera de tech/social lanza con índice y campo', () => {
   const { category, ...withoutCategory } = ICON;
-  assert.deepEqual(repositoryWith([withoutCategory]).getCards(), [{ ...ICON, kind: 'icon' }]);
+  assert.deepEqual(repositoryWith([withoutCategory]).getCards(), [{ ...ICON, kind: 'icon', href: null }]); // Ajuste feature 107 (precedente REQ-43-06): href null por omisión (REQ-107-03)
   assert.equal(repositoryWith([{ ...ICON, category: 'social' }]).getCards()[0].category, 'social');
   assert.throws(
     () => repositoryWith([ICON, { ...ICON, category: 'juego' }]).getCards(),
@@ -117,7 +117,7 @@ test('REQ-99-02/03/04: HeroCard declara featured boolean; omitido = false; no bo
   const body = readFileSync(ENTITY_URL, 'utf8').match(/interface\s+HeroCard\s*\{([^}]*)\}/)?.[1] ?? '';
   assert.match(body, /readonly\s+featured\s*:\s*boolean\s*;/, 'HeroCard sin readonly featured: boolean');
   const { featured, ...withoutFeatured } = ICON;
-  assert.deepEqual(repositoryWith([withoutFeatured]).getCards(), [{ ...ICON, kind: 'icon', featured: false }]);
+  assert.deepEqual(repositoryWith([withoutFeatured]).getCards(), [{ ...ICON, kind: 'icon', featured: false, href: null }]); // Ajuste feature 107 (precedente REQ-43-06): href null por omisión (REQ-107-03)
   assert.equal(repositoryWith([{ ...ICON, featured: true }]).getCards()[0].featured, true);
   for (const bad of ['true', 1, null]) {
     assert.throws(() => repositoryWith([ICON, { ...ICON, featured: bad }]).getCards(),

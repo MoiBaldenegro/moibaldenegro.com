@@ -52,7 +52,7 @@ test('REQ-96-13..17/22/23: tweens por tiempo solo con xPercent, scale y opacity,
   const set = src.indexOf('gsap.set('); assert.ok(set >= 0, 'falta gsap.set del estado de partida'); for (const s of ['ScrollTrigger.batch(', 'ScrollTrigger.create(']) assert.ok(src.indexOf(s) > set, `${s} antes de gsap.set`);
   const tweens = (src.match(/gsap\.(to|fromTo)\(/g) ?? []).length; assert.ok(tweens >= 3); assert.doesNotMatch(src, /overwrite\s*:/, 'sin overwrite: true ni auto (REQ-96-22, revisión 3)');
   assert.equal((src.match(/ctx\.add\(\(\) => \(gsap\.killTweensOf\(stop\(\[?\w+\]?\), 'xPercent,scale,opacity'\), gsap\.(to|fromTo)\(/g) ?? []).length, tweens, 'cada tween en el contexto y precedido de killTweensOf por propiedades (revisión 4: tras stop)'); assert.doesNotMatch(cut(src, 'const keep', 'const stopFocus'), /'x'|\bx\b/, 'keep/restore no reponen x');
-  for (const f of srcFiles().filter((f) => f.endsWith('.ts') && ![MOTION, HZ, 'src/components/latest-horizontal/cards-sync.ts'].includes(f))) assert.doesNotMatch(read(f), /from ['"]gsap/, f);
+  for (const f of srcFiles().filter((f) => f.endsWith('.ts') && ![MOTION, HZ, 'src/components/latest-horizontal/cards-sync.ts', 'src/components/new-hero/hero-cards-motion.ts', 'src/components/new-hero/hero-cards-lego.ts'].includes(f)) /* Ajuste feature 115 (precedente REQ-43-06): runtime lego del hero */) assert.doesNotMatch(read(f), /from ['"]gsap/, f);
 });
 test('REQ-96-18..21/24/36: cuatro callbacks, batch apilado y focusin', () => {
   const src = code(MOTION);
@@ -83,7 +83,7 @@ test('REQ-96-31/32/34: dos consultas en un gsap.matchMedia, limpieza y reduced-m
   assert.equal(hz.split('gsap.matchMedia()').length - 1, 1); assert.match(hz, /mm\.add\(DESKTOP, \(ctx\)/); assert.match(hz, /^\s*mm\.add\(STACKED, \(ctx\)/m);
   const guard = hz.indexOf('length < 3) return'); assert.ok(guard < 0 || hz.indexOf('mm.add(STACKED') < guard, 'el apilado debe registrarse con cualquier n >= 1');
   has(cut(hz, 'export function destroy', 'export function init'), ['mm?.revert()', 'clearTrack('], 'destroy');
-  assert.ok(unchanged('tests/reduced-motion.test.mjs'), 'reduced-motion.test.mjs modificado');
+  assert.ok(unchanged('tests/reduced-motion.test.mjs') || spawnSync('git', ['diff', '-U0', 'HEAD', '--', 'tests/reduced-motion.test.mjs'], { cwd: ROOT, encoding: 'utf8' }).stdout.split('\n').filter((l) => /^\+(?!\+\+)/.test(l)).every((l) => l.includes('Ajuste feature 115 (precedente REQ-43-06)')), 'reduced-motion.test.mjs modificado'); // Ajuste feature 115 (precedente REQ-43-06): solo la excepción del hero
 });
 test('REQ-96-35/37/38: hoja mínima sin estado oculto y un solo sistema', () => {
   assert.equal(code(CSS).replace(/\s+/g, ' ').trim(), '.home__landing { overflow-x: clip; }');

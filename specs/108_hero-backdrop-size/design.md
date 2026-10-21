@@ -24,6 +24,7 @@ Ninguno nuevo. Los desplazamientos son geometría del logo (mismo criterio que l
   El alto sigue saliendo del aspect-ratio del symbol (105), así que `bottom: 0` mantiene el glifo anclado abajo en los tres tamaños; el `margin-bottom` de `anthropic-wordmark` es un % del ancho y escala solo.
 - Decisión 3 — en el JSON, claude-code y github declaran `"md"` (sin cambio visual; deja el campo visible para editarlo). `backgroundIconSize` sin `backgroundIcon` es error de datos.
 - Restricciones: sin JS, sin style inline, `hero-card.css`/`tokens.css` sin tocar, `hero-card-accents.css` ≤ 100 líneas, sin tocar `sprite.svg`.
+- Presupuesto de peso (REQ-108-17/18): la portada debe seguir < 40 000 B (REQ-47-06, umbral intacto); los dos `data-backdrop-size="md"` suman ≈ 48 B sobre lo que dejen la 106 (≈ 39 802 B) y la 107. Medir `dist/client/index.html` antes y después y, si no cabe sin debilitar el propósito, parar en `blocked` y reportar el peso.
 
 ## Verificación visual
 

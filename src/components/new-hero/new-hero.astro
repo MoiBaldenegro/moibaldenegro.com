@@ -2,6 +2,7 @@
 import "../../styles/tokens.css";
 import "../../styles/hero-section.css";
 import "../../styles/profile-card.css";
+import "../../styles/hero-cards-motion.css";
 
 import HeroGridCard from "../hero-cards/hero-grid-card.astro";
 
@@ -57,3 +58,10 @@ const profile = new HeroProfileRepository().getProfile();
     }
   </div>
 </section>
+
+<script>
+  // Feature 115: entrada y salida tipo lego de las cards del hero (GSAP aprobado, features 70/96).
+  import { destroy, init } from './hero-cards-motion.ts';
+  document.addEventListener('astro:page-load', () => init());
+  document.addEventListener('astro:before-swap', () => destroy());
+</script>

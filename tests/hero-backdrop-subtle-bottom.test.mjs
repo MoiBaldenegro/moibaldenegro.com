@@ -26,7 +26,8 @@ const ratio = (v) => { const [a, b] = String(v).split('/').map((n) => Number(n.t
 test('REQ-105-01: .card-backdrop en z-index 0 fuera de @media, sin redefinirlo dentro, y antes de .card-icon en el DOM', () => {
   assert.equal(rule(top(), '.card-backdrop')['z-index'], '0');
   for (const b of media().filter((x) => /\.card-backdrop/.test(x.head))) assert.ok(!('z-index' in decls(b.body)), `z-index en @media: ${b.head}`);
-  const astro = read('src/components/hero-card.astro'); const back = astro.indexOf('card-backdrop'); const icon = astro.indexOf('card-icon');
+  const astro = read('src/components/hero-card-art.astro'); const back = astro.indexOf('card-backdrop'); // Ajuste feature 112 (precedente REQ-43-06): capas en hero-card-art.astro (REQ-112-08)
+  const icon = astro.indexOf('card-icon');
   assert.ok(back > -1 && icon > -1 && back < icon, '.card-backdrop debe ir antes que .card-icon');
   const card = strip(read('src/styles/hero-card.css'));
   assert.match(card, /\.hero-card\s*\{[^}]*isolation:\s*isolate/, '.hero-card sin isolation: isolate');
@@ -44,10 +45,11 @@ test('REQ-105-03: la hoja no declara transform, transition ni :hover para el fon
   assert.doesNotMatch(read('src/styles/hero-card.css'), /card-backdrop/);
 });
 
-test('REQ-105-04: left/right -16px y bottom 0 fuera de @media, -10px en <= 1200 px, sin height en ningún rango', () => {
+// Ajuste feature 109 (precedente REQ-43-06): el mismo rectángulo (-16px a cada lado; -10px en <= 1200 px) con left + width y right auto (REQ-109-01).
+test('REQ-105-04: desborde de 16px (10px en <= 1200 px) por cada lado y bottom 0, sin height en ningún rango', () => {
   const bd = rule(top(), '.card-backdrop'); const m = rule(at1200(), '.card-backdrop');
-  assert.deepEqual([bd.position, bd.left, bd.right, bd.bottom, bd.height], ['absolute', '-16px', '-16px', '0', undefined]);
-  assert.deepEqual([m.left, m.right, m.height], ['-10px', '-10px', undefined]);
+  assert.deepEqual([bd.position, bd.left, bd.right, bd.width, bd.bottom, bd.height], ['absolute', '-16px', 'auto', 'calc(100% + 32px)', '0', undefined]);
+  assert.deepEqual([m.left, m.right, m.width, m.height], ['-10px', undefined, 'calc(100% + 20px)', undefined]);
   assert.ok(m.bottom === undefined || m.bottom === '0', `bottom en <= 1200 px: ${m.bottom}`);
 });
 

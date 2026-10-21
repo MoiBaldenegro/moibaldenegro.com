@@ -15,7 +15,7 @@ REQ-107-05 El archivo src/data/hero-cards.json SHALL declarar href https://githu
 ### Marcado
 
 REQ-107-06 IF card.href no es null, THEN los componentes hero-card.astro y htb-card.astro SHALL pintar un a.card-link con ese href como último hijo del article.
-REQ-107-07 IF card.href es null, THEN los componentes hero-card.astro y htb-card.astro SHALL pintar el article sin a.card-link y con los mismos hijos que antes de la feature.
+REQ-107-07 IF card.href es null, THEN los componentes hero-card.astro y htb-card.astro SHALL pintar el article sin a.card-link y con los mismos hijos que antes de la feature salvo el xlink:href retirado de cada use por REQ-107-29.
 REQ-107-08 El a.card-link SHALL tener como nombre accesible el título de la card seguido de « (sitio externo)» en un span.visually-hidden cuando href empieza por https:// y solo el título cuando es una ruta interna.
 REQ-107-09 IF href empieza por https://, THEN el a.card-link SHALL llevar rel="noopener" sin atributo target.
 REQ-107-10 El a.card-link SHALL contener un span.card-link__arrow con aria-hidden="true" y el carácter ↗ sin ningún otro elemento interactivo dentro.
@@ -41,3 +41,16 @@ REQ-107-23 La verificación SHALL dejar en progress/research/hero107/ capturas d
 REQ-107-24 El test tests/hero-cards-links.test.mjs SHALL usar solo node:test y la stdlib con 100 líneas o menos y su salida en rojo y en verde anotada en progress/impl_hero-cards-links.md.
 REQ-107-25 Cada test existente ajustado por la feature SHALL llevar la nota «Ajuste feature 107 (precedente REQ-43-06)» y conservar la intención de su aserción original.
 REQ-107-26 El git diff de la feature SHALL dejar sin tocar public/assets/svg/sprite.svg, src/content/posts, tests/hack-the-box-sprite.test.mjs, src/styles/hero-card.css, src/styles/tokens.css y el dominio del mosaico con ./init.sh terminando con código 0.
+REQ-107-27 El build de la feature SHALL dejar dist/client/index.html por debajo de 40 000 bytes medido antes y después de la feature sin cambiar el umbral de REQ-47-06 en tests/search-index-lazy-load.test.mjs.
+REQ-107-28 IF la feature no puede dejar dist/client/index.html por debajo de 40 000 bytes sin debilitar su propósito, THEN el implementer SHALL parar con la feature en blocked y anotar en progress/impl_hero-cards-links.md el peso medido antes y después.
+
+### Limpieza de bytes del hero (ajuste del líder 2026-10-20, opción 1 de progress/impl_hero-cards-links.md)
+
+REQ-107-29 El componente hero-card.astro SHALL pintar cada elemento use con el atributo href y sin el atributo xlink:href.
+REQ-107-30 El build de la feature SHALL dejar en dist/client/index.html 0 apariciones de xlink:href en todo el documento.
+REQ-107-31 El build de la feature SHALL dejar en los article.hero-card de dist/client/index.html los mismos 17 elementos use con el mismo valor de href que antes de la feature.
+REQ-107-32 WHEN la CDP de Chrome headless mide a 1280 px cada elemento use de los article.hero-card, la verificación SHALL obtener un getBoundingClientRect con ancho y alto mayores que 0 e iguales a la línea base previa con 1 px de tolerancia.
+REQ-107-33 WHEN la CDP de Chrome headless mide a 375 px cada elemento use de los article.hero-card con la regla de ocultación de la feature 106 desactivada por CDP, la verificación SHALL obtener un getBoundingClientRect con ancho y alto mayores que 0.
+REQ-107-34 El test tests/hero-cards-extra-logos.test.mjs SHALL esperar en REQ-103-09/10/11 el marcado use href="…" sin xlink:href con la nota «Ajuste feature 107 (precedente REQ-43-06)» y 100 líneas o menos.
+REQ-107-35 La verificación SHALL anotar en progress/impl_hero-cards-links.md el peso de dist/client/index.html antes de la feature, después de la feature y el margen restante frente a 40 000 bytes.
+REQ-107-36 El git diff de la feature SHALL dejar sin tocar src/components/about/about-hero.astro y src/components/site-footer/site-footer.astro.

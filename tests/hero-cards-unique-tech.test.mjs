@@ -11,10 +11,10 @@ const cards = () => JSON.parse(read('src/data/hero-cards.json'));
 const SPRITE = '/assets/svg/sprite.svg#';
 
 // Ajuste feature 99 (precedente REQ-43-06): tabla y orden de specs/99_hero-os-panel-mosaic/design.md (REQ-99-01);
-// valores «inicial» de cloudflare y de las cards que cambian de tamaño ajustados con la medida CDP (impl de la 99).
+// valores «inicial» de cloudflare y de las cards que cambian de tamaño ajustados con la medida CDP (impl de la 99). Ajuste feature 111 (precedente REQ-43-06): cloudflare congelada con los datos actuales del humano (#cloudflare-cloud, 270px, scale 8; REQ-111-08).
 const TABLE = [
   ['rust', 'RUST', 'tech', '115px', -8], ['aws', 'AWS', 'tech', '120px', -6],
-  ['cloudflare', 'CLOUDFLARE', 'tech', '170px', 0], ['node', 'NODE JS', 'tech', '165px', -10],
+  ['cloudflare', 'CLOUDFLARE', 'tech', '270px', 0, 'cloudflare-cloud', 8], ['node', 'NODE JS', 'tech', '165px', -10],
   ['nestjs', 'NESTJS', 'tech', '160px', -5], ['css', 'CSS', 'tech', '105px', -8],
   ['react', 'REACT', 'tech', '115px', -8], ['html', 'HTML', 'tech', '115px', -7],
   ['claude-code', 'CLAUDE CODE', 'tech', '115px', 0], ['bun', 'BUN', 'tech', '115px', -8],
@@ -25,7 +25,7 @@ const FEATURED = ['node', 'nestjs', 'typescript'];
 // Ajuste feature 101 (precedente REQ-43-06): NestJS a #3A0D18 y su ancho base de escritorio a 230px (REQ-101-01/04).
 const TOKENS = { rust: '#A33A16', aws: '#232F3E', 'claude-code': '#5C2A1C', nestjs: '#3A0D18', cloudflare: '#A8470C', claude: '#B4532F', bun: '#3D2B1F' };
 const OLD_TOKENS = ['twitch', 'twitch-bottom', 'node-bottom', 'github-bottom', 'youtube-bottom', 'overlay-strong', 'overlay-soft'];
-const HTB = { id: 'htb', kind: 'htb', title: 'HACK THE BOX', colorToken: 'htb' };
+const HTB = { id: 'htb', kind: 'htb', title: 'HACK THE BOX', colorToken: 'htb', showOnMobile: true, href: null, icon: '/assets/svg/sprite.svg#htb', backgroundIcon: '/assets/svg/sprite.svg#htb-wordmark', backgroundIconSize: 'sm' }; // Ajuste feature 106 (precedente REQ-43-06); Ajuste feature 107 (precedente REQ-43-06): href null; Ajuste feature 112 (precedente REQ-43-06): logos (REQ-112-06)
 const ruleOf = (css, token) => css.match(new RegExp(`\\[data-color-token="${token}"\\]\\s*\\{([^}]*)\\}`))?.[1];
 const base = () => read('src/styles/hero-card.css').replace(/\/\*[\s\S]*?\*\//g, '').split('@media')[0];
 
@@ -43,11 +43,11 @@ test('REQ-98-01..04: 12 tecnologías y 2 redes, sin redes fuera de YouTube/GitHu
 test('REQ-98-01/02/05: cada entrada coincide con la tabla de design.md y no declara celda', () => {
   const data = cards();
   assert.equal(data.length, TABLE.length + 1, 'se esperaban 14 de icono + htb');
-  TABLE.forEach(([id, title, category, iconWidth, rotate], index) => {
+  TABLE.forEach(([id, title, category, iconWidth, rotate, fragment = id, scale = 5], index) => {
     const card = data[index + 1];
     assert.equal(card.id, id, `posición ${index + 2}: se esperaba ${id}, hay ${card.id}`);
     assert.deepEqual({ title: card.title, colorToken: card.colorToken, icon: card.icon, category: card.category, iconWidth: card.iconWidth, rotate: card.rotate, scale: card.scale },
-      { title, colorToken: id, icon: `${SPRITE}${id}`, category, iconWidth, rotate, scale: 5 }, id);
+      { title, colorToken: id, icon: `${SPRITE}${fragment}`, category, iconWidth, rotate, scale }, id);
   });
   for (const card of data) assert.ok(!('gridColumn' in card) && !('gridRow' in card), `${card.id} declara celda`);
 });

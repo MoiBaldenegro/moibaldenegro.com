@@ -50,10 +50,26 @@ export function readOption<T extends string>(card: Entry, field: string, options
 // Logo extra opcional: ausente = sin clave (ni siquiera undefined); presente = /assets/svg/sprite.svg#<id>.
 // La existencia del symbol en el sprite la valida el test (el repositorio corre en workerd y no lee public/).
 const SPRITE_REF = /^\/assets\/svg\/sprite\.svg#\S+$/;
-type SpriteRefField = 'cornerIcon' | 'backgroundIcon';
+type SpriteRefField = 'cornerIcon' | 'backgroundIcon' | 'icon'; // icon solo en las ricas (REQ-112-02, feature 112)
 export function readSpriteRef(card: Entry, field: SpriteRefField, index: number): { [K in SpriteRefField]?: string } {
   if (!(field in card)) return {};
   const value = card[field];
   if (typeof value === 'string' && SPRITE_REF.test(value)) return { [field]: value };
   throw new HeroCardsDataError(`hero-cards.json: la tarjeta ${index} tiene un campo "${field}" que debe ser /assets/svg/sprite.svg#<id>`);
+}
+
+// Tamaño del logo de fondo (REQ-108-02..04, feature 108): ausente = sin clave; presente exige backgroundIcon y un valor del catálogo.
+export function readBackdropSize<T extends string>(card: Entry, sizes: readonly T[], index: number): { backgroundIconSize?: T } {
+  if (!('backgroundIconSize' in card)) return {};
+  const value = card.backgroundIconSize;
+  if ('backgroundIcon' in card && sizes.includes(value as T)) return { backgroundIconSize: value as T };
+  throw new HeroCardsDataError(`hero-cards.json: la tarjeta ${index} tiene un campo "backgroundIconSize" que debe ser ${sizes.join(' | ')} y requiere backgroundIcon`);
+}
+
+// Liga opcional (REQ-107-02..04, feature 107): ausente o null = null; https://… externa o /ruta interna (sin //).
+const HREF = /^(https:\/\/\S+|\/(?!\/)\S*)$/;
+export function readHref(card: Entry, index: number): string | null {
+  const value = card.href ?? null;
+  if (value === null || (typeof value === 'string' && HREF.test(value))) return value;
+  throw new HeroCardsDataError(`hero-cards.json: la tarjeta ${index} tiene un campo "href" que debe ser null, https://… o /<ruta>`);
 }

@@ -94,5 +94,4 @@ related: [/posts/02-principios-del-diseno-de-software]
 
 
 
-
 **Tags:** `#arquitectura` `#agilismo` `#software-design`

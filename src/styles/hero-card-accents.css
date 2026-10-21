@@ -1,10 +1,11 @@
 /* hero-card-accents.css — Logos extra opcionales de las tarjetas de icono del hero (feature 103,
-   REQ-103-13..22; fondo revisado por la feature 105): icono pequeño en la esquina superior derecha
-   (.card-corner) y logo de fondo sutil anclado al borde inferior (.card-backdrop). Hoja aparte:
-   hero-card.css está en 99 líneas. Cada selector nombra .card-corner o .card-backdrop: una tarjeta
-   sin logos extra no recibe ninguna regla. Capas decorativas e inertes, por debajo del header
-   (z-index 4) y sin transform ni transición propios: el hover de la tarjeta (hero-card.css) no
-   cambia. Colores solo desde el sprite y los tokens. */
+   REQ-103-13..22; fondo revisado por la feature 105; tamaño del fondo por backgroundIconSize desde la
+   feature 108; anclado abajo a la izquierda desde la feature 109): icono pequeño en la esquina
+   superior derecha (.card-corner) y logo de fondo sutil anclado al borde inferior (.card-backdrop).
+   Hoja aparte: hero-card.css está en 99 líneas. Cada
+   selector nombra .card-corner o .card-backdrop: una tarjeta sin logos extra no recibe ninguna regla.
+   Capas decorativas e inertes, por debajo del header (z-index 4) y sin transform ni transición
+   propios: el hover de la tarjeta (hero-card.css) no cambia. Colores solo desde el sprite y los tokens. */
 
 /* Comunes: capas absolutas, sin eventos ni selección */
 .card-corner,
@@ -24,10 +25,12 @@
 
 /* Fondo (REQ-105-01..05): z-index 0 dentro del isolation de .hero-card; al ir antes que .card-icon
    en el DOM, el icono principal se pinta encima. Más ancho que la card (desborda por los lados y lo
-   recorta el overflow de .hero-card) y anclado abajo: sin height, el alto lo da el aspect-ratio. */
+   recorta el overflow de .hero-card) y anclado abajo: sin height, el alto lo da el aspect-ratio.
+   Anclaje abajo-izquierda (REQ-109-01..04): left fijo + width con right auto, así un logo que no
+   desborda (sm) no se centra; md (aquí) da el mismo rectángulo que los -16px por lado de la 105. */
 .card-backdrop {
   --card-backdrop-opacity: 0.06;
-  left: -16px; right: -16px; bottom: 0;
+  left: -16px; right: auto; width: calc(100% + 32px); bottom: 0;
   z-index: 0;
   opacity: var(--card-backdrop-opacity);
 }
@@ -39,11 +42,26 @@
    del ancho de .card-backdrop) baja esas 2 unidades para que el glifo toque el borde (REQ-105-07). */
 .card-backdrop:has(use[href$="#anthropic-wordmark"]) svg { aspect-ratio: 182 / 24; margin-bottom: calc(-100% * 2 / 182); }
 .card-backdrop:has(use[href$="#github-wordmark"]) svg { aspect-ratio: 249.1 / 67.5; }
+.card-backdrop:has(use[href$="#cloudflare"]) svg { aspect-ratio: 512 / 76; }
+/* Feature 112 (REQ-112-15/19): el trazo de htb-wordmark acaba en y = 52.9 de 58.8 (getBBox); el margen baja 5.9 unidades. */
+.card-backdrop:has(use[href$="#htb-wordmark"]) svg { aspect-ratio: 300 / 58.8; margin-bottom: calc(-100% * 5.9 / 300); }
+
+/* Tamaño desde hero-cards.json (backgroundIconSize, REQ-108-08..11): md (o sin atributo) es la base de
+   arriba; sm queda dentro de la card y lg desborda más. Solo cambian left y width (REQ-109-02/03): el
+   alto sigue saliendo del aspect-ratio y bottom 0 mantiene el glifo anclado abajo en los tres tamaños.
+   lg da el mismo rectángulo que los -56px por lado de la 108; sm, pegado a la izquierda (hueco a la derecha). */
+.card-backdrop[data-backdrop-size="sm"] { left: 16px; width: 60%; }
+.card-backdrop[data-backdrop-size="lg"] { left: -56px; width: calc(100% + 112px); }
+/* sm (REQ-109-08): el trazo de anthropic-wordmark empieza en x = 2 de 182; el margen negativo (en %
+   del ancho de .card-backdrop, válido a cualquier ancho) lo pega al left. Solo sm: md/lg no cambian. */
+.card-backdrop[data-backdrop-size="sm"]:has(use[href$="#anthropic-wordmark"]) svg { margin-left: calc(-100% * 2 / 182); }
 
 /* Responsive: márgenes más estrechos en columnas estrechas */
 @media (max-width: 1200px) {
   .card-corner { top: 14px; right: 14px; }
   .card-corner svg { width: 18px; height: 18px; }
   .hero-card:has(> .card-corner) .card-header { right: 40px; }
-  .card-backdrop { left: -10px; right: -10px; }
+  .card-backdrop { left: -10px; width: calc(100% + 20px); }
+  .card-backdrop[data-backdrop-size="sm"] { left: 10px; width: 60%; }
+  .card-backdrop[data-backdrop-size="lg"] { left: -36px; width: calc(100% + 72px); }
 }

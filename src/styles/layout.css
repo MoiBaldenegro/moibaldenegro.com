@@ -88,7 +88,7 @@ body > main { flex: 1 0 auto; } /* feature 94 (REQ-94-03): main absorbe el hueco
 .skip-link {
   position: absolute; top: var(--gap-card); left: var(--gap-card); z-index: 200;
   padding: calc(var(--gap-card) / 2) var(--gap-card); border-radius: var(--radius-pill);
-  background: var(--color-accent); color: var(--color-text); font-weight: 600;
+  background: var(--color-accent); color: var(--color-background); font-weight: 600;
   transform: translateY(-200%); transition: var(--transition-default);
 }
 .skip-link:focus { transform: none; }

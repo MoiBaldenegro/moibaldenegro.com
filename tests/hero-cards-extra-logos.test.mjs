@@ -25,7 +25,7 @@ const cards = (...extra) => new HeroCardsRepository(() => JSON.stringify(extra.m
 test('REQ-103-01: HeroCard declara cornerIcon y backgroundIcon opcionales readonly y HeroRichCard no cambia', () => {
   const entity = read('src/domain/entities/hero-card.ts'); const icon = entity.match(/interface HeroCard \{([\s\S]*?)\}/)?.[1] ?? '';
   assert.match(icon, /readonly cornerIcon\?: string;/); assert.match(icon, /readonly backgroundIcon\?: string;/);
-  assert.doesNotMatch(entity.match(/interface HeroRichCard \{([\s\S]*?)\}/)?.[1] ?? '', /cornerIcon|backgroundIcon/);
+  assert.doesNotMatch(entity.match(/interface HeroRichCard \{([\s\S]*?)\}/)?.[1] ?? '', /cornerIcon/); // Ajuste feature 112 (precedente REQ-43-06): la rica gana backgroundIcon (REQ-112-01)
 });
 test('REQ-103-02/04: sin campos no hay claves; con campos válidos llegan con el texto del JSON', () => {
   const [plain, full] = cards({}, { cornerIcon: `${SPRITE}claude`, backgroundIcon: `${SPRITE}anthropic-wordmark` });
@@ -38,28 +38,27 @@ test('REQ-103-03: un cornerIcon o backgroundIcon inválido lanza HeroCardsDataEr
       && /hero-cards\.json/.test(e.message) && /\b1\b/.test(e.message) && e.message.includes(field), `${field}=${bad}`);
   }
 });
-test('REQ-103-05/06/07/08: datos de claude-code y github y cada símbolo referenciado existe en el sprite', () => {
+test('REQ-103-05/06/07/08 (Ajuste feature 111 (precedente REQ-43-06): tarjetas con extras derivadas del JSON): cada símbolo extra existe en el sprite', () => {
   const data = JSON.parse(read('src/data/hero-cards.json')); const sprite = read('public/assets/svg/sprite.svg');
-  const by = Object.fromEntries(data.map((c) => [c.id, c])); const cc = by['claude-code'];
-  assert.deepEqual([cc.icon, cc.cornerIcon, cc.backgroundIcon], [`${SPRITE}claude-code`, `${SPRITE}claude`, `${SPRITE}anthropic-wordmark`]);
-  assert.deepEqual(['cornerIcon' in by.github, by.github.backgroundIcon], [false, `${SPRITE}github-wordmark`]);
-  for (const c of data.filter((x) => !['claude-code', 'github'].includes(x.id))) assert.ok(!('cornerIcon' in c) && !('backgroundIcon' in c), c.id);
-  for (const ref of data.flatMap((c) => [c.cornerIcon, c.backgroundIcon]).filter(Boolean)) {
+  const extras = data.filter((c) => c.cornerIcon || c.backgroundIcon); assert.ok(extras.length > 0, 'ninguna tarjeta con extras');
+  for (const c of extras) assert.ok(c.kind === undefined ? typeof c.icon === 'string' : !c.cornerIcon, `${c.id}: extras solo en tarjetas de icono`); // Ajuste feature 112 (precedente REQ-43-06): las ricas solo backgroundIcon (REQ-112-06)
+  for (const c of extras) assert.ok([c.cornerIcon, c.backgroundIcon].filter(Boolean).every((r) => r.startsWith(SPRITE)), c.id);
+  for (const ref of extras.flatMap((c) => [c.cornerIcon, c.backgroundIcon]).filter(Boolean)) {
     assert.match(sprite, new RegExp(`<symbol[^>]*\\sid="${ref.slice(SPRITE.length)}"`), `${ref} no está en el sprite`);
   }
 });
-test('REQ-103-09/10/11 (build): capas extra en orden y cards sin campos con el marcado de antes', () => {
+test('REQ-103-09/10/11 (build; Ajuste feature 111 (precedente REQ-43-06): svg de .card-icon a 28px de hero-card.astro): capas extra en orden y cards sin campos con el marcado de antes', () => {
   const build = astroBuild(); assert.equal(build.status, 0, `astro build falló: ${build.stderr}`);
-  const html = read('dist/client/index.html'); const svg = (a, href) => `<svg${a} aria-hidden="true" focusable="false"><use xlink:href="${href}" href="${href}"></use></svg>`;
-  const layer = (cls, href) => (href ? `<div class="${cls}">${svg('', href)}</div>` : '');
+  const html = read('dist/client/index.html'); const svg = (a, href) => `<svg${a} aria-hidden="true" focusable="false"><use href="${href}"></use></svg>`; // Ajuste feature 107 (precedente REQ-43-06): <use> solo con href (REQ-107-29/34)
+  const layer = (cls, href, size) => (href ? `<div class="${cls}"${size ? ` data-backdrop-size="${size}"` : ''}>${svg('', href)}</div>` : ''); // Ajuste feature 108 (precedente REQ-43-06): data-backdrop-size si el JSON declara backgroundIconSize (REQ-108-06/07)
   for (const c of JSON.parse(read('src/data/hero-cards.json')).filter((x) => x.kind === undefined)) {
-    const art = html.match(new RegExp(`<article class="hero-card" data-color-token="${c.colorToken}" data-col-span="\\d+" data-row-span="\\d+">([\\s\\S]*?)</article>`))?.[1];
-    assert.equal(art, `<header class="card-header"><p class="card-title">${c.title}</p></header>${layer('card-backdrop', c.backgroundIcon)}`
-      + `<div class="card-icon">${svg(' width="32px" height="32px"', c.icon)}</div>${layer('card-corner', c.cornerIcon)}`, `${c.id} con otro marcado`);
+    const art = html.match(new RegExp(`<article class="hero-card" data-color-token="${c.colorToken}" data-col-span="\\d+" data-row-span="\\d+">([\\s\\S]*?)</article>`))?.[1]; // Ajuste feature 106 (precedente REQ-43-06): las de icono siguen sin data-show-on-mobile (REQ-106-18)
+    assert.equal(art, `<header class="card-header"><p class="card-title">${c.title}</p></header>${layer('card-backdrop', c.backgroundIcon, c.backgroundIconSize)}`
+      + `<div class="card-icon">${svg(' width="28px" height="28px"', c.icon)}</div>${layer('card-corner', c.cornerIcon)}${c.href ? `<a class="card-link" href="${c.href}" target="_blank" rel="noopener noreferrer"><span class="visually-hidden">${c.title} (sitio externo) (se abre en una pestaña nueva)</span><span class="card-link__arrow" aria-hidden="true">↗</span></a>` : ''}`, `${c.id} con otro marcado`); // Ajuste feature 107 (precedente REQ-43-06): + a.card-link si hay href; Ajuste feature 110 (precedente REQ-43-06): target, noreferrer y aviso de pestaña nueva
   }
 });
 test('REQ-103-12/13: hero-card.astro toma los campos de card, importa la hoja nueva y sin style, script ni JSON', () => {
-  const astro = read('src/components/hero-card.astro');
+  const astro = read('src/components/hero-card.astro') + read('src/components/hero-card-art.astro'); // Ajuste feature 112 (precedente REQ-43-06): el fondo se pinta en hero-card-art.astro (REQ-112-08)
   assert.match(astro, /import "\.\.\/styles\/hero-card-accents\.css";/); assert.match(astro, /card\.backgroundIcon/); assert.match(astro, /card\.cornerIcon/);
   assert.doesNotMatch(astro, /\bstyle\s*=|<script\b|hero-cards\.json/);
   assert.doesNotMatch(read('src/styles/hero-card.css'), /card-corner|card-backdrop/);
@@ -75,10 +74,10 @@ test('REQ-103-16/17/18: esquina 22px a 16px (18px a 14px en <= 1200) y header re
   assert.deepEqual(pick(top()), ['22px', '22px', '16px', '16px']); assert.deepEqual(pick(at1200()), ['18px', '18px', '14px', '14px']);
   const hdr = '.hero-card:has(> .card-corner) .card-header'; assert.deepEqual([rule(top(), hdr).right, rule(at1200(), hdr).right], ['46px', '40px']);
 });
-test('REQ-103-21/22 + REQ-105-02/04/05 (Ajuste feature 105 (precedente REQ-43-06)): fondo desbordado y anclado abajo, opacidad 0.06, inerte', () => {
+test('REQ-103-21/22 + REQ-105-02/04/05 (Ajuste feature 105 (precedente REQ-43-06); Ajuste feature 109 (precedente REQ-43-06): left + width, right auto): fondo desbordado y anclado abajo, opacidad 0.06, inerte', () => {
   const bd = rule(top(), '.card-backdrop'); const svg = rule(top(), '.card-backdrop svg'); const m = rule(at1200(), '.card-backdrop');
-  assert.deepEqual([bd.position, bd.left, bd.right, bd.bottom, bd.height], ['absolute', '-16px', '-16px', '0', undefined]);
-  assert.deepEqual([m.left, m.right, m.height], ['-10px', '-10px', undefined]); assert.deepEqual([svg.width, svg.height], ['100%', 'auto']);
+  assert.deepEqual([bd.position, bd.left, bd.right, bd.width, bd.bottom, bd.height], ['absolute', '-16px', 'auto', 'calc(100% + 32px)', '0', undefined]);
+  assert.deepEqual([m.left, m.width, m.height], ['-10px', 'calc(100% + 20px)', undefined]); assert.deepEqual([svg.width, svg.height], ['100%', 'auto']);
   assert.deepEqual([bd['--card-backdrop-opacity'], bd.opacity], ['0.06', 'var(--card-backdrop-opacity)']);
   for (const sel of ['.card-corner', '.card-backdrop']) {
     const r = rule(top(), sel); assert.deepEqual([r['pointer-events'], r['user-select']], ['none', 'none'], sel); assert.ok(Number(r['z-index']) < 4, `${sel} z-index ${r['z-index']}`);

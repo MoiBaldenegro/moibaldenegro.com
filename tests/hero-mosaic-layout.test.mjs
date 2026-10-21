@@ -92,8 +92,8 @@ test('REQ-99-18: new-hero usa layoutHeroCards y los article emiten data-col-span
   const hero = read('src/components/new-hero/new-hero.astro');
   assert.match(hero, /layoutHeroCards\(\s*new HeroCardsRepository\(\)\.getCards\(\)\s*\)/);
   for (const rel of ['src/components/new-hero/new-hero.astro', 'src/components/hero-card.astro', 'src/components/hero-cards/htb-card.astro']) {
-    assert.doesNotMatch(read(rel), /\sstyle=|<script\b/, `${rel} con style inline o script`);
-    if (rel !== 'src/components/new-hero/new-hero.astro') assert.match(read(rel).match(/<article\b[^>]*>/)?.[0] ?? '', /\sdata-col-span=\{colSpan\}\sdata-row-span=\{rowSpan\}>/, rel);
+    assert.doesNotMatch(rel.endsWith('new-hero.astro') ? read(rel).replace(/<script>[^<]*hero-cards-motion\.ts[^<]*<\/script>/, '') : read(rel), /\sstyle=|<script\b/, `${rel} con style inline o script`); // Ajuste feature 115 (precedente REQ-43-06): salvo el <script> del runtime lego (REQ-115-06)
+    if (rel !== 'src/components/new-hero/new-hero.astro') assert.match(read(rel).match(/<article\b[^>]*>/)?.[0] ?? '', /\sdata-col-span=\{colSpan\}\sdata-row-span=\{rowSpan\}\sdata-show-on-mobile=\{card\.showOnMobile \? 'true' : undefined\}>/, rel); // Ajuste feature 106 (precedente REQ-43-06): atributo condicional (REQ-106-08/18)
   }
   for (const rel of ['tests/hero-mosaic-layout.test.mjs', 'src/domain/hero-grid-layout.ts', 'src/domain/hero-grid-template.ts']) assert.ok(read(rel).split('\n').length <= 100, rel);
 });

@@ -52,7 +52,7 @@
 .hero-card:hover .card-icon svg { transform: rotate(2deg) scale(calc(var(--icon-scale) * 1.12)); }
 
 /* Fondo e icono por token (features 98/99: la celda la calcula src/domain/hero-grid-layout.ts y llega como
-   data-col-span/data-row-span; CLOUDFLARE a escala 1, REQ-99-26). Feature 101: grandes con logo mayor en escritorio
+   data-col-span/data-row-span; CLOUDFLARE: 270px / 0deg del JSON y escala 1.25 medida por CDP, REQ-111-09/11). Feature 101: grandes con logo mayor en escritorio
    (REQ-101-04/05): el tamaño lo da la escala (svg de 32px de alto, viewBox ajustado por altura); el ancho mueve el centro. */
 [data-color-token="htb"] { --card-bg: var(--color-marca-htb); }
 [data-color-token="html"] { --card-bg: var(--color-marca-html); --icon-width: 115px; --icon-rotation: -7deg; }
@@ -64,7 +64,7 @@
 [data-color-token="aws"] { --card-bg: var(--color-marca-aws); --icon-width: 120px; --icon-rotation: -6deg; }
 [data-color-token="claude-code"] { --card-bg: var(--color-marca-claude-code); --icon-width: 115px; --icon-rotation: 0deg; }
 [data-color-token="nestjs"] { --card-bg: var(--color-marca-nestjs); --icon-width: 230px; --icon-rotation: -5deg; --icon-scale: 7; }
-[data-color-token="cloudflare"] { --card-bg: var(--color-marca-cloudflare); --icon-width: 170px; --icon-rotation: 0deg; --icon-scale: 1; }
+[data-color-token="cloudflare"] { --card-bg: var(--color-marca-cloudflare); --icon-width: 270px; --icon-rotation: 0deg; --icon-scale: 1.25; }
 [data-color-token="claude"] { --card-bg: var(--color-marca-claude); --icon-width: 110px; --icon-rotation: -8deg; }
 [data-color-token="bun"] { --card-bg: var(--color-marca-bun); --icon-width: 115px; --icon-rotation: -8deg; }
 [data-color-token="youtube"] { --card-bg: var(--color-marca-youtube); --icon-width: 115px; --icon-rotation: -8deg; }

@@ -1,0 +1,7 @@
+# Análisis feature 114 — lupa animada en la search bar
+
+- Problema: la search bar del header es un input sin icono; el humano pide una lupa con animación bonita al escribir (creatividad libre).
+- Toca: src/components/search-bar/search-bar.astro (SVG inline + import de hoja), nueva src/styles/search-bar-icon.css y el padding del input en src/styles/search-bar.css (90 líneas). No toca search-bar.ts, search-live, search-escape, tokens.css ni sprite.svg (ajeno).
+- Propuesta elegida: «lupa que escanea» (specs/114_search-bar-magnifier-animation/design.md): gris en reposo; ciruela + escala 1.12 y halo --color-glow al foco; balanceo de escaneo en bucle (1.6 s, ±10deg, 3/-2 px) mientras hay foco y texto; ciruela estática con texto sin foco; reduced-motion sin animación. CSS puro con :focus-within, :placeholder-shown y :has().
+- Riesgos: (1) :has() con soporte moderno amplio; sin él solo se pierde la animación. (2) Peso portada ~40 203 B + SVG (~250 B) + CSS (~700 B si Astro lo inlinea) < 42 000 B. (3) Tests heredados que inspeccionan search-bar.astro/search-bar.css (search-bar-header, search-form-progressive, mobile-hamburger-menu, focus-visible-global, client-init-on-navigation*) pueden necesitar ajuste con nota «Ajuste feature 114 (precedente REQ-43-06)». (4) Panel <= 969 px: input al 100 %, la lupa absoluta no altera el alto.
+- Verificación: Chrome headless + CDP a 375/768/969/970/1024/1280, capturas de vacío, foco, escribiendo (2-3 frames de la animación) y con texto en progress/research/search114/.

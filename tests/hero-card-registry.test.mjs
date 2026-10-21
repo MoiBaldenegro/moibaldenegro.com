@@ -78,8 +78,8 @@ test('REQ-91-05: new-hero.astro pinta cada tarjeta con HeroGridCard sin condicio
 
 test('REQ-91-06: hero-card.astro conserva article.hero-card, data-color-token y card: HeroCard', () => {
   const content = read(HERO_CARD_URL);
-  // Ajuste feature 98 (precedente REQ-43-06): el article gana data-col-span/data-row-span (REQ-98-17).
-  assert.match(content, /<article\s+class="hero-card"\s+data-color-token=\{card\.colorToken\}\s+data-col-span=\{colSpan\}\s+data-row-span=\{rowSpan\}>/);
+  // Ajuste feature 98 (precedente REQ-43-06): el article gana data-col-span/data-row-span (REQ-98-17). Ajuste feature 106 (precedente REQ-43-06): y data-show-on-mobile, solo "true" si showOnMobile (REQ-106-08/18).
+  assert.match(content, /<article\s+class="hero-card"\s+data-color-token=\{card\.colorToken\}\s+data-col-span=\{colSpan\}\s+data-row-span=\{rowSpan\}\s+data-show-on-mobile=\{card\.showOnMobile \? 'true' : undefined\}>/);
   assert.match(frontmatter(content), /interface\s+Props\s*\{[\s\S]*?\bcard\s*:\s*HeroCard\b/);
 });
 

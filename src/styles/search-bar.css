@@ -10,7 +10,7 @@
 
 .search-bar__input {
   width: 240px;
-  padding: 10px 42px 10px 18px;
+  padding: 10px 42px 10px 42px; /* feature 114 (REQ-114-07): hueco de la lupa */
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-pill);
