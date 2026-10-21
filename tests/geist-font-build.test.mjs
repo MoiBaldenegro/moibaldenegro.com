@@ -1,6 +1,7 @@
 // Feature 85 geist-font-base: salida de astro build con Geist y Geist Mono autoalojadas
 // (REQ-85-16/17/18) y Geist Pixel Circle de la feature 86 (REQ-86-08/09; REQ-85-17 pasa a 2 preloads).
 // Specs: specs/85_geist-font-base/ y specs/86_geist-pixel-display/. Estáticas: geist-font-base / geist-pixel-display.
+// Ajuste feature 116 (precedente REQ-43-06): la portada pasa de / a /home (dist/client/home/index.html y src/pages/home.astro).
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, existsSync, mkdtempSync, rmSync } from 'node:fs';
@@ -8,7 +9,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { astroBuild } from './helpers/astro-build.mjs';
 
-const PAGES = { '/': 'index.html', '/about': 'about/index.html', artículo: 'posts/00-agilismo/index.html' };
+const PAGES = { '/home': 'home/index.html', '/about': 'about/index.html', artículo: 'posts/00-agilismo/index.html' };
 let out;
 const page = (rel) => readFileSync(join(out, 'client', rel), 'utf8');
 const attrs = (tag) => Object.fromEntries([...tag.matchAll(/([\w-]+)(?:="([^"]*)")?/g)].slice(1).map(([, k, v]) => [k, v ?? '']));
@@ -32,17 +33,17 @@ test('REQ-85-16: dist/client/_astro/fonts contiene los woff2 de Geist y Geist Mo
   assert.ok(existsSync(dir), 'no existe _astro/fonts');
   const woff2 = readdirSync(dir).filter((f) => f.endsWith('.woff2'));
   assert.ok(woff2.length >= 2, `solo ${woff2.length} woff2 en _astro/fonts`);
-  const faces = fontFaces(page('index.html')).join('\n');
+  const faces = fontFaces(page('home/index.html')).join('\n');
   // Astro nombra cada familia con hash (font-family:Geist-<hash>) y la expone en :root con su variable.
   for (const name of ['Geist', 'Geist Mono']) assert.match(faces, new RegExp(`font-family:"?${name}-[0-9a-f]+[";]`), `sin @font-face de ${name}`);
-  for (const v of ['--font-geist-sans', '--font-geist-mono']) assert.match(page('index.html'), new RegExp(`:root\\{${v}:`), v);
+  for (const v of ['--font-geist-sans', '--font-geist-mono']) assert.match(page('home/index.html'), new RegExp(`:root\\{${v}:`), v);
   for (const href of faces.match(/\/_astro\/fonts\/[^)"']+\.woff2/g) ?? []) {
     assert.ok(woff2.includes(href.split('/').pop()), `${href} no está en _astro/fonts`);
   }
 });
 
 test('REQ-85-17/REQ-86-08: / tiene 2 preloads woff2 crossorigin en /_astro/fonts/ (Geist y Geist Pixel)', () => {
-  const html = page('index.html');
+  const html = page('home/index.html');
   const preloads = fontPreloads(html);
   assert.equal(preloads.length, 2, `preloads de fuente: ${JSON.stringify(preloads)}`);
   for (const p of preloads) {

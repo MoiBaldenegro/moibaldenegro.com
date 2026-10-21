@@ -89,7 +89,7 @@ test('REQ-80-15/16/17: privacidad y hrefs absolutos', () => {
     assert.ok(!text.toLowerCase().includes(term.toLowerCase()), term);
   }
   for (const item of [...profile.links, ...profile.projects, ...profile.content]) {
-    assert.ok(item.href.startsWith('https://') || item.href === '/', item.href);
+    assert.ok(item.href.startsWith('https://') || item.href === '/home', item.href); // Ajuste feature 116 (precedente REQ-43-06): blog a /home (REQ-116-12)
   }
 });
 

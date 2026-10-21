@@ -53,7 +53,7 @@ test('REQ-84-04/05/06: h2 Proyectos destacados y 5 tarjetas con enlace en el h3 
 test('REQ-84-07/08/09: h2 Contenido con la intro por slot y tarjetas al blog y al curso de Rust', () => {
   const sec = section('about-content'); assert.match(sec, /<h2\b[^>]*>Contenido<\/h2>\s*<p class="about__intro">/);
   assert.ok(toText(sec).includes(SITE_DESCRIPTION), 'SITE_DESCRIPTION');
-  assert.match(sec, /<a\b[^>]*href="\/"[^>]*>/); assert.match(sec, /<a\b[^>]*href="https:\/\/www\.youtube\.com\/@moibaldenegro"[^>]*>Curso de Rust desde Cero/);
+  assert.match(sec, /<a\b[^>]*href="\/home"[^>]*>/); assert.match(sec, /<a\b[^>]*href="https:\/\/www\.youtube\.com\/@moibaldenegro"[^>]*>Curso de Rust desde Cero/); // Ajuste feature 116 (precedente REQ-43-06): blog a /home (REQ-116-12)
   for (const bad of ['moisesbaldenegro1546', 'cinnamon.ai']) assert.ok(!html.toLowerCase().includes(bad), bad);
 });
 test('REQ-84-10/11/12: Formación y certificaciones con Educación, Certificaciones e Idiomas', () => {

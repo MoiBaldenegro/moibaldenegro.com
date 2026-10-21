@@ -4,22 +4,24 @@
 
 ### Feature en curso
 
-- Feature en curso: 115 — hero-cards-lego-motion (inicio 2026-10-21)
+- Feature en curso: 116 — home-route-root-redirect (inicio 2026-10-21)
 
 ### Plan
 
 - Plan:
-  - Test primero: tests/hero-cards-lego-motion.test.mjs (dominio, hoja, runtime, build, evidencias CDP) en rojo.
-  - Dominio src/domain/hero-cards-motion.ts (constantes, createRng mulberry32, legoOrder, legoDelays, legoTilt, legoPhase, vars).
-  - Hoja src/styles/hero-cards-motion.css y runtime src/components/new-hero/hero-cards-motion.ts + hero-cards-lego.ts; <script> en new-hero.astro.
-  - Ajustar tests heredados (REQ-101-19, nota precedente REQ-43-06) y ./init.sh en verde.
-  - CDP a 375/800/1024/1280/1600 con frames en progress/research/hero115/ e informe en progress/impl_hero-cards-lego-motion.md.
+  - Tests primero: rootRedirect puro, middleware 301 con query, enlaces /home, clearDestination, sitemap /home/ (rojo).
+  - Reapuntar ~35 tests a dist/client/home/index.html y src/pages/home.astro con la nota de ajuste.
+  - Implementar: root-redirect.ts + middleware, mover index.astro a home.astro, enlaces, about.json, sitemap.
+  - Verificar ./init.sh, build + preview/wrangler, CDP y capturas en progress/research/routes116/.
+  - Informe en progress/impl_home-route-root-redirect.md.
 
 ### Bitácora
 
-- 2026-10-21 ronda de revisión 1 (CHANGES_REQUESTED, cambio 1): salida con rango propio top bottom / bottom top (LEGO_RANGE.exitStart/exitEnd), ninguna card visible se levanta al volver a scroll 0 a 1280/1600 (hiddenVisibleBack 0); test en rojo y luego verde 12/12, 1190/1190; ./init.sh verde; evidencias en progress/research/hero115/. Pendiente de reviewer.
-- 2026-10-21 (retomada tras corte de API): suite 1190/1190 sin ajustes de tests heredados (ninguno rompía); CDP a 375/800/1024/1280/1600 con evidencias en progress/research/hero115/ (CLS 0, 0 errores); portada 40 661 B (< 42 000); ./init.sh verde; informe en progress/impl_hero-cards-lego-motion.md. Pendiente de reviewer.
-- Alta de la feature 115 (spec_author): hero-cards-lego-motion pending; spec en specs/115_hero-cards-lego-motion/requirements.md y design.md; análisis en progress/research/hero-cards-lego-motion.md. Valores por defecto revisables, no bloquean: entrada y -32px, rotate aleatorio [-3, 3] deg, scale 1.04, opacity 0 a reposo, 0.6 s back.out(1.7); retardo posición aleatoria x min(0.05 s, 0.6 s/(n-1)) (máx. 0.6 s); salida y -24px, scale 1.04, opacity 0, 0.35 s power2.in (se levanta al salir por arriba o abajo); rango batch top 92% / bottom 8%; PRNG mulberry32 con semilla aleatoria por carga (Math.random; la CDP la fija sustituyendo Math.random); GSAP anima --hero-lego-* compuestas en translate/rotate/scale para no pisar el hover; umbral de peso 42 000 B sin cambios (portada 40 562 B).
+- implementer (2026-10-21): feature 116 implementada (in_progress, pendiente de reviewer). rootRedirect + middleware 301 (query y cabeceras), index.astro → home.astro, enlaces a /home, clearDestination /home, sitemap /home/. 43 tests reapuntados con la nota de ajuste; suite 1200/1200 y ./init.sh verde; preview (workerd) + CDP: GET / 301 → /about, /home idéntica a la base (0 px de diferencia a 1280), ClientRouter sin recargas ni errores. Informe: progress/impl_home-route-root-redirect.md; evidencias en progress/research/routes116/.
+- spec_author (2026-10-21): alta de la feature 116 home-route-root-redirect (pending); spec specs/116_home-route-root-redirect/requirements.md (sin design.md, sin cambio visual); análisis progress/research/home-route-root-redirect.md. Mecanismo: middleware + rootRedirect puro, 301 (revisable, alt. 302); enlaces internos y clearDestination a /home; sitemap /home/.
+
+- Pendientes humanos de la 115 (ax), valores por defecto revisables que no bloquean: entrada y -32px, giro aleatorio ±3deg, scale 1.04, opacity 0, 0.6 s back.out(1.7); retardo aleatorio ≤ 0.6 s; salida y -24px 0.35 s power2.in; batch top 92% / bottom 8%; semilla aleatoria por carga.
+- Observación del reviewer de la 115 (ay), no bloquea: con CPU lenta x6 el mosaico puede verse 30-55 ms antes de ocultarse y encajar; inherente a no ocultar con CSS.
 - Pendientes humanos de la 114 (av), valores creativos por defecto revisables que no bloquean: lupa SVG inline 16 px a left 16px, gris --color-text-secondary en reposo → ciruela --color-accent con scale 1.12 y halo 4px --color-glow al enfocar; animación search-bar-scan 1.6 s infinita (±10deg, 3/-2 px) mientras hay foco y texto; ciruela estática con texto sin foco; reduced-motion sin animación; padding izquierdo 42px.
 - Observaciones del reviewer de la 114 (aw), no bloquean: (1) con texto y el foco en el botón ×, la lupa también escanea (:focus-within); aceptable. (2) En reduced-motion manda la regla global de layout.css:97 (!important) sobre transition: none; el efecto es el mismo.
 - Pendientes humanos de la 113 (at), valores por defecto revisables que no bloquean: logo #6C387A; accent #B37AC2, hover #C396CF, hero-top #3C1F44, hero-mid #150A18, glow rgba(108,56,122,.35), scrollbar #6C387A, marca-css #6C387A; skip-link con texto --color-background.

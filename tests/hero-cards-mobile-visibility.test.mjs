@@ -1,5 +1,6 @@
 // Feature 106 hero-cards-mobile-visibility (REQ-106-01..19; specs/106_hero-cards-mobile-visibility/). En móvil
 // (<= 768 px) solo se ven las cards con showOnMobile true; la medida en navegador (REQ-106-10..12/14) va con CDP (impl).
+// Ajuste feature 116 (precedente REQ-43-06): la portada pasa de / a /home (dist/client/home/index.html y src/pages/home.astro).
 import { test } from 'node:test'; import assert from 'node:assert/strict'; import { readFileSync, existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { HeroCardsRepository, HeroCardsDataError } from '../src/domain/repositories/hero-cards-repository.ts';
@@ -55,7 +56,7 @@ test('REQ-106-07: el parse queda partido en hero-cards-parse.ts y un hermano, am
 const COND = /data-show-on-mobile=\{card\.showOnMobile \? 'true' : undefined\}/;
 test('REQ-106-08/18/19 (build): data-show-on-mobile="true" solo en HTB, sin atributo en las de icono, sin style ni script y portada < 40 000 B', () => {
   const build = astroBuild(); assert.equal(build.status, 0, `astro build falló: ${build.stderr}`);
-  const html = read('dist/client/index.html'); const arts = [...html.matchAll(/<article class="hero-card[^"]*"[^>]*>/g)].map((m) => m[0]);
+  const html = read('dist/client/home/index.html'); const arts = [...html.matchAll(/<article class="hero-card[^"]*"[^>]*>/g)].map((m) => m[0]);
   assert.equal(arts.length, 15); const token = (a) => a.match(/data-color-token="([^"]+)"/)[1];
   assert.deepEqual(arts.filter((a) => a.includes(' data-show-on-mobile="true"')).map(token), ['htb']);
   assert.deepEqual(arts.filter((a) => a.includes('data-show-on-mobile')).map(token), ['htb'], 'una card de icono lleva data-show-on-mobile');

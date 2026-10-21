@@ -2,6 +2,7 @@
 // #ffffff con un sitio de tema oscuro. THEME_COLOR (src/domain/seo/theme.ts) replica
 // --color-background y alimenta el manifest y la meta theme-color del layout único.
 // Spec: specs/63_theme-color-dark/requirements.md.
+// Ajuste feature 116 (precedente REQ-43-06): la portada pasa de / a /home (dist/client/home/index.html y src/pages/home.astro).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync, readdirSync, mkdtempSync, rmSync } from 'node:fs';
@@ -46,7 +47,7 @@ test('REQ-63-05 (build): portada, about y un post llevan la meta theme-color', a
     const build = astroBuild(['--outDir', out]);
     assert.equal(build.status, 0, `astro build falló:\n${build.stdout}\n${build.stderr}`);
     const post = readdirSync(join(out, 'client', 'posts'))[0];
-    for (const page of ['index.html', join('about', 'index.html'), join('posts', post, 'index.html')]) {
+    for (const page of ['home/index.html', join('about', 'index.html'), join('posts', post, 'index.html')]) {
       const html = readFileSync(join(out, 'client', page), 'utf8');
       assert.ok(html.includes(expected), `${page} no contiene ${expected}`);
     }

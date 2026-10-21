@@ -85,7 +85,7 @@ test('REQ-31-04: en /zzz el clic navega a clearDestination (/)', () => {
   try {
     assert.equal(typeof calls.results, 'function', 'el botón del estado vacío no tiene manejador');
     calls.results();
-    assert.deepEqual(calls.assign, ['/']);
+    assert.deepEqual(calls.assign, ['/home']); // Ajuste feature 116 (precedente REQ-43-06): destino /home (REQ-116-13)
   } finally { cleanup(); }
 });
 

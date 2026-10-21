@@ -1,6 +1,7 @@
 // Test del índice de búsqueda como asset estático (feature 46
 // search-index-endpoint, REQ-46-01..06): endpoint prerenderizado, función de
 // dominio única compartida con las páginas y build real (outDir temporal).
+// Ajuste feature 116 (precedente REQ-43-06): la portada pasa de / a /home (dist/client/home/index.html y src/pages/home.astro).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, existsSync, mkdtempSync, rmSync } from 'node:fs';
@@ -12,7 +13,7 @@ import { searchIndexJson } from '../src/domain/search/index-json.ts';
 const root = new URL('../', import.meta.url);
 const read = (rel) => readFileSync(new URL(rel, root), 'utf8');
 const ENDPOINT = 'src/pages/search-index.json.ts';
-const CONSUMERS = ['src/pages/index.astro', 'src/pages/search.astro', 'src/pages/[...term].astro', ENDPOINT];
+const CONSUMERS = ['src/pages/home.astro', 'src/pages/search.astro', 'src/pages/[...term].astro', ENDPOINT];
 
 test('REQ-46-01: endpoint prerenderizado con application/json', () => {
   assert.ok(existsSync(new URL(ENDPOINT, root)), `falta ${ENDPOINT}`);

@@ -1,4 +1,5 @@
 // Feature 103 hero-cards-extra-logos (REQ-103-01..33; specs/103_*). La medida en navegador (REQ-103-23..26/32/33) va con CDP (impl).
+// Ajuste feature 116 (precedente REQ-43-06): la portada pasa de / a /home (dist/client/home/index.html y src/pages/home.astro).
 import { test } from 'node:test'; import assert from 'node:assert/strict'; import { readFileSync, existsSync } from 'node:fs';
 import { HeroCardsRepository, HeroCardsDataError } from '../src/domain/repositories/hero-cards-repository.ts';
 import { astroBuild } from './helpers/astro-build.mjs';
@@ -49,7 +50,7 @@ test('REQ-103-05/06/07/08 (Ajuste feature 111 (precedente REQ-43-06): tarjetas c
 });
 test('REQ-103-09/10/11 (build; Ajuste feature 111 (precedente REQ-43-06): svg de .card-icon a 28px de hero-card.astro): capas extra en orden y cards sin campos con el marcado de antes', () => {
   const build = astroBuild(); assert.equal(build.status, 0, `astro build falló: ${build.stderr}`);
-  const html = read('dist/client/index.html'); const svg = (a, href) => `<svg${a} aria-hidden="true" focusable="false"><use href="${href}"></use></svg>`; // Ajuste feature 107 (precedente REQ-43-06): <use> solo con href (REQ-107-29/34)
+  const html = read('dist/client/home/index.html'); const svg = (a, href) => `<svg${a} aria-hidden="true" focusable="false"><use href="${href}"></use></svg>`; // Ajuste feature 107 (precedente REQ-43-06): <use> solo con href (REQ-107-29/34)
   const layer = (cls, href, size) => (href ? `<div class="${cls}"${size ? ` data-backdrop-size="${size}"` : ''}>${svg('', href)}</div>` : ''); // Ajuste feature 108 (precedente REQ-43-06): data-backdrop-size si el JSON declara backgroundIconSize (REQ-108-06/07)
   for (const c of JSON.parse(read('src/data/hero-cards.json')).filter((x) => x.kind === undefined)) {
     const art = html.match(new RegExp(`<article class="hero-card" data-color-token="${c.colorToken}" data-col-span="\\d+" data-row-span="\\d+">([\\s\\S]*?)</article>`))?.[1]; // Ajuste feature 106 (precedente REQ-43-06): las de icono siguen sin data-show-on-mobile (REQ-106-18)

@@ -3,6 +3,7 @@
 // site.webmanifest y sin <meta name="generator"> (huella de versión) en el
 // Layout ni en el HTML del build (outDir temporal, helper de builds).
 // Ajuste feature 66 (precedente REQ-43-06): el dominio del sitio pasa a moisesbaldenegro.com.
+// Ajuste feature 116 (precedente REQ-43-06): la portada pasa de / a /home (dist/client/home/index.html y src/pages/home.astro).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, mkdtempSync, rmSync } from 'node:fs';
@@ -30,7 +31,7 @@ test('REQ-58-03 (build): ninguna página del build lleva meta generator', () => 
     const build = astroBuild(['--outDir', out]);
     assert.equal(build.status, 0, `astro build falló:\n${build.stdout}\n${build.stderr}`);
     const client = join(out, 'client');
-    const pages = ['index.html', join('about', 'index.html'), join('search', 'index.html'), '404.html',
+    const pages = ['home/index.html', join('about', 'index.html'), join('search', 'index.html'), '404.html',
       ...readdirSync(join(client, 'posts')).map((slug) => join('posts', slug, 'index.html'))];
     for (const rel of pages) assert.doesNotMatch(readFileSync(join(client, rel), 'utf8'), /name="generator"/, rel);
   } finally {

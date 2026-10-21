@@ -19,7 +19,7 @@ test('REQ-89-01: la columna Navegación enlaza las rutas principales', async () 
   const { footerColumns } = await load();
   const nav = footerColumns(ABOUT).find((c) => c.title === 'Navegación');
   assert.ok(nav, 'falta la columna Navegación');
-  assert.deepEqual(nav.links.map((l) => l.href), ['/', '/about', '/arquitectura', '/search']);
+  assert.deepEqual(nav.links.map((l) => l.href), ['/home', '/about', '/arquitectura', '/search']); // Ajuste feature 116 (precedente REQ-43-06): Inicio a /home (REQ-116-09)
   assert.ok(nav.links.every((l) => !l.external));
 });
 

@@ -56,7 +56,7 @@ test('REQ-107-08 (Ajuste feature 110 (precedente REQ-43-06): el aviso lo arma ca
 });
 test('REQ-107-06/07/09/10/11/27 (build): a.card-link como último hijo solo en GITHUB y YOUTUBE, sin anidar, y portada < 40 000 B', () => {
   const build = astroBuild(); assert.equal(build.status, 0, `astro build falló: ${build.stderr}`);
-  const html = read('dist/client/index.html');
+  const html = read('dist/client/home/index.html'); // Ajuste feature 116 (precedente REQ-43-06): portada en /home
   const arts = [...html.matchAll(/<article class="hero-card[^"]*"[^>]*data-color-token="([^"]+)"[^>]*>([\s\S]*?)<\/article>/g)];
   assert.equal(arts.length, 15); for (const [, token, inner] of arts) {
     const count = (inner.match(/<a\b/g) ?? []).length; assert.ok(count <= 1, `${token}: ${count} enlaces`);

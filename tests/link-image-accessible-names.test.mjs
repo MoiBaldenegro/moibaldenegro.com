@@ -3,6 +3,7 @@
 // títulos con alt="", logo que describe el destino, aviso de sitio externo,
 // fila de recomendado clicable y cards sin el título duplicado en el build.
 // Ajuste feature 66 (precedente REQ-43-06): el dominio del sitio pasa a moisesbaldenegro.com.
+// Ajuste feature 116 (precedente REQ-43-06): la portada pasa de / a /home (dist/client/home/index.html y src/pages/home.astro).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, mkdtempSync, rmSync } from 'node:fs';
@@ -55,7 +56,7 @@ test('REQ-53-05 (build): ninguna card de la portada repite el título en el alt'
   try {
     const build = astroBuild(['--outDir', out]);
     assert.equal(build.status, 0, `astro build falló:\n${build.stdout}\n${build.stderr}`);
-    const html = readFileSync(join(out, 'client', 'index.html'), 'utf8');
+    const html = readFileSync(join(out, 'client', 'home', 'index.html'), 'utf8');
     const cards = [...html.matchAll(/<a class="latest-articles__link"[\s\S]*?<\/a>/g)].map((m) => m[0]);
     assert.ok(cards.length > 0, 'no hay cards en la portada');
     for (const card of cards) {

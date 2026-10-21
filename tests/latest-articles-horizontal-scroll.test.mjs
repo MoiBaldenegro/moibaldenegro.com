@@ -2,6 +2,7 @@
 // la sección de últimos artículos se fija y las cards se desplazan en X con GSAP ScrollTrigger.
 // Sin JS, en <=1200 px o con reduced motion queda el layout apilado. Spec: specs/72_*/.
 // Verificación en navegador (REQ-72-06..21, 25, 28, 29) en progress/impl_72.md.
+// Ajuste feature 116 (precedente REQ-43-06): la portada pasa de / a /home (dist/client/home/index.html y src/pages/home.astro).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, existsSync, mkdtempSync, rmSync } from 'node:fs';
@@ -23,10 +24,10 @@ test('REQ-72-01/02: componente con CSS y un solo script, montado solo en la port
   assert.match(comp, /from ['"][.][/]latest-horizontal[.]ts['"]/);
   for (const ev of ['astro:page-load', 'astro:before-swap']) assert.ok(comp.includes(ev), ev);
   assert.doesNotMatch(comp, /<style/);
-  const index = read('src/pages/index.astro');
+  const index = read('src/pages/home.astro');
   assert.match(index, /import LatestHorizontal from ['"][.][.][/]components[/]latest-horizontal[/]latest-horizontal[.]astro['"]/);
   assert.match(index, /<LatestHorizontal ?[/]>/);
-  const pages = readdirSync(new URL('src/pages/', root), { recursive: true }).filter((f) => f.endsWith('.astro') && !f.endsWith('index.astro'));
+  const pages = readdirSync(new URL('src/pages/', root), { recursive: true }).filter((f) => f.endsWith('.astro') && !f.endsWith('home.astro'));
   for (const page of pages) assert.ok(!read(`src/pages/${page}`).includes('latest-horizontal'), page);
   const latest = read('src/components/latest-articles.astro'), latestCss = read('src/styles/latest-articles.css');
   for (const src of [latest, latestCss]) assert.doesNotMatch(src, /latest-horizontal|gsap/);
@@ -77,7 +78,7 @@ test('REQ-72-22/23/24 (build): GSAP solo en la portada, con copyright y <= 51200
       for (const [, src] of readFileSync(join(client, page), 'utf8').matchAll(/(?:src|href)="[/]_astro[/]([^"]+[.]js)"/g)) for (const d of deps(src)) all.add(d);
       return all; };
     const isGsap = (name) => /gsap[.]com/.test(chunk(name)); // código de GSAP (REQ-72-22)
-    const home = pageChunks('index.html');
+    const home = pageChunks('home/index.html');
     assert.ok([...home].some((c) => isGsap(c) && /@license Copyright [0-9-]+, GreenSock/.test(chunk(c))), 'la portada no carga GSAP con su aviso @license (REQ-72-24)');
     const post = readdirSync(join(client, 'posts'))[0];
     for (const page of [join('posts', post, 'index.html'), join('search', 'index.html'), join('about', 'index.html'), '404.html']) {
@@ -94,5 +95,5 @@ test('REQ-72-22/23/24 (build): GSAP solo en la portada, con copyright y <= 51200
 });
 
 test('REQ-72-32: archivos de la feature <= 100 líneas', () => {
-  for (const rel of [COMP, MOD, CSS, 'src/pages/index.astro', 'tests/latest-articles-horizontal-scroll.test.mjs']) assert.ok(lines(read(rel)) <= 100, rel);
+  for (const rel of [COMP, MOD, CSS, 'src/pages/home.astro', 'tests/latest-articles-horizontal-scroll.test.mjs']) assert.ok(lines(read(rel)) <= 100, rel);
 });

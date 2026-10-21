@@ -1,6 +1,65 @@
 # Review — feature 115 (hero-cards-lego-motion)
 
-**Veredicto:** CHANGES_REQUESTED
+**Veredicto:** APPROVED
+
+> Veredicto vigente: el de la Revisión 2 (abajo). La Revisión 1 (CHANGES_REQUESTED) se conserva debajo como historial.
+
+## Revisión 2
+
+Fecha: 2026-10-21. Revisión de nivel 1 tras la «Ronda de revisión 1» de `progress/impl_hero-cards-lego-motion.md`.
+
+### Checkpoints
+- C1 Estilos en `src/styles/*.css`, sin `<style>` en `.astro`: [x] Sin cambios en CSS ni en `.astro`.
+- C2 Sin lógica en UI: [x] `exitStart`/`exitEnd` están en `LEGO_RANGE` (`src/domain/hero-cards-motion.ts:15`). El runtime solo los consume.
+- C3 Datos vía repositorio: [x] No aplica, no hay datos nuevos.
+- C4 Tokens: [x] Sin valores visuales nuevos.
+- C5 ≤ 100 líneas: [x] Lego 95, dominio 94 y test 100 (justo en el límite).
+- C6 Sin dependencias nuevas: [x]
+- C7 `./init.sh` verde: [x] Exit 0 con formato, tests al 100 % y build (`scratchpad/rev115/init-r2.txt`). `dist/client/index.html` = 40 669 B (< 42 000).
+- C8 Test-first: [x] `scratchpad/red115-r3.txt` da 9 pass / 3 fail. Los tres fallos son los nuevos asertos de REQ-115-01 (`exitStart` undefined), REQ-115-07/08 (`onLeave` en el trigger de entrada) y REQ-115-19 (`hiddenVisibleBack` undefined). Después, verde 12/12 y la suite completa en verde.
+- C9 Dependencias: [x] La 115 no tiene `depends_on`.
+- C10 Página correcta en desktop y móvil sin errores: [x] El defecto de la Revisión 1 está resuelto (ver abajo). 0 errores de consola.
+
+### Cambio requerido 1: resuelto
+- **Código.** `src/components/new-hero/hero-cards-lego.ts:53-60`. El trigger de entrada (`LEGO_RANGE.start`/`end`) solo tiene `onEnter`/`onEnterBack`. Un segundo trigger por card (`LEGO_RANGE.exitStart`/`exitEnd` = `top bottom`/`bottom top`) tiene `onLeave`/`onLeaveBack` → `exit()`.
+  - La salida sigue siendo el tween de `legoLifted()` con `LEGO_EXIT`, y ahora solo se dispara al dejar de intersectar (REQ-115-08).
+  - Es coherente con `sync()`/`legoPhaseAt`, que usa los mismos límites ampliados en `edge`.
+  - Los dos triggers se crean dentro del contexto de `gsap.matchMedia`, así que `mm.revert()` los mata.
+- **Test.** `tests/hero-cards-lego-motion.test.mjs:59-61` separa los callbacks por trigger con aserción cruzada. La línea 72 cubre el borde con scroll -48 → `'rest'` y la línea 98 exige `hiddenVisibleBack === 0` a 1280 y 1600. `progress/research/hero115/measurements.json` tiene `hiddenVisibleBack = 0` en los dos anchos.
+- **CDP propia.** `astro preview :4790`, ya parado; el `pnpm dev` de :4321 no se ha tocado. Se repitió `rev115/r.mjs` con seed 1 → `rev115/out-1.json`. La salida de la ronda anterior está en `rev115/r1old/`.
+  - 1280×800 y 1600×800, carga → fondo → scroll 0: `backTop.badVisible = []`. Antes eran las cards 5..9 con opacity 0.
+  - Tras 3 idas y vueltas `/` → `/about/` → `history.back()`, y luego fondo → scroll 0: `afterRouterTop = []`.
+  - En /about hay 0 cards con style.
+  - `reenter-1280-final.png` muestra la fila inferior visible al volver.
+
+### Sin regresiones (verificado)
+- **CLS.** 0 en la carga, en la recarga al fondo, en la recarga a mitad y en los 3 `history.back`, a 375, 800, 1024, 1280 y 1600.
+- **Reposo.** Las cards visibles están en reposo a 1,45 s en todos los casos (`badVisible` vacío).
+- **Entrada.** Lote con orden aleatorio, no el del DOM: a 1280/1600 da [5,4,7,0,1,8,9,6,2,3] (empate 4/5 por resolución de rAF) y a 800 da [0,3,4,5,1,2].
+- **Salida.** Al fondo, todas las cards fuera del viewport quedan en opacity 0 en todos los anchos. Lo mismo tras las idas y vueltas.
+- **ScrollTrigger y listeners.** Se mantienen estables: 1 listener de scroll tras cada ida y vuelta.
+- **Reduced-motion (375/1280).** 0 estilos en línea y todas las cards en reposo.
+- **Sin JS.** Todas las cards en opacity 1, en reposo y sin style.
+- **Móvil (375).** Solo se anima HTB.
+- **Hover a 1280 (`rev115/r3.mjs`, cards 0/1/3).** Transform pasa a `matrix(1,0,0,1,0,-4)`, filter a `contrast(1.4)` y la sombra sube. El icono gira. translate/rotate/scale se quedan en 0px/0deg/1 y todo vuelve al estado inicial al salir.
+- **Enlaces.** YouTube y GitHub tienen `target=_blank` y `rel="noopener noreferrer"`.
+- **Foco.** La card de GitHub pasa de opacity 0 a 1 y a translate 0px.
+- **Errores.** 0 excepciones y 0 errores de consola.
+- **Aclaración sobre `out2.json`.** Su `hover0`/`hover2` mide con la página aún lifted, porque `r2.mjs` lee antes del encaje. Es un artefacto del script, igual que en la Revisión 1. El hover válido es el de `r3.mjs`.
+
+### Observaciones (no bloquean)
+- **Parpadeo con CPU x6.** Persiste: FCP 220 / style 250 a 800 y FCP 392 / style 471 a 1280. Ya estaba anotado en la Revisión 1; lo valora el humano.
+- **Borde superior al subir.** Al subir, una card que asoma solo en el 8 % superior sigue en opacity 0 hasta cruzar `bottom 8%`. Es simétrico al estado de carga en el 8 % inferior. No afecta a scroll 0 ni contradice REQ-115-08, porque la salida ya ocurrió cuando la card salió del todo.
+
+## Cambios requeridos
+Ninguno.
+
+---
+
+# Revisión 1 (historial)
+
+
+**Veredicto (Revisión 1):** CHANGES_REQUESTED
 
 Fecha: 2026-10-21. Revisión de nivel 1. Spec: `specs/115_hero-cards-lego-motion/requirements.md` (22 REQ) y `design.md`.
 Informe: `progress/impl_hero-cards-lego-motion.md`. He verificado todo por mi cuenta: `./init.sh`, la lectura del código y una CDP propia

@@ -3,6 +3,7 @@
 // architecture/ y os/; post.id = data.slug (no entry.id, que incluye la
 // subcarpeta y rompería /posts/[id] y los hrefs next/related). URLs planas
 // /posts/<slug>; bodies keyeados por slug para no perder el cuerpo en búsqueda.
+// Ajuste feature 116 (precedente REQ-43-06): la portada pasa de / a /home (dist/client/home/index.html y src/pages/home.astro).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
@@ -12,7 +13,7 @@ const CONFIG_URL = new URL('../src/content.config.ts', import.meta.url);
 const REPO_URL = new URL('../src/domain/repositories/posts-repository.ts', import.meta.url);
 const SEARCH_URL = new URL('../src/pages/search.astro', import.meta.url);
 const TERM_URL = new URL('../src/pages/[...term].astro', import.meta.url);
-const INDEX_URL = new URL('../src/pages/index.astro', import.meta.url);
+const INDEX_URL = new URL('../src/pages/home.astro', import.meta.url);
 const DETAIL_URL = new URL('../src/pages/posts/[id].astro', import.meta.url);
 const OS_POST_URL = new URL('../src/content/posts/os/00-prueba-os.md', import.meta.url);
 const OS_POST_2_URL = new URL('../src/content/posts/os/01-procesos-memoria.md', import.meta.url);

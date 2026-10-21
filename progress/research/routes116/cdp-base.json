@@ -1,0 +1,22 @@
+{
+  "mode": "base",
+  "origin": "http://localhost:4801",
+  "page": "/",
+  "shots": {
+    "base-1280": 4532,
+    "base-375": 3813
+  },
+  "dom": {
+    "path": "/",
+    "cards": 15,
+    "latest": 3,
+    "footer": true,
+    "searchView": false,
+    "title": "Moisés Baldenegro Melendez | moisesbaldenegro.com",
+    "canonical": "https://moisesbaldenegro.com/",
+    "robots": null,
+    "logo": "/",
+    "logoCurrent": "page"
+  },
+  "errors": []
+}

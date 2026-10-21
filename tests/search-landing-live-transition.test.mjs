@@ -17,6 +17,7 @@
 //               a la vista dedicada /search?q=<término>.
 //   REQ-05-07 — comportamiento con JS de runtime en el cliente (excepción
 //               documentada, CustomEvent + DOM nativos, sin frameworks).
+// Ajuste feature 116 (precedente REQ-43-06): la portada pasa de / a /home (dist/client/home/index.html y src/pages/home.astro).
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -30,7 +31,7 @@ import {
 } from '../src/components/search-live/search-live.ts';
 import { PAGE_SIZE } from '../src/domain/search/search.ts';
 
-const INDEX_URL = new URL('../src/pages/index.astro', import.meta.url);
+const INDEX_URL = new URL('../src/pages/home.astro', import.meta.url);
 const COMPONENT_URL = new URL(
   '../src/components/search-live/search-live.astro',
   import.meta.url,
@@ -48,7 +49,7 @@ function countLines(content) {
 }
 
 function readIndex() {
-  assert.ok(existsSync(INDEX_URL), 'src/pages/index.astro no existe (REQ-05-01)');
+  assert.ok(existsSync(INDEX_URL), 'src/pages/home.astro no existe (REQ-05-01)');
   return readFileSync(INDEX_URL, 'utf8');
 }
 
@@ -337,7 +338,7 @@ test('REQ-05-01: el panel empieza oculto (modo landing por defecto)', () => {
 
 test('REQ-05-00: ≤100 líneas en portada, componente, controlador y hoja', () => {
   for (const [name, url] of [
-    ['src/pages/index.astro', INDEX_URL],
+    ['src/pages/home.astro', INDEX_URL],
     ['src/components/search-live/search-live.astro', COMPONENT_URL],
     ['src/components/search-live/search-live.ts', CONTROLLER_URL],
     ['src/styles/search-live.css', CSS_URL],

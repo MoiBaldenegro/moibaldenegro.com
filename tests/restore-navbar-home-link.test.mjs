@@ -21,6 +21,7 @@
 // ancla del logo y el enlace de texto Home queda retirado del navbar.
 // Justificación del ajuste: precedente REQ-43-06 (el test de inspección sigue
 // a la presentación real confirmada por el humano).
+// Ajuste feature 116 (precedente REQ-43-06): el logo, «Volver al inicio» y el blog apuntan a la portada /home (REQ-116-08/11/12); aria-current en /home y /home/.
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -50,17 +51,17 @@ function readNav(layout) {
 }
 
 function logoAnchor(nav) {
-  return nav.match(/<a\b[^>]*href="\/"[^>]*>\s*<img\b[^>]*src="\/assets\/mxvi_logo\.webp"/)?.[0] ?? '';
+  return nav.match(/<a\b[^>]*href="\/home"[^>]*>\s*<img\b[^>]*src="\/assets\/mxvi_logo\.webp"/)?.[0] ?? '';
 }
 
-test('REQ-12-01: el navbar enlaza la portada con el ancla del logo (destino /) antes de About', () => {
+test('REQ-12-01: el navbar enlaza la portada con el ancla del logo (destino /home) antes de About', () => {
   const layout = readLayout();
   const nav = readNav(layout);
   assert.ok(nav.length > 0, 'Layout.astro no declara <nav> (REQ-12-01)');
   const anchor = logoAnchor(nav);
   assert.ok(
     anchor.length > 0,
-    'el navbar no incluye el ancla del logo hacia / (REQ-12-01)',
+    'el navbar no incluye el ancla del logo hacia /home (REQ-12-01)',
   );
   // Orden del navbar (design.md Decisión 3): Home (logo) → About → Arquitectura.
   const homeIndex = nav.indexOf(anchor);
@@ -135,7 +136,7 @@ test('REQ-12-03: la navbar conserva About, Arquitectura, @moibaldenegro y la bar
   );
   assert.doesNotMatch(
     nav,
-    /<a\b[^>]*href="\/"[^>]*>\s*Home\s*<\/a>/,
+    /<a\b[^>]*href="\/home"[^>]*>\s*Home\s*<\/a>/,
     'el navbar conserva el enlace de texto Home (REQ-12-03)',
   );
 });
@@ -147,12 +148,12 @@ test('REQ-12-04: el ancla del logo declara aria-current de la portada; no existe
   assert.ok(anchor.length > 0, 'no se encuentra el ancla del logo (REQ-12-04)');
   assert.match(
     anchor,
-    /aria-current=\{Astro\.url\.pathname\s*===\s*['"]\/['"]\s*\?\s*['"]page['"]\s*:\s*undefined\}/,
+    /aria-current=\{Astro\.url\.pathname\s*===\s*['"]\/home['"]\s*\|\|\s*Astro\.url\.pathname\s*===\s*['"]\/home\/['"]\s*\?\s*['"]page['"]\s*:\s*undefined\}/,
     'el ancla del logo no declara el aria-current de la portada (REQ-12-04)',
   );
   assert.doesNotMatch(
     nav,
-    /<a\b[^>]*href="\/"[^>]*>\s*Home\s*<\/a>/,
+    /<a\b[^>]*href="\/home"[^>]*>\s*Home\s*<\/a>/,
     'el navbar conserva el enlace de texto Home (REQ-12-04)',
   );
 });

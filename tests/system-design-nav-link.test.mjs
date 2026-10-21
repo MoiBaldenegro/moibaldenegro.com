@@ -27,7 +27,7 @@ test('REQ-93-01/05: Diseño de sistemas justo tras Arquitectura y se conserva el
   const list = anchors(); const arch = list.findIndex((a) => /href="\/arquitectura"/.test(a));
   assert.ok(arch >= 0); assert.match(list[arch + 1] ?? '', /href="\/diseno-de-sistemas"[^>]*>Diseño de sistemas<\/a>$/);
   const nav = layout().match(/<nav>[\s\S]*?<\/nav>/)?.[0] ?? '';
-  for (const re of [/href="\/"[^>]*>\s*<img\b[^>]*mxvi_logo/, /href="\/about"[^>]*>About<\/a>/, /href="\/arquitectura"[^>]*>Arquitectura<\/a>/, /href="https:\/\/x\.com\/moibaldenegro"[^>]*>@moibaldenegro/, /<SearchBar\s*\/>/]) assert.match(nav, re);
+  for (const re of [/href="\/home"[^>]*>\s*<img\b[^>]*mxvi_logo/, /href="\/about"[^>]*>About<\/a>/, /href="\/arquitectura"[^>]*>Arquitectura<\/a>/, /href="https:\/\/x\.com\/moibaldenegro"[^>]*>@moibaldenegro/, /<SearchBar\s*\/>/]) assert.match(nav, re); // Ajuste feature 116 (precedente REQ-43-06): logo a /home (REQ-116-08)
 });
 
 test('REQ-93-02/03: aria-current page/undefined para /diseno-de-sistemas(/)', () => {

@@ -9,6 +9,7 @@
 //                  hero-card.astro conserva article.hero-card y card: HeroCard.
 //   REQ-91-07/08 — el HTML de build de la portada pinta las 12 tarjetas de icono
 //                  en el orden del JSON; la geometría de hero-section.css no cambia.
+// Ajuste feature 116 (precedente REQ-43-06): la portada pasa de / a /home (dist/client/home/index.html y src/pages/home.astro).
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -22,7 +23,7 @@ const NEW_HERO_URL = new URL('../src/components/new-hero/new-hero.astro', import
 const HERO_CARD_URL = new URL('../src/components/hero-card.astro', import.meta.url);
 const HERO_SECTION_CSS_URL = new URL('../src/styles/hero-section.css', import.meta.url);
 const DATA_URL = new URL('../src/data/hero-cards.json', import.meta.url);
-const DIST_HOME_URL = new URL('../dist/client/index.html', import.meta.url);
+const DIST_HOME_URL = new URL('../dist/client/home/index.html', import.meta.url);
 
 const read = (url) => readFileSync(url, 'utf8');
 const frontmatter = (content) => content.match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1] ?? '';

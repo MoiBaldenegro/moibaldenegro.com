@@ -4,6 +4,7 @@
 // Ajuste feature 96 (precedente REQ-43-06): la portada vuelve a 3 (REQ-95-01/04/05/06 esperan 3), REQ-95-08 deja de
 // congelar latest-horizontal.ts y latest-entrance.ts (rama H-integrado) y REQ-95-13..21 se retiran
 // porque latest-cards-slide.css se borra (la animación pasa a GSAP en cards-motion.ts).
+// Ajuste feature 116 (precedente REQ-43-06): la portada pasa de / a /home (dist/client/home/index.html y src/pages/home.astro).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -48,7 +49,7 @@ test('REQ-95-06/07/12: build con 3 cards (ajuste feature 96) (transition:name) y
   const newest = await latestRealPostIds((await load()).LATEST_POSTS_LIMIT); assert.equal(newest.length, 3, 'el helper no deriva 3 ids'); // Ajuste feature 102 (precedente REQ-43-06)
   const build = astroBuild();
   assert.equal(build.status, 0, `astro build falló:\n${build.stdout}\n${build.stderr}`);
-  const html = read('dist/client/index.html');
+  const html = read('dist/client/home/index.html');
   const section = cut(html, '<section class="latest-articles"', '</section>');
   assert.equal((section.match(/class="latest-articles__card"/g) ?? []).length, 3, 'no hay 3 cards'); // Ajuste feature 96 (precedente REQ-43-06)
   assert.deepEqual([...section.matchAll(/href="(\/posts\/[^"]+)"/g)].map((m) => m[1]), newest.map((s) => `/posts/${s}`)); // Ajuste feature 102 (precedente REQ-43-06)

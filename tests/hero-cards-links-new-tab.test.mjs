@@ -1,6 +1,7 @@
 // Feature 110 hero-cards-links-new-tab (REQ-110-01..14; specs/110_hero-cards-links-new-tab/). Toda card del hero con
 // href abre en pestaña nueva (target="_blank" + rel="noopener noreferrer") con aviso accesible decidido en el dominio.
 // La medida CDP (REQ-110-07/08) va en progress/impl_hero-cards-links-new-tab.md.
+// Ajuste feature 116 (precedente REQ-43-06): la portada pasa de / a /home (dist/client/home/index.html y src/pages/home.astro).
 import { test } from 'node:test'; import assert from 'node:assert/strict'; import { readFileSync, existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { cardLinkLabel } from '../src/domain/hero-card-link.ts';
@@ -34,7 +35,7 @@ test('REQ-110-01/02/06: hero-card.astro y htb-card.astro pintan el a.card-link c
 });
 test('REQ-110-01/03/05/06/13 (build): GITHUB y YOUTUBE con pestaña nueva y aviso; 13 article sin liga ni target', () => {
   const build = astroBuild(); assert.equal(build.status, 0, `astro build falló: ${build.stderr}`);
-  const html = read('dist/client/index.html'); const data = JSON.parse(read('src/data/hero-cards.json'));
+  const html = read('dist/client/home/index.html'); const data = JSON.parse(read('src/data/hero-cards.json'));
   const arts = [...html.matchAll(/<article class="hero-card[^"]*"[^>]*data-color-token="([^"]+)"[^>]*>([\s\S]*?)<\/article>/g)];
   assert.equal(arts.length, 15); let linked = 0;
   for (const [, token, inner] of arts) {
@@ -68,6 +69,6 @@ test('REQ-110-10/12: test solo con node:, archivos <= 100 líneas y about/footer
   for (const rel of [...COMPONENTS, 'src/domain/hero-card-link.ts', 'tests/hero-cards-links-new-tab.test.mjs',
     'tests/hero-cards-links.test.mjs', 'tests/hero-card-link-domain.test.mjs']) assert.ok(lines(rel) <= 100, `${rel} > 100 líneas`);
   const touched = execFileSync('git', ['diff', '--name-only', 'HEAD', '--', 'src/components/about/about-hero.astro',
-    'src/components/about/about-projects.astro', 'src/components/site-footer/site-footer.astro'], { cwd: ROOT, encoding: 'utf8' }).trim();
+    'src/components/about/about-projects.astro' /* Ajuste feature 116 (precedente REQ-43-06): sale site-footer.astro, su logo apunta a /home (REQ-116-10) */], { cwd: ROOT, encoding: 'utf8' }).trim();
   assert.equal(touched, '', `tocados: ${touched}`);
 });

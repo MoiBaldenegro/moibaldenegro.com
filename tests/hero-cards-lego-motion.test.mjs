@@ -89,7 +89,7 @@ test('REQ-115-20/22: componentes de la card intactos, <= 100 líneas y sin depen
 });
 test('REQ-115-06/13/21 (build): una sola etiqueta de script del hero, cards sin style y portada < 42 000 B', () => {
   const build = astroBuild(); assert.equal(build.status, 0, `astro build falló: ${build.stderr}`);
-  const html = read('dist/client/index.html'); const bytes = Buffer.byteLength(html); assert.ok(bytes < 42000, `index.html pesa ${bytes} bytes`);
+  const html = read('dist/client/home/index.html'); const bytes = Buffer.byteLength(html); assert.ok(bytes < 42000, `index.html pesa ${bytes} bytes`); // Ajuste feature 116 (precedente REQ-43-06): portada en /home
   for (const m of html.matchAll(/<article class="hero-card[^"]*"[^>]*>/g)) assert.doesNotMatch(m[0], /\bstyle=/);
   assert.ok(!html.includes('legoOrder') && !html.includes('--hero-lego-y:'), 'runtime inline en el HTML');
 });

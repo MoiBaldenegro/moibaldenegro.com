@@ -96,7 +96,7 @@ test('REQ-37-03: la navbar marca con aria-current el enlace de la página actual
   assert.ok(nav.length > 0, 'Layout.astro no declara <nav> (REQ-37-03)');
   const paths = [...nav.matchAll(/Astro\.url\.pathname\s*===\s*['"]([^'"]+)['"]/g)].map((m) => m[1]);
   assert.ok(
-    paths.includes('/') && paths.includes('/about'),
+    paths.includes('/home') && paths.includes('/about'), // Ajuste feature 116 (precedente REQ-43-06): el logo de Home compara con /home (REQ-116-08)
     `la navbar no compara la ruta actual con las de Home y About (REQ-37-03, Decisión 1): ${paths.join(', ')}`
   );
   const aria = [...nav.matchAll(/aria-current=\{Astro\.url\.pathname[^}]*\}/g)];

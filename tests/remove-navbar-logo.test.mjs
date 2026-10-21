@@ -27,6 +27,7 @@
 //               REQ-43-06).
 //   REQ-13-06 (invertido por REQ-15-05) — Layout.astro referencia el asset
 //               mxvi_logo.webp; el asset público se conserva.
+// Ajuste feature 116 (precedente REQ-43-06): el logo, «Volver al inicio» y el blog apuntan a la portada /home (REQ-116-08/11/12); aria-current en /home y /home/.
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -54,7 +55,7 @@ function readNav(layout) {
 }
 
 function logoAnchor(nav) {
-  return nav.match(/<a\b[^>]*href="\/"[^>]*>\s*<img\b[^>]*src="\/assets\/mxvi_logo\.webp"/)?.[0] ?? '';
+  return nav.match(/<a\b[^>]*href="\/home"[^>]*>\s*<img\b[^>]*src="\/assets\/mxvi_logo\.webp"/)?.[0] ?? '';
 }
 
 test('REQ-13-01/03: el navbar conserva el ancla del logo (portada), About, Arquitectura, @moibaldenegro y la barra sin Home de texto', () => {
@@ -64,11 +65,11 @@ test('REQ-13-01/03: el navbar conserva el ancla del logo (portada), About, Arqui
   const anchor = logoAnchor(nav);
   assert.ok(
     anchor.length > 0,
-    'el navbar no incluye el ancla del logo hacia / (REQ-13-01)',
+    'el navbar no incluye el ancla del logo hacia /home (REQ-13-01)',
   );
   assert.doesNotMatch(
     nav,
-    /<a\b[^>]*href="\/"[^>]*>\s*Home\s*<\/a>/,
+    /<a\b[^>]*href="\/home"[^>]*>\s*Home\s*<\/a>/,
     'el navbar conserva el enlace de texto Home (REQ-13-01)',
   );
   const homeIndex = nav.indexOf(anchor);
@@ -106,11 +107,11 @@ test('REQ-13-02: el ancla del logo declara el aria-current de la portada; ningú
   assert.ok(anchor.length > 0, 'no se encuentra el ancla del logo (REQ-13-02)');
   assert.match(
     anchor,
-    /aria-current=\{Astro\.url\.pathname\s*===\s*['"]\/['"]\s*\?\s*['"]page['"]\s*:\s*undefined\}/,
+    /aria-current=\{Astro\.url\.pathname\s*===\s*['"]\/home['"]\s*\|\|\s*Astro\.url\.pathname\s*===\s*['"]\/home\/['"]\s*\?\s*['"]page['"]\s*:\s*undefined\}/,
     'el ancla del logo no declara aria-current de la portada con degradado a undefined (REQ-13-02)',
   );
   const portadaMarkers = [
-    ...nav.matchAll(/aria-current=\{Astro\.url\.pathname\s*===\s*['"]\/['"]/g),
+    ...nav.matchAll(/aria-current=\{Astro\.url\.pathname\s*===\s*['"]\/home['"]/g),
   ];
   assert.equal(
     portadaMarkers.length,

@@ -75,7 +75,7 @@
     { "name": "Harness Kit", "description": "Kit para trabajar con agentes de IA: una feature a la vez, specs EARS y tests antes que el código.", "href": "https://github.com/MoiBaldenegro/harness-engineering" }
   ],
   "content": [
-    { "title": "Blog de arquitectura y sistemas operativos", "description": "Artículos en español sobre arquitectura de software y sistemas operativos.", "href": "/" },
+    { "title": "Blog de arquitectura y sistemas operativos", "description": "Artículos en español sobre arquitectura de software y sistemas operativos.", "href": "/home" },
     { "title": "Curso de Rust desde Cero", "description": "Curso en YouTube, en español, para aprender Rust desde los fundamentos.", "href": "https://www.youtube.com/@moibaldenegro" }
   ],
   "education": [

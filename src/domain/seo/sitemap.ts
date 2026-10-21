@@ -19,10 +19,11 @@ function urlEntry(loc: string, lastmod: string): string {
   return `  <url><loc>${escapeXml(loc)}</loc>${mod}</url>`;
 }
 
-// Posts más la portada y /about; lastmod desde updated o, si falta, created.
+// Posts más la portada (/home/; feature 116: la raíz solo responde 301) y /about;
+// lastmod desde updated o, si falta, created.
 export function buildSitemap(posts: readonly Post[], site: string | URL): string {
   const origin = new URL(site).origin;
-  const entries = [urlEntry(`${origin}/`, ''), urlEntry(`${origin}/about/`, '')];
+  const entries = [urlEntry(`${origin}/home/`, ''), urlEntry(`${origin}/about/`, '')];
   for (const post of posts) {
     const lastmod = parseSpanishDate(post.updated ?? '') || parseSpanishDate(post.created ?? '');
     entries.push(urlEntry(`${origin}/posts/${encodeURIComponent(post.id)}/`, lastmod));

@@ -29,7 +29,7 @@ test('REQ-96-01/02/03: límite 3 en portada, 3 explícito en el footer y corte s
 });
 test('REQ-96-04/05: build real con 3 cards (transition:name) y footer con 3', async () => { // Ajuste feature 102 (precedente REQ-43-06): async
   const newest = await latestRealPostIds((await import(url('src/domain/latest-posts.ts').href)).LATEST_POSTS_LIMIT); assert.equal(newest.length, 3); // Ajuste feature 102 (precedente REQ-43-06)
-  const build = astroBuild(); assert.equal(build.status, 0, `astro build falló:\n${build.stdout}\n${build.stderr}`); const html = read('dist/client/index.html'); const section = cut(html, '<section class="latest-articles"', '</section>');
+  const build = astroBuild(); assert.equal(build.status, 0, `astro build falló:\n${build.stdout}\n${build.stderr}`); const html = read('dist/client/home/index.html'); const section = cut(html, '<section class="latest-articles"', '</section>'); // Ajuste feature 116 (precedente REQ-43-06): portada en /home
   assert.deepEqual([...section.matchAll(/href="(\/posts\/[^"]+)"/g)].map((m) => m[1]), newest.map((s) => `/posts/${s}`)); // Ajuste feature 102 (precedente REQ-43-06)
   assert.equal((section.match(/class="latest-articles__card"/g) ?? []).length, 3); assert.equal((section.match(/data-astro-transition-scope=/g) ?? []).length, 6);
   assert.equal((cut(html, '<footer class="site-footer"', '</footer>').match(/\bsite-footer__post\b/g) ?? []).length, 3);

@@ -45,6 +45,7 @@
 //
 // Ajuste feature 96 (precedente REQ-43-06): decisión humana 2026-10-15 «reestablece a 3»; la
 // portada vuelve a LATEST_POSTS_LIMIT = 3 y REQ-30-01/02/03/04/13 vuelven a esperar 3.
+// Ajuste feature 116 (precedente REQ-43-06): la portada pasa de / a /home (dist/client/home/index.html y src/pages/home.astro).
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -59,7 +60,7 @@ const COMPONENT_PATH = new URL('../src/components/latest-articles.astro', import
 const MODULE_PATH = new URL('../src/domain/latest-posts.ts', import.meta.url);
 const CSS_PATH = new URL('../src/styles/latest-articles.css', import.meta.url);
 const REPOSITORY_PATH = new URL('../src/domain/repositories/posts-repository.ts', import.meta.url);
-const DIST_HOME_PATH = new URL('../dist/client/index.html', import.meta.url);
+const DIST_HOME_PATH = new URL('../dist/client/home/index.html', import.meta.url);
 const ASTRO_BIN = fileURLToPath(new URL('../node_modules/astro/bin/astro.mjs', import.meta.url));
 
 // Tests de inspección existentes de latest-articles.astro (REQ-30-09/10).
@@ -293,7 +294,7 @@ test('REQ-30-13: el build real de la portada emite exactamente tres cards con lo
   assert.ok(existsSync(ASTRO_BIN), 'node_modules/astro/bin/astro.mjs no existe (build no ejecutable)');
   const build = astroBuild();
   assert.equal(build.status, 0, `astro build falló (REQ-30-13):\n${build.stdout}\n${build.stderr}`);
-  assert.ok(existsSync(DIST_HOME_PATH), 'el build no generó dist/client/index.html (REQ-30-13)');
+  assert.ok(existsSync(DIST_HOME_PATH), 'el build no generó dist/client/home/index.html (REQ-30-13)');
   const section = latestArticlesSection(readFileSync(DIST_HOME_PATH, 'utf8'));
   const cards = section.match(/class="latest-articles__card"/g) ?? [];
   // Ajuste feature 96 (precedente REQ-43-06): 4 -> 3 cards.

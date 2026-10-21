@@ -49,7 +49,7 @@ test('REQ-45-04: legacyRedirect redirige las tres URLs antiguas a sus slugs nuev
 
 // Ajuste feature 68 (precedente REQ-43-06): legacy-redirects.test.mjs también cita los slugs antiguos.
 test('REQ-45-05: ningún test cita los slugs antiguos (salvo este y legacy-redirects, de redirecciones)', () => {
-  const tests = readdirSync(new URL('tests/', root), { recursive: true }).filter((f) => f.endsWith('.mjs') && !f.endsWith('ascii-post-slugs.test.mjs') && !f.endsWith('legacy-redirects.test.mjs'));
+  const tests = readdirSync(new URL('tests/', root), { recursive: true }).filter((f) => f.endsWith('.mjs') && !f.endsWith('ascii-post-slugs.test.mjs') && !f.endsWith('legacy-redirects.test.mjs') && !f.endsWith('home-route-root-redirect.test.mjs')); // Ajuste feature 116 (precedente REQ-43-06): el test de la 301 de la raíz también cita un slug antiguo (REQ-116-04/06)
   for (const file of tests) {
     const src = read(`tests/${file}`);
     for (const old of OLD_SLUGS) assert.ok(!src.includes(old), `${file} cita «${old}»`);

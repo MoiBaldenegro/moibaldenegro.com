@@ -1,6 +1,7 @@
 // Test del main único y del enlace «Saltar al contenido» (feature 38
 // layout-main-skip-link, REQ-38-01..10). Inspección de Layout, páginas,
 // componentes y layout.css + build real a un outDir temporal (no pisa dist/).
+// Ajuste feature 116 (precedente REQ-43-06): la portada pasa de / a /home (dist/client/home/index.html y src/pages/home.astro).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, existsSync, mkdtempSync, rmSync } from 'node:fs';
@@ -61,7 +62,7 @@ test('REQ-38-02/04 (build): skip-link primero en body y un único main por pági
     assert.equal(build.status, 0, `astro build falló:\n${build.stdout}\n${build.stderr}`);
     const html = (rel) => readFileSync(join(out, 'client', rel), 'utf8');
     const posts = readdirSync(join(out, 'client', 'posts')).map((slug) => join('posts', slug, 'index.html'));
-    for (const rel of ['index.html', 'about/index.html', 'search/index.html', '404.html', ...posts]) {
+    for (const rel of ['home/index.html', 'about/index.html', 'search/index.html', '404.html', ...posts]) {
       const page = html(rel);
       assert.equal(page.match(/<main\b/g)?.length ?? 0, 1, `${rel}: número de <main>`);
       const firstInBody = page.match(/<body[^>]*>\s*(<[^>]+>)/)?.[1] ?? '';

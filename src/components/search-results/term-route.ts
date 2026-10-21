@@ -15,10 +15,11 @@ export function termFromPathname(pathname: string): string {
 }
 
 // REQ-07-10: en /<término> no hay parámetro q que quitar; limpiar navega a
-// la raíz del sitio. En /search (sin término) no hay nada que limpiar y se
-// devuelve el propio path (no-op defensivo, nunca visible en la UI).
+// la portada /home (feature 116, REQ-116-13: la raíz redirige a /about). En
+// /search (sin término) no hay nada que limpiar y se devuelve el propio path
+// (no-op defensivo, nunca visible en la UI).
 export function clearDestination(pathname: string): string {
-  return termFromPathname(pathname) === '' ? pathname : '/';
+  return termFromPathname(pathname) === '' ? pathname : '/home';
 }
 
 // decodeURIComponent lanza URIError con UTF-8 malformado (p. ej.

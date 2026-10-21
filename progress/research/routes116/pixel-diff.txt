@@ -1,0 +1,2 @@
+1280: {"size":[1280,4532],"diffPixels":0,"pct":0,"rows":null}
+375: {"size":[375,3813],"diffPixels":2,"pct":0.0001,"rows":[331,373]}

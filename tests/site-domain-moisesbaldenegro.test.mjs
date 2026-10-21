@@ -2,6 +2,7 @@
 // moibaldenegro.com no existe (NXDOMAIN), pero canonical, sitemap, og:url y JSON-LD apuntaban
 // ahí. La marca visible pasa también a moisesbaldenegro.com (decisión revisable del humano).
 // Las cuentas @moibaldenegro y el Worker moibaldenegro-web no cambian (no son dominios).
+// Ajuste feature 116 (precedente REQ-43-06): la portada pasa de / a /home (dist/client/home/index.html y src/pages/home.astro).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, statSync, mkdtempSync, rmSync } from 'node:fs';
@@ -58,7 +59,7 @@ test('REQ-66-06 (build): canonical, og, JSON-LD, sitemap y robots apuntan a mois
     assert.equal(build.status, 0, `astro build falló:\n${build.stdout}\n${build.stderr}`);
     const client = join(out, 'client');
     const post = readdirSync(join(client, 'posts'))[0];
-    for (const page of ['index.html', join('about', 'index.html'), join('posts', post, 'index.html')]) {
+    for (const page of ['home/index.html', join('about', 'index.html'), join('posts', post, 'index.html')]) {
       const html = readFileSync(join(client, page), 'utf8');
       const urls = [
         ...[...html.matchAll(/<link rel="canonical" href="([^"]+)"/g)].map((m) => m[1]),

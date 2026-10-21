@@ -40,7 +40,7 @@ test('REQ-42-02: un <url> con <loc> absoluto para /, /about y cada post', () => 
   assert.ok(xml.startsWith('<?xml version="1.0" encoding="UTF-8"?>'));
   assert.match(xml, /<urlset xmlns="http:\/\/www\.sitemaps\.org\/schemas\/sitemap\/0\.9">/);
   assert.equal(locs.length, 2 + POSTS.length);
-  assert.ok(locs.includes(`${SITE}/`) && locs.includes(`${SITE}/about/`), locs.join(' '));
+  assert.ok(locs.includes(`${SITE}/home/`) && locs.includes(`${SITE}/about/`), locs.join(' ')); // Ajuste feature 116 (precedente REQ-43-06): portada en /home/ (REQ-116-15)
   for (const loc of locs) assert.ok(loc.startsWith(`${SITE}/`), loc);
 });
 

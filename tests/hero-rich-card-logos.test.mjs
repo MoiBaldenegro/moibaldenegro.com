@@ -71,7 +71,7 @@ test('REQ-112-13/14/15: opacidad e inercia del cubo, geometría htb y ratio del 
 });
 test('REQ-112-10/11/25 (build): cards de icono byte a byte iguales, capas HTB antes del cuerpo y peso bajo el umbral', () => {
   const build = astroBuild(); assert.equal(build.status, 0, `astro build falló: ${build.stderr}`);
-  const html = read('dist/client/index.html'); const icons = html.match(/<article class="hero-card"[\s\S]*?<\/article>/g) ?? [];
+  const html = read('dist/client/home/index.html'); const icons = html.match(/<article class="hero-card"[\s\S]*?<\/article>/g) ?? []; // Ajuste feature 116 (precedente REQ-43-06): portada en /home
   assert.equal(`${icons.join('\n')}\n`, read('progress/research/hero112/icon-cards-baseline.html'), 'el HTML de las cards de icono cambió');
   const rich = html.match(/<article class="hero-card hero-card--rich"[^>]*>([\s\S]*?)<\/article>/)?.[1] ?? '';
   const layers = '<div class="card-backdrop" data-backdrop-size="sm"><svg aria-hidden="true" focusable="false"><use href="/assets/svg/sprite.svg#htb-wordmark"></use></svg></div>'

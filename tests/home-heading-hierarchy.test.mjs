@@ -2,6 +2,7 @@
 // home-heading-hierarchy, REQ-55-01..07): tarjetas del hero sin encabezado,
 // títulos de las cards en h3, svg decorativos y secuencia h1→h6 sin saltos en
 // el HTML real del build (outDir temporal, serializado con el helper).
+// Ajuste feature 116 (precedente REQ-43-06): la portada pasa de / a /home (dist/client/home/index.html y src/pages/home.astro).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, mkdtempSync, rmSync } from 'node:fs';
@@ -54,7 +55,7 @@ test('REQ-55-04 (build): la portada no salta niveles de encabezado', () => {
   try {
     const build = astroBuild(['--outDir', out]);
     assert.equal(build.status, 0, `astro build falló:\n${build.stdout}\n${build.stderr}`);
-    const html = readFileSync(join(out, 'client', 'index.html'), 'utf8');
+    const html = readFileSync(join(out, 'client', 'home', 'index.html'), 'utf8');
     const levels = [...html.matchAll(/<h([1-6])\b/g)].map((m) => Number(m[1]));
     assert.equal(levels[0], 1, `la portada no empieza por h1: ${levels.join(',')}`);
     for (let i = 1; i < levels.length; i++) {

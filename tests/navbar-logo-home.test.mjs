@@ -22,6 +22,7 @@
 //   REQ-15-07 — los tests de las features 12/13 y los REQ-08-04/08-05 ajustan
 //               sus aserciones al contrato real con justificación documentada
 //               (precedente REQ-43-06).
+// Ajuste feature 116 (precedente REQ-43-06): el logo, «Volver al inicio» y el blog apuntan a la portada /home (REQ-116-08/11/12); aria-current en /home y /home/.
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -62,7 +63,7 @@ function readNav(layout) {
 }
 
 function logoAnchor(nav) {
-  return nav.match(/<a\b[^>]*href="\/"[^>]*>\s*<img\b[^>]*src="\/assets\/mxvi_logo\.webp"/)?.[0] ?? '';
+  return nav.match(/<a\b[^>]*href="\/home"[^>]*>\s*<img\b[^>]*src="\/assets\/mxvi_logo\.webp"/)?.[0] ?? '';
 }
 
 test('REQ-15-01/03: el navbar enlaza la portada con el ancla del logo (img mxvi_logo.webp, alt, width 72) y sin Home de texto', () => {
@@ -72,7 +73,7 @@ test('REQ-15-01/03: el navbar enlaza la portada con el ancla del logo (img mxvi_
   const anchor = logoAnchor(nav);
   assert.ok(
     anchor.length > 0,
-    'el navbar no incluye el ancla del logo hacia / (REQ-15-01)',
+    'el navbar no incluye el ancla del logo hacia /home (REQ-15-01)',
   );
   assert.match(
     nav,
@@ -81,8 +82,8 @@ test('REQ-15-01/03: el navbar enlaza la portada con el ancla del logo (img mxvi_
   );
   assert.doesNotMatch(
     nav,
-    /<a\b[^>]*href="\/"[^>]*>\s*Home\s*<\/a>/,
-    'el navbar conserva un enlace de texto Home hacia / (REQ-15-01)',
+    /<a\b[^>]*href="\/home"[^>]*>\s*Home\s*<\/a>/,
+    'el navbar conserva un enlace de texto Home hacia /home (REQ-15-01)',
   );
 });
 
@@ -92,11 +93,11 @@ test('REQ-15-02: el ancla del logo declara aria-current de la portada con degrad
   assert.ok(anchor.length > 0, 'no se encuentra el ancla del logo (REQ-15-02)');
   assert.match(
     anchor,
-    /aria-current=\{Astro\.url\.pathname\s*===\s*['"]\/['"]\s*\?\s*['"]page['"]\s*:\s*undefined\}/,
+    /aria-current=\{Astro\.url\.pathname\s*===\s*['"]\/home['"]\s*\|\|\s*Astro\.url\.pathname\s*===\s*['"]\/home\/['"]\s*\?\s*['"]page['"]\s*:\s*undefined\}/,
     'el ancla del logo no declara aria-current de la portada con degradado a undefined (REQ-15-02)',
   );
   const portadaMarkers = [
-    ...nav.matchAll(/aria-current=\{Astro\.url\.pathname\s*===\s*['"]\/['"]/g),
+    ...nav.matchAll(/aria-current=\{Astro\.url\.pathname\s*===\s*['"]\/home['"]/g),
   ];
   assert.equal(
     portadaMarkers.length,

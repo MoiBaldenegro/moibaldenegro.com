@@ -2,6 +2,7 @@
 // REQ-34-01..10). Unitarios de statusForTermPath por import directo,
 // inspección de las páginas/componente/hoja y un build real a un outDir
 // temporal (no pisa dist/ de los demás tests de build que corren en paralelo).
+// Ajuste feature 116 (precedente REQ-43-06): la portada pasa de / a /home (dist/client/home/index.html y src/pages/home.astro).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync, mkdtempSync, rmSync } from 'node:fs';
@@ -28,7 +29,7 @@ test('REQ-34-01: 404.astro prerenderizada con Layout y not-found; h1 y enlaces',
   assert.match(page, /not-found\/not-found\.astro'/);
   const component = read(COMPONENT);
   assert.match(component, /<h1[^>]*>Página no encontrada<\/h1>/);
-  assert.match(component, /href="\/"/);
+  assert.match(component, /href="\/home"/); // Ajuste feature 116 (precedente REQ-43-06): «Volver al inicio» a /home (REQ-116-11)
   assert.match(component, /href="\/search"/);
 });
 
@@ -80,7 +81,7 @@ test('REQ-34-05 (build): /404 y /search llevan noindex; / y los posts no', () =>
     const NOINDEX = '<meta name="robots" content="noindex">';
     assert.ok(html('404.html').includes(NOINDEX), '/404 sin noindex');
     assert.ok(html('search/index.html').includes(NOINDEX), '/search sin noindex');
-    assert.ok(!html('index.html').includes('name="robots"'), '/ no debe llevar noindex');
+    assert.ok(!html('home/index.html').includes('name="robots"'), '/home no debe llevar noindex');
     assert.ok(!html('posts/01-procesos-memoria/index.html').includes('name="robots"'), 'un post no debe llevar noindex');
   } finally {
     rmSync(out, { recursive: true, force: true });

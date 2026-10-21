@@ -18,7 +18,7 @@ export interface FooterColumn {
 }
 
 const NAVIGATION: readonly FooterLink[] = [
-  { label: 'Inicio', href: '/' },
+  { label: 'Inicio', href: '/home' },
   { label: 'About', href: '/about' },
   { label: 'Arquitectura', href: '/arquitectura' },
   { label: 'Buscar artículos', href: '/search' },

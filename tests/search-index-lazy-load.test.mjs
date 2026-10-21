@@ -2,6 +2,7 @@
 // search-index-lazy-load, REQ-47-01..08): loader con un único fetch por
 // sesión, la portada lo pide en el primer focus, /search al inicializar, error
 // explícito en el nodo de estado, páginas sin índice embebido y portada < 40 KB.
+// Ajuste feature 116 (precedente REQ-43-06): la portada pasa de / a /home (dist/client/home/index.html y src/pages/home.astro).
 import { test, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, statSync, mkdtempSync, rmSync } from 'node:fs';
@@ -89,10 +90,10 @@ test('REQ-47-01/06 (build): sin índice embebido y portada < 40 000 bytes (ajust
   try {
     const build = astroBuild(['--outDir', out]);
     assert.equal(build.status, 0, `astro build falló:\n${build.stdout}\n${build.stderr}`);
-    for (const rel of ['index.html', join('search', 'index.html')]) {
+    for (const rel of ['home/index.html', join('search', 'index.html')]) {
       assert.doesNotMatch(readFileSync(join(out, 'client', rel), 'utf8'), /id="search-index"/, rel);
     }
-    const size = statSync(join(out, 'client', 'index.html')).size;
+    const size = statSync(join(out, 'client', 'home', 'index.html')).size;
     // Ajuste feature 96 (precedente REQ-43-06): vuelven 3 cards y sale la hoja de la 95; umbral original 40 000 B (peso en impl_latest-cards-gsap-motion.md).
     // Ajuste feature 112 (precedente REQ-43-06): cubo y wordmark de HTB llevan la portada a 40 207 B; umbral a 42 000 B (tope de REQ-96-07) por aprobación humana de 2026-10-20 («queda aprobado subir lo permitido de lineas de codigo para la portada por que si seguiremos haciendo cosas»).
     assert.ok(size < 42000, `index.html pesa ${size} bytes`);
@@ -149,7 +150,7 @@ test('REQ-47-05: el loader rechaza con SearchIndexLoadError (HTTP y cuerpo que n
 test('REQ-47-08: los archivos de src/ tocados no superan 100 líneas', () => {
   for (const rel of ['src/components/search-results/index-loader.ts', 'src/components/search-results/search-results-controller.ts',
     'src/components/search-live/search-live.ts', 'src/components/search-live/live-search.ts', 'src/components/search-results/search-status.ts',
-    'src/pages/index.astro', 'src/pages/search.astro', 'src/pages/[...term].astro']) {
+    'src/pages/home.astro', 'src/pages/search.astro', 'src/pages/[...term].astro']) {
     assert.ok(read(rel).split('\n').length <= 100, rel);
   }
 });

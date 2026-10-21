@@ -20,6 +20,7 @@
 // aserción REQ-08-04 pasa del texto «Home» al ancla del logo. Justificación
 // del ajuste: precedente REQ-43-06 (los tests siguen a la presentación real
 // confirmada por el humano).
+// Ajuste feature 116 (precedente REQ-43-06): el logo, «Volver al inicio» y el blog apuntan a la portada /home (REQ-116-08/11/12); aria-current en /home y /home/.
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -91,7 +92,7 @@ test('REQ-08-04: se conservan el ancla del logo (enlace de la portada), About, @
   const nav = layout.match(/<nav>[\s\S]*?<\/nav>/)?.[0] ?? '';
   assert.match(
     nav,
-    /<a\b[^>]*href="\/"[^>]*>\s*<img\b[^>]*src="\/assets\/mxvi_logo\.webp"/,
+    /<a\b[^>]*href="\/home"[^>]*>\s*<img\b[^>]*src="\/assets\/mxvi_logo\.webp"/,
     'el enlace de la portada (ancla del logo) se perdió al añadir Arquitectura (REQ-08-04)',
   );
   assert.match(

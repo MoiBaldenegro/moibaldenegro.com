@@ -15,18 +15,19 @@
 //               gobierna la altura; design.md Decisión 3).
 //   REQ-11-07 — article.css elimina las clases muertas .article y .prose
 //               (la página usa BEM .post).
-//   REQ-11-08 — src/pages/index.astro deja de importar article.css (la
+//   REQ-11-08 — src/pages/home.astro deja de importar article.css (la
 //               portada no renderiza cuerpos de artículo; import muerto).
 //   REQ-11-09 — article.css respeta el máximo de 100 líneas del arnés.
 //   Convención — sin hex ni rgb()/rgba() sueltos, sin border-radius numérico
 //               en el iframe (el contenedor con overflow hidden recorta).
+// Ajuste feature 116 (precedente REQ-43-06): la portada pasa de / a /home (dist/client/home/index.html y src/pages/home.astro).
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
 
 const POST_PAGE_PATH = new URL('../src/pages/posts/[id].astro', import.meta.url);
-const INDEX_PATH = new URL('../src/pages/index.astro', import.meta.url);
+const INDEX_PATH = new URL('../src/pages/home.astro', import.meta.url);
 const CSS_PATH = new URL('../src/styles/article.css', import.meta.url);
 
 // Número de líneas al estilo wc -l (sin contar la última línea vacía de un
@@ -42,7 +43,7 @@ function readPostPage() {
 }
 
 function readIndex() {
-  assert.ok(existsSync(INDEX_PATH), 'src/pages/index.astro no existe (REQ-11-08)');
+  assert.ok(existsSync(INDEX_PATH), 'src/pages/home.astro no existe (REQ-11-08)');
   return readFileSync(INDEX_PATH, 'utf8');
 }
 
@@ -82,7 +83,7 @@ test('REQ-11-08: la portada deja de importar la hoja article.css', () => {
   assert.doesNotMatch(
     index,
     /import\s+["'][^"']*article\.css["']/,
-    'src/pages/index.astro todavía importa article.css (REQ-11-08)'
+    'src/pages/home.astro todavía importa article.css (REQ-11-08)'
   );
 });
 

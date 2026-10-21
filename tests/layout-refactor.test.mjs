@@ -1,4 +1,5 @@
 // Ajuste feature 66 (precedente REQ-43-06): el dominio del sitio pasa a moisesbaldenegro.com.
+// Ajuste feature 116 (precedente REQ-43-06): el logo, «Volver al inicio» y el blog apuntan a la portada /home (REQ-116-08/11/12); aria-current en /home y /home/.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
@@ -120,7 +121,7 @@ test('REQ-08-05: la navbar compartida vive en el layout único', () => {
   );
   assert.match(
     layout,
-    /href="\/"[^>]*>\s*<img\b[^>]*src="\/assets\/mxvi_logo\.webp"/,
+    /href="\/home"[^>]*>\s*<img\b[^>]*src="\/assets\/mxvi_logo\.webp"/,
     'falta el ancla del logo (enlace de la portada) en la navbar del layout (REQ-08-05)'
   );
   assert.match(

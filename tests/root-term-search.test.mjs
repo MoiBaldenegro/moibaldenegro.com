@@ -18,8 +18,9 @@
 //   REQ-07-08 — reutiliza Layout.astro y la presentación de /search.
 //   REQ-07-09 — las rutas estáticas conservan sus archivos (la prioridad de
 //               rutas de Astro las protege del catch-all).
-//   REQ-07-10 — limpiar en /<término> navega a la raíz '/'.
+//   REQ-07-10 — limpiar en /<término> navega a la portada (/home desde la feature 116).
 //   REQ-07-11 — /search?q= queda intacta (el controlador sigue leyendo q).
+// Ajuste feature 116 (precedente REQ-43-06): la portada pasa de / a /home (dist/client/home/index.html y src/pages/home.astro).
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -215,7 +216,7 @@ test('REQ-07-08: la página reutiliza Layout.astro y la presentación de /search
 
 test('REQ-07-09: las rutas estáticas existentes conservan sus archivos (prioridad de Astro)', () => {
   for (const file of [
-    'src/pages/index.astro',
+    'src/pages/home.astro',
     'src/pages/about.astro',
     'src/pages/search.astro',
     'src/pages/posts/[id].astro',
@@ -256,8 +257,8 @@ test('REQ-07-03: termFromPathname en /search sin q devuelve vacío → guía (RE
 // --- REQ-07-10: limpiar en la ruta dinámica navega a la raíz -----------------
 
 test('REQ-07-10: clearDestination devuelve la raíz en /<término> y no-op en /search', () => {
-  assert.equal(clearDestination('/arquitectura'), '/');
-  assert.equal(clearDestination('/foo/bar'), '/');
+  assert.equal(clearDestination('/arquitectura'), '/home'); // Ajuste feature 116 (precedente REQ-43-06): limpiar en /<término> navega a /home (REQ-116-13)
+  assert.equal(clearDestination('/foo/bar'), '/home');
   assert.equal(clearDestination('/search'), '/search');
 });
 
@@ -310,7 +311,7 @@ test('REQ-07-10 (wiring): limpiar en /<término> navega a la raíz', () => {
   const { calls, fireClear, cleanup } = initWith('/arquitectura');
   try {
     fireClear();
-    assert.deepEqual(calls.assign, ['/'], 'limpiar en la ruta dinámica no navegó a la raíz');
+    assert.deepEqual(calls.assign, ['/home'], 'limpiar en la ruta dinámica no navegó a la portada'); // Ajuste feature 116 (precedente REQ-43-06): destino /home (REQ-116-13)
     assert.equal(calls.replaceState.length, 0, 'en la ruta dinámica no debe reescribirse ?q=');
   } finally {
     cleanup();

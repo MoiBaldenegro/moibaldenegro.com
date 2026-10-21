@@ -6,6 +6,7 @@
 // (03-principios-solid, 01-diseno-detallado, 04-ciclo-de-vida-y-arquitectura);
 // las URLs antiguas redirigen con 301 desde astro.config.mjs.
 // Ajuste feature 66 (precedente REQ-43-06): el dominio del sitio pasa a moisesbaldenegro.com.
+// Ajuste feature 116 (precedente REQ-43-06): la portada pasa de / a /home (dist/client/home/index.html y src/pages/home.astro).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, existsSync, mkdtempSync, rmSync } from 'node:fs';
@@ -65,17 +66,17 @@ test('REQ-35-04/05/07 (build): description, canonical y título por página', ()
     const build = astroBuild(['--outDir', out]);
     assert.equal(build.status, 0, `astro build falló:\n${build.stdout}\n${build.stderr}`);
     const html = (rel) => readFileSync(join(out, 'client', rel), 'utf8');
-    for (const rel of ['index.html', 'about/index.html', 'search/index.html']) {
+    for (const rel of ['home/index.html', 'about/index.html', 'search/index.html']) {
       const d = descriptions(html(rel));
       assert.equal(d.length, 1, `${rel}: ${d.length} meta description`);
       assert.ok(d[0].length > 0, `${rel}: description vacía`);
     }
-    for (const rel of ['index.html', 'about/index.html']) {
+    for (const rel of ['home/index.html', 'about/index.html']) {
       const c = canonicals(html(rel));
       assert.equal(c.length, 1, `${rel}: ${c.length} canonical`);
       assert.ok(c[0].startsWith(`${SITE}/`), `${rel}: canonical ${c[0]}`);
     }
-    const home = html('index.html');
+    const home = html('home/index.html');
     assert.match(home, /<title>Moisés Baldenegro Melendez \| moisesbaldenegro\.com<\/title>/);
     assert.deepEqual(descriptions(home), [ABOUT_TEXT]);
     assert.ok(read('src/domain/seo/head.ts').includes(ABOUT_TEXT) || read('src/pages/about.astro').includes(ABOUT_TEXT));
@@ -94,7 +95,7 @@ test('REQ-35-04/05/07 (build): description, canonical y título por página', ()
 });
 
 test('REQ-35-10: los archivos de src/ tocados no superan 100 líneas', () => {
-  const files = [LAYOUT, 'src/domain/seo/head.ts', 'src/pages/index.astro', 'src/pages/about.astro',
+  const files = [LAYOUT, 'src/domain/seo/head.ts', 'src/pages/home.astro', 'src/pages/about.astro',
     'src/pages/search.astro', 'src/pages/404.astro', 'src/pages/[...term].astro', 'src/pages/posts/[id].astro'];
   for (const rel of files) if (existsSync(new URL(rel, root))) assert.ok(read(rel).split('\n').length <= 100, rel);
 });

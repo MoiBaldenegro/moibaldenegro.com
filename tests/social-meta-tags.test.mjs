@@ -2,6 +2,7 @@
 // REQ-43-01..08): función pura socialMeta y HTML real del build (outDir
 // temporal, serializado con el helper de builds).
 // Ajuste feature 66 (precedente REQ-43-06): el dominio del sitio pasa a moisesbaldenegro.com.
+// Ajuste feature 116 (precedente REQ-43-06): la portada pasa de / a /home (dist/client/home/index.html y src/pages/home.astro).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, mkdtempSync, rmSync } from 'node:fs';
@@ -58,7 +59,7 @@ test('REQ-43-06 (build): metas og y twitter en / y en un post', () => {
     const build = astroBuild(['--outDir', out]);
     assert.equal(build.status, 0, `astro build falló:\n${build.stdout}\n${build.stderr}`);
     const html = (rel) => readFileSync(join(out, 'client', rel), 'utf8');
-    const home = html('index.html');
+    const home = html('home/index.html');
     const article = html(join('posts', '01-procesos-memoria', 'index.html'));
     for (const doc of [home, article]) {
       assert.match(doc, /<meta property="og:title" content="[^"]+">/);

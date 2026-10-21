@@ -1,6 +1,7 @@
 // Feature 108 hero-backdrop-size (REQ-108-01..18; specs/108_*). Tamaño del logo de fondo desde hero-cards.json:
 // enum sm | md | lg, data-backdrop-size en div.card-backdrop (solo si el JSON lo declara) y una regla CSS por valor.
 // La medida en navegador (REQ-108-12/13) va con Chrome headless + CDP y queda en progress/impl_hero-backdrop-size.md.
+// Ajuste feature 116 (precedente REQ-43-06): la portada pasa de / a /home (dist/client/home/index.html y src/pages/home.astro).
 import { test } from 'node:test'; import assert from 'node:assert/strict'; import { readFileSync, existsSync } from 'node:fs';
 import { HeroCardsRepository, HeroCardsDataError } from '../src/domain/repositories/hero-cards-repository.ts';
 import { astroBuild } from './helpers/astro-build.mjs';
@@ -55,7 +56,7 @@ test('REQ-108-06/07: hero-card.astro pinta data-backdrop-size desde card.backgro
 // Ajuste feature 111 (precedente REQ-43-06): con backgroundIcon y sin backgroundIconSize la card no lleva el atributo (REQ-111-04).
 test('REQ-108-06/07/17 (build): data-backdrop-size con el valor del JSON, sin atributo si no lo declara y portada < 40 000 B', () => {
   const build = astroBuild(); assert.equal(build.status, 0, `astro build falló: ${build.stderr}`);
-  const html = read('dist/client/index.html'); const data = JSON.parse(read('src/data/hero-cards.json'));
+  const html = read('dist/client/home/index.html'); const data = JSON.parse(read('src/data/hero-cards.json'));
   for (const c of data.filter((x) => x.backgroundIcon)) {
     const art = html.match(new RegExp(`<article class="hero-card[^"]*" data-color-token="${c.colorToken}"[^>]*>([\\s\\S]*?)</article>`))?.[1] ?? '';
     assert.match(art, new RegExp(`<div class="card-backdrop"${c.backgroundIconSize ? ` data-backdrop-size="${c.backgroundIconSize}"` : ''}><svg`), c.id);

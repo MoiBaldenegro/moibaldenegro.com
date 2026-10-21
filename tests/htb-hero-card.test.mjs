@@ -10,6 +10,7 @@
 //   REQ-92-10       — la portada ya no monta la sección suelta; el build pinta el
 //                     fallback una sola vez dentro de la card del grid.
 //   REQ-92-11/12/13 — herencia de .hero-card, contenido en flujo, solo tokens, ≤100 líneas.
+// Ajuste feature 116 (precedente REQ-43-06): la portada pasa de / a /home (dist/client/home/index.html y src/pages/home.astro).
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -103,7 +104,7 @@ test('REQ-92-09: sin perfil la isla pinta Estadísticas no disponibles', () => {
 });
 
 test('REQ-92-10: index.astro deja de importar y renderizar la sección HTB', () => {
-  assert.doesNotMatch(read('src/pages/index.astro'), /HtbStadistics|htb-stadistics/);
+  assert.doesNotMatch(read('src/pages/home.astro'), /HtbStadistics|htb-stadistics/);
 });
 
 test('REQ-92-11/12: la card hereda .hero-card y su contenido va en flujo sobre los pseudo-elementos', () => {
@@ -128,7 +129,7 @@ test('REQ-92-13: hojas de la card e isla solo con tokens y archivos tocados ≤1
   }
   assert.match(read(ISLAND_CSS), /color:\s*var\(--color-marca-htb-accent[,)]/, 'los valores no usan el verde de marca HTB');
   for (const rel of [CARD, CARD_CSS, ISLAND, ISLAND_CSS, 'src/styles/hero-card.css', 'src/styles/tokens.css',
-    'src/components/hero-cards/hero-grid-card.astro', 'src/pages/index.astro']) {
+    'src/components/hero-cards/hero-grid-card.astro', 'src/pages/home.astro']) {
     assert.ok(read(rel).split('\n').length <= 100, `${rel} supera 100 líneas`);
   }
 });
@@ -136,7 +137,7 @@ test('REQ-92-13: hojas de la card e isla solo con tokens y archivos tocados ≤1
 test('REQ-92-10 (build): el fallback aparece una sola vez dentro de la card htb del grid', () => {
   const build = astroBuild();
   assert.equal(build.status, 0, `astro build falló: ${build.stderr}`);
-  const html = read('dist/client/index.html');
+  const html = read('dist/client/home/index.html');
   assert.equal(html.split('Cargando estadísticas de HTB...').length - 1, 1, 'el fallback no aparece exactamente una vez');
   const grid = html.slice(html.indexOf('class="hero-grid"'));
   const card = grid.match(/<article\b[^>]*data-color-token="htb"[^>]*>([\s\S]*?)<\/article>/)?.[1] ?? '';
