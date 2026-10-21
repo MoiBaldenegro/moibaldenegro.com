@@ -48,9 +48,14 @@ export function legoMotion(cards: HTMLElement[], ctx: gsap.Context, rng: Rng): (
   };
   // Estado de partida solo desde JS: sin JS (o fuera de la consulta) las cards quedan en reposo.
   gsap.set(cards, legoLifted());
+  // Entrada con el rango 'top 92%' / 'bottom 8%'; la salida con 'top bottom' / 'bottom top': una card
+  // que aún asoma en el viewport no se levanta (REQ-115-08), igual que la deja sync() con legoPhaseAt.
   const triggers = cards.map((card) => ScrollTrigger.create({
     trigger: card, start: LEGO_RANGE.start, end: LEGO_RANGE.end,
     onEnter: () => enter(card), onEnterBack: () => enter(card),
+  }));
+  cards.forEach((card) => ScrollTrigger.create({
+    trigger: card, start: LEGO_RANGE.exitStart, end: LEGO_RANGE.exitEnd,
     onLeave: () => exit(card, 'gone'), onLeaveBack: () => exit(card, 'before'),
   }));
   // Al crear y en cada refresh cada card toma la fase del scroll actual: en reposo si intersecta el

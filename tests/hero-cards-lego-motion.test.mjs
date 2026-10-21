@@ -19,7 +19,7 @@ test('REQ-115-01: constantes congeladas y dominio sin gsap ni DOM', async () => 
   const m = await dom();
   assert.deepEqual({ ...m.LEGO_ENTER }, { y: -32, scale: 1.04, opacity: 0, tiltDeg: 3, duration: 0.6, ease: 'back.out(1.7)', step: 0.05, maxDelay: 0.6 });
   assert.deepEqual({ ...m.LEGO_EXIT }, { y: -24, scale: 1.04, opacity: 0, duration: 0.35, ease: 'power2.in' });
-  assert.equal(m.LEGO_RANGE.start, 'top 92%'); assert.equal(m.LEGO_RANGE.end, 'bottom 8%');
+  assert.equal(m.LEGO_RANGE.start, 'top 92%'); assert.equal(m.LEGO_RANGE.end, 'bottom 8%'); assert.equal(m.LEGO_RANGE.exitStart, 'top bottom'); assert.equal(m.LEGO_RANGE.exitEnd, 'bottom top');
   for (const k of ['LEGO_ENTER', 'LEGO_EXIT', 'LEGO_RANGE', 'LEGO_VARS', 'LEGO_MEDIA']) assert.ok(Object.isFrozen(m[k]), k);
 });
 test('REQ-115-02: createRng es determinista por semilla y da valores en [0, 1)', async () => {
@@ -56,8 +56,9 @@ test('REQ-115-06/14/15/18: script en new-hero.astro, matchMedia por consulta y l
 });
 test('REQ-115-07/08/09/10/17: tweens solo con --hero-lego-* y opacity, valores del dominio, orden por permutación y focusin', async () => {
   const lego = code(LEGO); const { legoFrom, legoRest, legoLifted } = await dom();
-  for (const k of ['onEnter', 'onEnterBack', 'onLeave', 'onLeaveBack']) assert.match(lego, new RegExp(`${k}:`));
-  for (const k of ['LEGO_ENTER.duration', 'LEGO_ENTER.ease', 'LEGO_EXIT.duration', 'LEGO_EXIT.ease', 'LEGO_RANGE.start', 'LEGO_RANGE.end', 'legoOrder(', 'legoDelays(', 'legoTilt(', 'legoFrom(', 'legoLifted()', 'legoRest()', "'focusin'"]) assert.ok(lego.includes(k), k);
+  const [inT, outT] = ['start', 'exitStart'].map((k) => lego.match(new RegExp(`ScrollTrigger\\.create\\(\\{[^{}]*LEGO_RANGE\\.${k},[^{}]*\\}`))?.[0] ?? ''); // REQ-115-08: sale al dejar de intersectar
+  for (const [a, b, ks] of [[inT, outT, ['onEnter:', 'onEnterBack:']], [outT, inT, ['onLeave:', 'onLeaveBack:']]]) for (const k of ks) { assert.ok(a.includes(k), k); assert.ok(!b.includes(k), `${k} en el otro trigger`); }
+  for (const k of ['LEGO_ENTER.duration', 'LEGO_ENTER.ease', 'LEGO_EXIT.duration', 'LEGO_EXIT.ease', 'LEGO_RANGE.start', 'LEGO_RANGE.end', 'LEGO_RANGE.exitEnd', 'legoOrder(', 'legoDelays(', 'legoTilt(', 'legoFrom(', 'legoLifted()', 'legoRest()', "'focusin'"]) assert.ok(lego.includes(k), k);
   assert.doesNotMatch(lego, /\b(x|y|rotation|xPercent|yPercent|transform|scale|rotate)\s*:/, 'propiedad de transform en un tween');
   assert.doesNotMatch(lego.replace(/\[[^\]]*\]/g, ''), /\b(duration|delay|opacity)\s*:\s*-?[\d.]/, 'número suelto de animación');
   assert.deepEqual(legoFrom(2.5), { '--hero-lego-y': '-32px', '--hero-lego-rotate': '2.5deg', '--hero-lego-scale': '1.04', opacity: 0 });
@@ -68,7 +69,7 @@ test('REQ-115-16: fase por progress y reposo de toda card que intersecta el view
   const { legoPhase, legoPhaseAt, LEGO_RANGE } = await dom(); assert.equal(LEGO_RANGE.edge, 0.08);
   assert.deepEqual([0, 0.4, 1].map(legoPhase), ['before', 'rest', 'gone']); assert.equal(legoPhase(-0.1), 'before'); assert.equal(legoPhase(1.2), 'gone');
   const t = (progress) => ({ start: 15, end: 891, progress }); // card con top 751 y bottom 955 en un viewport de 800 px
-  assert.equal(legoPhaseAt(t(0), 0, 800), 'rest'); assert.equal(legoPhaseAt(t(0), -50, 800), 'before'); // asoma en el 8 % inferior: reposo
+  assert.equal(legoPhaseAt(t(0), 0, 800), 'rest'); assert.equal(legoPhaseAt(t(0), -50, 800), 'before'); assert.equal(legoPhaseAt(t(0), -48, 800), 'rest'); // asoma en el 8 % inferior: reposo
   assert.equal(legoPhaseAt(t(1), 940, 800), 'rest'); assert.equal(legoPhaseAt(t(1), 960, 800), 'gone'); assert.equal(legoPhaseAt(t(0.5), 400, 800), 'rest');
   const rt = code(LEGO); for (const k of ["'refreshInit'", "'refresh'", 'legoPhaseAt(', 'window.scrollY']) assert.ok(rt.includes(k), k);
 });
@@ -94,6 +95,6 @@ test('REQ-115-06/13/21 (build): una sola etiqueta de script del hero, cards sin 
 });
 test('REQ-115-19: evidencias de la CDP en progress/research/hero115/', () => {
   const m = JSON.parse(read('progress/research/hero115/measurements.json'));
-  for (const w of [375, 800, 1024, 1280, 1600]) { const r = m.widths[w]; assert.ok(r, `sin ${w}`); assert.ok(r.clsLoad <= 0.1 && r.clsRestore <= 0.1, `CLS ${w}`); assert.equal(r.errors, 0, `errores ${w}`); }
+  for (const w of [375, 800, 1024, 1280, 1600]) { const r = m.widths[w]; assert.ok(r, `sin ${w}`); assert.ok(r.clsLoad <= 0.1 && r.clsRestore <= 0.1, `CLS ${w}`); assert.equal(r.errors, 0, `errores ${w}`); if (w >= 1280) assert.equal(r.hiddenVisibleBack, 0, `cards visibles levantadas al volver a scroll 0 (${w})`); }
   for (const f of ['enter-1280-0.png', 'enter-1280-1.png', 'exit-1280-0.png']) assert.ok(existsSync(url(`progress/research/hero115/${f}`)), f);
 });

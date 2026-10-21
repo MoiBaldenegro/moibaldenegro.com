@@ -1,0 +1,611 @@
+{
+ "feature": 115,
+ "date": "2026-10-21",
+ "base": "astro preview :4715 (build de la rama)",
+ "viewportHeight": 800,
+ "seed": "Math.random sustituido (Park-Miller) con seed 1; order-seed0 = Math.random real",
+ "widths": {
+  "375": {
+   "clsLoad": 0,
+   "clsRestore": 0,
+   "clsReloadMid": 0,
+   "clsReloadBottom": 0,
+   "clsBack": 0,
+   "errors": 0,
+   "inViewAtLoad": 1,
+   "notRestAtLoad": 0,
+   "startOrder": [
+    0
+   ],
+   "animatedCards": 1,
+   "shownCards": 1,
+   "scrollTriggers": {
+    "all": 5,
+    "hero": 2
+   },
+   "reloadMidRestAt1450ms": true,
+   "reloadBottomRestAt1450ms": true,
+   "backRestAt1450ms": true,
+   "backScroll": [
+    419,
+    419
+   ],
+   "afterReenter": {
+    "inView": [
+     0
+    ],
+    "notRest": []
+   }
+  },
+  "800": {
+   "clsLoad": 0,
+   "clsRestore": 0,
+   "clsReloadMid": 0,
+   "clsReloadBottom": 0,
+   "clsBack": 0,
+   "errors": 0,
+   "inViewAtLoad": 6,
+   "notRestAtLoad": 0,
+   "startOrder": [
+    3,
+    5,
+    1,
+    4,
+    0,
+    2
+   ],
+   "animatedCards": 15,
+   "shownCards": 15,
+   "scrollTriggers": {
+    "all": 33,
+    "hero": 30
+   },
+   "reloadMidRestAt1450ms": true,
+   "reloadBottomRestAt1450ms": true,
+   "backRestAt1450ms": true,
+   "backScroll": [
+    556,
+    556
+   ]
+  },
+  "1024": {
+   "clsLoad": 0,
+   "clsRestore": 0,
+   "clsReloadMid": 0,
+   "clsReloadBottom": 0,
+   "clsBack": 0,
+   "errors": 0,
+   "inViewAtLoad": 0,
+   "notRestAtLoad": 0,
+   "startOrder": [],
+   "animatedCards": 15,
+   "shownCards": 15,
+   "scrollTriggers": {
+    "all": 33,
+    "hero": 30
+   },
+   "reloadMidRestAt1450ms": true,
+   "reloadBottomRestAt1450ms": true,
+   "backRestAt1450ms": true,
+   "backScroll": [
+    595,
+    595
+   ]
+  },
+  "1280": {
+   "clsLoad": 0,
+   "clsRestore": 0,
+   "clsReloadMid": 0,
+   "clsReloadBottom": 0,
+   "clsBack": 0,
+   "errors": 0,
+   "inViewAtLoad": 10,
+   "notRestAtLoad": 0,
+   "startOrder": [
+    1,
+    6,
+    9,
+    7,
+    2,
+    5,
+    3,
+    8,
+    0,
+    4
+   ],
+   "animatedCards": 15,
+   "shownCards": 15,
+   "scrollTriggers": {
+    "all": 35,
+    "hero": 30
+   },
+   "reloadMidRestAt1450ms": true,
+   "reloadBottomRestAt1450ms": true,
+   "backRestAt1450ms": true,
+   "backScroll": [
+    538,
+    538
+   ],
+   "afterReenter": {
+    "inView": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    "notRest": []
+   },
+   "hiddenVisibleBack": 0,
+   "edgeRowAtLoad": [
+    [
+     5,
+     "NESTJS",
+     751,
+     1
+    ],
+    [
+     6,
+     "CSS",
+     751,
+     1
+    ],
+    [
+     7,
+     "REACT",
+     751,
+     1
+    ],
+    [
+     8,
+     "HTML",
+     751,
+     1
+    ],
+    [
+     9,
+     "CLAUDE CODE",
+     751,
+     1
+    ]
+   ],
+   "edgeRowBackTop": [
+    [
+     5,
+     "NESTJS",
+     751,
+     1
+    ],
+    [
+     6,
+     "CSS",
+     751,
+     1
+    ],
+    [
+     7,
+     "REACT",
+     751,
+     1
+    ],
+    [
+     8,
+     "HTML",
+     751,
+     1
+    ],
+    [
+     9,
+     "CLAUDE CODE",
+     751,
+     1
+    ]
+   ],
+   "bottomLiftedOk": true,
+   "routerBackTopHidden": [
+    0,
+    0,
+    0
+   ]
+  },
+  "1600": {
+   "clsLoad": 0,
+   "clsRestore": 0,
+   "clsReloadMid": 0,
+   "clsReloadBottom": 0,
+   "clsBack": 0,
+   "errors": 0,
+   "inViewAtLoad": 10,
+   "notRestAtLoad": 0,
+   "startOrder": [
+    1,
+    6,
+    9,
+    7,
+    2,
+    5,
+    3,
+    8,
+    0,
+    4
+   ],
+   "animatedCards": 15,
+   "shownCards": 15,
+   "scrollTriggers": {
+    "all": 35,
+    "hero": 30
+   },
+   "reloadMidRestAt1450ms": true,
+   "reloadBottomRestAt1450ms": true,
+   "backRestAt1450ms": true,
+   "backScroll": [
+    538,
+    538
+   ],
+   "hiddenVisibleBack": 0,
+   "edgeRowAtLoad": [
+    [
+     5,
+     "NESTJS",
+     751,
+     1
+    ],
+    [
+     6,
+     "CSS",
+     751,
+     1
+    ],
+    [
+     7,
+     "REACT",
+     751,
+     1
+    ],
+    [
+     8,
+     "HTML",
+     751,
+     1
+    ],
+    [
+     9,
+     "CLAUDE CODE",
+     751,
+     1
+    ]
+   ],
+   "edgeRowBackTop": [
+    [
+     5,
+     "NESTJS",
+     751,
+     1
+    ],
+    [
+     6,
+     "CSS",
+     751,
+     1
+    ],
+    [
+     7,
+     "REACT",
+     751,
+     1
+    ],
+    [
+     8,
+     "HTML",
+     751,
+     1
+    ],
+    [
+     9,
+     "CLAUDE CODE",
+     751,
+     1
+    ]
+   ],
+   "bottomLiftedOk": true,
+   "routerBackTopHidden": [
+    0,
+    0,
+    0
+   ]
+  }
+ },
+ "order": {
+  "order-seed0-1": [
+   0,
+   9,
+   3,
+   4,
+   2,
+   7,
+   6,
+   1,
+   5,
+   8
+  ],
+  "order-seed0-2": [
+   1,
+   5,
+   9,
+   6,
+   4,
+   7,
+   2,
+   3,
+   8,
+   0
+  ],
+  "order-seed1-1": [
+   1,
+   6,
+   9,
+   7,
+   2,
+   5,
+   3,
+   8,
+   0,
+   4
+  ],
+  "order-seed1-2": [
+   1,
+   6,
+   9,
+   7,
+   2,
+   5,
+   3,
+   8,
+   0,
+   4
+  ],
+  "order-seed2-1": [
+   5,
+   4,
+   6,
+   3,
+   2,
+   9,
+   1,
+   0,
+   7,
+   8
+  ],
+  "order-seed2-2": [
+   5,
+   4,
+   6,
+   3,
+   2,
+   9,
+   1,
+   0,
+   7,
+   8
+  ]
+ },
+ "hover": {
+  ".hero-card:not(.hero-card--rich)": {
+   "before": {
+    "title": "RUST",
+    "transform": "none",
+    "translate": "0px",
+    "rotate": "0deg",
+    "scale": "1",
+    "filter": "none",
+    "shadow": "rgba(255, 255, 255, 0.05) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.28) 0px 18px 40px 0px",
+    "transitionProperty": "transform, box-shadow, filter",
+    "icon": "matrix(4.95134, -0.695866, 0.695866, 4.95134, 0, 0)",
+    "hover": false
+   },
+   "during": {
+    "title": "RUST",
+    "transform": "matrix(1, 0, 0, 1, 0, -4)",
+    "translate": "0px",
+    "rotate": "0deg",
+    "scale": "1",
+    "filter": "contrast(1.4)",
+    "shadow": "rgba(255, 255, 255, 0.23) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.38) 0px 25px 60px 0px",
+    "transitionProperty": "transform, box-shadow, filter",
+    "icon": "matrix(5.59659, 0.195437, -0.195437, 5.59659, 0, 0)",
+    "hover": true
+   },
+   "after": {
+    "title": "RUST",
+    "transform": "none",
+    "translate": "0px",
+    "rotate": "0deg",
+    "scale": "1",
+    "filter": "none",
+    "shadow": "rgba(255, 255, 255, 0.05) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.28) 0px 18px 40px 0px",
+    "transitionProperty": "transform, box-shadow, filter",
+    "icon": "matrix(4.95134, -0.695866, 0.695866, 4.95134, 0, 0)",
+    "hover": false
+   }
+  },
+  ".hero-card--rich": {
+   "before": {
+    "title": "HACK THE BOX",
+    "transform": "none",
+    "translate": "0px",
+    "rotate": "0deg",
+    "scale": "1",
+    "filter": "none",
+    "shadow": "rgba(255, 255, 255, 0.05) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.28) 0px 18px 40px 0px",
+    "transitionProperty": "transform, box-shadow, filter",
+    "icon": "matrix(5.94161, -0.835039, 0.835039, 5.94161, 0, 0)",
+    "hover": false
+   },
+   "during": {
+    "title": "HACK THE BOX",
+    "transform": "matrix(1, 0, 0, 1, 0, -4)",
+    "translate": "0px",
+    "rotate": "0deg",
+    "scale": "1",
+    "filter": "contrast(1.4)",
+    "shadow": "rgba(255, 255, 255, 0.23) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.38) 0px 25px 60px 0px",
+    "transitionProperty": "transform, box-shadow, filter",
+    "icon": "matrix(6.71591, 0.234525, -0.234525, 6.71591, 0, 0)",
+    "hover": true
+   },
+   "after": {
+    "title": "HACK THE BOX",
+    "transform": "none",
+    "translate": "0px",
+    "rotate": "0deg",
+    "scale": "1",
+    "filter": "none",
+    "shadow": "rgba(255, 255, 255, 0.05) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.28) 0px 18px 40px 0px",
+    "transitionProperty": "transform, box-shadow, filter",
+    "icon": "matrix(5.94161, -0.835039, 0.835039, 5.94161, 0, 0)",
+    "hover": false
+   }
+  }
+ },
+ "links": [
+  {
+   "title": "YOUTUBE",
+   "href": "https://www.youtube.com/@moibaldenegro",
+   "target": "_blank",
+   "rel": "noopener noreferrer",
+   "opacity": 1,
+   "hit": true
+  },
+  {
+   "title": "GITHUB",
+   "href": "https://github.com/MoiBaldenegro",
+   "target": "_blank",
+   "rel": "noopener noreferrer",
+   "opacity": 1,
+   "hit": true
+  }
+ ],
+ "focus": {
+  "before": 0,
+  "after": {
+   "opacity": 1,
+   "y": "0px",
+   "focused": true,
+   "scrollY": 2275
+  }
+ },
+ "router": [
+  {
+   "st": {
+    "all": 35,
+    "hero": 30
+   }
+  },
+  {
+   "st": {
+    "all": 35,
+    "hero": 30
+   },
+   "away": {
+    "all": 0,
+    "hero": 0
+   },
+   "rest": true
+  },
+  {
+   "st": {
+    "all": 35,
+    "hero": 30
+   },
+   "away": {
+    "all": 0,
+    "hero": 0
+   },
+   "rest": true
+  },
+  {
+   "st": {
+    "all": 35,
+    "hero": 30
+   },
+   "away": {
+    "all": 0,
+    "hero": 0
+   },
+   "rest": true
+  }
+ ],
+ "reduced": {
+  "375": {
+   "st": {
+    "all": 0,
+    "hero": 0
+   },
+   "inline": 0,
+   "allOpaque": true,
+   "starts": 0
+  },
+  "1280": {
+   "st": {
+    "all": 0,
+    "hero": 0
+   },
+   "inline": 0,
+   "allOpaque": true,
+   "starts": 0
+  }
+ },
+ "nojsAllRest": {
+  "375": true,
+  "1280": true
+ },
+ "afterReenter1280": {
+  "fromBottom": {
+   "hidden": [],
+   "edgeRow": [
+    [
+     5,
+     "NESTJS",
+     751,
+     1
+    ],
+    [
+     6,
+     "CSS",
+     751,
+     1
+    ],
+    [
+     7,
+     "REACT",
+     751,
+     1
+    ],
+    [
+     8,
+     "HTML",
+     751,
+     1
+    ],
+    [
+     9,
+     "CLAUDE CODE",
+     751,
+     1
+    ]
+   ]
+  },
+  "note": "ronda 1: la fila NESTJS..CLAUDE CODE (top 751 de 800) queda en opacity 1 al volver a scroll 0"
+ },
+ "errors": [],
+ "round1": {
+  "date": "2026-10-21",
+  "change": "salida con su propio rango (top bottom / bottom top): solo se levanta la card que deja de intersectar el viewport (REQ-115-08)",
+  "base": "astro preview :4715 (build de la rama, ronda 1)"
+ }
+}

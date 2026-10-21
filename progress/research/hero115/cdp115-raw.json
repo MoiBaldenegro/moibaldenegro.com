@@ -1,0 +1,1537 @@
+{
+ "run": {
+  "seed": 1,
+  "widths": {
+   "375": {
+    "loadY": 0,
+    "clsLoad": 0,
+    "load": {
+     "inView": [
+      0
+     ],
+     "notRest": []
+    },
+    "loadRest": true,
+    "st": {
+     "all": 5,
+     "hero": 2
+    },
+    "starts": [
+     {
+      "i": 0,
+      "t": 362
+     }
+    ],
+    "animated": [
+     0
+    ],
+    "shown": [
+     0
+    ],
+    "mobileCards": [
+     0
+    ],
+    "afterExit": [
+     [
+      0,
+      true,
+      1,
+      "0px"
+     ]
+    ],
+    "afterReenter": {
+     "inView": [
+      0
+     ],
+     "notRest": []
+    },
+    "reload-mid": {
+     "y0": 419,
+     "y": 419,
+     "t": 1473,
+     "rest": true,
+     "inView": [
+      0
+     ],
+     "notRest": [],
+     "cls": 0
+    },
+    "reload-bottom": {
+     "y0": 3011,
+     "y": 3011,
+     "t": 1481,
+     "rest": true,
+     "inView": [],
+     "notRest": [],
+     "cls": 0
+    },
+    "back": {
+     "at": "/about/",
+     "path": "/",
+     "y0": 419,
+     "y": 419,
+     "ms": 1459,
+     "rest": true,
+     "inView": [
+      0
+     ],
+     "notRest": [],
+     "clsDelta": 0,
+     "st": {
+      "all": 5,
+      "hero": 2
+     }
+    },
+    "clsRestore": 0
+   },
+   "800": {
+    "loadY": 0,
+    "clsLoad": 0,
+    "load": {
+     "inView": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "notRest": []
+    },
+    "loadRest": true,
+    "st": {
+     "all": 33,
+     "hero": 30
+    },
+    "starts": [
+     {
+      "i": 3,
+      "t": 442
+     },
+     {
+      "i": 5,
+      "t": 453
+     },
+     {
+      "i": 1,
+      "t": 510
+     },
+     {
+      "i": 4,
+      "t": 570
+     },
+     {
+      "i": 0,
+      "t": 661
+     },
+     {
+      "i": 2,
+      "t": 687
+     }
+    ],
+    "animated": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14
+    ],
+    "shown": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14
+    ],
+    "mobileCards": [
+     0
+    ],
+    "reload-mid": {
+     "y0": 556,
+     "y": 556,
+     "t": 1470,
+     "rest": true,
+     "inView": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+     ],
+     "notRest": [],
+     "cls": 0
+    },
+    "reload-bottom": {
+     "y0": 3371,
+     "y": 3371,
+     "t": 1475,
+     "rest": true,
+     "inView": [],
+     "notRest": [],
+     "cls": 0
+    },
+    "back": {
+     "at": "/about/",
+     "path": "/",
+     "y0": 556,
+     "y": 556,
+     "ms": 1462,
+     "rest": true,
+     "inView": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+     ],
+     "notRest": [],
+     "clsDelta": 0,
+     "st": {
+      "all": 33,
+      "hero": 30
+     }
+    },
+    "clsRestore": 0
+   },
+   "1024": {
+    "loadY": 0,
+    "clsLoad": 0,
+    "load": {
+     "inView": [],
+     "notRest": []
+    },
+    "loadRest": true,
+    "st": {
+     "all": 33,
+     "hero": 30
+    },
+    "starts": [],
+    "animated": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14
+    ],
+    "shown": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14
+    ],
+    "mobileCards": [
+     0
+    ],
+    "reload-mid": {
+     "y0": 595,
+     "y": 595,
+     "t": 1464,
+     "rest": true,
+     "inView": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+     ],
+     "notRest": [],
+     "cls": 0
+    },
+    "reload-bottom": {
+     "y0": 3455,
+     "y": 3455,
+     "t": 1458,
+     "rest": true,
+     "inView": [],
+     "notRest": [],
+     "cls": 0
+    },
+    "back": {
+     "at": "/about/",
+     "path": "/",
+     "y0": 595,
+     "y": 595,
+     "ms": 1465,
+     "rest": true,
+     "inView": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+     ],
+     "notRest": [],
+     "clsDelta": 0,
+     "st": {
+      "all": 33,
+      "hero": 30
+     }
+    },
+    "clsRestore": 0
+   },
+   "1280": {
+    "loadY": 0,
+    "clsLoad": 0,
+    "load": {
+     "inView": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ],
+     "notRest": []
+    },
+    "loadRest": true,
+    "st": {
+     "all": 35,
+     "hero": 30
+    },
+    "starts": [
+     {
+      "i": 1,
+      "t": 403
+     },
+     {
+      "i": 6,
+      "t": 403
+     },
+     {
+      "i": 9,
+      "t": 403
+     },
+     {
+      "i": 7,
+      "t": 471
+     },
+     {
+      "i": 2,
+      "t": 503
+     },
+     {
+      "i": 5,
+      "t": 566
+     },
+     {
+      "i": 3,
+      "t": 648
+     },
+     {
+      "i": 8,
+      "t": 665
+     },
+     {
+      "i": 0,
+      "t": 698
+     },
+     {
+      "i": 4,
+      "t": 770
+     }
+    ],
+    "animated": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14
+    ],
+    "shown": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14
+    ],
+    "mobileCards": [
+     0
+    ],
+    "afterExit": [
+     [
+      0,
+      false,
+      0,
+      "-24px"
+     ],
+     [
+      1,
+      false,
+      0,
+      "-24px"
+     ],
+     [
+      2,
+      false,
+      0,
+      "-24px"
+     ],
+     [
+      3,
+      true,
+      1,
+      "0px"
+     ],
+     [
+      4,
+      true,
+      1,
+      "0px"
+     ],
+     [
+      5,
+      true,
+      1,
+      "0px"
+     ],
+     [
+      6,
+      true,
+      1,
+      "0px"
+     ],
+     [
+      7,
+      true,
+      1,
+      "0px"
+     ],
+     [
+      8,
+      true,
+      1,
+      "0px"
+     ],
+     [
+      9,
+      true,
+      1,
+      "0px"
+     ],
+     [
+      10,
+      true,
+      1,
+      "0px"
+     ],
+     [
+      11,
+      true,
+      1,
+      "0px"
+     ],
+     [
+      12,
+      true,
+      1,
+      "0px"
+     ],
+     [
+      13,
+      true,
+      1,
+      "0px"
+     ],
+     [
+      14,
+      true,
+      1,
+      "0px"
+     ]
+    ],
+    "afterReenter": {
+     "inView": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ],
+     "notRest": []
+    },
+    "reload-mid": {
+     "y0": 538,
+     "y": 538,
+     "t": 1457,
+     "rest": true,
+     "inView": [
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+     ],
+     "notRest": [],
+     "cls": 0
+    },
+    "reload-bottom": {
+     "y0": 2275,
+     "y": 2275,
+     "t": 1454,
+     "rest": true,
+     "inView": [],
+     "notRest": [],
+     "cls": 0
+    },
+    "back": {
+     "at": "/about/",
+     "path": "/",
+     "y0": 538,
+     "y": 538,
+     "ms": 1457,
+     "rest": true,
+     "inView": [
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+     ],
+     "notRest": [],
+     "clsDelta": 0,
+     "st": {
+      "all": 35,
+      "hero": 30
+     }
+    },
+    "clsRestore": 0
+   },
+   "1600": {
+    "loadY": 0,
+    "clsLoad": 0,
+    "load": {
+     "inView": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ],
+     "notRest": []
+    },
+    "loadRest": true,
+    "st": {
+     "all": 35,
+     "hero": 30
+    },
+    "starts": [
+     {
+      "i": 1,
+      "t": 327
+     },
+     {
+      "i": 6,
+      "t": 363
+     },
+     {
+      "i": 9,
+      "t": 413
+     },
+     {
+      "i": 7,
+      "t": 463
+     },
+     {
+      "i": 2,
+      "t": 546
+     },
+     {
+      "i": 5,
+      "t": 562
+     },
+     {
+      "i": 3,
+      "t": 612
+     },
+     {
+      "i": 8,
+      "t": 695
+     },
+     {
+      "i": 0,
+      "t": 729
+     },
+     {
+      "i": 4,
+      "t": 812
+     }
+    ],
+    "animated": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14
+    ],
+    "shown": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14
+    ],
+    "mobileCards": [
+     0
+    ],
+    "reload-mid": {
+     "y0": 538,
+     "y": 538,
+     "t": 1455,
+     "rest": true,
+     "inView": [
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+     ],
+     "notRest": [],
+     "cls": 0
+    },
+    "reload-bottom": {
+     "y0": 2283,
+     "y": 2283,
+     "t": 1475,
+     "rest": true,
+     "inView": [],
+     "notRest": [],
+     "cls": 0
+    },
+    "back": {
+     "at": "/about/",
+     "path": "/",
+     "y0": 538,
+     "y": 538,
+     "ms": 1459,
+     "rest": true,
+     "inView": [
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+     ],
+     "notRest": [],
+     "clsDelta": 0,
+     "st": {
+      "all": 35,
+      "hero": 30
+     }
+    },
+    "clsRestore": 0
+   }
+  },
+  "hover": {
+   ".hero-card:not(.hero-card--rich)": {
+    "before": {
+     "title": "RUST",
+     "transform": "none",
+     "translate": "0px",
+     "rotate": "0deg",
+     "scale": "1",
+     "filter": "none",
+     "shadow": "rgba(255, 255, 255, 0.05) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.28) 0px 18px 40px 0px",
+     "transitionProperty": "transform, box-shadow, filter",
+     "icon": "matrix(4.95134, -0.695866, 0.695866, 4.95134, 0, 0)",
+     "hover": false
+    },
+    "during": {
+     "title": "RUST",
+     "transform": "matrix(1, 0, 0, 1, 0, -4)",
+     "translate": "0px",
+     "rotate": "0deg",
+     "scale": "1",
+     "filter": "contrast(1.4)",
+     "shadow": "rgba(255, 255, 255, 0.23) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.38) 0px 25px 60px 0px",
+     "transitionProperty": "transform, box-shadow, filter",
+     "icon": "matrix(5.59659, 0.195437, -0.195437, 5.59659, 0, 0)",
+     "hover": true
+    },
+    "after": {
+     "title": "RUST",
+     "transform": "none",
+     "translate": "0px",
+     "rotate": "0deg",
+     "scale": "1",
+     "filter": "none",
+     "shadow": "rgba(255, 255, 255, 0.05) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.28) 0px 18px 40px 0px",
+     "transitionProperty": "transform, box-shadow, filter",
+     "icon": "matrix(4.95134, -0.695866, 0.695866, 4.95134, 0, 0)",
+     "hover": false
+    }
+   },
+   ".hero-card--rich": {
+    "before": {
+     "title": "HACK THE BOX",
+     "transform": "none",
+     "translate": "0px",
+     "rotate": "0deg",
+     "scale": "1",
+     "filter": "none",
+     "shadow": "rgba(255, 255, 255, 0.05) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.28) 0px 18px 40px 0px",
+     "transitionProperty": "transform, box-shadow, filter",
+     "icon": "matrix(5.94161, -0.835039, 0.835039, 5.94161, 0, 0)",
+     "hover": false
+    },
+    "during": {
+     "title": "HACK THE BOX",
+     "transform": "matrix(1, 0, 0, 1, 0, -4)",
+     "translate": "0px",
+     "rotate": "0deg",
+     "scale": "1",
+     "filter": "contrast(1.4)",
+     "shadow": "rgba(255, 255, 255, 0.23) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.38) 0px 25px 60px 0px",
+     "transitionProperty": "transform, box-shadow, filter",
+     "icon": "matrix(6.71591, 0.234525, -0.234525, 6.71591, 0, 0)",
+     "hover": true
+    },
+    "after": {
+     "title": "HACK THE BOX",
+     "transform": "none",
+     "translate": "0px",
+     "rotate": "0deg",
+     "scale": "1",
+     "filter": "none",
+     "shadow": "rgba(255, 255, 255, 0.05) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.28) 0px 18px 40px 0px",
+     "transitionProperty": "transform, box-shadow, filter",
+     "icon": "matrix(5.94161, -0.835039, 0.835039, 5.94161, 0, 0)",
+     "hover": false
+    }
+   }
+  },
+  "links": [
+   {
+    "title": "YOUTUBE",
+    "href": "https://www.youtube.com/@moibaldenegro",
+    "target": "_blank",
+    "rel": "noopener noreferrer",
+    "opacity": 1,
+    "hit": true
+   },
+   {
+    "title": "GITHUB",
+    "href": "https://github.com/MoiBaldenegro",
+    "target": "_blank",
+    "rel": "noopener noreferrer",
+    "opacity": 1,
+    "hit": true
+   }
+  ],
+  "focus": {
+   "before": 0,
+   "after": {
+    "opacity": 1,
+    "y": "0px",
+    "focused": true,
+    "scrollY": 2275
+   }
+  },
+  "router": [
+   {
+    "st": {
+     "all": 35,
+     "hero": 30
+    },
+    "inline": [
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 0; --hero-lego-scale: 1.04; --hero-lego-rotate: 0deg; --hero-lego-y: -24px;",
+     "opacity: 0; --hero-lego-scale: 1.04; --hero-lego-rotate: 0deg; --hero-lego-y: -24px;",
+     "opacity: 0; --hero-lego-scale: 1.04; --hero-lego-rotate: 0deg; --hero-lego-y: -24px;",
+     "opacity: 0; --hero-lego-scale: 1.04; --hero-lego-rotate: 0deg; --hero-lego-y: -24px;",
+     "opacity: 0; --hero-lego-scale: 1.04; --hero-lego-rotate: 0deg; --hero-lego-y: -24px;"
+    ]
+   },
+   {
+    "away": {
+     "all": 0,
+     "hero": 0
+    },
+    "st": {
+     "all": 35,
+     "hero": 30
+    },
+    "path": "/",
+    "rest": true,
+    "inline": [
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 0; --hero-lego-scale: 1.04; --hero-lego-rotate: 0deg; --hero-lego-y: -24px;",
+     "opacity: 0; --hero-lego-scale: 1.04; --hero-lego-rotate: 0deg; --hero-lego-y: -24px;",
+     "opacity: 0; --hero-lego-scale: 1.04; --hero-lego-rotate: 0deg; --hero-lego-y: -24px;",
+     "opacity: 0; --hero-lego-scale: 1.04; --hero-lego-rotate: 0deg; --hero-lego-y: -24px;",
+     "opacity: 0; --hero-lego-scale: 1.04; --hero-lego-rotate: 0deg; --hero-lego-y: -24px;"
+    ]
+   },
+   {
+    "away": {
+     "all": 0,
+     "hero": 0
+    },
+    "st": {
+     "all": 35,
+     "hero": 30
+    },
+    "path": "/",
+    "rest": true,
+    "inline": [
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 0; --hero-lego-scale: 1.04; --hero-lego-rotate: 0deg; --hero-lego-y: -24px;",
+     "opacity: 0; --hero-lego-scale: 1.04; --hero-lego-rotate: 0deg; --hero-lego-y: -24px;",
+     "opacity: 0; --hero-lego-scale: 1.04; --hero-lego-rotate: 0deg; --hero-lego-y: -24px;",
+     "opacity: 0; --hero-lego-scale: 1.04; --hero-lego-rotate: 0deg; --hero-lego-y: -24px;",
+     "opacity: 0; --hero-lego-scale: 1.04; --hero-lego-rotate: 0deg; --hero-lego-y: -24px;"
+    ]
+   },
+   {
+    "away": {
+     "all": 0,
+     "hero": 0
+    },
+    "st": {
+     "all": 35,
+     "hero": 30
+    },
+    "path": "/",
+    "rest": true,
+    "inline": [
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 1; --hero-lego-scale: 1; --hero-lego-rotate: 0deg; --hero-lego-y: 0px;",
+     "opacity: 0; --hero-lego-scale: 1.04; --hero-lego-rotate: 0deg; --hero-lego-y: -24px;",
+     "opacity: 0; --hero-lego-scale: 1.04; --hero-lego-rotate: 0deg; --hero-lego-y: -24px;",
+     "opacity: 0; --hero-lego-scale: 1.04; --hero-lego-rotate: 0deg; --hero-lego-y: -24px;",
+     "opacity: 0; --hero-lego-scale: 1.04; --hero-lego-rotate: 0deg; --hero-lego-y: -24px;",
+     "opacity: 0; --hero-lego-scale: 1.04; --hero-lego-rotate: 0deg; --hero-lego-y: -24px;"
+    ]
+   }
+  ],
+  "reduced": {
+   "375": {
+    "st": {
+     "all": 0,
+     "hero": 0
+    },
+    "inline": 0,
+    "allOpaque": true,
+    "starts": 0
+   },
+   "1280": {
+    "st": {
+     "all": 0,
+     "hero": 0
+    },
+    "inline": 0,
+    "allOpaque": true,
+    "starts": 0
+   }
+  },
+  "nojs": {
+   "375": [
+    [
+     "block",
+     "1",
+     "0px",
+     "0deg",
+     "1",
+     null
+    ],
+    [
+     "none",
+     "1",
+     "0px",
+     "0deg",
+     "1",
+     null
+    ],
+    [
+     "none",
+     "1",
+     "0px",
+     "0deg",
+     "1",
+     null
+    ],
+    [
+     "none",
+     "1",
+     "0px",
+     "0deg",
+     "1",
+     null
+    ],
+    [
+     "none",
+     "1",
+     "0px",
+     "0deg",
+     "1",
+     null
+    ],
+    [
+     "none",
+     "1",
+     "0px",
+     "0deg",
+     "1",
+     null
+    ],
+    [
+     "none",
+     "1",
+     "0px",
+     "0deg",
+     "1",
+     null
+    ],
+    [
+     "none",
+     "1",
+     "0px",
+     "0deg",
+     "1",
+     null
+    ],
+    [
+     "none",
+     "1",
+     "0px",
+     "0deg",
+     "1",
+     null
+    ],
+    [
+     "none",
+     "1",
+     "0px",
+     "0deg",
+     "1",
+     null
+    ],
+    [
+     "none",
+     "1",
+     "0px",
+     "0deg",
+     "1",
+     null
+    ],
+    [
+     "none",
+     "1",
+     "0px",
+     "0deg",
+     "1",
+     null
+    ],
+    [
+     "none",
+     "1",
+     "0px",
+     "0deg",
+     "1",
+     null
+    ],
+    [
+     "none",
+     "1",
+     "0px",
+     "0deg",
+     "1",
+     null
+    ],
+    [
+     "none",
+     "1",
+     "0px",
+     "0deg",
+     "1",
+     null
+    ]
+   ],
+   "1280": [
+    [
+     "block",
+     "1",
+     "0px",
+     "0deg",
+     "1",
+     null
+    ],
+    [
+     "block",
+     "1",
+     "0px",
+     "0deg",
+     "1",
+     null
+    ],
+    [
+     "block",
+     "1",
+     "0px",
+     "0deg",
+     "1",
+     null
+    ],
+    [
+     "block",
+     "1",
+     "0px",
+     "0deg",
+     "1",
+     null
+    ],
+    [
+     "block",
+     "1",
+     "0px",
+     "0deg",
+     "1",
+     null
+    ],
+    [
+     "block",
+     "1",
+     "0px",
+     "0deg",
+     "1",
+     null
+    ],
+    [
+     "block",
+     "1",
+     "0px",
+     "0deg",
+     "1",
+     null
+    ],
+    [
+     "block",
+     "1",
+     "0px",
+     "0deg",
+     "1",
+     null
+    ],
+    [
+     "block",
+     "1",
+     "0px",
+     "0deg",
+     "1",
+     null
+    ],
+    [
+     "block",
+     "1",
+     "0px",
+     "0deg",
+     "1",
+     null
+    ],
+    [
+     "block",
+     "1",
+     "0px",
+     "0deg",
+     "1",
+     null
+    ],
+    [
+     "block",
+     "1",
+     "0px",
+     "0deg",
+     "1",
+     null
+    ],
+    [
+     "block",
+     "1",
+     "0px",
+     "0deg",
+     "1",
+     null
+    ],
+    [
+     "block",
+     "1",
+     "0px",
+     "0deg",
+     "1",
+     null
+    ],
+    [
+     "block",
+     "1",
+     "0px",
+     "0deg",
+     "1",
+     null
+    ]
+   ]
+  },
+  "errors": []
+ },
+ "back": {
+  "widths": {
+   "1280": {
+    "load": {
+     "hidden": [],
+     "inView": 10,
+     "edgeRow": [
+      [
+       5,
+       "NESTJS",
+       751,
+       1
+      ],
+      [
+       6,
+       "CSS",
+       751,
+       1
+      ],
+      [
+       7,
+       "REACT",
+       751,
+       1
+      ],
+      [
+       8,
+       "HTML",
+       751,
+       1
+      ],
+      [
+       9,
+       "CLAUDE CODE",
+       751,
+       1
+      ]
+     ],
+     "st": {
+      "all": 35,
+      "hero": 30
+     }
+    },
+    "bottom": {
+     "y": 2275,
+     "notLifted": [],
+     "hidden": []
+    },
+    "backTop": {
+     "hidden": [],
+     "edgeRow": [
+      [
+       5,
+       "NESTJS",
+       751,
+       1
+      ],
+      [
+       6,
+       "CSS",
+       751,
+       1
+      ],
+      [
+       7,
+       "REACT",
+       751,
+       1
+      ],
+      [
+       8,
+       "HTML",
+       751,
+       1
+      ],
+      [
+       9,
+       "CLAUDE CODE",
+       751,
+       1
+      ]
+     ]
+    },
+    "router": [
+     {
+      "away": {
+       "path": "/about/",
+       "styled": 0
+      },
+      "path": "/",
+      "restoredY": 2275,
+      "restoredHidden": [],
+      "topHidden": [],
+      "st": {
+       "all": 35,
+       "hero": 30
+      },
+      "cls": 0
+     },
+     {
+      "away": {
+       "path": "/about/",
+       "styled": 0
+      },
+      "path": "/",
+      "restoredY": 2275,
+      "restoredHidden": [],
+      "topHidden": [],
+      "st": {
+       "all": 35,
+       "hero": 30
+      },
+      "cls": 0
+     },
+     {
+      "away": {
+       "path": "/about/",
+       "styled": 0
+      },
+      "path": "/",
+      "restoredY": 2275,
+      "restoredHidden": [],
+      "topHidden": [],
+      "st": {
+       "all": 35,
+       "hero": 30
+      },
+      "cls": 0
+     }
+    ],
+    "hiddenVisibleBack": 0
+   },
+   "1600": {
+    "load": {
+     "hidden": [],
+     "inView": 10,
+     "edgeRow": [
+      [
+       5,
+       "NESTJS",
+       751,
+       1
+      ],
+      [
+       6,
+       "CSS",
+       751,
+       1
+      ],
+      [
+       7,
+       "REACT",
+       751,
+       1
+      ],
+      [
+       8,
+       "HTML",
+       751,
+       1
+      ],
+      [
+       9,
+       "CLAUDE CODE",
+       751,
+       1
+      ]
+     ],
+     "st": {
+      "all": 35,
+      "hero": 30
+     }
+    },
+    "bottom": {
+     "y": 2283,
+     "notLifted": [],
+     "hidden": []
+    },
+    "backTop": {
+     "hidden": [],
+     "edgeRow": [
+      [
+       5,
+       "NESTJS",
+       751,
+       1
+      ],
+      [
+       6,
+       "CSS",
+       751,
+       1
+      ],
+      [
+       7,
+       "REACT",
+       751,
+       1
+      ],
+      [
+       8,
+       "HTML",
+       751,
+       1
+      ],
+      [
+       9,
+       "CLAUDE CODE",
+       751,
+       1
+      ]
+     ]
+    },
+    "router": [
+     {
+      "away": {
+       "path": "/about/",
+       "styled": 0
+      },
+      "path": "/",
+      "restoredY": 2283,
+      "restoredHidden": [],
+      "topHidden": [],
+      "st": {
+       "all": 35,
+       "hero": 30
+      },
+      "cls": 0
+     },
+     {
+      "away": {
+       "path": "/about/",
+       "styled": 0
+      },
+      "path": "/",
+      "restoredY": 2283,
+      "restoredHidden": [],
+      "topHidden": [],
+      "st": {
+       "all": 35,
+       "hero": 30
+      },
+      "cls": 0
+     },
+     {
+      "away": {
+       "path": "/about/",
+       "styled": 0
+      },
+      "path": "/",
+      "restoredY": 2283,
+      "restoredHidden": [],
+      "topHidden": [],
+      "st": {
+       "all": 35,
+       "hero": 30
+      },
+      "cls": 0
+     }
+    ],
+    "hiddenVisibleBack": 0
+   }
+  },
+  "errors": []
+ }
+}

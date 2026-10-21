@@ -9,9 +9,10 @@ export const LEGO_ENTER = Object.freeze({ y: -32, scale: 1.04, opacity: 0, tiltD
 /** Salida por arriba o por abajo: la pieza se levanta y se desvanece. */
 export const LEGO_EXIT = Object.freeze({ y: -24, scale: 1.04, opacity: 0, duration: 0.35, ease: 'power2.in' });
 
-/** Rango de cada card; las que entran en el mismo intervalo (batchMs) forman un lote. edge es el margen
- *  (fracción del viewport) que dejan start y end: 'top 92%' y 'bottom 8%'. */
-export const LEGO_RANGE = Object.freeze({ start: 'top 92%', end: 'bottom 8%', batchMs: 100, edge: 0.08 });
+/** Rango de entrada de cada card; las que entran en el mismo intervalo (batchMs) forman un lote. edge es
+ *  el margen (fracción del viewport) que dejan start y end: 'top 92%' y 'bottom 8%'. La salida usa su
+ *  propio rango (exitStart/exitEnd = start/end ampliados en edge): solo se levanta al dejar de intersectar. */
+export const LEGO_RANGE = Object.freeze({ start: 'top 92%', end: 'bottom 8%', exitStart: 'top bottom', exitEnd: 'bottom top', batchMs: 100, edge: 0.08 });
 
 /** Custom properties que anima GSAP; src/styles/hero-cards-motion.css las compone en translate/rotate/scale. */
 export const LEGO_VARS = Object.freeze({ y: '--hero-lego-y', rotate: '--hero-lego-rotate', scale: '--hero-lego-scale' });
