@@ -5,7 +5,7 @@ author: Moises Baldenegro Melendez
 img: 01design.webp
 readtime: 3
 description: Una guía paso a paso para abordar el diseño de sistemas: qué es, en qué se diferencia del diseño OOP, qué habilidades exige y qué requerimientos no funcionales debes considerar.
-tags: [diseno-de-sistemas, arquitectura, software-design, entrevistas, escalabilidad]
+tags: "#diseno-de-sistemas #arquitectura #software-design"
 created: "22 Octubre 2026"
 updated: "22 Octubre 2026"
 next: /posts/01-diseno-detallado
@@ -64,3 +64,5 @@ Una alta disponibilidad es esencial. Debemos asegurar que el sistema siga dando 
 ### Rendimiento y latencia
 
 La **latencia** es el tiempo que tarda el sistema en responder a una solicitud, mientras que el **rendimiento** (*throughput*) es la cantidad de trabajo que puede manejar en un tiempo determinado.
+
+**Tags:** `#arquitectura` `#agilismo` `#software-design`
