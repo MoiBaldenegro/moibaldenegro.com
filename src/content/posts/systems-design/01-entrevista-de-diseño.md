@@ -1,8 +1,8 @@
 ---
-slug: 00-systems-design-template
+slug: 00-entrevista-de-diseno-de-sistemas
 title: Entrevista de diseño de sistemas
 author: Moises Baldenegro Melendez
-img: arch00.webp
+img: 01design.webp
 readtime: 3
 description: Una guía paso a paso para abordar el diseño de sistemas: qué es, en qué se diferencia del diseño OOP, qué habilidades exige y qué requerimientos no funcionales debes considerar.
 tags: [diseno-de-sistemas, arquitectura, software-design, entrevistas, escalabilidad]
