@@ -34,7 +34,7 @@ related: [/posts/02-principios-del-diseno-de-software]
 
 
 ## Objetivos de diseño
--  Latency and Throughput requirements
+- Latency and Throughput requirements
 - Consistency vs Availability  [Weak/strong/eventual => consistency | Failover/replication => availability]
 
 
@@ -85,7 +85,6 @@ related: [/posts/02-principios-del-diseno-de-software]
         > UDP
         > REST
         > RPC
-
 
 ## Justificaion de las decisiones
 - Throughput of each layer
