@@ -8,7 +8,7 @@ description: Una guía paso a paso para abordar el diseño de sistemas qué es, 
 tags: "#diseno-de-sistemas #arquitectura #software-design"
 created: "22 Octubre 2026"
 updated: "22 Octubre 2026"
-next: /posts/01-diseno-detallado
+next: /posts/02-desafios-en-sistemas
 related: [/posts/00-systems-design-template]
 ---
 
