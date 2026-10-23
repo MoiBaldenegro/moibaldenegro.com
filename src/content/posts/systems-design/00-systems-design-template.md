@@ -18,6 +18,14 @@ related: [/posts/02-principios-del-diseno-de-software]
 - Quienes van a ser los usuarios que lo van a usar
 - Cuantas usuarios lo van a utilizar
 - Patrones comunes de este tipo de sistemas
+- Durante cuanto tiempo se deben almacenar los datos.
+
+
+
+## Objetivos de diseño
+- Latency and Throughput requirements
+- Consistency vs Availability  [Weak/strong/eventual => consistency | Failover/replication => availability]
+
 
 
 ## Estimaciones
@@ -31,11 +39,6 @@ related: [/posts/02-principios-del-diseno-de-software]
                 - If we are using a cache, what is the kind of data we want to store in cache
                 - How much RAM and how many machines do we need for us to achieve this ?
                 - Amount of data you want to store in disk/ssd
-
-
-## Objetivos de diseño
-- Latency and Throughput requirements
-- Consistency vs Availability  [Weak/strong/eventual => consistency | Failover/replication => availability]
 
 
 ## Diseño de alto nivel
@@ -86,11 +89,13 @@ related: [/posts/02-principios-del-diseno-de-software]
         > REST
         > RPC
 
+
 ## Justificaion de las decisiones
 - Throughput of each layer
 - Latency caused between each layer
 - Overall latency justification
 
 
-
 **Tags:** `#arquitectura` `#agilismo` `#software-design`
+
+
