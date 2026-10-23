@@ -68,3 +68,5 @@ Con la replicación de datos y las actualizaciones asíncronas, los datos pueden
 Aquí la solución está más del lado de la **capa de aplicación** que del sistema. Podemos diseñar experiencias en las que el usuario vea datos ligeramente obsoletos durante un periodo breve sin consecuencias, porque los servidores se ponen al día rápidamente. Un ejemplo es una búsqueda en Google. A este enfoque se le llama **consistencia eventual**, y la mayoría de las aplicaciones lo tolera bien durante un periodo corto.
 
 Las excepciones son las aplicaciones bancarias o cualquier sistema con transacciones críticas, donde la inconsistencia es completamente inaceptable. Por eso, estas aplicaciones priorizan la consistencia fuerte, a costa de ser más lentas.
+
+**Tags:** `#arquitectura` `#escalabilidad` `#software-design`
