@@ -21,9 +21,13 @@ Según lo que repliquemos, hablamos de dos técnicas distintas:
 - **Balanceo de carga:** cuando replicamos los servicios con la lógica del servidor.
 - **Replicación de bases de datos:** cuando replicamos las instancias de datos.
 
-![Diagrama de balanceo de carga](/assets/balanceo-de-carga.webp)
+<figure class="post-image">
+  <img src="/assets/balanceo-de-carga.webp" alt="Diagrama de balanceo de carga" loading="lazy" decoding="async" />
+</figure>
 
-![Diagrama de replicación de bases de datos](/assets/replicacion-bd.webp)
+<figure class="post-image">
+  <img src="/assets/replicacion-bd.webp" alt="Diagrama de replicación de bases de datos" loading="lazy" decoding="async" />
+</figure>
 
 ---
 
@@ -33,7 +37,9 @@ Habrá ocasiones en que la cantidad de datos sea tan masiva que no quepa en una 
 
 La solución en este caso es la **fragmentación** (*sharding*): particionar los datos según cierta lógica. Por ejemplo, un rango de IDs de usuario se guarda en una máquina y otro rango en una distinta.
 
-![Diagrama de fragmentación de bases de datos](/assets/fragmentacion-bd.webp)
+<figure class="post-image">
+  <img src="/assets/fragmentacion-bd.webp" alt="Diagrama de fragmentación de bases de datos" loading="lazy" decoding="async" />
+</figure>
 
 ---
 
@@ -55,7 +61,9 @@ Algunas herramientas que permiten implementar esta estrategia son:
 
 ...entre otras.
 
-![Diagrama de cola de mensajería asíncrona](/assets/cola-mensajeria.webp)
+<figure class="post-image">
+  <img src="/assets/cola-mensajeria.webp" alt="Diagrama de cola de mensajería asíncrona" loading="lazy" decoding="async" />
+</figure>
 
 ---
 

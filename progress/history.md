@@ -5,6 +5,8 @@
 
 ## Sesiones
 
+- 2026-10-23 — Solicitud puntual: imágenes HTML centradas y responsive para posts; tests 20/20 y build correctos.
+
 - 2026-10-21 — feature 1 `hero-grid-explicit-rows` + feature 2 `hero-row-new-tools`: fila nueva del hero con bash, webassembly, astro (grande), opencode y tauri.
 
 ## Sesión 2026-10-21 — Fila nueva de cards del hero (bash, webassembly, astro, opencode, tauri)
