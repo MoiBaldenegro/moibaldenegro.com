@@ -8,7 +8,7 @@ description: Los cuatro desafíos clásicos al diseñar sistemas a gran escala (
 tags: "#diseno-de-sistemas #arquitectura #software-design"
 created: "23 Octubre 2026"
 updated: "23 Octubre 2026"
-next:
+next: "/posts/03-como-escalar-sistemas"
 related: [/posts/00-systems-design-template]
 ---
 
