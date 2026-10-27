@@ -4,7 +4,7 @@ title: Los 4 desafíos del diseño de sistemas
 author: Moises Baldenegro Melendez
 img: 01design.webp
 readtime: 4
-description: Los cuatro desafíos clásicos al diseñar sistemas a gran escala (usuarios simultáneos, volumen de datos, latencia y consistencia) y las estrategias más comunes para resolverlos.
+description: "Los cuatro desafíos clásicos al diseñar sistemas a gran escala (usuarios simultáneos, volumen de datos, latencia y consistencia) y las estrategias más comunes para resolverlos.
 tags: "#diseno-de-sistemas #arquitectura #software-design"
 created: "23 Octubre 2026"
 updated: "23 Octubre 2026"

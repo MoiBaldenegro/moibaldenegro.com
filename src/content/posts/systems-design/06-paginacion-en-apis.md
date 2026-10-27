@@ -4,7 +4,7 @@ title: Paginación en APIs
 author: Moises Baldenegro Melendez
 img: 01design.webp
 readtime: 5
-description: Cómo devolver grandes volúmenes de datos sin saturar al servidor ni al cliente. Comparamos la paginación por offset, por cursor y por keyset, y cuándo conviene cada una.
+description: "Cómo devolver grandes volúmenes de datos sin saturar al servidor ni al cliente. Comparamos la paginación por offset, por cursor y por keyset, y cuándo conviene cada una."
 tags: "#diseno-de-sistemas #arquitectura #apis #paginacion #escalabilidad"
 created: "23 Octubre 2026"
 updated: "23 Octubre 2026"

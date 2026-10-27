@@ -4,7 +4,7 @@ title: Requisitos no funcionales en el diseño de sistemas
 author: Moises Baldenegro Melendez
 img: 01design.webp
 readtime: 5
-description: Disponibilidad, escalabilidad, latencia y consistencia: las cuatro grandes restricciones que definen la arquitectura de un sistema, qué estrategias las resuelven y qué compromisos implican.
+description: "Disponibilidad, escalabilidad, latencia y consistencia: las cuatro grandes restricciones que definen la arquitectura de un sistema, qué estrategias las resuelven y qué compromisos implican."
 tags: "#diseno-de-sistemas #arquitectura #requisitos-no-funcionales #escalabilidad #disponibilidad"
 created: "23 Octubre 2026"
 updated: "23 Octubre 2026"

@@ -4,7 +4,7 @@ title: Componentes del diseño de sistemas
 author: Moises Baldenegro Melendez
 img: 01design.webp
 readtime: 6
-description: Balanceo de carga, caché, particionamiento, replicación, colas de mensajes y procesamiento por lotes: cómo cada componente afecta la disponibilidad, escalabilidad, latencia y consistencia de un sistema.
+description: "Balanceo de carga, caché, particionamiento, replicación, colas de mensajes y procesamiento por lotes: cómo cada componente afecta la disponibilidad, escalabilidad, latencia y consistencia de un sistema."
 tags: "#diseno-de-sistemas #arquitectura #componentes #escalabilidad #consistencia"
 created: "23 Octubre 2026"
 updated: "23 Octubre 2026"

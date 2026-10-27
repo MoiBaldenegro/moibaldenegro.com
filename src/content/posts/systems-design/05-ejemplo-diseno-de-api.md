@@ -4,7 +4,7 @@ title: Diseñando API REST
 author: Moises Baldenegro Melendez
 img: 01design.webp
 readtime: 5
-description: Una guía paso a paso para abordar el diseño de sistemas qué es, en qué se diferencia del diseño OOP, qué habilidades exige y qué requerimientos no funcionales debes considerar.
+description: "Una guía paso a paso para abordar el diseño de sistemas qué es, en qué se diferencia del diseño OOP, qué habilidades exige y qué requerimientos no funcionales debes considerar."
 tags: "#api #rest #software-design #api-design"
 created: "22 Octubre 2026"
 updated: "22 Octubre 2026"

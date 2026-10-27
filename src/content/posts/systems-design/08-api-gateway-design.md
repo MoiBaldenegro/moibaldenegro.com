@@ -4,7 +4,7 @@ title: API Gateway
 author: Moises Baldenegro Melendez
 img: 01design.webp
 readtime: 5
-description: Qué es un API Gateway, por qué es clave en una arquitectura de microservicios y cuáles son sus funciones principales: enrutamiento, autenticación, límite de velocidad, traducción de protocolos y monitoreo.
+description: "Qué es un API Gateway, por qué es clave en una arquitectura de microservicios y cuáles son sus funciones principales: enrutamiento, autenticación, límite de velocidad, traducción de protocolos y monitoreo."
 tags: "#diseno-de-sistemas #arquitectura #api-gateway #microservicios #apis"
 created: "23 Octubre 2026"
 updated: "23 Octubre 2026"
