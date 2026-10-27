@@ -8,7 +8,7 @@ description: Qué es un API Gateway, por qué es clave en una arquitectura de mi
 tags: "#diseno-de-sistemas #arquitectura #api-gateway #microservicios #apis"
 created: "23 Octubre 2026"
 updated: "23 Octubre 2026"
-next:
+next: /posts/01-diseno-detallado
 related: [/posts/04-paginacion-en-apis]
 ---
 

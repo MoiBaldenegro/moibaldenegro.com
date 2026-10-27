@@ -8,7 +8,7 @@ description: Balanceo de carga, caché, particionamiento, replicación, colas de
 tags: "#diseno-de-sistemas #arquitectura #componentes #escalabilidad #consistencia"
 created: "23 Octubre 2026"
 updated: "23 Octubre 2026"
-next:
+next: /posts/01-diseno-detallado
 related: [/posts/06-requisitos-no-funcionales, /posts/02-desafios-en-sistemas]
 ---
 

@@ -8,7 +8,7 @@ description: Disponibilidad, escalabilidad, latencia y consistencia: las cuatro 
 tags: "#diseno-de-sistemas #arquitectura #requisitos-no-funcionales #escalabilidad #disponibilidad"
 created: "23 Octubre 2026"
 updated: "23 Octubre 2026"
-next:
+next: /posts/01-diseno-detallado
 related: [/posts/00-systems-design-template, /posts/02-desafios-en-sistemas]
 ---
 

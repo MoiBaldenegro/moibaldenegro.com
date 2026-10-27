@@ -8,7 +8,7 @@ description: Cómo devolver grandes volúmenes de datos sin saturar al servidor 
 tags: "#diseno-de-sistemas #arquitectura #apis #paginacion #escalabilidad"
 created: "23 Octubre 2026"
 updated: "23 Octubre 2026"
-next:
+next: /posts/01-diseno-detallado
 related: [/posts/02-desafios-en-sistemas]
 ---
 
