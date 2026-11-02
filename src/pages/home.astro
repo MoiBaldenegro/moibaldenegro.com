@@ -19,9 +19,9 @@ const profile = new HeroProfileRepository().getProfile();
 <Layout title={profile.name} description={SITE_DESCRIPTION}>
   <div class="home__landing" data-landing-sections>
     <NewHero/>
-    <MxviLogosBanner/>
     <LatestArticles/>
     <LatestHorizontal />
+    <MxviLogosBanner/>
     <PromoTiles />
   </div>
   <SearchLive />

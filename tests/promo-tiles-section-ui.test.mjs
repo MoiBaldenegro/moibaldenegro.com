@@ -16,12 +16,12 @@ const rule = (css, selector) => {
 };
 const TONES = ['youtube', 'mfinance', 'new-relic', 'tomatesoft'];
 
-test('REQ-04-08: home.astro importa PromoTiles y lo renderiza justo tras <LatestHorizontal />', () => {
+test('REQ-04-08 (sustituido por REQ-08-09): home.astro importa PromoTiles y lo renderiza justo tras <MxviLogosBanner/>', () => {
   const home = read('src/pages/home.astro');
   assert.match(home, /import PromoTiles from '\.\.\/components\/promo-tiles\/promo-tiles\.astro';/);
   const landing = home.match(/<div class="home__landing"[^>]*>([\s\S]*?)<\/div>/);
   assert.ok(landing, 'falta .home__landing');
-  assert.match(landing[1], /<LatestHorizontal\s*\/>\s*<PromoTiles\s*\/>/);
+  assert.match(landing[1], /<MxviLogosBanner\s*\/>\s*<PromoTiles\s*\/>/);
 });
 
 test('REQ-04-09/10/14/19: estructura del componente, imagen y sin script ni style', () => {

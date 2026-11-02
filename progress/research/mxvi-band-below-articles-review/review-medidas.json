@@ -1,0 +1,185 @@
+{
+  "375": {
+    "kids": [
+      "SECTION.new-hero",
+      "SCRIPT.",
+      "SECTION.latest-articles",
+      "SCRIPT.",
+      "SECTION.mxvi-logos",
+      "SECTION.promo-tiles"
+    ],
+    "band": {
+      "top": 2844.703125,
+      "bottom": 3054.703125,
+      "left": 0,
+      "right": 375,
+      "width": 375,
+      "height": 210
+    },
+    "prev": {
+      "cls": "",
+      "rect": {
+        "top": 5320,
+        "bottom": 5320,
+        "left": 0,
+        "right": 0,
+        "width": 0,
+        "height": 0
+      },
+      "mb": "0px"
+    },
+    "next": {
+      "cls": "promo-tiles",
+      "rect": {
+        "top": 3054.703125,
+        "bottom": 5145.484375,
+        "left": 0,
+        "right": 375,
+        "width": 375,
+        "height": 2090.78125
+      },
+      "pt": "10px"
+    },
+    "bandStyle": {
+      "pt": "32px",
+      "pb": "32px",
+      "bt": "1px solid rgba(255, 255, 255, 0.08)",
+      "bb": "1px solid",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "scrollW": 375,
+    "clientW": 375,
+    "innerW": 375,
+    "links": 4,
+    "errors": [
+      "Failed to load resource: the server responded with a status of 404 (Not Found) http://localhost:4399/assets/content/api-auth.webp"
+    ],
+    "overlapAtView": {
+      "bandViewportTop": 449.703125,
+      "overlappingCards": 0
+    }
+  },
+  "768": {
+    "kids": [
+      "SECTION.new-hero",
+      "SCRIPT.",
+      "SECTION.latest-articles",
+      "SCRIPT.",
+      "SECTION.mxvi-logos",
+      "SECTION.promo-tiles"
+    ],
+    "band": {
+      "top": 3261.515625,
+      "bottom": 3484.296875,
+      "left": -5,
+      "right": 763,
+      "width": 768,
+      "height": 222.78125
+    },
+    "prev": {
+      "cls": "",
+      "rect": {
+        "top": 5674,
+        "bottom": 5674,
+        "left": 0,
+        "right": 0,
+        "width": 0,
+        "height": 0
+      },
+      "mb": "0px"
+    },
+    "next": {
+      "cls": "promo-tiles",
+      "rect": {
+        "top": 3484.296875,
+        "bottom": 5690.296875,
+        "left": 0,
+        "right": 758,
+        "width": 758,
+        "height": 2206
+      },
+      "pt": "10px"
+    },
+    "bandStyle": {
+      "pt": "38.4px",
+      "pb": "38.4px",
+      "bt": "1px solid rgba(255, 255, 255, 0.08)",
+      "bb": "1px solid",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "scrollW": 758,
+    "clientW": 768,
+    "innerW": 768,
+    "links": 4,
+    "errors": [
+      "Failed to load resource: the server responded with a status of 404 (Not Found) http://localhost:4399/assets/content/api-auth.webp"
+    ],
+    "overlapAtView": {
+      "bandViewportTop": 449.515625,
+      "overlappingCards": 0
+    }
+  },
+  "1280": {
+    "kids": [
+      "SECTION.new-hero",
+      "SCRIPT.",
+      "DIV.latest-articles--horizontal-pin",
+      "SCRIPT.",
+      "SECTION.mxvi-logos",
+      "SECTION.promo-tiles"
+    ],
+    "band": {
+      "top": 2933.25,
+      "bottom": 3191.25,
+      "left": -5,
+      "right": 1275,
+      "width": 1280,
+      "height": 258
+    },
+    "prev": {
+      "cls": "",
+      "rect": {
+        "top": 4111,
+        "bottom": 4111,
+        "left": 0,
+        "right": 0,
+        "width": 0,
+        "height": 0
+      },
+      "mb": "0px"
+    },
+    "next": {
+      "cls": "promo-tiles",
+      "rect": {
+        "top": 3191.25,
+        "bottom": 4531.25,
+        "left": 0,
+        "right": 1270,
+        "width": 1270,
+        "height": 1340
+      },
+      "pt": "10px"
+    },
+    "bandStyle": {
+      "pt": "64px",
+      "pb": "64px",
+      "bt": "1px solid rgba(255, 255, 255, 0.08)",
+      "bb": "1px solid",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "scrollW": 1270,
+    "clientW": 1280,
+    "innerW": 1280,
+    "links": 4,
+    "errors": [
+      "Failed to load resource: the server responded with a status of 404 (Not Found) http://localhost:4399/assets/content/api-auth.webp"
+    ],
+    "overlapAtView": {
+      "bandViewportTop": 450.25,
+      "overlappingCards": 0
+    }
+  }
+}

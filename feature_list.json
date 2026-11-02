@@ -127,6 +127,24 @@
       ],
       "depends_on": [6],
       "status": "done"
+    },
+    {
+      "id": 8,
+      "name": "mxvi-band-below-articles",
+      "title": "La cinta MXVI pasa debajo de los bloques de artículos en la home",
+      "description": "Petición humana: \"pasa la cinta mejor abajo de los artículos\". Hoy src/pages/home.astro renderiza <MxviLogosBanner/> justo después de <NewHero/>. Esta feature solo reubica esa línea para que el orden dentro de .home__landing sea exactamente NewHero, LatestArticles, LatestHorizontal, MxviLogosBanner, PromoTiles (SearchLive sigue fuera). No cambian el componente, los estilos, los datos ni los imports; únicamente si en la nueva posición el espaciado o los bordes de la cinta se ven mal se ajusta src/styles/mxvi-logos-banner.css solo con tokens. Conflicto conocido: el test REQ-04-08 de tests/promo-tiles-section-ui.test.mjs exige <LatestHorizontal /> inmediatamente seguido de <PromoTiles />; el orden nuevo lo sustituye y esa aserción pasa a comprobar <MxviLogosBanner/> seguido de <PromoTiles /> (REQ-08-09). TDD: test nuevo tests/mxvi-band-below-articles.test.mjs que compruebe el orden en rojo antes del cambio. Riesgo: en escritorio (>=1201 px) LatestHorizontal es sticky con reserva margin-bottom; verificar que la cinta no se solapa. Spec en specs/08_mxvi-band-below-articles/ (requirements.md + design.md); análisis en progress/research/mxvi-band-below-articles.md.",
+      "acceptance": [
+        "REQ-08-01: un test lee src/pages/home.astro, extrae el contenido de .home__landing y comprueba que las etiquetas de componente son exactamente NewHero, LatestArticles, LatestHorizontal, MxviLogosBanner y PromoTiles en ese orden (rojo antes del cambio).",
+        "REQ-08-02/03/04: un test comprueba dentro de .home__landing las adyacencias <NewHero/> -> <LatestArticles/>, <LatestHorizontal /> -> <MxviLogosBanner/> y <MxviLogosBanner/> -> <PromoTiles /> (con espacios opcionales).",
+        "REQ-08-05: un test comprueba que <MxviLogosBanner aparece exactamente una vez en src/pages/home.astro.",
+        "REQ-08-06: un test comprueba que home.astro conserva los imports de NewHero, Layout, LatestArticles, LatestHorizontal, MxviLogosBanner, PromoTiles y SearchLive, y que <SearchLive /> queda fuera de .home__landing.",
+        "REQ-08-07/08: los tests existentes de tests/mxvi-logos-banner.test.mjs y tests/mxvi-band-site-palette.test.mjs siguen en verde (componente sin cambios; si se toca mxvi-logos-banner.css, sin hex, rgb ni rgba y solo con var(--...)).",
+        "REQ-08-09: el test REQ-04-08 de tests/promo-tiles-section-ui.test.mjs comprueba con /<MxviLogosBanner\\s*\\/>\\s*<PromoTiles\\s*\\/>/ dentro de .home__landing en lugar de la adyacencia con LatestHorizontal y queda en verde.",
+        "REQ-08-10: revisión visual (astro dev --background) de la home a 375, 768 y 1280 px: la cinta aparece debajo del bloque horizontal de artículos y encima de PromoTiles, de borde a borde, sin solaparse con las cards sticky en 1280 px, sin scroll horizontal ni errores de consola.",
+        "REQ-08-11: un test comprueba que src/pages/home.astro y los archivos de test tocados tienen como máximo 100 líneas, y ./init.sh termina en verde."
+      ],
+      "depends_on": [7],
+      "status": "in_progress"
     }
   ]
 }
