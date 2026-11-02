@@ -165,3 +165,34 @@ salida real en ambos informes.
 - `./init.sh` en verde (66/66 tests, build OK). Revisión visual verificada por el reviewer.
 - Artefactos: `progress/impl_mxvi-band-site-palette.md`, `progress/review_mxvi-band-site-palette.md` (APPROVED),
   `progress/research/mxvi-band-site-palette-review/`.
+
+## Sesión 2026-11-02 — La cinta MXVI pasa debajo de los bloques de artículos (feature 8)
+
+### Feature 8 — `mxvi-band-below-articles` (done, APPROVED)
+
+- Petición humana: "pasa la cinta mejor abajo de los artículos". Spec: `specs/08_mxvi-band-below-articles/`
+  (REQ-08-01..11, requirements.md + design.md); análisis en `progress/research/mxvi-band-below-articles.md`.
+- Test-first: `tests/mxvi-band-below-articles.test.mjs` (orden, adyacencias, conteo, imports, líneas) visto en rojo
+  (2 fallos de orden); aserción REQ-04-08 de `tests/promo-tiles-section-ui.test.mjs` ajustada a
+  `<MxviLogosBanner/>` -> `<PromoTiles />` (REQ-08-09), vista en rojo.
+- Implementado: `src/pages/home.astro` reordenado (NewHero, LatestArticles, LatestHorizontal, MxviLogosBanner,
+  PromoTiles); componente, estilos y datos sin cambios.
+- `./init.sh` en verde (71/71 tests, build OK). Revisión visual REQ-08-10 verificada por el reviewer.
+- Artefactos: `progress/impl_mxvi-band-below-articles.md`, `progress/review_mxvi-band-below-articles.md` (APPROVED).
+
+## Sesión 2026-11-02 — Todas las esquinas de la web pasan a rectas (feature 9)
+
+### Feature 9 — `square-corners-sitewide` (done, APPROVED)
+
+- Petición humana: cambiar todos los border-radius de la web a rectos para unificar el estilo. Spec:
+  `specs/09_square-corners-sitewide/` (REQ-09-01..17, requirements.md + design.md); análisis en
+  `progress/research/square-corners-sitewide.md`.
+- Test-first: `tests/square-corners-sitewide.test.mjs` (8 tests, REQ-09-01..13 y 17) visto en rojo (6 fallos);
+  `tests/article-images.test.mjs` y `tests/promo-tiles-section-ui.test.mjs` ajustados a `var(--radius-square)` (REQ-09-14).
+- Implementado: `src/styles/tokens.css` sustituye `--radius-card`/`--radius-pill`/`--radius-thumb` por un único
+  `--radius-square: 0`; las 61 declaraciones `*-radius` de 25 hojas de `src/styles` pasan a `var(--radius-square)`
+  (50%, 0 literal, asimétricos y scrollbar incluidos); comentarios con tokens antiguos limpiados. `rx="1.5"` de
+  `code-copy.ts` conservado (fuera de alcance).
+- `./init.sh` en verde (79/79 tests, build OK). Revisión visual REQ-09-15/16 verificada.
+- Artefactos: `progress/impl_square-corners-sitewide.md`, `progress/review_square-corners-sitewide.md` (APPROVED),
+  `progress/research/square-corners-sitewide.md`.

@@ -24,7 +24,7 @@
 .latest-articles__card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-card);
+  border-radius: var(--radius-square);
   padding: 24px 28px;
   transition: var(--transition-default);
 }
@@ -37,7 +37,7 @@
 /* Enlace de la card (REQ-36-08, feature 36): envuelve imagen + título. */
 .latest-articles__link {
   display: block;
-  border-radius: var(--radius-card);
+  border-radius: var(--radius-square);
   text-decoration: none;
 }
 
@@ -64,7 +64,7 @@
   width: 100%; height: auto; /* feature 65 */
   aspect-ratio: 16 / 9;
   object-fit: cover;
-  border-radius: var(--radius-card);
+  border-radius: var(--radius-square);
   border: 1px solid var(--color-border);
   margin: var(--gap-card) 0;
 }
@@ -78,7 +78,7 @@
 .latest-articles__tag {
   color: var(--color-accent);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-square);
   padding: 4px 12px;
   font-size: 0.85rem;
 }

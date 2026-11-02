@@ -8,7 +8,7 @@
   aspect-ratio: 16 / 9;
   margin: var(--gap-card);
   overflow: hidden;
-  border-radius: var(--radius-card);
+  border-radius: var(--radius-square);
 }
 
 .post__content .video-container iframe {
@@ -25,7 +25,7 @@
   height: auto;
   margin: var(--gap-card) auto 32px;
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-card);
+  border-radius: var(--radius-square);
   box-shadow: var(--shadow-card-rest);
   background: var(--color-surface);
 }
@@ -52,7 +52,7 @@
 @media (max-width: 768px) {
   .post__content img {
     margin-bottom: 24px;
-    border-radius: var(--radius-thumb);
+    border-radius: var(--radius-square);
   }
 }
 

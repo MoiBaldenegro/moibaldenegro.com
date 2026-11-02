@@ -9,7 +9,7 @@
   position: absolute;
   inset: 0;
   z-index: 6;
-  border-radius: var(--radius-card);
+  border-radius: var(--radius-square);
   color: var(--color-text);
 }
 
@@ -17,7 +17,7 @@
 .card-link:focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: -4px;
-  border-radius: var(--radius-card);
+  border-radius: var(--radius-square);
 }
 
 /* Flecha en la esquina superior derecha, oculta en reposo */

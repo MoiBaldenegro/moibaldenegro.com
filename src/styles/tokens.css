@@ -67,10 +67,8 @@
   --space-mxvi-band: clamp(32px, 5vw, 64px);
   --opacity-logo-band: .62; --opacity-logo-band-hover: 1;
 
-  /* Radio */
-  --radius-card: 22px; --radius-pill: 999px;
-  /* Miniatura del modo lista de búsqueda (feature 9): 10px, redondeo proporcional a 112×63 (su design.md). */
-  --radius-thumb: 10px;
+  /* Radio (feature 9 square-corners-sitewide): único token; toda esquina del sitio es recta */
+  --radius-square: 0;
 
   /* Espaciado */
   --gap-card: 14px;

@@ -41,7 +41,7 @@ body > main { flex: 1 0 auto; } /* feature 94 (REQ-94-03): main absorbe el hueco
   position: absolute;
   left: 0; bottom: -6px;
   width: 0; height: 2px;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-square);
   background: var(--color-accent);
   transition: var(--transition-default);
 }
@@ -67,7 +67,7 @@ body > main { flex: 1 0 auto; } /* feature 94 (REQ-94-03): main absorbe el hueco
 
 /* Scrollbar global (migrada del hero, feature 8) */
 ::-webkit-scrollbar { width: 10px; }
-::-webkit-scrollbar-thumb { background: var(--color-scrollbar-thumb); border-radius: var(--radius-pill); }
+::-webkit-scrollbar-thumb { background: var(--color-scrollbar-thumb); border-radius: var(--radius-square); }
 ::-webkit-scrollbar-track { background: var(--color-scrollbar-track); }
 
 @media (max-width: 969px) { /* feature 93 (REQ-93-09): corte del header 969/970 px */
@@ -87,7 +87,7 @@ body > main { flex: 1 0 auto; } /* feature 94 (REQ-94-03): main absorbe el hueco
    hasta recibir foco; entonces aparece sobre el header sticky. Solo tokens. */
 .skip-link {
   position: absolute; top: var(--gap-card); left: var(--gap-card); z-index: 200;
-  padding: calc(var(--gap-card) / 2) var(--gap-card); border-radius: var(--radius-pill);
+  padding: calc(var(--gap-card) / 2) var(--gap-card); border-radius: var(--radius-square);
   background: var(--color-accent); color: var(--color-background); font-weight: 600;
   transform: translateY(-200%); transition: var(--transition-default);
 }

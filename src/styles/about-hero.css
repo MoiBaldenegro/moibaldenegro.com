@@ -8,14 +8,14 @@
   padding: calc(var(--gap-card) * 2.5) calc(var(--gap-card) * 1.5);
   background: linear-gradient(160deg, var(--color-hero-top), var(--color-hero-mid) 70%);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-card);
+  border-radius: var(--radius-square);
   font-family: var(--font-sans);
   text-align: center;
 }
 
 .about-hero__media {
   width: min(60vw, 220px);
-  border-radius: var(--radius-card);
+  border-radius: var(--radius-square);
   box-shadow: 0 0 calc(var(--gap-card) * 5) var(--color-glow);
 }
 
@@ -26,7 +26,7 @@
   aspect-ratio: 1;
   object-fit: cover;
   object-position: center top;
-  border-radius: var(--radius-card);
+  border-radius: var(--radius-square);
   outline: 2px solid var(--color-accent);
   outline-offset: calc(var(--gap-card) / 2);
   box-shadow: var(--shadow-card);
@@ -39,7 +39,7 @@
   padding: calc(var(--gap-card) / 3) var(--gap-card);
   background: var(--color-username-bg);
   border: 1px solid var(--color-username-border);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-square);
   color: var(--color-username-text);
   font-size: 0.9rem;
   font-weight: 600;
@@ -66,7 +66,7 @@
   display: inline-flex;
   align-items: center;
   gap: calc(var(--gap-card) / 2);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-square);
   color: var(--color-text);
   font-weight: 600;
   text-decoration: none;

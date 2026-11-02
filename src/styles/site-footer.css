@@ -33,7 +33,7 @@
 
 .site-footer__cv, .site-footer__top {
   display: inline-flex; align-items: center; gap: calc(var(--gap-card) / 2);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-square);
   color: var(--color-text); font-weight: 600; text-decoration: none;
   transition: border-color var(--transition-default), box-shadow var(--transition-default), color var(--transition-default);
 }

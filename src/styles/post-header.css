@@ -10,7 +10,7 @@
   align-items: center;
   gap: 32px;
   padding: 32px;
-  border-radius: var(--radius-card);
+  border-radius: var(--radius-square);
   border: 1px solid var(--color-border-strong);
   box-shadow: var(--shadow-card);
   background: linear-gradient(160deg, var(--color-hero-top) 0%, var(--color-hero-mid) 45%, var(--color-hero-bottom) 100%),
@@ -27,7 +27,7 @@
   height: 640px;
   top: -260px;
   right: -160px;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-square);
   background: radial-gradient(circle, var(--color-glow), transparent 70%);
   pointer-events: none;
 }
@@ -61,7 +61,7 @@
   display: inline-flex;
   color: var(--color-accent-hover);
   border: 1px solid var(--color-accent);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-square);
   background: color-mix(in srgb, var(--color-accent) 12%, transparent);
   padding: 4px 14px;
   margin: 0 0 14px;
@@ -81,7 +81,7 @@
 
 .post__meta {
   display: inline-flex;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-square);
   background: color-mix(in srgb, var(--color-surface) 70%, transparent);
   border: 1px solid var(--color-border-strong);
   padding: 6px 14px;

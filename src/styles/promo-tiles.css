@@ -23,7 +23,7 @@
   min-height: 580px;
   padding-top: 52px;
   overflow: hidden;
-  border-radius: 0;
+  border-radius: var(--radius-square);
   text-align: center;
   font-family: var(--font-sans);
 }
@@ -62,7 +62,7 @@
   padding: 8px 18px;
   font-size: 15px;
   text-decoration: none;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-square);
   transition: background var(--transition-default), color var(--transition-default);
 }
 
@@ -70,7 +70,7 @@
   background: var(--color-promo-cta);
   color: var(--color-text);
   border: 1px solid var(--color-promo-cta);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-square);
 }
 .promo-tile__link--primary:hover { background: var(--color-promo-cta-hover); }
 
@@ -78,7 +78,7 @@
   background: transparent;
   border: 1px solid var(--color-promo-link);
   color: var(--color-promo-link);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-square);
 }
 .promo-tile__link--secondary:hover { background: var(--color-promo-cta); color: var(--color-text); }
 

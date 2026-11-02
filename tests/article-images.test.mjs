@@ -20,7 +20,7 @@ test("article images are centered and responsive", () => {
   assert.match(articleStyles, /display:\s*block/);
   assert.match(articleStyles, /max-width:\s*100%/);
   assert.match(articleStyles, /margin:\s*[^;]*auto/);
-  assert.match(articleStyles, /border-radius:\s*var\(--radius-card\)/);
+  assert.match(articleStyles, /border-radius:\s*var\(--radius-square\)/);
 });
 
 test("the systems design post uses semantic HTML figures", () => {

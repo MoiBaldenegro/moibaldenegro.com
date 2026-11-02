@@ -50,7 +50,7 @@
   padding: calc(var(--gap-card) / 2) var(--gap-card);
   color: var(--color-text-secondary);
   background: var(--color-surface);
-  border-radius: var(--radius-card);
+  border-radius: var(--radius-square);
 }
 
 /* Feature 101 (REQ-101-11): aviso compacto en la card estrecha de <= 1200 px, una palabra por línea sin partirla. */

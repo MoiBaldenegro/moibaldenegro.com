@@ -35,7 +35,7 @@
   width: 100%; height: auto; /* feature 65: anula el alto fijo del atributo height */
   aspect-ratio: 16 / 9;
   object-fit: cover;
-  border-radius: var(--radius-card);
+  border-radius: var(--radius-square);
   border: 1px solid var(--color-border);
   margin: var(--gap-card) 0 32px;
 }
@@ -87,7 +87,7 @@
 .post__content pre {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-card);
+  border-radius: var(--radius-square);
   padding: 16px 20px;
   overflow-x: auto;
   margin: 0 0 16px;

@@ -1,6 +1,6 @@
 /* search-bar.css — Barra de búsqueda del header (feature 4, REQ-04-01..08).
    Solo tokens existentes de tokens.css (design.md: navbar, surface, border,
-   border-strong, text, text-secondary, accent, radius-pill, transition,
+   border-strong, text, text-secondary, accent, radius-square, transition,
    font-sans). La hoja la importa el componente (sin <style> en el .astro). */
 
 .search-bar {
@@ -13,7 +13,7 @@
   padding: 10px 42px 10px 42px; /* feature 114 (REQ-114-07): hueco de la lupa */
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-square);
   color: var(--color-text);
   font-family: var(--font-sans);
   font-size: 0.95rem;
@@ -51,7 +51,7 @@
   width: 32px;
   height: 32px;
   padding: 0;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-square);
   border: none;
   background: none;
   color: var(--color-text-secondary);
