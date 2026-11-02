@@ -121,3 +121,31 @@ salida real en ambos informes.
   (tokens.css compactado, <=100 líneas). Integrado tras `<LatestHorizontal />` en `home.astro`.
 - `./init.sh` en verde (41/41 + build); regresión visual a 375/768/1280 px OK.
 - Artefactos: `progress/impl_promo-tiles-section.md`, `progress/review_promo-tiles-section.md` (APPROVED).
+
+## Sesión 2026-11-02 — Logos MXVI clicables: datos y repositorio (feature 5)
+
+### Feature 5 — `mxvi-logos-links-data` (done, APPROVED)
+
+- spec_author da de alta las features 5 y 6 (cinta azul MXVI). Spec: `specs/05_mxvi-logos-links-data/requirements.md`
+  (REQ-05-01..14); análisis en `progress/research/mxvi-logos-band.md`.
+- Test-first: `tests/mxvi-logos-data.test.mjs` escrito y visto en rojo (`ERR_MODULE_NOT_FOUND` del repositorio).
+- Implementado: `src/data/mxvi-logos.json` (id, letter, viewBox, href, label), entidad `MxviLogo`,
+  `mxvi-logos-parse.ts` con `MxviLogosDataError` y `MxviLogosRepository` con loader inyectable. Sin UI.
+- 10/10 tests de la feature y `./init.sh` en verde.
+- Artefactos: `progress/impl_mxvi-logos-links-data.md`, `progress/review_mxvi-logos-links-data.md` (APPROVED).
+
+## Sesión 2026-11-02 — Cinta azul MXVI con logos clicables (feature 6)
+
+### Feature 6 — `mxvi-logos-band` (done, APPROVED)
+
+- Spec: `specs/06_mxvi-logos-band/` (REQ-06-01..20); análisis en `progress/research/mxvi-logos-band.md`.
+- Test-first: `tests/mxvi-logos-banner.test.mjs` reescrito (8 tests) y visto en rojo (7 fail / 1 pass;
+  REQ-06-14/15 ya se cumplía y queda como guarda de regresión).
+- Implementado: `mxvi-logos-banner.astro` lee los logos desde `MxviLogosRepository`, cada svg dentro de un
+  `<a>` con href/aria-label/target/rel; `mxvi-logos-banner.css` con cinta full-bleed (degradado lineal +
+  resplandor radial), hover/focus-visible, reduced-motion y 2 columnas en móvil; 6 tokens nuevos en
+  `tokens.css`, retirado `--opacity-logo-muted` (<=100 líneas).
+- 8/8 tests de la feature, `pnpm test` 57/57, audit de tokens y `./init.sh` en verde. Regresión visual
+  (REQ-06-20) verificada por el reviewer.
+- Artefactos: `progress/impl_mxvi-logos-band.md`, `progress/review_mxvi-logos-band.md` (APPROVED),
+  `progress/research/mxvi-logos-band-review/`.

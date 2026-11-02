@@ -1,8 +1,12 @@
+/* Cinta MXVI full-bleed (feature 6 mxvi-logos-band): degradado azul con resplandor
+   radial central y 4 logos-enlace con hover/focus. Valores desde tokens.css. */
 .mxvi-logos {
-  width: min(var(--container-max), 95%);
-  margin: 0 auto;
-  padding: 28px 0;
-  overflow: hidden;
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+  padding-block: var(--space-mxvi-band);
+  background:
+    radial-gradient(ellipse at center, var(--color-mxvi-band-glow), transparent 60%),
+    linear-gradient(90deg, var(--color-mxvi-band-edge), var(--color-mxvi-band-center), var(--color-mxvi-band-edge));
 }
 
 .mxvi-logos__track {
@@ -10,7 +14,15 @@
   grid-template-columns: repeat(4, minmax(0, 1fr));
   align-items: center;
   gap: clamp(18px, 5vw, 72px);
-  min-height: 120px;
+  width: min(var(--container-max), 95%);
+  margin: 0 auto;
+}
+
+.mxvi-logos__link { display: block; }
+
+.mxvi-logos__link:focus-visible {
+  outline: 2px solid var(--color-text);
+  outline-offset: 6px;
 }
 
 .mxvi-logos__logo {
@@ -19,11 +31,26 @@
   height: clamp(72px, 10vw, 150px);
   color: var(--color-text);
   filter: grayscale(1) brightness(0) invert(1);
-  opacity: var(--opacity-logo-muted);
+  opacity: var(--opacity-logo-band);
+  transition: opacity var(--transition-default), transform var(--transition-default);
+}
+
+.mxvi-logos__link:hover .mxvi-logos__logo,
+.mxvi-logos__link:focus-visible .mxvi-logos__logo {
+  opacity: var(--opacity-logo-band-hover);
+  transform: translateY(-4px) scale(1.04);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mxvi-logos__logo,
+  .mxvi-logos__link:hover .mxvi-logos__logo,
+  .mxvi-logos__link:focus-visible .mxvi-logos__logo {
+    transition: none;
+    transform: none;
+  }
 }
 
 @media (max-width: 768px) {
-  .mxvi-logos { padding: 20px 0; }
-  .mxvi-logos__track { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 24px; min-height: 160px; }
+  .mxvi-logos__track { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 24px; }
   .mxvi-logos__logo { height: 64px; }
 }

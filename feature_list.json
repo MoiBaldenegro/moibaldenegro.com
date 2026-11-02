@@ -72,6 +72,40 @@
         "REQ-04-21: la regresión visual de la home a 375, 768 y 1280 px muestra los cuatro cuadros tras el carrusel de artículos, a 2 columnas en 1280 px y 1 columna en 375/768 px, sin desbordamiento horizontal ni solapamientos y sin errores en la consola del navegador."
       ],
       "status": "done"
+    },
+    {
+      "id": 5,
+      "name": "mxvi-logos-links-data",
+      "title": "Datos y repositorio de los logos MXVI con URL por logo",
+      "description": "Petición humana (2026-11-02): convertir los 4 logos MXVI (M, X, V, I) de la sección entre el hero y los artículos de la home en enlaces, con una URL por logo (hoy las 4 a https://github.com/MoiBaldenegro; en el futuro cada una a un proyecto distinto). Hoy src/components/mxvi-logos-banner.astro hardcodea en el frontmatter un array con id y viewBox. Esta feature es la base de datos/dominio de la feature 6: crea src/data/mxvi-logos.json (array logos con id, letter, viewBox, href y label por logo), la entidad MxviLogo (src/domain/entities/mxvi-logo.ts), el parseo con error nombrado MxviLogosDataError (src/domain/repositories/mxvi-logos-parse.ts) y MxviLogosRepository con loader inyectable (src/domain/repositories/mxvi-logos-repository.ts), siguiendo el patrón de PromoTilesRepository (feature 4). href solo admite https:// (todos externos). No toca UI ni CSS. Test-first: tests/mxvi-logos-data.test.mjs. Spec: specs/05_mxvi-logos-links-data/requirements.md (REQ-05-01..14). Análisis: progress/research/mxvi-logos-band.md.",
+      "acceptance": [
+        "REQ-05-01/03/04/05/07: new MxviLogosRepository().getLogos() devuelve 4 entidades en el orden mxvi-m, mxvi-x, mxvi-v, mxvi-i con letter M, X, V, I, viewBox \"0 0 717 716\", \"0 0 805 716\", \"0 0 795 716\", \"0 0 190 716\", href \"https://github.com/MoiBaldenegro\" en las 4 y label \"MXVI M — GitHub\", \"MXVI X — GitHub\", \"MXVI V — GitHub\", \"MXVI I — GitHub\".",
+        "REQ-05-02/06/08: con un loader inyectado que entrega un JSON válido de 4 logos, el repositorio devuelve entidades con exactamente los campos id, letter, viewBox, href y label en el orden del JSON.",
+        "REQ-05-09/10: con un loader que lanza, que entrega texto no JSON, sin array logos o con 3 o 5 logos, el repositorio lanza MxviLogosDataError cuyo mensaje contiene mxvi-logos.json.",
+        "REQ-05-11: con un logo sin label, con href vacío o con letter numérico, el repositorio lanza MxviLogosDataError cuyo mensaje contiene mxvi-logos.json, el índice del logo y el nombre del campo.",
+        "REQ-05-12/13: con un href \"http://x.com\", \"/about\" o \"www.x.com\", o con un viewBox \"0 0 abc 716\" o \"717 716\", el repositorio lanza MxviLogosDataError cuyo mensaje contiene mxvi-logos.json y el índice del logo.",
+        "REQ-05-14: tests/mxvi-logos-data.test.mjs se escribe antes del código (se observa en rojo), ./init.sh queda en verde y ningún archivo nuevo supera 100 líneas."
+      ],
+      "status": "done"
+    },
+    {
+      "id": 6,
+      "name": "mxvi-logos-band",
+      "title": "Cinta azul full-bleed con logos MXVI clicables y hover",
+      "description": "Petición humana (2026-11-02): la sección de los 4 logos MXVI entre el hero y los artículos de la home pasa a ser una cinta full-bleed (de borde a borde de la ventana) inspirada en la banda azul de Apple Events de apple.com: degradado azul suave con leve resplandor radial al centro, SIN texto (ni títulos ni botones), con los 4 logos encima. Cada logo es un enlace <a> (href y aria-label desde MxviLogosRepository de la feature 5, target=_blank, rel=noopener noreferrer) con hover (sube opacidad y se eleva/escala con transición suave) y :focus-visible equivalente; prefers-reduced-motion anula transición y transformación. Se quita aria-hidden de la sección; los svg quedan aria-hidden dentro del enlace. Toca src/components/mxvi-logos-banner.astro, src/styles/mxvi-logos-banner.css y src/styles/tokens.css (6 tokens nuevos: --color-mxvi-band-edge/center/glow, --opacity-logo-band, --opacity-logo-band-hover, --space-mxvi-band; se retira --opacity-logo-muted). tokens.css está en 100 líneas: hay que compactar. Test-first: reescribir tests/mxvi-logos-banner.test.mjs. En móvil (<=768 px) sigue en 2 columnas. Spec: specs/06_mxvi-logos-band/requirements.md (REQ-06-01..20) y design.md. Análisis: progress/research/mxvi-logos-band.md.",
+      "acceptance": [
+        "REQ-06-01/18: mxvi-logos-banner.astro importa MxviLogosRepository desde ../domain/repositories/mxvi-logos-repository.ts, no importa ningún .json ni declara ids mxvi-* en el frontmatter, importa ../styles/mxvi-logos-banner.css y no contiene <script> ni <style>.",
+        "REQ-06-02/03/04/05: el componente renderiza dentro del map un <a class=\"mxvi-logos__link\"> con href={href}, aria-label={label}, target=\"_blank\" y rel=\"noopener noreferrer\", que contiene el <svg> con aria-hidden=\"true\" y focusable=\"false\" y el <use> al sprite #id.",
+        "REQ-06-06/07: la etiqueta <section class=\"mxvi-logos\"> no lleva aria-hidden y el componente no contiene h1-h6, <p>, <button> ni texto visible fuera de atributos.",
+        "REQ-06-08/09: mxvi-logos-banner.css da a .mxvi-logos width 100vw y margin-inline calc(50% - 50vw), sin overflow: hidden, y un background con radial-gradient que usa var(--color-mxvi-band-glow) y linear-gradient que usa var(--color-mxvi-band-edge) y var(--color-mxvi-band-center).",
+        "REQ-06-10/11/12: la hoja define opacity var(--opacity-logo-band) y transition con var(--transition-default) en .mxvi-logos__logo, una regla para .mxvi-logos__link:hover y .mxvi-logos__link:focus-visible sobre el logo con opacity var(--opacity-logo-band-hover) y transform con translateY negativo y scale mayor que 1, y un outline en .mxvi-logos__link:focus-visible.",
+        "REQ-06-13: la hoja contiene @media (prefers-reduced-motion: reduce) con transition: none y transform: none para el logo.",
+        "REQ-06-14/15: la rejilla usa repeat(4, ...) por defecto y un @media (max-width: 768px) con repeat(2, ...).",
+        "REQ-06-16/17/19: tokens.css define los 6 tokens nuevos y ya no define --opacity-logo-muted; scripts/audit-design-tokens.mjs queda en verde, mxvi-logos-banner.css no contiene hex ni rgb(a) y ningún archivo tocado (tokens.css incluido) supera 100 líneas.",
+        "REQ-06-20: la regresión visual de la home a 375, 768 y 1280 px muestra la cinta azul de borde a borde con los 4 logos completos (2 columnas en 375/768, 4 en 1280), elevación en hover y anillo visible al tabular, sin scroll horizontal ni errores en la consola del navegador."
+      ],
+      "depends_on": [5],
+      "status": "done"
     }
   ]
 }

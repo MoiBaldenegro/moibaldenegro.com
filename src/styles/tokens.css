@@ -18,7 +18,6 @@
   /* Color de texto */
   --color-text: #ffffff;
   --color-text-secondary: #b8b8c5;
-  --opacity-logo-muted: .18;
 
   /* Color de borde */
   --color-border: rgba(255,255,255,.08);
@@ -60,16 +59,17 @@
   --color-promo-link: #2997ff; --gap-promo: 10px;
 
   /* Color de la tarjeta de perfil — username, badge verificado y scrollbar (de hero.css, feature 4 previa) */
-  --color-username-bg: #081a28;
-  --color-username-border: rgba(0,195,255,.35);
-  --color-username-text: #5fd6ff;
-  --color-verified: #0a6f9e;
-  --color-scrollbar-thumb: #6C387A;
-  --color-scrollbar-track: #090912;
+  --color-username-bg: #081a28; --color-username-border: rgba(0,195,255,.35);
+  --color-username-text: #5fd6ff; --color-verified: #0a6f9e;
+  --color-scrollbar-thumb: #6C387A; --color-scrollbar-track: #090912;
+
+  /* Cinta MXVI (feature 6 mxvi-logos-band): degradado azul, resplandor, opacidades y padding */
+  --color-mxvi-band-edge: #0b2a7a; --color-mxvi-band-center: #2f6fe4;
+  --color-mxvi-band-glow: rgba(150, 200, 255, .45); --space-mxvi-band: clamp(32px, 5vw, 64px);
+  --opacity-logo-band: .62; --opacity-logo-band-hover: 1;
 
   /* Radio */
-  --radius-card: 22px;
-  --radius-pill: 999px;
+  --radius-card: 22px; --radius-pill: 999px;
   /* Miniatura del modo lista de búsqueda (feature 9): 10px, redondeo proporcional a 112×63 (su design.md). */
   --radius-thumb: 10px;
 
