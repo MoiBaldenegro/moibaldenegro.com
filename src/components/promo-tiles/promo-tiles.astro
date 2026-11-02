@@ -1,0 +1,26 @@
+---
+// Sección promocional 2x2 de la home (feature 4 promo-tiles-section, REQ-04-08..19).
+// Estática: datos vía PromoTilesRepository y atributos de enlace vía linkAttrs.
+import '../../styles/promo-tiles.css';
+import { PromoTilesRepository } from '../../domain/repositories/promo-tiles-repository.ts';
+import { linkAttrs } from '../../domain/promo-tiles.ts';
+
+const tiles = new PromoTilesRepository().getTiles();
+---
+
+<section class="promo-tiles" aria-labelledby="promo-tiles-title">
+  <h2 id="promo-tiles-title" class="visually-hidden">Proyectos y contenido</h2>
+  <div class="promo-tiles__grid">
+    {tiles.map((tile) => (
+      <article class="promo-tile" data-tone={tile.tone}>
+        <h3 class="promo-tile__title">{tile.title}</h3>
+        <p class="promo-tile__subtitle">{tile.subtitle}</p>
+        <div class="promo-tile__actions">
+          <a class="promo-tile__link promo-tile__link--primary" href={tile.primary.href} {...linkAttrs(tile.primary.href)}>{tile.primary.label}</a>
+          <a class="promo-tile__link promo-tile__link--secondary" href={tile.secondary.href} {...linkAttrs(tile.secondary.href)}>{tile.secondary.label}</a>
+        </div>
+        <img class="promo-tile__image" src={tile.image} alt={tile.imageAlt} width="1920" height="1920" loading="lazy" decoding="async" />
+      </article>
+    ))}
+  </div>
+</section>

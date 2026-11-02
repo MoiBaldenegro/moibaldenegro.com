@@ -53,9 +53,13 @@
   --color-marca-astro: #2E1039; --color-marca-opencode: #101114;
   --color-marca-tauri: #0F2C36;
 
-  /* Color de la tarjeta de perfil — píldora del username, badge
-     verificado y scrollbar (valores actuales de hero.css, extraídos como
-     tokens en la feature 4) */
+  /* Color de la sección promocional (feature 4 promo-tiles-section): fondos muestreados de pic01..04 */
+  --color-promo-youtube: #0e0e10; --color-promo-mfinance: #0d1a1d;
+  --color-promo-new-relic: #0e0b22; --color-promo-tomatesoft: #0b0909;
+  --color-promo-cta: #0071e3; --color-promo-cta-hover: #0077ed;
+  --color-promo-link: #2997ff; --gap-promo: 10px;
+
+  /* Color de la tarjeta de perfil — username, badge verificado y scrollbar (de hero.css, feature 4 previa) */
   --color-username-bg: #081a28;
   --color-username-border: rgba(0,195,255,.35);
   --color-username-text: #5fd6ff;
@@ -66,9 +70,7 @@
   /* Radio */
   --radius-card: 22px;
   --radius-pill: 999px;
-  /* Miniatura del modo lista de búsqueda (feature 9): 22px es un tercio del
-     alto de la miniatura 112×63 y 999px es inaplicable; 10px mantiene el
-     lenguaje redondeado a escala proporcional (design.md de la feature 9). */
+  /* Miniatura del modo lista de búsqueda (feature 9): 10px, redondeo proporcional a 112×63 (su design.md). */
   --radius-thumb: 10px;
 
   /* Espaciado */

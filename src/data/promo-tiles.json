@@ -1,0 +1,44 @@
+{
+  "tiles": [
+    {
+      "id": "youtube-kernel",
+      "title": "Rust en el kernel de Linux",
+      "subtitle": "Programación de sistemas explicada en video, de la memoria al kernel.",
+      "image": "/assets/pic01.webp",
+      "imageAlt": "Video de Moisés Baldenegro en YouTube sobre Rust en el kernel de Linux",
+      "tone": "youtube",
+      "primary": { "label": "Ver en YouTube", "href": "https://www.youtube.com/@moibaldenegro" },
+      "secondary": { "label": "Sobre mí", "href": "/about" }
+    },
+    {
+      "id": "mfinance",
+      "title": "MFinance",
+      "subtitle": "Tus finanzas personales, 100 % locales. Tauri, Rust y React.",
+      "image": "/assets/pic02.webp",
+      "imageAlt": "Página de inicio de MFinance, app de escritorio de finanzas personales",
+      "tone": "mfinance",
+      "primary": { "label": "Ver el código", "href": "https://github.com/MoiBaldenegro/mfinance" },
+      "secondary": { "label": "Más proyectos", "href": "/about" }
+    },
+    {
+      "id": "new-relic",
+      "title": "New Relic for Students",
+      "subtitle": "Ganador del reto de New Relic con Platzi y GitHub Education.",
+      "image": "/assets/pic03.webp",
+      "imageAlt": "Publicación de New Relic for Students con Moisés Melendez entre los ganadores",
+      "tone": "new-relic",
+      "primary": { "label": "Ver en LinkedIn", "href": "https://www.linkedin.com/in/moibaldenegro/" },
+      "secondary": { "label": "Mi experiencia", "href": "/about" }
+    },
+    {
+      "id": "tomatesoft",
+      "title": "Tomatesoft",
+      "subtitle": "Gestiona tu negocio de forma inteligente: punto de venta, mesas y reportes.",
+      "image": "/assets/pic04.webp",
+      "imageAlt": "Página de inicio de Tomatesoft con sus funcionalidades de gestión de negocio",
+      "tone": "tomatesoft",
+      "primary": { "label": "Mi experiencia", "href": "/about" },
+      "secondary": { "label": "Ver GitHub", "href": "https://github.com/MoiBaldenegro" }
+    }
+  ]
+}

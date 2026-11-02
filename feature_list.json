@@ -53,6 +53,25 @@
         "REQ-03-13: la regresión visual a 375, 768 y 1280 px muestra el mosaico completo sin huecos ni solapamientos, con los iconos de node y nestjs legibles en sus nuevos huecos grandes y sin errores en la consola del navegador."
       ],
       "status": "done"
+    },
+    {
+      "id": 4,
+      "name": "promo-tiles-section",
+      "title": "Sección promocional 2x2 estilo Apple tras las cards de artículos",
+      "description": "Petición humana: «después de las cards de los artículos créame una sección inspirada en estas 4 grandes secciones de apple (section.PNG) muy similar; en assets tienen las pic del 1 al 4 para ponerlas ahí en cada cuadro». Sección estática nueva en src/pages/home.astro, dentro de .home__landing justo después de <LatestHorizontal />: cuadrícula 2x2 (1 columna en <=768 px) de cuatro cuadros grandes casi a ancho completo, gap 10 px, sin radios, ~580 px de alto; cada cuadro con título h3, subtítulo, dos enlaces píldora (primario relleno azul, secundario contorneado azul) e imagen inferior public/assets/pic01..04.webp. Las cuatro imágenes tienen fondo oscuro, así que se descarta el tablero claro/negro de Apple: cada cuadro usa un tono oscuro muestreado de su imagen (tokens --color-promo-<tone>) y texto claro. Datos en src/data/promo-tiles.json vía PromoTilesRepository (entidad PromoTile, error PromoTilesDataError, loader inyectable); textos, enlaces y alts exactos en design.md. tokens.css está en 98 líneas: hay que compactar para los 8 tokens nuevos. Las pic0*.webp están sin trackear en git. Spec: specs/04_promo-tiles-section/requirements.md (REQ-04-01..21) y design.md. Análisis: progress/research/promo-tiles-section.md.",
+      "acceptance": [
+        "REQ-04-01/02: PromoTilesRepository().getTiles() devuelve 4 entidades en el orden youtube-kernel, mfinance, new-relic, tomatesoft con image /assets/pic01.webp..pic04.webp y los title, subtitle, imageAlt, tone y enlaces (label y href) exactos de la tabla de specs/04_promo-tiles-section/design.md.",
+        "REQ-04-03/04: con un loader inyectado que entrega un JSON válido de 4 cuadros, el repositorio devuelve entidades con id, title, subtitle, image, imageAlt, tone, primary {label, href} y secondary {label, href} en el orden del JSON.",
+        "REQ-04-05: con un loader que lanza, que entrega texto no JSON, sin array tiles o con 3 o 5 cuadros, el repositorio lanza PromoTilesDataError cuyo mensaje contiene promo-tiles.json.",
+        "REQ-04-06/07: con un cuadro sin title, con subtitle numérico, sin primary.href o con un href \"ftp://x\" o \"www.x.com\", el repositorio lanza PromoTilesDataError cuyo mensaje contiene promo-tiles.json y el índice del cuadro (y el campo cuando falta o tiene tipo erróneo).",
+        "REQ-04-08: en src/pages/home.astro el componente PromoTiles se importa desde src/components/promo-tiles/promo-tiles.astro y aparece dentro de .home__landing inmediatamente después de <LatestHorizontal />.",
+        "REQ-04-09/10/14/19: el componente contiene un h2 \"Proyectos y contenido\" con clase visually-hidden enlazado por aria-labelledby, renderiza por cuadro h3, párrafo, dos enlaces e <img> con alt, width=\"1920\", height=\"1920\", loading=\"lazy\" y decoding=\"async\", importa ../../styles/promo-tiles.css y no contiene <script> ni <style>.",
+        "REQ-04-13: el helper de enlaces devuelve target=\"_blank\" y rel=\"noopener noreferrer\" para un href que empieza por https:// y ningún target ni rel para un href que empieza por /.",
+        "REQ-04-11/12/15/16/17: promo-tiles.css define el fondo de cada cuadro con var(--color-promo-<tone>) para los 4 tonos, el primario con background var(--color-promo-cta) y border-radius var(--radius-pill), el secundario con borde 1px y color var(--color-promo-link), la cuadrícula a 2 columnas con gap var(--gap-promo) y border-radius 0, y una regla @media (max-width: 768px) con una sola columna.",
+        "REQ-04-15/18/20: tokens.css define --color-promo-youtube, --color-promo-mfinance, --color-promo-new-relic, --color-promo-tomatesoft, --color-promo-cta, --color-promo-cta-hover, --color-promo-link y --gap-promo; scripts/audit-design-tokens.mjs queda en verde y ningún archivo nuevo o modificado (tokens.css incluido) supera 100 líneas.",
+        "REQ-04-21: la regresión visual de la home a 375, 768 y 1280 px muestra los cuatro cuadros tras el carrusel de artículos, a 2 columnas en 1280 px y 1 columna en 375/768 px, sin desbordamiento horizontal ni solapamientos y sin errores en la consola del navegador."
+      ],
+      "status": "done"
     }
   ]
 }

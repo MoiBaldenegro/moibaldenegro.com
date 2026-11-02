@@ -99,3 +99,25 @@ salida real en ambos informes.
 - Artefactos: `progress/impl_3.md`, `progress/review_3.md` (APPROVED), `progress/research/hero-cards-swap-positions*`.
 - Pendiente anotado (no bloquea): 404 de `/assets/content/api-auth.webp` en
   `src/content/posts/systems-design/07-auth-api-design.md` (commit previo `e8926ca`); conviene una tarea aparte.
+
+## Sesión 2026-11-02 — Franja MXVI y sección promocional 2x2 (feature 4)
+
+### Franja decorativa MXVI entre hero y artículos (sin feature en backlog)
+
+- Se integraron `mxvi-m` (717x716), `mxvi-x` (805x716), `mxvi-v` (795x716) y `mxvi-i` (190x716); la I
+  conserva sus dos colores y paths originales.
+- `mxvi-logos-banner.astro` entre `NewHero` y `LatestArticles`: M-X-V-I con sus viewBox originales,
+  filtro blanco atenuado y distribución 4 columnas / 2x2 en móvil (commit `5f12fbe`).
+
+### Feature 4 — `promo-tiles-section` (done, APPROVED)
+
+- spec_author da de alta la feature 4. Spec: `specs/04_promo-tiles-section/requirements.md`
+  (REQ-04-01..21) y `design.md`; análisis en `progress/research/promo-tiles-section.md`.
+- Test-first: `tests/promo-tiles-section.test.mjs` y `tests/promo-tiles-section-ui.test.mjs` (10 tests)
+  escritos y vistos en rojo (0/5 pass antes del código).
+- Implementado: `src/data/promo-tiles.json`, entidad `PromoTile`, `PromoTilesRepository` (parseo
+  hermano, `PromoTilesDataError`, loader inyectable), helper `linkAttrs`, componente
+  `src/components/promo-tiles/promo-tiles.astro`, `src/styles/promo-tiles.css` y 8 tokens nuevos
+  (tokens.css compactado, <=100 líneas). Integrado tras `<LatestHorizontal />` en `home.astro`.
+- `./init.sh` en verde (41/41 + build); regresión visual a 375/768/1280 px OK.
+- Artefactos: `progress/impl_promo-tiles-section.md`, `progress/review_promo-tiles-section.md` (APPROVED).
