@@ -149,3 +149,19 @@ salida real en ambos informes.
   (REQ-06-20) verificada por el reviewer.
 - Artefactos: `progress/impl_mxvi-logos-band.md`, `progress/review_mxvi-logos-band.md` (APPROVED),
   `progress/research/mxvi-logos-band-review/`.
+
+## Sesión 2026-11-02 — La cinta MXVI usa la paleta morada del sitio (feature 7)
+
+### Feature 7 — `mxvi-band-site-palette` (done, APPROVED)
+
+- Corrección humana sobre la feature 6: la cinta copiaba el azul de Apple; se conserva el concepto con la paleta del sitio.
+  Spec: `specs/07_mxvi-band-site-palette/` (REQ-07-01..15, requirements.md + design.md); análisis en
+  `progress/research/mxvi-band-site-palette.md`.
+- Test-first: `tests/mxvi-band-site-palette.test.mjs` escrito y visto en rojo (5/9 fallan). En
+  `tests/mxvi-logos-banner.test.mjs` solo se retiraron las aserciones de tokens azules.
+- Implementado: `src/styles/mxvi-logos-banner.css` con degradado hero-mid/hero-top/hero-mid, resplandor radial
+  `--color-glow`, `border-block` con `--color-border` y halo `--color-accent` en hover/focus-visible (filter en la
+  transición); eliminados los tokens `--color-mxvi-band-*` de `src/styles/tokens.css` (se conservan space/opacity).
+- `./init.sh` en verde (66/66 tests, build OK). Revisión visual verificada por el reviewer.
+- Artefactos: `progress/impl_mxvi-band-site-palette.md`, `progress/review_mxvi-band-site-palette.md` (APPROVED),
+  `progress/research/mxvi-band-site-palette-review/`.

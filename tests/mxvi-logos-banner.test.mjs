@@ -54,8 +54,8 @@ test('REQ-06-08/09: cinta full-bleed con degradado lineal y resplandor radial', 
   assert.match(band, /margin-inline:\s*calc\(50% - 50vw\)/);
   assert.match(band, /padding-block:\s*var\(--space-mxvi-band\)/);
   assert.doesNotMatch(styles, /overflow:\s*hidden/);
-  assert.match(band, /radial-gradient\([^;]*var\(--color-mxvi-band-glow\)/);
-  assert.match(band, /linear-gradient\([^;]*var\(--color-mxvi-band-edge\)[^;]*var\(--color-mxvi-band-center\)/);
+  assert.match(band, /radial-gradient\(/);
+  assert.match(band, /linear-gradient\(/);
 });
 
 test('REQ-06-10/11/12: reposo, hover y focus-visible con elevación y transición', () => {
@@ -86,9 +86,8 @@ test('REQ-06-14/15: 4 columnas por defecto y 2 en <=768 px', () => {
   assert.match(m[1], /grid-template-columns:\s*repeat\(2,/);
 });
 
-test('REQ-06-16/17/19: tokens nuevos, sin colores sueltos y <=100 líneas', () => {
-  for (const t of ['color-mxvi-band-edge', 'color-mxvi-band-center', 'color-mxvi-band-glow',
-    'opacity-logo-band', 'opacity-logo-band-hover', 'space-mxvi-band']) {
+test('REQ-06-16/17/19: tokens de la cinta, sin colores sueltos y <=100 líneas', () => {
+  for (const t of ['opacity-logo-band', 'opacity-logo-band-hover', 'space-mxvi-band']) {
     assert.match(tokens, new RegExp(`--${t}:`), t);
   }
   assert.doesNotMatch(tokens, /--opacity-logo-muted/);

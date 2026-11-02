@@ -1,0 +1,209 @@
+{
+  "375": {
+    "left": 0,
+    "right": 375,
+    "width": 375,
+    "height": 210,
+    "vw": 375,
+    "docW": 375,
+    "bg": "radial-gradient(60% 120%, rgba(108, 56, 122, 0.35), rgba(0, 0, 0, 0) 70%), linear-gradient(90deg, rgb(21, 10, 24), rgb(60, 31, 68), rgb(21, 10, 24))",
+    "border": "1px solid rgba(255, 255, 255, 0.08) / 1px solid rgba(255, 255, 255, 0.08)",
+    "text": "",
+    "links": [
+      {
+        "href": "https://github.com/MoiBaldenegro",
+        "t": "_blank",
+        "rel": "noopener noreferrer",
+        "aria": "MXVI M — GitHub"
+      },
+      {
+        "href": "https://github.com/MoiBaldenegro",
+        "t": "_blank",
+        "rel": "noopener noreferrer",
+        "aria": "MXVI X — GitHub"
+      },
+      {
+        "href": "https://github.com/MoiBaldenegro",
+        "t": "_blank",
+        "rel": "noopener noreferrer",
+        "aria": "MXVI V — GitHub"
+      },
+      {
+        "href": "https://github.com/MoiBaldenegro",
+        "t": "_blank",
+        "rel": "noopener noreferrer",
+        "aria": "MXVI I — GitHub"
+      }
+    ],
+    "otherEls": 0,
+    "logos": [
+      [
+        9,
+        176,
+        166,
+        64
+      ],
+      [
+        200,
+        366,
+        166,
+        64
+      ],
+      [
+        9,
+        176,
+        166,
+        64
+      ],
+      [
+        200,
+        366,
+        166,
+        64
+      ]
+    ],
+    "cols": "166.125px 166.125px",
+    "focusFilter": "grayscale(1) brightness(0) invert(1)",
+    "consoleErrors": [
+      "Failed to load resource: the server responded with a status of 404 (Not Found) http://localhost:4400/assets/content/api-auth.webp"
+    ]
+  },
+  "768": {
+    "left": -5,
+    "right": 763,
+    "width": 768,
+    "height": 222.78125,
+    "vw": 768,
+    "docW": 758,
+    "bg": "radial-gradient(60% 120%, rgba(108, 56, 122, 0.35), rgba(0, 0, 0, 0) 70%), linear-gradient(90deg, rgb(21, 10, 24), rgb(60, 31, 68), rgb(21, 10, 24))",
+    "border": "1px solid rgba(255, 255, 255, 0.08) / 1px solid rgba(255, 255, 255, 0.08)",
+    "text": "",
+    "links": [
+      {
+        "href": "https://github.com/MoiBaldenegro",
+        "t": "_blank",
+        "rel": "noopener noreferrer",
+        "aria": "MXVI M — GitHub"
+      },
+      {
+        "href": "https://github.com/MoiBaldenegro",
+        "t": "_blank",
+        "rel": "noopener noreferrer",
+        "aria": "MXVI X — GitHub"
+      },
+      {
+        "href": "https://github.com/MoiBaldenegro",
+        "t": "_blank",
+        "rel": "noopener noreferrer",
+        "aria": "MXVI V — GitHub"
+      },
+      {
+        "href": "https://github.com/MoiBaldenegro",
+        "t": "_blank",
+        "rel": "noopener noreferrer",
+        "aria": "MXVI I — GitHub"
+      }
+    ],
+    "otherEls": 0,
+    "logos": [
+      [
+        14,
+        367,
+        353,
+        64
+      ],
+      [
+        391,
+        744,
+        353,
+        64
+      ],
+      [
+        14,
+        367,
+        353,
+        64
+      ],
+      [
+        391,
+        744,
+        353,
+        64
+      ]
+    ],
+    "cols": "352.797px 352.797px",
+    "focusFilter": "grayscale(1) brightness(0) invert(1)",
+    "consoleErrors": [
+      "Failed to load resource: the server responded with a status of 404 (Not Found) http://localhost:4400/assets/content/api-auth.webp"
+    ]
+  },
+  "1280": {
+    "left": -5,
+    "right": 1275,
+    "width": 1280,
+    "height": 258,
+    "vw": 1280,
+    "docW": 1270,
+    "bg": "radial-gradient(60% 120%, rgba(108, 56, 122, 0.35), rgba(0, 0, 0, 0) 70%), linear-gradient(90deg, rgb(21, 10, 24), rgb(60, 31, 68), rgb(21, 10, 24))",
+    "border": "1px solid rgba(255, 255, 255, 0.08) / 1px solid rgba(255, 255, 255, 0.08)",
+    "text": "",
+    "links": [
+      {
+        "href": "https://github.com/MoiBaldenegro",
+        "t": "_blank",
+        "rel": "noopener noreferrer",
+        "aria": "MXVI M — GitHub"
+      },
+      {
+        "href": "https://github.com/MoiBaldenegro",
+        "t": "_blank",
+        "rel": "noopener noreferrer",
+        "aria": "MXVI X — GitHub"
+      },
+      {
+        "href": "https://github.com/MoiBaldenegro",
+        "t": "_blank",
+        "rel": "noopener noreferrer",
+        "aria": "MXVI V — GitHub"
+      },
+      {
+        "href": "https://github.com/MoiBaldenegro",
+        "t": "_blank",
+        "rel": "noopener noreferrer",
+        "aria": "MXVI I — GitHub"
+      }
+    ],
+    "otherEls": 0,
+    "logos": [
+      [
+        27,
+        283,
+        256,
+        128
+      ],
+      [
+        347,
+        603,
+        256,
+        128
+      ],
+      [
+        667,
+        923,
+        256,
+        128
+      ],
+      [
+        987,
+        1243,
+        256,
+        128
+      ]
+    ],
+    "cols": "256px 256px 256px 256px",
+    "focusFilter": "grayscale(1) brightness(0) invert(1)",
+    "consoleErrors": [
+      "Failed to load resource: the server responded with a status of 404 (Not Found) http://localhost:4400/assets/content/api-auth.webp"
+    ]
+  }
+}

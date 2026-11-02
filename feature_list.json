@@ -106,6 +106,27 @@
       ],
       "depends_on": [5],
       "status": "done"
+    },
+    {
+      "id": 7,
+      "name": "mxvi-band-site-palette",
+      "title": "La cinta MXVI usa la paleta morada del sitio en lugar del azul de Apple",
+      "description": "Corrección humana sobre la feature 6 (mxvi-logos-band): \"está muy bien, pero la estás haciendo idéntica a Apple; es el concepto, tiene que ir con la web, no copiar literal el mismo diseño\". Hoy src/styles/mxvi-logos-banner.css pinta la cinta con un degradado azul (tokens --color-mxvi-band-edge #0b2a7a, --color-mxvi-band-center #2f6fe4, --color-mxvi-band-glow azul claro) que copia la banda de Apple Events y no pega con el sitio oscuro de identidad morada. Esta feature conserva el concepto (cinta full-bleed con degradado lineal + resplandor radial central y los 4 logos-enlace) pero construye el fondo con tokens existentes: degradado lineal 90deg var(--color-hero-mid) -> var(--color-hero-top) -> var(--color-hero-mid) y resplandor radial centrado de var(--color-glow) a transparent; añade border-block 1px solid var(--color-border); en hover y focus-visible del logo redeclara el filtro blanco con un drop-shadow de var(--color-accent) con radio derivado de var(--gap-card) (además de la opacidad y elevación actuales) y añade filter a la transición. Elimina de src/styles/tokens.css los tokens azules (solo los usaba esta cinta) y conserva --space-mxvi-band, --opacity-logo-band y --opacity-logo-band-hover. El componente .astro, los datos y el repositorio no cambian. TDD: tests nuevos en tests/mxvi-band-site-palette.test.mjs (tests/mxvi-logos-banner.test.mjs está en 100 líneas; en él solo se retiran las aserciones de tokens azules de los tests REQ-06-08/09 y REQ-06-16/17/19). Spec en specs/07_mxvi-band-site-palette/ (requirements.md + design.md); análisis en progress/research/mxvi-band-site-palette.md.",
+      "acceptance": [
+        "REQ-07-01/02: un test lee src/styles/mxvi-logos-banner.css y comprueba que la regla .mxvi-logos contiene linear-gradient(90deg, var(--color-hero-mid), var(--color-hero-top), var(--color-hero-mid)) y un radial-gradient centrado con var(--color-glow) que termina en transparent.",
+        "REQ-07-03/04: un test comprueba que ni src/styles/mxvi-logos-banner.css ni src/styles/tokens.css contienen --color-mxvi-band-edge, --color-mxvi-band-center ni --color-mxvi-band-glow.",
+        "REQ-07-05: un test comprueba que src/styles/tokens.css sigue definiendo --space-mxvi-band, --opacity-logo-band y --opacity-logo-band-hover.",
+        "REQ-07-06: un test comprueba que la regla .mxvi-logos declara border-block: 1px solid var(--color-border).",
+        "REQ-07-07/08: un test comprueba que la regla compartida .mxvi-logos__link:hover .mxvi-logos__logo, .mxvi-logos__link:focus-visible .mxvi-logos__logo declara un filter con grayscale(1) brightness(0) invert(1) seguido de drop-shadow(...) que usa var(--gap-card) y var(--color-accent), además de opacity var(--opacity-logo-band-hover) y transform con translateY negativo y scale mayor que 1, y que .mxvi-logos__link:focus-visible conserva outline 2px solid var(--color-text).",
+        "REQ-07-09: un test comprueba que la transition de .mxvi-logos__logo incluye opacity, transform y filter con var(--transition-default).",
+        "REQ-07-10: un test comprueba que @media (prefers-reduced-motion: reduce) declara transition: none y transform: none y no anula opacity ni filter.",
+        "REQ-07-11: un test comprueba que src/styles/mxvi-logos-banner.css no contiene valores hexadecimales, rgb( ni rgba(.",
+        "REQ-07-12/13: los tests de tests/mxvi-logos-banner.test.mjs siguen en verde para full-bleed (width 100vw, margin-inline calc(50% - 50vw), sin overflow hidden), 4 columnas y 2 en <=768 px, enlaces vía MxviLogosRepository sin texto ni script ni style, una vez retiradas solo las aserciones de tokens azules.",
+        "REQ-07-14: un test comprueba que src/styles/mxvi-logos-banner.css, src/styles/tokens.css y los archivos de test tocados tienen como máximo 100 líneas, y ./init.sh termina en verde.",
+        "REQ-07-15: revisión visual (astro dev --background) de la home a 375, 768 y 1280 px: la cinta se ve morada oscura de borde a borde como continuación del hero, con borde fino, los 4 logos completos, halo morado leve en hover/focus, sin scroll horizontal ni errores de consola."
+      ],
+      "depends_on": [6],
+      "status": "done"
     }
   ]
 }

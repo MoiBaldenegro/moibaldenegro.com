@@ -63,9 +63,8 @@
   --color-username-text: #5fd6ff; --color-verified: #0a6f9e;
   --color-scrollbar-thumb: #6C387A; --color-scrollbar-track: #090912;
 
-  /* Cinta MXVI (feature 6 mxvi-logos-band): degradado azul, resplandor, opacidades y padding */
-  --color-mxvi-band-edge: #0b2a7a; --color-mxvi-band-center: #2f6fe4;
-  --color-mxvi-band-glow: rgba(150, 200, 255, .45); --space-mxvi-band: clamp(32px, 5vw, 64px);
+  /* Cinta MXVI (features 6 y 7): padding y opacidades; colores desde la paleta del hero */
+  --space-mxvi-band: clamp(32px, 5vw, 64px);
   --opacity-logo-band: .62; --opacity-logo-band-hover: 1;
 
   /* Radio */
