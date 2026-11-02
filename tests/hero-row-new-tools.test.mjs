@@ -12,16 +12,20 @@ const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const read = (rel) => readFileSync(new URL(`../${rel}`, import.meta.url), 'utf8');
 const lineas = (rel) => read(rel).trimEnd().split('\n');
 const MARCAS = ['bash', 'webassembly', 'astro', 'opencode', 'tauri'];
-const PEQUENAS = MARCAS.filter((m) => m !== 'astro');
+// Ajuste feature 3 (specs/03_hero-cards-swap-positions/): opencode y tauri pasan a la fila 1 (intercambio con html y css),
+// así que REQ-02-02 y REQ-02-06 quedan superados: la fila 2 es ahora bash, webassembly, astro, html, css.
+const FILA = { bash: 2, webassembly: 2, astro: 2, opencode: 1, tauri: 1 };
+const FILA_2 = ['bash', 'webassembly', 'astro', 'html', 'css'];
+const PEQUENAS = FILA_2.filter((m) => m !== 'astro');
 const data = () => JSON.parse(read('src/data/hero-cards.json'));
 const placed = () => layoutHeroCards(new HeroCardsRepository().getCards());
-test('REQ-02-01/02/03/04: las cinco tarjetas de la fila nueva declaran sprite, colorToken, row 2, featured solo en astro y showOnMobile false', () => {
+test('REQ-02-01/02/03/04: las cinco tarjetas de la fila nueva declaran sprite, colorToken, su row, featured solo en astro y showOnMobile false', () => {
   const nuevas = data().filter((c) => MARCAS.includes(c.id));
-  assert.deepEqual(nuevas.map((c) => c.id), MARCAS);
+  assert.deepEqual(nuevas.map((c) => c.id).sort(), [...MARCAS].sort());
   for (const card of nuevas) {
     assert.equal(card.icon, `/assets/svg/sprite.svg#${card.id}`);
     assert.equal(card.colorToken, card.id);
-    assert.equal(card.row, 2);
+    assert.equal(card.row, FILA[card.id], card.id);
     assert.equal(card.category, 'tech');
     assert.equal(card.showOnMobile, false);
     assert.equal(card.href, null);
@@ -34,18 +38,18 @@ test('REQ-02-01/02/03/04: las cinco tarjetas de la fila nueva declaran sprite, c
 test('REQ-02-01: el repositorio expone la fila nueva y las redes sociales pasan a row 3', () => {
   const porId = Object.fromEntries(new HeroCardsRepository().getCards().map((c) => [c.id, c]));
   for (const marca of MARCAS) {
-    assert.equal(porId[marca].row, 2);
+    assert.equal(porId[marca].row, FILA[marca], marca);
     assert.equal(porId[marca].featured, marca === 'astro');
     assert.equal(porId[marca].showOnMobile, false);
     assert.equal(porId[marca].icon, `/assets/svg/sprite.svg#${marca}`);
   }
   const porFila = (n) => data().filter((c) => c.row === n).map((c) => c.id);
-  assert.deepEqual(porFila(1), ['nestjs', 'css', 'react', 'html', 'claude-code']);
+  assert.deepEqual(porFila(1), ['node', 'tauri', 'react', 'opencode', 'claude-code']);
   assert.deepEqual(porFila(3), ['bun', 'claude', 'typescript', 'youtube', 'github']);
 });
-test('REQ-02-05/06/07: la fila 2 del mosaico contiene las cinco marcas con astro en el hueco grande', () => {
+test('REQ-02-05/07 (06 superado por la feature 3): la fila 2 del mosaico es bash, webassembly, astro, html, css con astro en el hueco grande', () => {
   const fila = placed().filter((p) => p.card.row === 2);
-  assert.deepEqual(fila.map((p) => p.card.id), MARCAS);
+  assert.deepEqual(fila.map((p) => p.card.id), FILA_2);
   const porId = Object.fromEntries(fila.map((p) => [p.card.id, p]));
   assert.deepEqual([porId.astro.colSpan, porId.astro.rowSpan], [4, 2]);
   for (const marca of PEQUENAS) assert.deepEqual([porId[marca].colSpan, porId[marca].rowSpan], [2, 2], marca);

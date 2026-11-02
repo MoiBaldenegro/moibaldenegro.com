@@ -3,6 +3,7 @@ import NewHero from '../components/new-hero/new-hero.astro';
 import Layout from '../layouts/Layout.astro';
 import LatestArticles from '../components/latest-articles.astro';
 import LatestHorizontal from '../components/latest-horizontal/latest-horizontal.astro';
+import MxviLogosBanner from '../components/mxvi-logos-banner.astro';
 import SearchLive from '../components/search-live/search-live.astro';
 import { HeroProfileRepository } from '../domain/repositories/hero-profile-repository.ts';
 import { SITE_DESCRIPTION } from '../domain/seo/head.ts';
@@ -17,6 +18,7 @@ const profile = new HeroProfileRepository().getProfile();
 <Layout title={profile.name} description={SITE_DESCRIPTION}>
   <div class="home__landing" data-landing-sections>
     <NewHero/>
+    <MxviLogosBanner/>
     <LatestArticles/>
     <LatestHorizontal />
   </div>

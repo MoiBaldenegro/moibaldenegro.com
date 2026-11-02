@@ -1,0 +1,29 @@
+.mxvi-logos {
+  width: min(var(--container-max), 95%);
+  margin: 0 auto;
+  padding: 28px 0;
+  overflow: hidden;
+}
+
+.mxvi-logos__track {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: center;
+  gap: clamp(18px, 5vw, 72px);
+  min-height: 120px;
+}
+
+.mxvi-logos__logo {
+  display: block;
+  width: 100%;
+  height: clamp(72px, 10vw, 150px);
+  color: var(--color-text);
+  filter: grayscale(1) brightness(0) invert(1);
+  opacity: var(--opacity-logo-muted);
+}
+
+@media (max-width: 768px) {
+  .mxvi-logos { padding: 20px 0; }
+  .mxvi-logos__track { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 24px; min-height: 160px; }
+  .mxvi-logos__logo { height: 64px; }
+}

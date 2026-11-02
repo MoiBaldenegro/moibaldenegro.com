@@ -85,3 +85,17 @@ salida real en ambos informes.
   sin justificación. Conviene restaurarlo.
 - **H6 (reviews)**: `CHECKPOINTS.md` y este `progress/history.md` estaban desactualizados; se
   refrescaron al cerrar la sesión.
+
+## Sesión 2026-11-02 — Intercambio de posiciones en el hero (css/tauri, html/opencode, node/nestjs)
+
+### Feature 3 — `hero-cards-swap-positions` (done, APPROVED)
+
+- spec_author da de alta la feature 3. Spec: `specs/03_hero-cards-swap-positions/` (REQ-03-01..13).
+- Test-first: actualizados `tests/hero-grid-explicit-rows.test.mjs` y `tests/hero-row-new-tools.test.mjs`
+  y nuevo `tests/hero-cards-swap-positions.test.mjs`; rojo observado (8 fallos de 19).
+- `src/data/hero-cards.json`: 3 intercambios (nestjs a la zona superior sin row, node/tauri/opencode a
+  row 1, css/html a row 2); resto de propiedades conservadas. Sin cambios en motor, componentes ni CSS.
+- Suite verde (25/25) y `./init.sh` en verde. Regresión visual (REQ-03-13) verificada por el reviewer.
+- Artefactos: `progress/impl_3.md`, `progress/review_3.md` (APPROVED), `progress/research/hero-cards-swap-positions*`.
+- Pendiente anotado (no bloquea): 404 de `/assets/content/api-auth.webp` en
+  `src/content/posts/systems-design/07-auth-api-design.md` (commit previo `e8926ca`); conviene una tarea aparte.

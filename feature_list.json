@@ -38,6 +38,21 @@
       ],
       "depends_on": [1],
       "status": "done"
+    },
+    {
+      "id": 3,
+      "name": "hero-cards-swap-positions",
+      "title": "Intercambio de posiciones de css/tauri, html/opencode y node/nestjs en el hero",
+      "description": "Petición humana: «en las cards del hero: donde ahora está tauri pon css, es decir intercámbialas de lugar; lo mismo con html y opencode, intercámbialas; y un tercer intercambio: cambia NodeJS y NestJS. Esos 3.» Cambio solo de datos en src/data/hero-cards.json: cada par intercambia su posición en el array y su campo row (nestjs pasa a la zona superior sin row; node a row 1; tauri y opencode a row 1; css y html a row 2). Cada tarjeta conserva sus demás propiedades, incluido featured (decisión: en los tres pares el valor coincide, así que el resultado es el mismo que si fuera posicional). Orden final: htb, rust, aws, cloudflare, nestjs, node, tauri, react, opencode, claude-code, bash, webassembly, astro, html, css, bun, claude, typescript, youtube, github. Test-first: actualizar MAP y la lista de rows en tests/hero-grid-explicit-rows.test.mjs y las aserciones de orden/fila de tests/hero-row-new-tools.test.mjs (REQ-02-02 y REQ-02-06 quedan superados), más un test nuevo de la feature. No se tocan motor, componentes ni CSS. Spec: specs/03_hero-cards-swap-positions/requirements.md (REQ-03-01..13) y design.md. Análisis: progress/research/hero-cards-swap-positions.md.",
+      "acceptance": [
+        "REQ-03-01..06/08: el array de hero-cards.json queda en el orden htb, rust, aws, cloudflare, nestjs, node, tauri, react, opencode, claude-code, bash, webassembly, astro, html, css, bun, claude, typescript, youtube, github; nestjs no declara row, node, tauri y opencode declaran row 1, html y css declaran row 2 y el resto conserva su row.",
+        "REQ-03-07: las tarjetas css, tauri, html, opencode, node y nestjs conservan title, colorToken, icon, category, featured, rotate, scale, iconWidth, showOnMobile y href con los mismos valores que antes del cambio.",
+        "REQ-03-09/10: layoutHeroCards coloca nestjs en el hueco grande de la zona superior (columna 8, fila 5, colSpan 5, rowSpan 2) y node en el hueco grande de la fila 1 (columna 1, fila 7, colSpan 4, rowSpan 2).",
+        "REQ-03-11/12: la fila 1 del mosaico ordenada por columna es node, tauri, react, opencode, claude-code y la fila 2 es bash, webassembly, astro, html, css; la colocación completa de las 20 tarjetas coincide con el MAP documentado en progress/research/hero-cards-swap-positions.md.",
+        "Los tests tests/hero-grid-explicit-rows.test.mjs y tests/hero-row-new-tools.test.mjs se actualizan antes del cambio de datos (se observan en rojo) y ./init.sh queda en verde tras él, sin archivos de más de 100 líneas.",
+        "REQ-03-13: la regresión visual a 375, 768 y 1280 px muestra el mosaico completo sin huecos ni solapamientos, con los iconos de node y nestjs legibles en sus nuevos huecos grandes y sin errores en la consola del navegador."
+      ],
+      "status": "done"
     }
   ]
 }

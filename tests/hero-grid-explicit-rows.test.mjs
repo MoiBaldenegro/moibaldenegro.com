@@ -19,12 +19,12 @@ const rejects = (cards, pattern) => assert.throws(() => layoutHeroCards(cards), 
 // Línea base de la colocación actual (capturada con el motor previo a la feature 1): [id, columna, fila, colSpan, rowSpan].
 // Ajuste feature 2 (spec: specs/02_hero-row-new-tools/requirements.md): la fila nueva de herramientas (bash,
 // webassembly, astro, opencode, tauri) entra como fila 2 y las redes sociales pasan a la fila 3, así que las
-// franjas inferiores cambian de forma legítima (no es una regresión): fila 2 = [bash, webassembly, astro GRANDE,
-// opencode, tauri] y fila 3 = [typescript GRANDE, bun, claude, youtube, github] (el patrón alterno mueve typescript al 1.º hueco).
+// franjas inferiores cambian de forma legítima; fila 3 = [typescript GRANDE, bun, claude, youtube, github]. Ajuste feature 3
+// (specs/03_hero-cards-swap-positions/): se intercambian css<->tauri, html<->opencode y node<->nestjs en sus mismas celdas.
 const MAP = [
-  ['htb', 6, 1, 5, 4], ['rust', 11, 1, 2, 2], ['aws', 11, 3, 2, 2], ['cloudflare', 6, 5, 2, 2], ['node', 8, 5, 5, 2],
-  ['nestjs', 1, 7, 4, 2], ['css', 5, 7, 2, 2], ['react', 7, 7, 2, 2], ['html', 9, 7, 2, 2], ['claude-code', 11, 7, 2, 2],
-  ['bash', 1, 9, 2, 2], ['webassembly', 3, 9, 2, 2], ['astro', 5, 9, 4, 2], ['opencode', 9, 9, 2, 2], ['tauri', 11, 9, 2, 2],
+  ['htb', 6, 1, 5, 4], ['rust', 11, 1, 2, 2], ['aws', 11, 3, 2, 2], ['cloudflare', 6, 5, 2, 2], ['nestjs', 8, 5, 5, 2],
+  ['node', 1, 7, 4, 2], ['tauri', 5, 7, 2, 2], ['react', 7, 7, 2, 2], ['opencode', 9, 7, 2, 2], ['claude-code', 11, 7, 2, 2],
+  ['bash', 1, 9, 2, 2], ['webassembly', 3, 9, 2, 2], ['astro', 5, 9, 4, 2], ['html', 9, 9, 2, 2], ['css', 11, 9, 2, 2],
   ['typescript', 1, 11, 4, 2], ['bun', 5, 11, 2, 2], ['claude', 7, 11, 2, 2], ['youtube', 9, 11, 2, 2], ['github', 11, 11, 2, 2],
 ];
 
@@ -73,7 +73,7 @@ test('REQ-01-12/13: una "social" fuera de la última fila o con "featured" -> He
   rejects([rich(), ...zone(), icon('s0', { category: 'social', row: 1 }), ...fila(1, 'a').slice(1), ...fila(2, 'b')], /s0/);
   rejects([rich(), ...zone(), ...fila(1, 'a'), ...fila(2, 'b', true)], /s0|b2/);
 });
-test('REQ-01-14: la colocación del mosaico es la esperada tras el ajuste de la feature 2 (20 tarjetas)', () => {
+test('REQ-01-14: la colocación del mosaico es la esperada tras los ajustes de las features 2 y 3 (20 tarjetas)', () => {
   const placed = real();
   assert.deepEqual(placed.map((p) => [p.card.id, p.column, p.row, p.colSpan, p.rowSpan]), MAP);
   // H3 (review): comprobación con contenido en lugar de la aserción tautológica real() vs real().
@@ -84,11 +84,11 @@ test('REQ-01-14: la colocación del mosaico es la esperada tras el ajuste de la 
 test('REQ-01-14: hero-cards.json declara "row" en las 15 tarjetas de las franjas inferiores', () => {
   const data = JSON.parse(read('src/data/hero-cards.json'));
   assert.deepEqual(data.filter((c) => c.row !== undefined).map((c) => [c.id, c.row]), [
-    ['nestjs', 1], ['css', 1], ['react', 1], ['html', 1], ['claude-code', 1],
-    ['bash', 2], ['webassembly', 2], ['astro', 2], ['opencode', 2], ['tauri', 2],
+    ['node', 1], ['tauri', 1], ['react', 1], ['opencode', 1], ['claude-code', 1],
+    ['bash', 2], ['webassembly', 2], ['astro', 2], ['html', 2], ['css', 2],
     ['bun', 3], ['claude', 3], ['typescript', 3], ['youtube', 3], ['github', 3],
   ]);
-  assert.deepEqual(data.filter((c) => c.row === undefined).map((c) => c.id), ['htb', 'rust', 'aws', 'cloudflare', 'node']);
+  assert.deepEqual(data.filter((c) => c.row === undefined).map((c) => c.id), ['htb', 'rust', 'aws', 'cloudflare', 'nestjs']);
 });
 test('higiene: los módulos del mosaico cumplen el límite de 100 líneas y no usan aleatoriedad ni fecha', () => {
   const modulos = ['src/domain/hero-grid-layout.ts', 'src/domain/hero-grid-rows.ts', 'src/domain/hero-grid-template.ts', 'src/domain/hero-grid-error.ts', 'src/domain/entities/hero-card.ts', 'src/domain/repositories/hero-cards-parse.ts', 'src/domain/repositories/hero-cards-fields-parse.ts'];

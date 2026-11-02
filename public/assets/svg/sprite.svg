@@ -200,4 +200,21 @@
   <symbol id="claude-code" viewBox="0 0 24 24">
     <path fill="#D97757" fill-rule="evenodd" d="M20.998 10.949H24v3.102h-3v3.028h-1.487V20H18v-2.921h-1.487V20H15v-2.921H9V20H7.488v-2.921H6V20H4.487v-2.921H3V14.05H0V10.95h3V5h17.998v5.949zM6 10.949h1.488V8.102H6v2.847zm10.51 0H18V8.102h-1.49v2.847z"/>
   </symbol>
+  <!-- MXVI Logo M -->
+  <symbol id="mxvi-m" viewBox="0 0 717 716">
+    <path fill="#6C387A" d="M0,2 L0,716 L160,716 L161,302 L351.5,554.3 L551,314.9 L552,686.9 L717,488.7 L717,233.3 L536.4,14.6 L361.5,296.6 L162.8,2 Z"/>
+  </symbol>
+  <!-- MXVI Logo X -->
+  <symbol id="mxvi-x" viewBox="0 0 805 716">
+    <path fill="#6C387A" d="M0,0 L290.9,356.5 L0,713 L213.7,713 L400.5,486.3 L582.3,713 L805,713 L510.1,357.5 L602.1,240.5 L497.5,115.7 L402.5,228.7 L215.7,2 Z"/>
+  </symbol>
+  <!-- MXVI Logo V -->
+  <symbol id="mxvi-v" viewBox="0 0 795 716">
+    <path fill="#F7941D" d="M0,0 L591.3,713 L795,713 L795,0 L603,2 L607,471.1 L214.7,2 Z"/>
+  </symbol>
+  <!-- MXVI Logo I -->
+  <symbol id="mxvi-i" viewBox="0 0 190 716">
+    <path fill="#6C387A" d="M166.7,0 L0,0 L0,166.7 Z"/>
+    <path fill="#F7941D" d="M190,0.3 L0,189.3 L0,713 L190,713 Z"/>
+  </symbol>
 </svg>
