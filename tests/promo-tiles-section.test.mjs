@@ -9,19 +9,19 @@ const ESPERADO = [
   ['youtube-kernel', 'youtube', '/assets/pic01.webp', 'Rust en el kernel de Linux',
     'Programación de sistemas explicada en video, de la memoria al kernel.',
     'Video de Moisés Baldenegro en YouTube sobre Rust en el kernel de Linux',
-    ['Ver en YouTube', 'https://www.youtube.com/@moibaldenegro'], ['Sobre mí', '/about']],
+    ['Ver en YouTube', 'https://www.youtube.com/@moibaldenegro'], ['Sobre mí', '/whoami']],
   ['mfinance', 'mfinance', '/assets/pic02.webp', 'MFinance',
     'Tus finanzas personales, 100 % locales. Tauri, Rust y React.',
     'Página de inicio de MFinance, app de escritorio de finanzas personales',
-    ['Ver el código', 'https://github.com/MoiBaldenegro/mfinance'], ['Más proyectos', '/about']],
+    ['Ver el código', 'https://github.com/MoiBaldenegro/mfinance'], ['Más proyectos', '/whoami']],
   ['new-relic', 'new-relic', '/assets/pic03.webp', 'New Relic for Students',
     'Ganador del reto de New Relic con Platzi y GitHub Education.',
     'Publicación de New Relic for Students con Moisés Melendez entre los ganadores',
-    ['Ver en LinkedIn', 'https://www.linkedin.com/in/moibaldenegro/'], ['Mi experiencia', '/about']],
+    ['Ver en LinkedIn', 'https://www.linkedin.com/in/moibaldenegro/'], ['Mi experiencia', '/whoami']],
   ['tomatesoft', 'tomatesoft', '/assets/pic04.webp', 'Tomatesoft',
     'Gestiona tu negocio de forma inteligente: punto de venta, mesas y reportes.',
     'Página de inicio de Tomatesoft con sus funcionalidades de gestión de negocio',
-    ['Mi experiencia', '/about'], ['Ver GitHub', 'https://github.com/MoiBaldenegro']],
+    ['Mi experiencia', '/whoami'], ['Ver GitHub', 'https://github.com/MoiBaldenegro']],
 ];
 const toTile = ([id, tone, image, title, subtitle, imageAlt, [pl, ph], [sl, sh]]) =>
   ({ id, title, subtitle, image, imageAlt, tone, primary: { label: pl, href: ph }, secondary: { label: sl, href: sh } });

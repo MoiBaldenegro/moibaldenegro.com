@@ -2,8 +2,8 @@
 // Funciones puras: el Layout solo pasa datos (lógica fuera de la UI).
 export const BRAND = 'moisesbaldenegro.com';
 
-// Texto de presentación del sitio (el mismo que muestra /about): descripción
-// de la portada y de /about (REQ-35-07).
+// Texto de presentación del sitio (el mismo que muestra /whoami): descripción
+// de la portada y de /whoami (REQ-35-07).
 export const SITE_DESCRIPTION =
   'Articulos dedicados a la ingeniería de software aplicada, ejemplos, arquitectura, implementaciones y proyectos mas cercanos a proyectos reales.';
 
@@ -14,7 +14,7 @@ export const SEARCH_DESCRIPTION =
 export const NOT_FOUND_DESCRIPTION = 'La página que buscas no existe o cambió de dirección.';
 
 // «<título> | moisesbaldenegro.com»; sin título, la marca; si el título ya la
-// contiene (p. ej. «About — moisesbaldenegro.com»), no la repite.
+// contiene (p. ej. «whoami — moisesbaldenegro.com»), no la repite.
 export function composeTitle(title?: string): string {
   const clean = title?.trim() ?? '';
   if (clean === '') return BRAND;

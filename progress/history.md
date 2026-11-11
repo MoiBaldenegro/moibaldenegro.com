@@ -245,3 +245,14 @@ salida real en ambos informes.
 - `./init.sh` en verde (112/112). Regresión visual dentro del ruido de render.
 - Petición humana recibida durante la feature: renombrar About a `whoami` (feature 14).
 - Artefactos: `progress/impl_mxvi-about.md`, `progress/review_mxvi-about.md` (APPROVED).
+
+## Sesión 2026-11-11 — La página About pasa a llamarse whoami (feature 14)
+
+### Feature 14 — `whoami-page` (done, APPROVED)
+
+- Petición humana: renombrar About a `whoami`, como el comando. Spec: `specs/14_whoami-page/` (REQ-14-01..12).
+- Test-first: `tests/whoami-page.test.mjs` (6 tests) visto en rojo.
+- Implementado: página en /whoami, enlaces del header y footer, 301 de /about y de la raíz,
+  sitemap, JSON-LD y tarjetas promocionales.
+- `./init.sh` en verde (118/118); redirecciones comprobadas en `astro preview`.
+- Artefactos: `progress/impl_whoami-page.md`, `progress/review_whoami-page.md` (APPROVED).

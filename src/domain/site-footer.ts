@@ -19,7 +19,7 @@ export interface FooterColumn {
 
 const NAVIGATION: readonly FooterLink[] = [
   { label: 'Inicio', href: '/home' },
-  { label: 'About', href: '/about' },
+  { label: 'whoami', href: '/whoami' }, // feature 14: como el comando de Unix
   { label: 'Arquitectura', href: '/arquitectura' },
   { label: 'Buscar artículos', href: '/search' },
 ];

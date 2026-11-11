@@ -8,7 +8,7 @@
       "imageAlt": "Video de Moisés Baldenegro en YouTube sobre Rust en el kernel de Linux",
       "tone": "youtube",
       "primary": { "label": "Ver en YouTube", "href": "https://www.youtube.com/@moibaldenegro" },
-      "secondary": { "label": "Sobre mí", "href": "/about" }
+      "secondary": { "label": "Sobre mí", "href": "/whoami" }
     },
     {
       "id": "mfinance",
@@ -18,7 +18,7 @@
       "imageAlt": "Página de inicio de MFinance, app de escritorio de finanzas personales",
       "tone": "mfinance",
       "primary": { "label": "Ver el código", "href": "https://github.com/MoiBaldenegro/mfinance" },
-      "secondary": { "label": "Más proyectos", "href": "/about" }
+      "secondary": { "label": "Más proyectos", "href": "/whoami" }
     },
     {
       "id": "new-relic",
@@ -28,7 +28,7 @@
       "imageAlt": "Publicación de New Relic for Students con Moisés Melendez entre los ganadores",
       "tone": "new-relic",
       "primary": { "label": "Ver en LinkedIn", "href": "https://www.linkedin.com/in/moibaldenegro/" },
-      "secondary": { "label": "Mi experiencia", "href": "/about" }
+      "secondary": { "label": "Mi experiencia", "href": "/whoami" }
     },
     {
       "id": "tomatesoft",
@@ -37,7 +37,7 @@
       "image": "/assets/pic04.webp",
       "imageAlt": "Página de inicio de Tomatesoft con sus funcionalidades de gestión de negocio",
       "tone": "tomatesoft",
-      "primary": { "label": "Mi experiencia", "href": "/about" },
+      "primary": { "label": "Mi experiencia", "href": "/whoami" },
       "secondary": { "label": "Ver GitHub", "href": "https://github.com/MoiBaldenegro" }
     }
   ]

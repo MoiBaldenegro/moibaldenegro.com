@@ -14,14 +14,14 @@ const hasAll = (path, names) => {
 const A = 'src/components/about';
 
 test('REQ-13-01: contenedor de la página con mx-container y mx-stack', () => {
-  hasAll('src/pages/about.astro', ['mx-container', 'mx-stack', 'about']);
+  hasAll('src/pages/whoami.astro', ['mx-container', 'mx-stack', 'about']);
 });
 
 test('REQ-13-02/03/04: encabezado de perfil, redes y CV', () => {
   hasAll(`${A}/about-hero.astro`, ['mx-profile-hero', 'mx-profile-hero__media', 'mx-photo', 'mx-profile-hero__body', 'mx-profile-hero__handle',
     'mx-profile-hero__headline', 'mx-profile-hero__location', 'mx-profile-hero__summary', 'mx-profile-hero__focus',
     'mx-profile-hero__actions', 'mx-social-list--inline', 'mx-button', 'mx-button__icon', 'mx-button--accent']);
-  hasAll('src/pages/about.astro', ['mx-profile-hero__name']);
+  hasAll('src/pages/whoami.astro', ['mx-profile-hero__name']);
 });
 
 test('REQ-13-05: cifras', () => {
@@ -44,7 +44,7 @@ test('REQ-13-08/09/10/11: stack, proyectos, contenido, formación y filosofía',
   for (const name of ['projects', 'content']) {
     hasAll(`${A}/about-${name}.astro`, ['mx-card-grid', 'mx-project-card', 'mx-project-card__name', 'mx-project-card__link', 'mx-project-card__description']);
   }
-  hasAll('src/pages/about.astro', ['mx-text--lead']);
+  hasAll('src/pages/whoami.astro', ['mx-text--lead']);
   hasAll(`${A}/about-credentials.astro`, ['mx-group-card__title--accent', 'mx-entry-list', 'mx-entry-list__name', 'mx-entry-list__meta']);
   hasAll(`${A}/about-philosophy.astro`, ['mx-quote', 'mx-quote__text', 'mx-quote__caption']);
 });

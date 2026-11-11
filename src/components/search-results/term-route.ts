@@ -15,7 +15,7 @@ export function termFromPathname(pathname: string): string {
 }
 
 // REQ-07-10: en /<término> no hay parámetro q que quitar; limpiar navega a
-// la portada /home (feature 116, REQ-116-13: la raíz redirige a /about). En
+// la portada /home (feature 116, REQ-116-13: la raíz redirige a /whoami). En
 // /search (sin término) no hay nada que limpiar y se devuelve el propio path
 // (no-op defensivo, nunca visible en la UI).
 export function clearDestination(pathname: string): string {

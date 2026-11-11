@@ -28,7 +28,7 @@ export function blogPostingJsonLd(post: Post, site: string | URL): BlogPostingJs
     image: new URL(`/assets/content/${post.img}`, site).href,
     datePublished: published,
     dateModified: parseSpanishDate(post.updated) || published,
-    author: { '@type': 'Person', name: post.author, url: new URL('/about', site).href },
+    author: { '@type': 'Person', name: post.author, url: new URL('/whoami', site).href },
     // Mismo canonical que la página (formato directorio con barra final).
     mainEntityOfPage: canonicalUrl(`/posts/${encodeURIComponent(post.id)}/`, site),
   };

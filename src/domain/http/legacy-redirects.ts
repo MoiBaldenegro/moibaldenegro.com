@@ -8,6 +8,7 @@ const LEGACY: Readonly<Record<string, string>> = Object.freeze({
   '/posts/03-principios solid': '/posts/03-principios-solid',
   '/posts/01-diseño-detallado': '/posts/01-diseno-detallado',
   '/posts/02-ciclo-de-vida-y-arquitectura': '/posts/04-ciclo-de-vida-y-arquitectura',
+  '/about': '/whoami', // feature 14 (REQ-14-07): la página de perfil se llama whoami
 });
 
 /** Destino del slug antiguo o null si el pathname no es uno de ellos (o no se puede decodificar). */

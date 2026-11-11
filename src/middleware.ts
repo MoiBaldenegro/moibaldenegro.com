@@ -3,7 +3,8 @@
 //   las cabeceras de seguridad, porque public/_headers solo se aplica a los assets estáticos.
 // - Feature 68 (REQ-68-07..09): 301 de los slugs antiguos de posts (antes en `redirects` de
 //   astro.config.mjs, que generaba un _redirects inválido para Cloudflare).
-// - Feature 116 (REQ-116-05/06): 301 de la raíz '/' a '/about' (la portada vive en /home).
+// - Feature 116 (REQ-116-05/06): 301 de la raíz '/' a la página de perfil (la portada vive en /home).
+// - Feature 14 (REQ-14-07/08): la página de perfil es /whoami; /about responde 301 a /whoami.
 import type { MiddlewareHandler } from 'astro';
 import { withSecurityHeaders } from './domain/http/security-headers.ts';
 import { legacyRedirect } from './domain/http/legacy-redirects.ts';

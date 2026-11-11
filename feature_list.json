@@ -245,6 +245,22 @@
         12
       ],
       "status": "done"
+    },
+    {
+      "id": 14,
+      "name": "whoami-page",
+      "title": "La página About pasa a llamarse whoami",
+      "description": "Petición humana (2026-11-11): la página de perfil se llama whoami, como el comando, en el header, el footer, el título y la URL (/whoami). /about y la raíz responden 301 a /whoami; sitemap, JSON-LD y tarjetas promocionales apuntan a la ruta nueva. Spec: specs/14_whoami-page/requirements.md (REQ-14-01..12) y design.md.",
+      "acceptance": [
+        "La página se sirve en /whoami con título «whoami — moisesbaldenegro.com» y src/pages/about.astro ya no existe.",
+        "El header y el footer muestran el enlace whoami hacia /whoami.",
+        "/about, /about/ y / responden 301 a /whoami.",
+        "Sitemap, JSON-LD y tarjetas promocionales apuntan a /whoami y ningún archivo de src enlaza a /about."
+      ],
+      "depends_on": [
+        13
+      ],
+      "status": "done"
     }
   ]
 }
