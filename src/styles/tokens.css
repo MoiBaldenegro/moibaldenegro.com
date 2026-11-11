@@ -62,6 +62,7 @@
   --color-username-bg: #081a28; --color-username-border: rgba(0,195,255,.35);
   --color-username-text: #5fd6ff; --color-verified: #0a6f9e;
   --color-scrollbar-thumb: #6C387A; --color-scrollbar-track: #090912;
+  --color-danger: #F05B72; --color-success: #39C98A; /* estados de campos y alertas MXVI */
 
   /* Cinta MXVI (features 6 y 7): padding y opacidades; colores desde la paleta del hero */
   --space-mxvi-band: clamp(32px, 5vw, 64px);

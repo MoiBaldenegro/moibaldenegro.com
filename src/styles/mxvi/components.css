@@ -17,6 +17,10 @@
 @import './components/molecules/content.css';
 @import './components/molecules/timeline-item.css';
 @import './components/molecules/code.css';
+@import './components/molecules/facts.css';
+@import './components/molecules/forms.css';
+@import './components/molecules/feedback.css';
+@import './components/molecules/table.css';
 @import './components/molecules/result-row.css';
 @import './components/molecules/brand-tile.css';
 @import './components/molecules/brand-tile-link.css';

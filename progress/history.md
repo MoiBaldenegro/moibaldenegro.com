@@ -269,3 +269,11 @@ salida real en ambos informes.
 - `./init.sh` en verde (125/125). Regresión visual: 0 % en 24 capturas y en los estados interactivos.
 - El sitio queda con tokens.css, la copia mxvi/ y seis hojas propias de comportamiento o de página.
 - Artefactos: `progress/impl_mxvi-article-search.md`, `progress/review_mxvi-article-search.md` (APPROVED).
+
+## Sesión 2026-11-11 — Mantenimiento: resincronización con el design system MXVI
+
+- El design system sumó piezas para apps (formularios, alertas, tabla, datos, segmentado; commits
+  9ca3fc3 y 6280342, a raíz de WoW Armory). Copia resincronizada en `src/styles/mxvi/` (40 hojas).
+- `tokens.css` define `--color-danger` y `--color-success` (paleta semántica de MXVI), que leen las
+  hojas nuevas: REQ-10-08 lo detectó al sincronizar.
+- `./init.sh` en verde. Regresión visual: 0 % en las 24 capturas (about 0.002 %, ruido conocido).

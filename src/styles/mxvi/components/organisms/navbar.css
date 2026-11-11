@@ -71,6 +71,8 @@
   /* The filled search clear button declares visibility: visible; while closed it inherits the panel's. */
   .mx-navbar:not([data-menu='open']) .mx-navbar__menu .mx-search.is-filled .mx-search__clear { visibility: inherit; }
   .mx-navbar__menu .mx-search { flex: none; width: 100%; margin: var(--gap-card) 0 0; }
+  /* A grouped link list (nav.mx-nav-links) stacks like loose links. */
+  .mx-navbar__menu .mx-nav-links { flex-direction: column; align-items: stretch; gap: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
