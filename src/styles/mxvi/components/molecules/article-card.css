@@ -33,6 +33,8 @@
   color: var(--color-accent-hover);
 }
 
+.mx-article-card .mx-meta { margin: 1em 0; }
+
 .mx-article-card__description { margin: 1em 0; color: var(--color-text); line-height: 1.55; }
 
 @media (max-width: 768px) {

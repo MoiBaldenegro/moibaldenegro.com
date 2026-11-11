@@ -1,17 +1,17 @@
 ---
 // Cinta MXVI full-bleed entre hero y artículos (feature 6 mxvi-logos-band, REQ-06-01..18).
-// Estática: logos, href y aria-label vía MxviLogosRepository (feature 5).
-import "../styles/mxvi-logos-banner.css";
+// Estática: logos, href y aria-label vía MxviLogosRepository (feature 5). Feature 12 (REQ-12-09): banda
+// de logo del design system MXVI.
 import { MxviLogosRepository } from "../domain/repositories/mxvi-logos-repository.ts";
 
 const logos = new MxviLogosRepository().getLogos();
 ---
 
-<section class="mxvi-logos">
-  <div class="mxvi-logos__track">
+<section class="mx-logo-band mx-logo-band--bleed">
+  <div class="mx-logo-band__track">
     {logos.map(({ id, viewBox, href, label }) => (
-      <a class="mxvi-logos__link" href={href} aria-label={label} target="_blank" rel="noopener noreferrer">
-        <svg class={`mxvi-logos__logo mxvi-logos__logo--${id}`} viewBox={viewBox} aria-hidden="true" focusable="false">
+      <a class="mx-logo-band__link" href={href} aria-label={label} target="_blank" rel="noopener noreferrer">
+        <svg class="mx-logo-band__logo" viewBox={viewBox} aria-hidden="true" focusable="false">
           <use href={`/assets/svg/sprite.svg#${id}`} />
         </svg>
       </a>

@@ -214,6 +214,22 @@
         10
       ],
       "status": "done"
+    },
+    {
+      "id": 12,
+      "name": "mxvi-home",
+      "title": "La home usa los componentes MXVI",
+      "description": "Fase 3 de 5 del refactor al design system MXVI (petición humana 2026-11-11). Hero Bento, tarjeta de perfil, tarjetas de marca, tarjeta HTB con estadísticas, últimos artículos, banda de logos y tarjetas promocionales pasan a las clases .mx-*; las once hojas propias se eliminan y el movimiento GSAP del sitio apunta a las clases nuevas. Sin cambio visual. Spec: specs/12_mxvi-home/requirements.md (REQ-12-01..16) y design.md.",
+      "acceptance": [
+        "Hero, perfil, tarjetas de marca, HTB, artículos, banda y promo usan las clases mx-* de REQ-12-01..10.",
+        "Los scripts de movimiento localizan .mx-bento, .mx-brand-tile, .mx-article-list y .mx-article-card.",
+        "Las once hojas antiguas no existen y src no usa data-color-token, data-col-span, data-row-span ni data-show-on-mobile.",
+        "La comparación de capturas de la home a 390, 768, 1024 y 1440 px y del modo horizontal a 1440 px no muestra diferencias más allá del ruido de render."
+      ],
+      "depends_on": [
+        11
+      ],
+      "status": "done"
     }
   ]
 }

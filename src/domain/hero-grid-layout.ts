@@ -3,7 +3,7 @@
 // specs/01_hero-grid-explicit-rows/design.md). Reparte los huecos de la plantilla (hero-grid-template.ts):
 // la zona superior (tarjetas de icono sin "row", con la tarjeta rica) y las franjas declaradas por "row"
 // (cinco tarjetas cada una, la featured en el hueco grande). Después calcula la celda de inicio que produce
-// el auto-placement disperso de CSS Grid. El marcado solo emite el tamaño (data-col-span/data-row-span).
+// el auto-placement disperso de CSS Grid. El marcado solo emite el tamaño (data-cols/data-rows, feature 12).
 // Si el mosaico no cierra, lanza HeroGridLayoutError.
 
 import type { HeroCard, HeroGridCard } from './entities/hero-card.ts';

@@ -66,9 +66,9 @@ test('REQ-02-12: el sprite no ha cambiado y contiene los cinco symbols nuevos', 
   if (git.error) { t.skip('git no disponible en este entorno'); return; }
   assert.equal(git.status, 0, 'public/assets/svg/sprite.svg no debe cambiar');
 });
-test('higiene: hero-card.astro importa la hoja nueva y ningún archivo tocado pasa de 100 líneas', () => {
-  assert.match(read('src/components/hero-card.astro'), /import "\.\.\/styles\/hero-card-brands\.css"/);
-  for (const rel of ['src/styles/tokens.css', 'src/styles/hero-card.css', 'src/styles/hero-card-brands.css', 'src/components/hero-card.astro', 'src/data/hero-cards.json', 'tests/hero-row-new-tools.test.mjs', 'tests/hero-row-new-tools-styles.test.mjs']) {
+test('higiene: hero-card.astro marca la tarjeta con data-brand (REQ-12-03) y ningún archivo tocado pasa de 100 líneas', () => {
+  assert.match(read('src/components/hero-card.astro'), /data-brand=\{card\.colorToken\}/);
+  for (const rel of ['src/styles/tokens.css', 'src/styles/mxvi/components/molecules/brand-colors.css', 'src/styles/mxvi/components/molecules/brand-geometry.css', 'src/components/hero-card.astro', 'src/data/hero-cards.json', 'tests/hero-row-new-tools.test.mjs', 'tests/hero-row-new-tools-styles.test.mjs']) {
     assert.ok(lineas(rel).length <= 100, rel);
   }
 });

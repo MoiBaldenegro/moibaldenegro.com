@@ -1,8 +1,4 @@
 ---
-import "../styles/hero-card.css";
-import "../styles/hero-card-accents.css";
-import "../styles/hero-card-link.css";
-import "../styles/hero-card-brands.css";
 import HeroCardArt from "./hero-card-art.astro";
 import type { HeroCard } from "../domain/entities/hero-card.ts";
 import { cardLinkLabel } from "../domain/hero-card-link.ts";
@@ -17,18 +13,19 @@ const { card, colSpan, rowSpan } = Astro.props;
 // Feature 112 (REQ-112-09/10): logo de fondo e icono principal vía hero-card-art.astro (mismo marcado que antes).
 // Feature 107 (REQ-107-08/09): la clasificación de la liga sale del dominio (src/domain/hero-card-link.ts).
 // Feature 110 (REQ-110-01..04): toda liga abre en pestaña nueva; el aviso accesible sale del dominio.
+// Feature 12 (REQ-12-03..05): tarjeta de marca del design system MXVI; fondo y geometría por data-brand.
 const label = cardLinkLabel(card.title, card.href);
 ---
 
-<article class="hero-card" data-color-token={card.colorToken} data-col-span={colSpan} data-row-span={rowSpan} data-show-on-mobile={card.showOnMobile ? 'true' : undefined}>
-  <header class="card-header">
-    <p class="card-title">{card.title}</p>
+<article class="mx-brand-tile" data-brand={card.colorToken} data-cols={colSpan} data-rows={rowSpan} data-hide-mobile={card.showOnMobile ? undefined : true}>
+  <header class="mx-brand-tile__header">
+    <p class="mx-brand-tile__title">{card.title}</p>
   </header>
 
   <HeroCardArt card={card} />
 
   {card.cornerIcon && (
-    <div class="card-corner">
+    <div class="mx-brand-tile__corner">
       <svg aria-hidden="true" focusable="false">
         <use href={card.cornerIcon}/>
       </svg>
@@ -36,6 +33,6 @@ const label = cardLinkLabel(card.title, card.href);
   )}
 
   {card.href && (
-    <a class="card-link" href={card.href} target="_blank" rel="noopener noreferrer"><span class="mx-visually-hidden">{label}</span><span class="card-link__arrow" aria-hidden="true">↗</span></a>
+    <a class="mx-brand-tile__link" href={card.href} target="_blank" rel="noopener noreferrer"><span class="mx-visually-hidden">{label}</span><span class="mx-brand-tile__arrow" aria-hidden="true">↗</span></a>
   )}
 </article>

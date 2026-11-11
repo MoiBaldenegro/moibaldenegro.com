@@ -14,6 +14,7 @@ const rule = (css, selector) => {
   assert.ok(m, `falta la regla ${selector}`);
   return m[1];
 };
+const rules = (css, selector) => [...css.matchAll(new RegExp(`(?:^|[\\s,}])${esc(selector)}\\s*\\{([^}]*)\\}`, 'g'))].map((m) => m[1]).join(';');
 const TONES = ['youtube', 'mfinance', 'new-relic', 'tomatesoft'];
 
 test('REQ-04-08 (sustituido por REQ-08-09): home.astro importa PromoTiles y lo renderiza justo tras <MxviLogosBanner/>', () => {
@@ -26,7 +27,7 @@ test('REQ-04-08 (sustituido por REQ-08-09): home.astro importa PromoTiles y lo r
 
 test('REQ-04-09/10/14/19: estructura del componente, imagen y sin script ni style', () => {
   const c = read(COMPONENT);
-  assert.match(c, /import ['"]\.\.\/\.\.\/styles\/promo-tiles\.css['"]/);
+  assert.doesNotMatch(c, /import ['"].*\.css['"]/); // REQ-12-12: estilos del design system
   assert.match(c, /PromoTilesRepository/, 'los datos llegan vía repositorio');
   assert.match(c, /linkAttrs/, 'la decisión externo/interno vive en el helper');
   const h2 = c.match(/<h2 id="([^"]+)" class="mx-visually-hidden">Proyectos y contenido<\/h2>/); // REQ-11-07
@@ -46,27 +47,30 @@ test('REQ-04-09/10/14/19: estructura del componente, imagen y sin script ni styl
   assert.doesNotMatch(c, /<script|<style/);
 });
 
-test('REQ-04-11/12/15/16/17: promo-tiles.css usa los tokens de la sección', () => {
-  const css = read('src/styles/promo-tiles.css');
-  for (const tone of TONES) {
-    assert.match(rule(css, `.promo-tile[data-tone="${tone}"]`), new RegExp(`background:\\s*var\\(--color-promo-${tone}\\)`));
+test('REQ-04-11/12/15/16/17: las hojas del design system usan los tokens de la sección (REQ-12-10)', () => {
+  const css = read('src/styles/mxvi/components/organisms/promo.css');
+  const buttons = read('src/styles/mxvi/components/atoms/buttons.css');
+  assert.match(rule(css, '.mx-promo-tile'), /background:\s*var\(--color-promo-youtube\)/);
+  for (const tone of TONES.slice(1)) {
+    assert.match(rule(css, `.mx-promo-tile[data-tone="${tone}"]`), new RegExp(`background:\\s*var\\(--color-promo-${tone}\\)`));
   }
-  const primary = rule(css, '.promo-tile__link--primary');
+  const primary = rule(buttons, '.mx-button--cta');
   assert.match(primary, /background:\s*var\(--color-promo-cta\)/);
-  assert.match(primary, /color:\s*var\(--color-text\)/);
-  assert.match(primary, /border-radius:\s*var\(--radius-square\)/);
-  const secondary = rule(css, '.promo-tile__link--secondary');
-  assert.match(secondary, /background:\s*transparent/);
-  assert.match(secondary, /border:\s*1px solid var\(--color-promo-link\)/);
+  assert.match(primary, /border-color:\s*var\(--color-promo-cta\)/);
+  const secondary = rules(buttons, '.mx-button--cta-outline');
+  assert.match(secondary, /border-color:\s*var\(--color-promo-link\)/);
   assert.match(secondary, /color:\s*var\(--color-promo-link\)/);
-  assert.match(secondary, /border-radius:\s*var\(--radius-square\)/);
-  const grid = rule(css, '.promo-tiles__grid');
+  const base = rule(buttons, '.mx-button');
+  assert.match(base, /background:\s*transparent/);
+  assert.match(base, /color:\s*var\(--color-text\)/);
+  assert.match(base, /border-radius:\s*var\(--radius-square\)/);
+  const grid = rule(css, '.mx-promo-grid');
   assert.match(grid, /grid-template-columns:\s*1fr 1fr/);
   assert.match(grid, /gap:\s*var\(--gap-promo\)/);
-  assert.match(rule(css, '.promo-tile'), /border-radius:\s*var\(--radius-square\)\s*;/);
+  assert.match(rule(css, '.mx-promo-tile'), /border-radius:\s*var\(--radius-square\)\s*;/);
   const media = css.slice(css.indexOf('@media (max-width: 768px)'));
   assert.ok(css.includes('@media (max-width: 768px)'), 'falta la media query de 768px');
-  assert.match(rule(media, '.promo-tiles__grid'), /grid-template-columns:\s*1fr\s*;/);
+  assert.match(rule(media, '.mx-promo-grid'), /grid-template-columns:\s*1fr\s*;/);
 });
 
 test('REQ-04-15/18/20: tokens nuevos, audit de colores en verde y archivos <=100 líneas', () => {
@@ -81,7 +85,7 @@ test('REQ-04-15/18/20: tokens nuevos, audit de colores en verde y archivos <=100
   assert.equal(audit.status, 0, String(audit.stderr));
   const archivos = ['src/data/promo-tiles.json', 'src/domain/entities/promo-tile.ts',
     'src/domain/repositories/promo-tiles-repository.ts', 'src/domain/repositories/promo-tiles-parse.ts',
-    'src/domain/promo-tiles.ts', COMPONENT, 'src/styles/promo-tiles.css', 'src/styles/tokens.css',
+    'src/domain/promo-tiles.ts', COMPONENT, 'src/styles/mxvi/components/organisms/promo.css', 'src/styles/tokens.css',
     'src/pages/home.astro', 'tests/promo-tiles-section.test.mjs', 'tests/promo-tiles-section-ui.test.mjs'];
   for (const rel of archivos) assert.ok(read(rel).trimEnd().split('\n').length <= 100, rel);
 });

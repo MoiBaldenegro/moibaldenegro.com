@@ -23,7 +23,7 @@ let mm: gsap.MatchMedia | null = null;
 export function destroy(): void {
   mm?.revert();
   mm = null;
-  const track = document.querySelector<HTMLElement>('.latest-articles__list');
+  const track = document.querySelector<HTMLElement>('.mx-article-list');
   if (track) clearTrack(track);
 }
 
@@ -31,9 +31,9 @@ export function destroy(): void {
 export function init(): void {
   destroy();
   const section = document.querySelector<HTMLElement>('.latest-articles');
-  const track = section?.querySelector<HTMLElement>('.latest-articles__list');
+  const track = section?.querySelector<HTMLElement>('.mx-article-list');
   if (!section || !track) return;
-  const cards = [...track.querySelectorAll<HTMLElement>('.latest-articles__card')];
+  const cards = [...track.querySelectorAll<HTMLElement>('.mx-article-card')];
   if (!cards.length) return;
   mm = gsap.matchMedia();
   mm.add(STACKED, (ctx) => {

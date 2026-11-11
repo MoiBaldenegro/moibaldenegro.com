@@ -5,7 +5,7 @@
 export function clearTrack(track: HTMLElement): void {
   if (track.closest('.latest-articles--horizontal')) return; // el efecto se recreó entretanto
   // Feature 76: también las cards (x propia de la primera y la última).
-  for (const el of [track, ...track.querySelectorAll<HTMLElement>('.latest-articles__card')]) clearInline(el);
+  for (const el of [track, ...track.querySelectorAll<HTMLElement>('.mx-article-card')]) clearInline(el);
 }
 
 function clearInline(el: HTMLElement): void {

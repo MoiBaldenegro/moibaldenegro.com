@@ -1,6 +1,6 @@
-// Entrada y salida tipo lego de las cards del hero (feature 115): mejora progresiva de .hero-grid sin
+// Entrada y salida tipo lego de las cards del hero (feature 115): mejora progresiva de .mx-bento sin
 // marcado propio. JS de runtime justificado: el humano autorizó GSAP para animar cards (features 70/96).
-// Un gsap.matchMedia con una consulta por caso: en <= 768 px solo las cards con data-show-on-mobile
+// Un gsap.matchMedia con una consulta por caso: en <= 768 px solo las cards sin data-hide-mobile
 // (las demás tienen display none, feature 106); con prefers-reduced-motion reduce ninguna consulta
 // casa y no se crean tweens ni ScrollTriggers. La semilla del orden aleatorio sale de Math.random.
 import { gsap } from 'gsap';
@@ -30,13 +30,13 @@ export function destroy(): void {
 /** Inicializa el efecto de forma idempotente. */
 export function init(): void {
   destroy();
-  const grid = document.querySelector<HTMLElement>('.hero-grid');
+  const grid = document.querySelector<HTMLElement>('.mx-bento');
   if (!grid) return;
-  cards = [...grid.querySelectorAll<HTMLElement>(':scope > .hero-card')];
+  cards = [...grid.querySelectorAll<HTMLElement>(':scope > .mx-brand-tile')];
   if (!cards.length) return;
   const rng = createRng(Math.floor(Math.random() * 2 ** 32));
   const all = cards;
   mm = gsap.matchMedia();
-  mm.add(LEGO_MEDIA.mobile, (ctx) => legoMotion(all.filter((card) => card.hasAttribute('data-show-on-mobile')), ctx, rng));
+  mm.add(LEGO_MEDIA.mobile, (ctx) => legoMotion(all.filter((card) => !card.hasAttribute('data-hide-mobile')), ctx, rng));
   mm.add(LEGO_MEDIA.wide, (ctx) => legoMotion(all, ctx, rng));
 }

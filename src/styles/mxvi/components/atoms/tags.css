@@ -80,6 +80,7 @@ a.mx-tag:hover { border-color: var(--color-accent); }
   background: var(--color-verified);
   color: var(--color-text);
   font-size: 0.6rem;
+  font-weight: 400;
 }
 
 @media (max-width: 768px) {

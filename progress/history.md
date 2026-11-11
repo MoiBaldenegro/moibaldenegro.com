@@ -221,3 +221,15 @@ salida real en ambos informes.
   Correcciones subidas al design system (menú móvil y botón del CV).
 - `./init.sh` en verde. Regresión visual: peor diferencia 0.044 % (bordes del logo, proporción real).
 - Artefactos: `progress/impl_mxvi-chrome.md`, `progress/review_mxvi-chrome.md` (APPROVED).
+
+## Sesión 2026-11-11 — La home usa los componentes del design system MXVI (feature 12)
+
+### Feature 12 — `mxvi-home` (done, APPROVED)
+
+- Tercera fase del refactor a mxvi.css. Spec: `specs/12_mxvi-home/` (REQ-12-01..16).
+- Test-first: `tests/mxvi-home.test.mjs` (9 tests) visto en rojo; contratos de features 2, 4, 6, 7 y 9
+  apuntados a las hojas del design system.
+- Implementado: hero Bento, perfil, tarjetas de marca, HTB, artículos, banda y promo con clases
+  `.mx-*` (mxvi-design-system@b646f3b); once hojas eliminadas; GSAP del sitio con selectores mx-*.
+- `./init.sh` en verde (105/105). Regresión visual: 0 % en 24 capturas; modo horizontal igual.
+- Artefactos: `progress/impl_mxvi-home.md`, `progress/review_mxvi-home.md` (APPROVED).

@@ -17,7 +17,7 @@ export const LEGO_RANGE = Object.freeze({ start: 'top 92%', end: 'bottom 8%', ex
 /** Custom properties que anima GSAP; src/styles/hero-cards-motion.css las compone en translate/rotate/scale. */
 export const LEGO_VARS = Object.freeze({ y: '--hero-lego-y', rotate: '--hero-lego-rotate', scale: '--hero-lego-scale' });
 
-/** Consultas del gsap.matchMedia: en <= 768 px solo las cards con data-show-on-mobile (feature 106). */
+/** Consultas del gsap.matchMedia: en <= 768 px solo las cards sin data-hide-mobile (features 106 y 12). */
 export const LEGO_MEDIA = Object.freeze({
   mobile: '(max-width: 768px) and (prefers-reduced-motion: no-preference)',
   wide: '(min-width: 769px) and (prefers-reduced-motion: no-preference)',

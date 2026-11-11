@@ -19,7 +19,6 @@
   display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 1;
   object-fit: cover;
   -webkit-mask-image: linear-gradient(to bottom, var(--color-surface) 50%, transparent 92%);
   mask-image: linear-gradient(to bottom, var(--color-surface) 50%, transparent 92%);
@@ -55,8 +54,15 @@
   line-height: 1.55;
 }
 
+/* Tablet: the photo becomes a 16:9 band above the text. */
+@media (max-width: 1200px) {
+  .mx-profile-card__image { position: relative; aspect-ratio: 16 / 9; }
+  .mx-profile-card__image img { height: 100%; }
+}
+
 @media (max-width: 768px) {
-  .mx-profile-card__image { position: relative; aspect-ratio: 1; }
+  .mx-profile-card__image { aspect-ratio: 1; }
+  .mx-profile-card__description { line-height: 1.6; }
   .mx-profile-card__content { padding: 24px; }
   .mx-profile-card__name { font-size: 2rem; }
 }

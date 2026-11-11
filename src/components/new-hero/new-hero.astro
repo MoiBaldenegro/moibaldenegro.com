@@ -1,7 +1,5 @@
 ---
-import "../../styles/tokens.css";
-import "../../styles/hero-section.css";
-import "../../styles/profile-card.css";
+// Feature 12 (REQ-12-01/02): hero Bento y tarjeta de perfil del design system MXVI; el movimiento es del sitio.
 import "../../styles/hero-cards-motion.css";
 
 import HeroGridCard from "../hero-cards/hero-grid-card.astro";
@@ -14,17 +12,17 @@ const heroCards = layoutHeroCards(new HeroCardsRepository().getCards());
 const profile = new HeroProfileRepository().getProfile();
 ---
 
-<section class="new-hero">
+<section class="mx-hero home-hero">
   <!-- Fondo -->
-  <div class="hero-background">
-    <div class="hero-gradient"></div>
+  <div class="mx-hero__background">
+    <div class="mx-hero__glow"></div>
   </div>
 
   <!-- Contenido -->
-  <div class="hero-grid">
+  <div class="mx-bento">
     <!-- HERO -->
-    <section class="profile-card">
-      <div class="profile-image">
+    <section class="mx-profile-card" data-cols="5" data-rows="6">
+      <div class="mx-profile-card__image">
         <img
           transition:persist="hero-profile"
           src={profile.image}
@@ -34,19 +32,19 @@ const profile = new HeroProfileRepository().getProfile();
           fetchpriority="high"
         />
       </div>
-      <div class="profile-content">
-        <div class="profile-username">
+      <div class="mx-profile-card__content">
+        <span class="mx-handle">
           <span>{profile.username}</span>
           {
             profile.verified && (
-              <span class="verified">
+              <span class="mx-verified">
                 <span aria-hidden="true">✓</span><span class="mx-visually-hidden">Verificado</span>
               </span>
             )
           }
-        </div>
-        <h1>{profile.name}</h1>
-        <p>{profile.description}</p>
+        </span>
+        <h1 class="mx-profile-card__name">{profile.name}</h1>
+        <p class="mx-profile-card__description">{profile.description}</p>
       </div>
     </section>
 

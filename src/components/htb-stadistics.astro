@@ -3,7 +3,6 @@ import { HTB_API_TOKEN as ENV_TOKEN, HTB_USER_ID as ENV_ID } from 'astro:env/ser
 import { env } from 'cloudflare:workers';
 import { HtbProfileRepository } from '../domain/repositories/htb-profile-repository.ts';
 import { HTB_ISLAND_CACHE_CONTROL } from '../domain/http/cache-policy.ts';
-import '../styles/htb-stadistics.css';
 
 const HTB_API_TOKEN = ENV_TOKEN || env.HTB_API_TOKEN;
 const HTB_USER_ID = ENV_ID || env.HTB_USER_ID;
@@ -11,25 +10,25 @@ const HTB_USER_ID = ENV_ID || env.HTB_USER_ID;
 const profile = await new HtbProfileRepository(HTB_API_TOKEN, HTB_USER_ID).getProfileOrNull();
 // REQ-49-03: la isla se pide por GET y es cacheable una hora.
 Astro.response.headers.set('Cache-Control', HTB_ISLAND_CACHE_CONTROL);
-// Feature 92: lista compacta dentro de la card HTB del grid del hero (htb-card.astro).
+// Feature 92: lista compacta dentro de la card HTB del grid del hero (htb-card.astro); clases mx-tile-stats (REQ-12-07).
 ---
 
-<div class="htb-stadistics">
+<div class="mx-tile-stats">
   {profile && (
-    <ul class="htb-stadistics__list">
-      <li class="htb-stadistics__item">
-        <span class="htb-stadistics__label">Nivel</span>
-        <span class="htb-stadistics__value">{profile.rank ?? 'N/D'}</span>
+    <ul class="mx-tile-stats__list">
+      <li class="mx-tile-stats__item">
+        <span class="mx-tile-stats__label">Nivel</span>
+        <span class="mx-tile-stats__value">{profile.rank ?? 'N/D'}</span>
       </li>
-      <li class="htb-stadistics__item">
-        <span class="htb-stadistics__label">Puntos</span>
-        <span class="htb-stadistics__value">{profile.points ?? 'N/D'}</span>
+      <li class="mx-tile-stats__item">
+        <span class="mx-tile-stats__label">Puntos</span>
+        <span class="mx-tile-stats__value">{profile.points ?? 'N/D'}</span>
       </li>
-      <li class="htb-stadistics__item">
-        <span class="htb-stadistics__label">Owns</span>
-        <span class="htb-stadistics__value">{profile.userOwns ?? 'N/D'} user / {profile.systemOwns ?? 'N/D'} root</span>
+      <li class="mx-tile-stats__item">
+        <span class="mx-tile-stats__label">Owns</span>
+        <span class="mx-tile-stats__value">{profile.userOwns ?? 'N/D'} user / {profile.systemOwns ?? 'N/D'} root</span>
       </li>
     </ul>
   )}
-  {!profile && <p class="htb-stadistics__empty">Estadísticas no disponibles</p>}
+  {!profile && <p class="mx-tile-stats__empty">Estadísticas no disponibles</p>}
 </div>

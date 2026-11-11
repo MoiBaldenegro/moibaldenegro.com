@@ -49,26 +49,24 @@ test('REQ-09-04/05: todo valor de radio en src/styles es exactamente var(--radiu
 });
 
 test('REQ-09-06..10: reglas concretas usan var(--radius-square)', () => {
-  const glow = rule(read(`${STYLES}/hero-card.css`), '.hero-card::after');
-  assert.match(glow, SQUARE);
-  assert.match(glow, /radial-gradient\(/);
-  assert.match(rule(read(`${STYLES}/profile-card.css`), '.verified'), SQUARE);
+  // REQ-12-12: tarjetas del hero, perfil y promo vienen del design system (copia en mxvi/).
+  assert.match(rule(read(`${STYLES}/mxvi/components/molecules/brand-tile.css`), '.mx-brand-tile'), SQUARE);
+  assert.match(rule(read(`${STYLES}/mxvi/components/molecules/brand-tile.css`), '.mx-brand-tile::after'), /radial-gradient\(/);
+  assert.match(rule(read(`${STYLES}/mxvi/components/atoms/tags.css`), '.mx-verified'), SQUARE);
   assert.match(rule(read(`${STYLES}/mxvi/base.css`), '::-webkit-scrollbar-thumb'), SQUARE); // REQ-11-02
-  assert.match(rule(read(`${STYLES}/promo-tiles.css`), '.promo-tile'), SQUARE);
+  assert.match(rule(read(`${STYLES}/mxvi/components/organisms/promo.css`), '.mx-promo-tile'), SQUARE);
   assert.match(rule(read(`${STYLES}/about-credentials.css`), '.about-philosophy__quote'), SQUARE);
   assert.match(rule(read(`${STYLES}/about-timeline.css`), '.about-timeline__result'), SQUARE);
 });
 
-test('REQ-09-11: ninguna hoja pierde declaraciones de radio (línea base 54 en 21 hojas, REQ-11-08)', () => {
+test('REQ-09-11: ninguna hoja pierde declaraciones de radio (línea base 37 en 14 hojas, REQ-11-08 y REQ-12-12)', () => {
   const baseline = {
     'about-credentials.css': 2, 'about-hero.css': 5, 'about-projects.css': 3, 'about-skills.css': 2,
     'about-stats.css': 1, 'about-timeline.css': 4, 'about.css': 1, 'article.css': 3, 'code-copy.css': 1,
-    'hero-card-link.css': 2, 'hero-card.css': 2, 'hero-section.css': 1, 'htb-stadistics.css': 1,
-    'latest-articles.css': 4, 'not-found.css': 1, 'post-header.css': 4, 'post-next.css': 2,
-    'post.css': 2, 'profile-card.css': 3, 'promo-tiles.css': 4,
+    'not-found.css': 1, 'post-header.css': 4, 'post-next.css': 2, 'post.css': 2,
     'search-results.css': 6,
   };
-  assert.equal(Object.values(baseline).reduce((a, b) => a + b, 0), 54);
+  assert.equal(Object.values(baseline).reduce((a, b) => a + b, 0), 37);
   for (const [sheet, count] of Object.entries(baseline)) {
     const actual = radii(read(`${STYLES}/${sheet}`)).length;
     assert.ok(actual >= count, `${sheet}: ${actual} < ${count}`);

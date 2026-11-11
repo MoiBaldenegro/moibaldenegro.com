@@ -1,10 +1,14 @@
 /* hero-cards-motion.css — Feature 115: las cards del hero entran y salen como piezas de lego (GSAP,
    src/components/new-hero/hero-cards-lego.ts). GSAP solo anima las custom properties --hero-lego-* y
    opacity; aquí se componen en las propiedades individuales translate, rotate y scale, que se suman al
-   transform del hover de hero-card.css sin pisarlo. transition-property se limita a lo que cambia el
+   transform del hover de .mx-brand-tile sin pisarlo. transition-property se limita a lo que cambia el
    hover para que la transición no interpole cada frame de la animación. Sin estado oculto: sin JS las
-   variables no existen y los respaldos (0px, 0deg, 1) dejan la card en reposo. */
-.hero-grid > .hero-card {
+   variables no existen y los respaldos (0px, 0deg, 1) dejan la card en reposo.
+   Feature 12 (REQ-12-11): tarjetas .mx-brand-tile del design system; el hero de la home ocupa al menos
+   una pantalla (Decisión 3 de specs/12_mxvi-home/design.md). */
+.home-hero { min-height: 100vh; }
+
+.mx-bento > .mx-brand-tile {
   translate: 0 var(--hero-lego-y, 0px);
   rotate: var(--hero-lego-rotate, 0deg);
   scale: var(--hero-lego-scale, 1);
