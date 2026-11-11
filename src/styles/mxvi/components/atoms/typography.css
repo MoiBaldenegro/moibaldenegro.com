@@ -17,7 +17,7 @@
   line-height: 1.2;
 }
 
-.mx-heading--lg { font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem); }
+.mx-heading--lg { font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem); letter-spacing: -0.01em; }
 
 .mx-heading--display {
   font-size: clamp(2.2rem, 4.5vw, 3.6rem);
@@ -40,7 +40,7 @@
 
 .mx-text--secondary { color: var(--color-text-secondary); }
 
-.mx-text--lead { color: var(--color-text-secondary); font-size: 1.2rem; line-height: 1.6; }
+.mx-text--lead { max-width: 70ch; color: var(--color-text-secondary); font-size: 1.2rem; line-height: 1.6; }
 
 .mx-meta { margin: 0; color: var(--color-text-secondary); font-size: 0.9rem; }
 

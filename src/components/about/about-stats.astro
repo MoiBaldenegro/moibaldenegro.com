@@ -1,7 +1,6 @@
 ---
 // Cifras destacadas de /about (feature 82, REQ-82-11): lista de 4 cifras de about.json
 // con el valor en acento y su etiqueta, bajo un h2 mx-visually-hidden.
-import '../../styles/about-stats.css';
 import type { AboutStat } from '../../domain/entities/about-profile.ts';
 
 interface Props {
@@ -11,11 +10,11 @@ interface Props {
 const { stats } = Astro.props;
 ---
 
-<section class="about-stats" aria-labelledby="about-stats-title">
+<section aria-labelledby="about-stats-title">
   <h2 id="about-stats-title" class="mx-visually-hidden">Cifras destacadas</h2>
-  <ul class="about-stats__list">
+  <ul class="mx-stats">
     {stats.map((stat) => (
-      <li><span class="about-stats__value">{stat.value}</span><span class="about-stats__label">{stat.label}</span></li>
+      <li class="mx-stat"><span class="mx-stat__value">{stat.value}</span><span class="mx-stat__label">{stat.label}</span></li>
     ))}
   </ul>
 </section>

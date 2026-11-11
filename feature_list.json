@@ -230,6 +230,21 @@
         11
       ],
       "status": "done"
+    },
+    {
+      "id": 13,
+      "name": "mxvi-about",
+      "title": "La página about usa los componentes MXVI",
+      "description": "Fase 4 de 5 del refactor al design system MXVI (petición humana 2026-11-11). Encabezado de perfil, cifras, experiencia, stack, proyectos, contenido, formación y filosofía pasan a las clases .mx-*; seis hojas propias se eliminan y about.css queda solo con el relleno de la página. Sin cambio visual. Spec: specs/13_mxvi-about/requirements.md (REQ-13-01..13) y design.md.",
+      "acceptance": [
+        "Las secciones de about usan las clases mx-* de REQ-13-01..11.",
+        "Las seis hojas about-* antiguas no existen.",
+        "La comparación de capturas de about a 390, 768, 1024 y 1440 px no muestra diferencias más allá del ruido de render."
+      ],
+      "depends_on": [
+        12
+      ],
+      "status": "done"
     }
   ]
 }

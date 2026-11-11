@@ -1,7 +1,6 @@
 ---
 // Stack de /about (feature 83, REQ-83-10/11): una tarjeta por área de about.json con su nombre
 // en un h3 y los items como lista de píldoras.
-import '../../styles/about-skills.css';
 import type { AboutSkillArea } from '../../domain/entities/about-profile.ts';
 
 interface Props {
@@ -11,14 +10,14 @@ interface Props {
 const { skills } = Astro.props;
 ---
 
-<section class="about-skills" aria-labelledby="about-skills-title">
-  <h2 id="about-skills-title" class="about-skills__title">Stack y habilidades</h2>
-  <div class="about-skills__grid">
+<section class="mx-section" aria-labelledby="about-skills-title">
+  <h2 id="about-skills-title" class="mx-heading mx-heading--lg">Stack y habilidades</h2>
+  <div class="mx-card-grid">
     {skills.map((group) => (
-      <article class="about-skills__card">
-        <h3 class="about-skills__area">{group.area}</h3>
-        <ul class="about-skills__items">
-          {group.items.map((item) => <li>{item}</li>)}
+      <article class="mx-card mx-card--interactive mx-group-card">
+        <h3 class="mx-group-card__title">{group.area}</h3>
+        <ul class="mx-chip-list">
+          {group.items.map((item) => <li class="mx-chip">{item}</li>)}
         </ul>
       </article>
     ))}

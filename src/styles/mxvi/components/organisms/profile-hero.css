@@ -18,6 +18,16 @@
 
 .mx-profile-hero__body p { margin: 0; }
 
+.mx-profile-hero__handle {
+  padding: calc(var(--gap-card) / 3) var(--gap-card);
+  border: 1px solid var(--color-username-border);
+  border-radius: var(--radius-square);
+  background: var(--color-username-bg);
+  color: var(--color-username-text);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
 .mx-profile-hero__name {
   margin: 0;
   color: var(--color-text);
@@ -47,6 +57,8 @@
   gap: var(--gap-card);
   margin-top: calc(var(--gap-card) / 2);
 }
+
+.mx-profile-hero .mx-social-list--inline { justify-content: center; }
 
 @media (min-width: 900px) {
   .mx-profile-hero {

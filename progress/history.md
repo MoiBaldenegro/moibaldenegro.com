@@ -233,3 +233,15 @@ salida real en ambos informes.
   `.mx-*` (mxvi-design-system@b646f3b); once hojas eliminadas; GSAP del sitio con selectores mx-*.
 - `./init.sh` en verde (105/105). Regresión visual: 0 % en 24 capturas; modo horizontal igual.
 - Artefactos: `progress/impl_mxvi-home.md`, `progress/review_mxvi-home.md` (APPROVED).
+
+## Sesión 2026-11-11 — La página about usa los componentes del design system MXVI (feature 13)
+
+### Feature 13 — `mxvi-about` (done, APPROVED)
+
+- Cuarta fase del refactor a mxvi.css. Spec: `specs/13_mxvi-about/` (REQ-13-01..13).
+- Test-first: `tests/mxvi-about.test.mjs` (7 tests) visto en rojo; contrato de radios ajustado.
+- Implementado: encabezado de perfil, cifras, experiencia, stack, proyectos, contenido, formación y
+  filosofía con clases `.mx-*` (mxvi-design-system@aaf91f4); seis hojas eliminadas.
+- `./init.sh` en verde (112/112). Regresión visual dentro del ruido de render.
+- Petición humana recibida durante la feature: renombrar About a `whoami` (feature 14).
+- Artefactos: `progress/impl_mxvi-about.md`, `progress/review_mxvi-about.md` (APPROVED).

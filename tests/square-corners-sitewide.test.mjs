@@ -55,18 +55,18 @@ test('REQ-09-06..10: reglas concretas usan var(--radius-square)', () => {
   assert.match(rule(read(`${STYLES}/mxvi/components/atoms/tags.css`), '.mx-verified'), SQUARE);
   assert.match(rule(read(`${STYLES}/mxvi/base.css`), '::-webkit-scrollbar-thumb'), SQUARE); // REQ-11-02
   assert.match(rule(read(`${STYLES}/mxvi/components/organisms/promo.css`), '.mx-promo-tile'), SQUARE);
-  assert.match(rule(read(`${STYLES}/about-credentials.css`), '.about-philosophy__quote'), SQUARE);
-  assert.match(rule(read(`${STYLES}/about-timeline.css`), '.about-timeline__result'), SQUARE);
+  // REQ-13-12: cita y callout de about vienen del design system.
+  assert.match(rule(read(`${STYLES}/mxvi/components/molecules/content.css`), '.mx-quote'), SQUARE);
+  assert.match(rule(read(`${STYLES}/mxvi/components/molecules/content.css`), '.mx-callout'), SQUARE);
 });
 
-test('REQ-09-11: ninguna hoja pierde declaraciones de radio (línea base 37 en 14 hojas, REQ-11-08 y REQ-12-12)', () => {
+test('REQ-09-11: ninguna hoja pierde declaraciones de radio (línea base 19 en 7 hojas, REQ-11-08, REQ-12-12 y REQ-13-12)', () => {
   const baseline = {
-    'about-credentials.css': 2, 'about-hero.css': 5, 'about-projects.css': 3, 'about-skills.css': 2,
-    'about-stats.css': 1, 'about-timeline.css': 4, 'about.css': 1, 'article.css': 3, 'code-copy.css': 1,
+    'article.css': 3, 'code-copy.css': 1,
     'not-found.css': 1, 'post-header.css': 4, 'post-next.css': 2, 'post.css': 2,
     'search-results.css': 6,
   };
-  assert.equal(Object.values(baseline).reduce((a, b) => a + b, 0), 37);
+  assert.equal(Object.values(baseline).reduce((a, b) => a + b, 0), 19);
   for (const [sheet, count] of Object.entries(baseline)) {
     const actual = radii(read(`${STYLES}/${sheet}`)).length;
     assert.ok(actual >= count, `${sheet}: ${actual} < ${count}`);

@@ -21,16 +21,16 @@ export const prerender = true;
 ---
 
 <Layout title="About — moisesbaldenegro.com" description={SITE_DESCRIPTION}>
-  <div class="about">
+  <div class="mx-container mx-stack about">
     <AboutHero username={profile.username} description={profile.description} image={profile.image} about={about}>
-      <h1 id="about-name" class="about-hero__name" slot="name">{profile.name}</h1>
+      <h1 id="about-name" class="mx-profile-hero__name" slot="name">{profile.name}</h1>
     </AboutHero>
     <AboutStats stats={about.stats} />
     <AboutTimeline experience={about.experience} />
     <AboutSkills skills={about.skills} />
     <AboutProjects projects={about.projects} />
     <AboutContent content={about.content}>
-      <p class="about__intro">{SITE_DESCRIPTION}</p>
+      <p class="mx-text mx-text--lead">{SITE_DESCRIPTION}</p>
     </AboutContent>
     <AboutCredentials education={about.education} certifications={about.certifications} languages={about.languages} />
     <AboutPhilosophy philosophy={about.philosophy} />

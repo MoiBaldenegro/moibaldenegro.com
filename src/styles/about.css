@@ -1,34 +1,9 @@
-/* about.css — Carcasa de la página /about (about.astro; feature 11, carcasa desde la 82).
-   Solo tokens de tokens.css. Las secciones viven en about-hero.css y about-stats.css. */
+/* about.css — Relleno vertical propio de la página about (feature 13, Decisión 1 de
+   specs/13_mxvi-about/design.md). Ancho y espacio entre secciones: .mx-container y .mx-stack del
+   design system MXVI; cada sección usa sus componentes .mx-*. */
 
-.about {
-  width: min(var(--container-max), 95%);
-  margin: auto;
-  padding: calc(var(--gap-card) * 3) 0 calc(var(--gap-card) * 4);
-  background: var(--color-background);
-  color: var(--color-text);
-  display: grid;
-  gap: calc(var(--gap-card) * 2);
-}
-
-.about__section {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-square);
-  padding: calc(var(--gap-card) * 2) calc(var(--gap-card) * 2.5);
-}
-
-/* Presentación del sitio como párrafo destacado (feature 39, REQ-39-05/06):
-   antes era un segundo h1; el único h1 de /about es el nombre. */
-.about__intro {
-  color: var(--color-text-secondary);
-  font-family: var(--font-sans);
-  font-size: 1.2rem;
-  line-height: 1.6;
-  margin: 0;
-}
+.about { padding: calc(var(--gap-card) * 3) 0 calc(var(--gap-card) * 4); }
 
 @media (max-width: 768px) {
   .about { padding: calc(var(--gap-card) * 2) 0 calc(var(--gap-card) * 3); }
-  .about__section { padding: calc(var(--gap-card) * 1.5); }
 }
