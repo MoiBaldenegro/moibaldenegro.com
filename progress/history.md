@@ -196,3 +196,16 @@ salida real en ambos informes.
 - `./init.sh` en verde (79/79 tests, build OK). Revisión visual REQ-09-15/16 verificada.
 - Artefactos: `progress/impl_square-corners-sitewide.md`, `progress/review_square-corners-sitewide.md` (APPROVED),
   `progress/research/square-corners-sitewide.md`.
+
+## Sesión 2026-11-11 — El sitio incorpora las hojas de componentes del design system MXVI (feature 10)
+
+### Feature 10 — `mxvi-foundation` (done, APPROVED)
+
+- Petición humana: refactorizar moibaldenegro.com para usar mxvi.css (copia sincronizada, por fases, push a main).
+  Spec: `specs/10_mxvi-foundation/` (REQ-10-01..11, requirements.md + design.md).
+- Test-first: `tests/mxvi-foundation.test.mjs` (8 tests) visto en rojo (8 fallos).
+- Implementado: `scripts/sync-mxvi.mjs` (stdlib) y copia en `src/styles/mxvi/` (components.css, 33 hojas,
+  manifest.json con sha256, origen mxvi-design-system@5fd0c29); `Layout.astro` la importa. Sin cambio visual.
+- `./init.sh` en verde (87/87 tests, build OK). Regresión visual: 0.000 % en 15 capturas.
+- Artefactos: `progress/impl_mxvi-foundation.md`, `progress/review_mxvi-foundation.md` (APPROVED).
+

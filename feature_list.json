@@ -4,7 +4,12 @@
   "rules": {
     "one_feature_at_a_time": true,
     "require_tests_to_close": true,
-    "valid_status": ["pending", "in_progress", "done", "blocked"]
+    "valid_status": [
+      "pending",
+      "in_progress",
+      "done",
+      "blocked"
+    ]
   },
   "features": [
     {
@@ -36,7 +41,9 @@
         "public/assets/svg/sprite.svg no ha cambiado respecto al repositorio (git diff vacío) y contiene los symbols bash, webassembly, astro, opencode y tauri.",
         "La regresión visual a 375, 768 y 1280 px muestra la fila nueva completa, sin huecos ni solapamientos, con el icono de astro legible en su hueco grande y sin errores en la consola del navegador."
       ],
-      "depends_on": [1],
+      "depends_on": [
+        1
+      ],
       "status": "done"
     },
     {
@@ -104,7 +111,9 @@
         "REQ-06-16/17/19: tokens.css define los 6 tokens nuevos y ya no define --opacity-logo-muted; scripts/audit-design-tokens.mjs queda en verde, mxvi-logos-banner.css no contiene hex ni rgb(a) y ningún archivo tocado (tokens.css incluido) supera 100 líneas.",
         "REQ-06-20: la regresión visual de la home a 375, 768 y 1280 px muestra la cinta azul de borde a borde con los 4 logos completos (2 columnas en 375/768, 4 en 1280), elevación en hover y anillo visible al tabular, sin scroll horizontal ni errores en la consola del navegador."
       ],
-      "depends_on": [5],
+      "depends_on": [
+        5
+      ],
       "status": "done"
     },
     {
@@ -125,7 +134,9 @@
         "REQ-07-14: un test comprueba que src/styles/mxvi-logos-banner.css, src/styles/tokens.css y los archivos de test tocados tienen como máximo 100 líneas, y ./init.sh termina en verde.",
         "REQ-07-15: revisión visual (astro dev --background) de la home a 375, 768 y 1280 px: la cinta se ve morada oscura de borde a borde como continuación del hero, con borde fino, los 4 logos completos, halo morado leve en hover/focus, sin scroll horizontal ni errores de consola."
       ],
-      "depends_on": [6],
+      "depends_on": [
+        6
+      ],
       "status": "done"
     },
     {
@@ -143,7 +154,9 @@
         "REQ-08-10: revisión visual (astro dev --background) de la home a 375, 768 y 1280 px: la cinta aparece debajo del bloque horizontal de artículos y encima de PromoTiles, de borde a borde, sin solaparse con las cards sticky en 1280 px, sin scroll horizontal ni errores de consola.",
         "REQ-08-11: un test comprueba que src/pages/home.astro y los archivos de test tocados tienen como máximo 100 líneas, y ./init.sh termina en verde."
       ],
-      "depends_on": [7],
+      "depends_on": [
+        7
+      ],
       "status": "done"
     },
     {
@@ -162,6 +175,25 @@
         "REQ-09-14: tests/article-images.test.mjs y tests/promo-tiles-section-ui.test.mjs comprueban border-radius: var(--radius-square) en lugar de --radius-card, --radius-pill y el 0 literal, y quedan en verde.",
         "REQ-09-15/16: revisión visual (astro dev --background) de home, /about, /search, un post y /404 a 375, 768 y 1280 px: tarjetas, pills, botones, inputs (incluido el search), miniaturas, badge verificado, outlines de foco y scrollbar se ven rectos; si algún control nativo muestra redondeo del navegador se añade border-radius: var(--radius-square) en su selector; sin errores de consola.",
         "REQ-09-17: un test comprueba que tokens.css, las hojas tocadas y los tests nuevos o modificados tienen como máximo 100 líneas; scripts/audit-design-tokens.mjs y ./init.sh terminan en verde."
+      ],
+      "status": "done"
+    },
+    {
+      "id": 10,
+      "name": "mxvi-foundation",
+      "title": "El sitio incorpora las hojas de componentes del design system MXVI",
+      "description": "Petición humana (2026-11-11): «ahora refactoriza moibaldenegro.com para que use mxvi.css», con copia sincronizada, por fases y push directo a main. Fase 1 de 5: se copian en src/styles/mxvi/ components.css y components/** del design system MXVI (https://github.com/MoiBaldenegro/mxvi-design-system, carpeta mxvi/), con un manifiesto sha256 que impide editar la copia a mano, y Layout.astro las importa. Ningún componente las usa todavía, así que el resultado visual no cambia. Fases siguientes: chrome (navbar, búsqueda, footer), portada, about, artículo/búsqueda/404. Spec: specs/10_mxvi-foundation/requirements.md (REQ-10-01..11) y design.md.",
+      "acceptance": [
+        "src/styles/mxvi/ contiene components.css, la carpeta components/ y manifest.json; cada archivo listado en el manifiesto existe y su sha256 coincide.",
+        "Una hoja añadida a src/styles/mxvi/ sin declarar en el manifiesto, o un archivo declarado y ausente, hace fallar la suite de tests con su nombre.",
+        "Ninguna hoja de src/styles/mxvi/ supera 100 líneas ni contiene hexadecimales, rgb( o rgba(.",
+        "Toda custom property leída en src/styles/mxvi/ está definida en src/styles/tokens.css o en las propias hojas.",
+        "Layout.astro importa ../styles/mxvi/components.css después de tokens.css, layout.css y typography.css.",
+        "scripts/sync-mxvi.mjs solo importa módulos node: y, ejecutado con la carpeta mxvi local del design system, regenera la copia y el manifiesto.",
+        "La comparación de capturas antes y después a 390, 768 y 1440 px de home, about, artículo, búsqueda y 404 no muestra diferencias más allá del ruido de render."
+      ],
+      "depends_on": [
+        9
       ],
       "status": "done"
     }
