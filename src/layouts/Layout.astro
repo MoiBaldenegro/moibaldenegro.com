@@ -1,8 +1,8 @@
 ---
 import "../styles/tokens.css";
-import "../styles/layout.css";
+import "../styles/mxvi/base.css";
 import "../styles/typography.css";
-// Feature 10 (REQ-10-09): componentes .mx-* del design system MXVI (copia sincronizada, scripts/sync-mxvi.mjs).
+// Features 10 y 11 (REQ-10-09, REQ-11-02): base y componentes .mx-* del design system MXVI (copia sincronizada, scripts/sync-mxvi.mjs).
 import "../styles/mxvi/components.css";
 import { Font } from 'astro:assets';
 import { ClientRouter } from 'astro:transitions';
@@ -57,16 +57,16 @@ const social = socialMeta({ title: pageTitle, description, pathname: Astro.url.p
     <ClientRouter />
   </head>
   <body>
-    <a class="skip-link" href="#contenido">Saltar al contenido</a>
-    <header class="site-navbar">
-      <nav>
-        <a aria-current={Astro.url.pathname === '/home' || Astro.url.pathname === '/home/' ? 'page' : undefined} href="/home"><img src="/assets/mxvi_logo.webp" alt="Inicio — moisesbaldenegro.com" width="72" height="25"/></a>
-        <button type="button" class="site-menu__toggle" data-site-menu-toggle aria-controls="site-menu" aria-expanded="false" aria-label="Abrir menú"></button>
-        <div class="site-menu" id="site-menu" data-site-menu>
-          <a aria-current={Astro.url.pathname === '/about' || Astro.url.pathname === '/about/' ? 'page' : undefined} href="/about">About</a>
-          <a aria-current={Astro.url.pathname === '/arquitectura' || Astro.url.pathname === '/arquitectura/' ? 'page' : undefined} href="/arquitectura">Arquitectura</a>
-          <a aria-current={Astro.url.pathname === '/diseno-de-sistemas' || Astro.url.pathname === '/diseno-de-sistemas/' ? 'page' : undefined} href="/diseno-de-sistemas">Diseño de sistemas</a>
-          <a href="https://x.com/moibaldenegro">@moibaldenegro<span class="visually-hidden"> (X, sitio externo)</span></a>
+    <a class="mx-skip-link" href="#contenido">Saltar al contenido</a>
+    <header class="mx-navbar">
+      <nav class="mx-navbar__inner">
+        <a class="mx-logo mx-nav-link" aria-current={Astro.url.pathname === '/home' || Astro.url.pathname === '/home/' ? 'page' : undefined} href="/home"><img src="/assets/mxvi_logo.webp" alt="Inicio — moisesbaldenegro.com" width="72" height="25"/></a>
+        <button type="button" class="mx-icon-button mx-navbar__toggle" data-site-menu-toggle aria-controls="site-menu" aria-expanded="false" aria-label="Abrir menú"></button>
+        <div class="mx-navbar__menu" id="site-menu" data-site-menu>
+          <a class="mx-nav-link" aria-current={Astro.url.pathname === '/about' || Astro.url.pathname === '/about/' ? 'page' : undefined} href="/about">About</a>
+          <a class="mx-nav-link" aria-current={Astro.url.pathname === '/arquitectura' || Astro.url.pathname === '/arquitectura/' ? 'page' : undefined} href="/arquitectura">Arquitectura</a>
+          <a class="mx-nav-link" aria-current={Astro.url.pathname === '/diseno-de-sistemas' || Astro.url.pathname === '/diseno-de-sistemas/' ? 'page' : undefined} href="/diseno-de-sistemas">Diseño de sistemas</a>
+          <a class="mx-nav-link" href="https://x.com/moibaldenegro">@moibaldenegro<span class="mx-visually-hidden"> (X, sitio externo)</span></a>
           <SearchBar />
         </div>
       </nav>

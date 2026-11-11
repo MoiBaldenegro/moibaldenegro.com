@@ -9,7 +9,7 @@ const tiles = new PromoTilesRepository().getTiles();
 ---
 
 <section class="promo-tiles" aria-labelledby="promo-tiles-title">
-  <h2 id="promo-tiles-title" class="visually-hidden">Proyectos y contenido</h2>
+  <h2 id="promo-tiles-title" class="mx-visually-hidden">Proyectos y contenido</h2>
   <div class="promo-tiles__grid">
     {tiles.map((tile) => (
       <article class="promo-tile" data-tone={tile.tone}>

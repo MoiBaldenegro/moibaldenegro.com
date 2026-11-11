@@ -196,6 +196,24 @@
         9
       ],
       "status": "done"
+    },
+    {
+      "id": 11,
+      "name": "mxvi-chrome",
+      "title": "El chrome del sitio (navbar, búsqueda y footer) usa los componentes MXVI",
+      "description": "Fase 2 de 5 del refactor al design system MXVI (petición humana 2026-11-11). El header, el menú móvil, la barra de búsqueda, el enlace de salto y el footer de Layout.astro pasan a las clases .mx-* del design system; layout.css, site-menu.css, search-bar.css, search-bar-icon.css y site-footer.css se eliminan porque mxvi/base.css y las hojas de componentes los reproducen; .visually-hidden pasa a .mx-visually-hidden. Los scripts del sitio se conservan con el selector .mx-navbar. Sin cambio visual. Spec: specs/11_mxvi-chrome/requirements.md (REQ-11-01..12) y design.md.",
+      "acceptance": [
+        "src/styles/mxvi/ incluye base.css declarado en manifest.json y Layout.astro lo importa en lugar de layout.css.",
+        "El header, el enlace de salto, la búsqueda y el footer usan las clases mx-* listadas en REQ-11-03..06.",
+        "Ningún archivo de src usa site-navbar, site-menu, search-bar, site-footer, skip-link ni visually-hidden sin prefijo, y las cinco hojas antiguas ya no existen.",
+        "site-menu.ts localiza el header por .mx-navbar y el botón y el panel por data-site-menu-toggle y data-site-menu.",
+        "typography.css ya no declara la fuente de los enlaces del header ni del campo de búsqueda.",
+        "La comparación de capturas antes y después a 390, 768 y 1440 px de home, about, artículo, búsqueda y 404 no muestra diferencias más allá del ruido de render."
+      ],
+      "depends_on": [
+        10
+      ],
+      "status": "done"
     }
   ]
 }

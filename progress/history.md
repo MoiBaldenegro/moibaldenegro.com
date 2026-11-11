@@ -209,3 +209,15 @@ salida real en ambos informes.
 - `./init.sh` en verde (87/87 tests, build OK). Regresión visual: 0.000 % en 15 capturas.
 - Artefactos: `progress/impl_mxvi-foundation.md`, `progress/review_mxvi-foundation.md` (APPROVED).
 
+## Sesión 2026-11-11 — El chrome del sitio usa los componentes del design system MXVI (feature 11)
+
+### Feature 11 — `mxvi-chrome` (done, APPROVED)
+
+- Segunda fase del refactor a mxvi.css. Spec: `specs/11_mxvi-chrome/` (REQ-11-01..12).
+- Test-first: `tests/mxvi-chrome.test.mjs` (9 tests) visto en rojo; contratos de features 9, 10 y
+  promo-tiles ajustados.
+- Implementado: la copia sincronizada incluye `base.css` (mxvi-design-system@a848482); header, menú
+  móvil, búsqueda y footer con clases `.mx-*`; `.mx-visually-hidden`; cinco hojas antiguas eliminadas.
+  Correcciones subidas al design system (menú móvil y botón del CV).
+- `./init.sh` en verde. Regresión visual: peor diferencia 0.044 % (bordes del logo, proporción real).
+- Artefactos: `progress/impl_mxvi-chrome.md`, `progress/review_mxvi-chrome.md` (APPROVED).

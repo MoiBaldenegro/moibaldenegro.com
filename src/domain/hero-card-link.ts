@@ -8,7 +8,7 @@ export function isExternalHref(href: string | null): boolean {
   return href !== null && href.startsWith('https://');
 }
 
-// Texto oculto (span.visually-hidden) del a.card-link: título, aviso externo si aplica y aviso de pestaña nueva.
+// Texto oculto (span.mx-visually-hidden) del a.card-link: título, aviso externo si aplica y aviso de pestaña nueva.
 export function cardLinkLabel(title: string, href: string | null): string {
   return `${title}${isExternalHref(href) ? EXTERNAL_NOTICE : ''}${NEW_TAB_NOTICE}`;
 }

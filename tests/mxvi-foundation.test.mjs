@@ -52,11 +52,11 @@ test('REQ-10-08: cada custom property leída existe en tokens.css o en las hojas
   for (const name of used) assert.ok(defined.has(name), `${name} no está definida`);
 });
 
-test('REQ-10-09: Layout.astro importa components.css después de tokens, layout y typography', () => {
+test('REQ-10-09: Layout.astro importa components.css después de tokens, base (REQ-11-02) y typography', () => {
   const layout = read('src/layouts/Layout.astro');
   const at = (path) => layout.indexOf(`import "../styles/${path}";`);
   assert.ok(at('mxvi/components.css') > 0, 'falta el import de mxvi/components.css');
-  for (const path of ['tokens.css', 'layout.css', 'typography.css']) assert.ok(at(path) < at('mxvi/components.css'), path);
+  for (const path of ['tokens.css', 'mxvi/base.css', 'typography.css']) assert.ok(at(path) >= 0 && at(path) < at('mxvi/components.css'), path);
 });
 
 test('REQ-10-10: scripts/sync-mxvi.mjs solo importa módulos de node:', () => {
@@ -69,11 +69,12 @@ test('REQ-10-02/03: el script copia una carpeta mxvi local y escribe el manifies
   const root = mkdtempSync(join(tmpdir(), 'mxvi-'));
   const source = join(root, 'mxvi');
   mkdirSync(join(source, 'components', 'atoms'), { recursive: true });
+  writeFileSync(join(source, 'base.css'), 'body { margin: 0; }\n'); // REQ-11-01
   writeFileSync(join(source, 'components.css'), "@import './components/atoms/a.css';\n");
   writeFileSync(join(source, 'components', 'atoms', 'a.css'), '.mx-a { color: var(--color-text); }\n');
   const out = join(root, 'out');
   execFileSync(process.execPath, ['scripts/sync-mxvi.mjs', source, '--out', out]);
   const written = JSON.parse(read(join(out, 'manifest.json')));
-  assert.deepEqual(Object.keys(written.files).sort(), ['components.css', 'components/atoms/a.css']);
+  assert.deepEqual(Object.keys(written.files).sort(), ['base.css', 'components.css', 'components/atoms/a.css']);
   assert.equal(written.files['components/atoms/a.css'], sha256(join(out, 'components', 'atoms', 'a.css')));
 });

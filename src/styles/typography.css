@@ -14,11 +14,9 @@ h2 {
   font-synthesis: none;
 }
 
-/* Feature 87 (REQ-87-01..04): Geist Pixel también en el header, los títulos de las cards y los
-   tags. Selectores con ancestro para ganar a var(--font-sans) de search-bar.css y post-next.css
-   sin depender del orden del bundle. Iconos (hamburguesa, limpiar) y meta/descripción siguen en Sans. */
-.site-navbar nav a,
-.site-navbar .search-bar__input,
+/* Feature 87 (REQ-87-01..04): Geist Pixel en los títulos de las cards y los tags. El header y
+   el buscador usan las clases mx-* del design system (feature 11). Selectores con ancestro para
+   ganar a var(--font-sans) de post-next.css sin depender del orden del bundle. */
 .hero-card .card-title,
 .latest-articles__title,
 .post__related .post__related-link,

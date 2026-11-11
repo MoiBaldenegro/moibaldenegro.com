@@ -29,7 +29,7 @@ test('REQ-04-09/10/14/19: estructura del componente, imagen y sin script ni styl
   assert.match(c, /import ['"]\.\.\/\.\.\/styles\/promo-tiles\.css['"]/);
   assert.match(c, /PromoTilesRepository/, 'los datos llegan vía repositorio');
   assert.match(c, /linkAttrs/, 'la decisión externo/interno vive en el helper');
-  const h2 = c.match(/<h2 id="([^"]+)" class="visually-hidden">Proyectos y contenido<\/h2>/);
+  const h2 = c.match(/<h2 id="([^"]+)" class="mx-visually-hidden">Proyectos y contenido<\/h2>/); // REQ-11-07
   assert.ok(h2, 'falta el h2 visually-hidden');
   assert.match(c, new RegExp(`aria-labelledby="${esc(h2[1])}"`));
   const body = c.slice(c.lastIndexOf('---'));

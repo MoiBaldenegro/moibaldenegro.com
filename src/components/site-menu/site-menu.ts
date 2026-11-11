@@ -28,7 +28,7 @@ export function initSiteMenu(
   media: Media = window.matchMedia('(max-width: 969px)'),
   searchWillHandle: (event: Event) => boolean = defaultSearchWillHandle,
 ): void {
-  const header = root.querySelector('.site-navbar') as Header | null;
+  const header = root.querySelector('.mx-navbar') as Header | null;
   const button = header?.querySelector('[data-site-menu-toggle]') as HTMLElement | null;
   const panel = header?.querySelector('[data-site-menu]') as HTMLElement | null;
   if (!header || !button || !panel) return;

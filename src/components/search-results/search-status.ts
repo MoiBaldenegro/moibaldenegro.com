@@ -1,5 +1,5 @@
 // Región de estado de la búsqueda (feature 36, REQ-36-03..07). El mensaje se
-// escribe en un único nodo role="status" aria-live="polite" (visually-hidden)
+// escribe en un único nodo role="status" aria-live="polite" (mx-visually-hidden)
 // para que los lectores de pantalla anuncien el resultado sin leer la lista.
 export const ANNOUNCE_DELAY_MS = 300;
 

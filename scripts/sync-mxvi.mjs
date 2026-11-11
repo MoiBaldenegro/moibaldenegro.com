@@ -1,5 +1,5 @@
-// Sincroniza las hojas de componentes del design system MXVI (feature 10, REQ-10-02/03/10).
-// Copia components.css y cada hoja que importa (components/**) en src/styles/mxvi/ y escribe
+// Sincroniza las hojas del design system MXVI (features 10 y 11, REQ-10-02/03/10, REQ-11-01).
+// Copia base.css, components.css y cada hoja que importa (components/**) en src/styles/mxvi/ y escribe
 // manifest.json con el origen y el sha256 de cada archivo. La copia no se edita a mano: para
 // cambiar un componente se cambia en el design system y se vuelve a ejecutar este script.
 //
@@ -16,7 +16,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const REPO = 'MoiBaldenegro/mxvi-design-system';
-const ENTRY = 'components.css';
+const ENTRIES = ['base.css', 'components.css'];
 
 function parseArgs(argv) {
   const args = { source: undefined, out: join(ROOT, 'src', 'styles', 'mxvi'), ref: 'main' };
@@ -63,7 +63,8 @@ async function collect(reader, file, files = new Map()) {
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   const reader = args.source ? localReader(args.source) : await remoteReader(args.ref);
-  const files = await collect(reader, ENTRY);
+  const files = new Map();
+  for (const entry of ENTRIES) await collect(reader, entry, files);
 
   rmSync(args.out, { recursive: true, force: true });
   const manifest = { source: reader.origin, files: {} };
