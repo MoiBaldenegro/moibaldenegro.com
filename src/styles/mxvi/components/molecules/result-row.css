@@ -22,6 +22,8 @@
 
 .mx-result-row__link { color: var(--color-text); font-size: 1.05rem; line-height: 1.35; text-decoration: none; }
 
+.mx-result-row__title { margin: 0; font-size: inherit; }
+
 .mx-result-row__link::after { content: ''; position: absolute; inset: 0; }
 
 .mx-result-row__link:hover { text-decoration: underline; }
@@ -44,4 +46,5 @@
 @media (max-width: 768px) {
   .mx-result-row { padding: 12px 6px; }
   .mx-result-row .mx-thumb { display: none; }
+  .mx-result-row__title { font-size: 1rem; }
 }

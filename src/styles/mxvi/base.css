@@ -6,6 +6,9 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
+/* hidden always wins over the display of a component (lists, pagination, notices). */
+[hidden] { display: none !important; }
+
 /* height: 100% keeps the sticky header within one viewport. */
 html, body { margin: 0; width: 100%; height: 100%; }
 

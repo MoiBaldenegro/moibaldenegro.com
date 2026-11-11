@@ -1,17 +1,13 @@
 /* search-live.css — Panel de resultados en vivo de la portada (feature 5,
-   REQ-05-01..07). Solo tokens existentes de tokens.css (design.md). La
-   presentación de tarjetas/empty es la de search-results.css (REQ-05-04):
-   el wrapper importa la hoja canónica de la feature 3. */
+   REQ-05-01..07). Solo tokens existentes de tokens.css (design.md). Filas y
+   aviso vacío son .mx-result-list y .mx-notice del design system MXVI, y
+   [hidden] gana al display propio desde mxvi/base.css (feature 15). */
 
 .search-live {
   width: min(var(--container-max), 95%);
   margin: auto;
   padding: 32px 0 64px;
 }
-
-/* [hidden] gana al display propio (modo landing/resultados, REQ-05-01/02) */
-.search-live[hidden],
-.home__landing[hidden] { display: none; }
 
 .search-live__all {
   display: inline-block;

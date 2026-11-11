@@ -33,5 +33,6 @@
 @import './components/organisms/timeline.css';
 @import './components/organisms/post.css';
 @import './components/organisms/prose.css';
+@import './components/organisms/post-related.css';
 @import './components/organisms/promo.css';
 @import './components/organisms/logo-band.css';

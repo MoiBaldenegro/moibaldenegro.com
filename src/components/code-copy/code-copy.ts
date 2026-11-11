@@ -15,7 +15,7 @@ const LABEL_DONE = '¡Copiado!';
 // code-copy.astro) y texto visible «Copiado» durante 2000 ms.
 const STATUS_DONE = 'Código copiado';
 const STATUS_FAIL = 'No se pudo copiar el código';
-const DONE_HTML = `${ICON_COPY}<span class="code-copy__done">Copiado</span>`;
+const DONE_HTML = `${ICON_COPY}<span>Copiado</span>`; // feature 15: separación por gap de .mx-code__copy
 const DONE_MS = 2000;
 
 export function initCodeCopy(): void {
@@ -29,7 +29,7 @@ export function initCodeCopy(): void {
     pre.dataset.copyReady = 'true';
     const button = document.createElement('button');
     button.type = 'button';
-    button.className = 'code-copy';
+    button.className = 'mx-code__copy';
     button.setAttribute('aria-label', LABEL_COPY);
     button.innerHTML = ICON_COPY;
     button.addEventListener('click', () => copyBlock(pre, button));
@@ -38,11 +38,11 @@ export function initCodeCopy(): void {
 }
 
 // Feature 62: el pre tiene overflow-x: auto; si el botón colgara de él se iría con
-// el scroll horizontal. Se envuelve en div.code-block (position: relative) y el
+// el scroll horizontal. Se envuelve en div.mx-code (position: relative, feature 15) y el
 // botón se ancla al envoltorio, que no se desplaza.
 function wrapBlock(pre: HTMLElement): HTMLElement {
   const wrap = document.createElement('div');
-  wrap.className = 'code-block';
+  wrap.className = 'mx-code';
   pre.parentNode?.insertBefore(wrap, pre);
   wrap.appendChild(pre);
   return wrap;

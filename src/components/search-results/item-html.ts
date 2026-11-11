@@ -6,17 +6,18 @@
 import type { SearchIndexEntry } from '../../domain/search/index.ts';
 
 export function itemHtml(entry: SearchIndexEntry): string {
-  const tags = entry.tags.map((t) => `<span class="search-results__tag">#${esc(t)}</span>`).join('');
+  // Feature 15 (REQ-15-07): fila de resultado del design system MXVI.
+  const tags = entry.tags.map((t) => `<li class="mx-tag mx-tag--sm">#${esc(t)}</li>`).join('');
   return [
-    '<li class="search-results__item">',
-    `<img class="search-results__thumb" src="/assets/content/${esc(entry.img)}" alt="" width="1376" height="768" loading="lazy" decoding="async" />`,
-    '<div class="search-results__body">',
-    `<a class="search-results__link" href="/posts/${esc(entry.id)}">`,
-    `<h2 class="search-results__title">${esc(entry.title)}</h2>`,
+    '<li class="mx-result-row">',
+    `<img class="mx-thumb" src="/assets/content/${esc(entry.img)}" alt="" width="1376" height="768" loading="lazy" decoding="async" />`,
+    '<div class="mx-result-row__body">',
+    `<a class="mx-result-row__link" href="/posts/${esc(entry.id)}">`,
+    `<h2 class="mx-result-row__title">${esc(entry.title)}</h2>`,
     '</a>',
-    `<p class="search-results__meta">Por ${esc(entry.author)} • ${entry.readtime} min de lectura</p>`,
-    `<p class="search-results__description">${esc(entry.description)}</p>`,
-    `<div class="search-results__tags">${tags}</div>`,
+    `<p class="mx-result-row__meta">Por ${esc(entry.author)} • ${entry.readtime} min de lectura</p>`,
+    `<p class="mx-result-row__description">${esc(entry.description)}</p>`,
+    `<ul class="mx-tag-list">${tags}</ul>`,
     '</div>',
     '</li>',
   ].join('');

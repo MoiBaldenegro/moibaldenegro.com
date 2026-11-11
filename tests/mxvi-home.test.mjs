@@ -74,5 +74,6 @@ test('REQ-12-13: src no usa los atributos antiguos de las tarjetas', () => {
 });
 
 test('REQ-12-14: typography.css ya no declara la fuente de las tarjetas del hero ni de los artículos', () => {
-  assert.doesNotMatch(read('src/styles/typography.css'), /hero-card|card-title|latest-articles__/);
+  // REQ-15-11: typography.css se elimina; mientras exista no declara estas reglas.
+  if (existsSync('src/styles/typography.css')) assert.doesNotMatch(read('src/styles/typography.css'), /hero-card|card-title|latest-articles__/);
 });

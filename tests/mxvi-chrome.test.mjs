@@ -68,5 +68,6 @@ test('REQ-11-10: el menú móvil localiza .mx-navbar y conserva los data-*', () 
 });
 
 test('REQ-11-11: typography.css ya no declara la fuente del header ni del campo de búsqueda', () => {
-  assert.doesNotMatch(read('src/styles/typography.css'), /site-navbar|search-bar/);
+  // REQ-15-11: typography.css se elimina; mientras exista no declara estas reglas.
+  if (existsSync('src/styles/typography.css')) assert.doesNotMatch(read('src/styles/typography.css'), /site-navbar|search-bar/);
 });

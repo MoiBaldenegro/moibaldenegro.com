@@ -1,8 +1,9 @@
-/* article.css — Estilos del contenido embebido del cuerpo del artículo
-   (feature 11). El cuerpo markdown puede contener iframes de video
-   (02-principios.md). Scoping bajo .post__content (design.md Decisión 2). */
+/* article.css — Ganchos del contenido Markdown de los artículos dentro de .mx-prose (feature 15,
+   Decisión 1 de specs/15_mxvi-article-search/design.md): vídeo incrustado, figura .post-image y el
+   fondo de los bloques de Shiki (su style en línea pide !important). La prosa, las imágenes y el
+   bloque de código vienen del design system MXVI. Solo tokens de tokens.css. */
 
-.post__content .video-container {
+.mx-prose .video-container {
   width: 100%;
   max-width: 100%;
   aspect-ratio: 16 / 9;
@@ -11,64 +12,14 @@
   border-radius: var(--radius-square);
 }
 
-.post__content .video-container iframe {
-  display: block;
-  width: 100%;
-  height: 100%;
-  border: 0;
-}
+.mx-prose .video-container iframe { display: block; width: 100%; height: 100%; border: 0; }
 
-.post__content img {
-  display: block;
-  width: auto;
-  max-width: 100%;
-  height: auto;
-  margin: var(--gap-card) auto 32px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-square);
-  box-shadow: var(--shadow-card-rest);
-  background: var(--color-surface);
-}
+.mx-prose .post-image { width: 100%; margin: var(--gap-card) 0 32px; }
 
-.post__content .post-image {
-  width: 100%;
-  margin: var(--gap-card) 0 32px;
-}
+.mx-prose .post-image img { margin: 0 auto; }
 
-.post__content .post-image img {
-  margin: 0 auto;
-}
-
-/* Desktop (feature 16): el video acotado y centrado, «un poco más pequeño»
-   solo en escritorio. Breakpoint complementario de los max-width: 768px
-   existentes; en ≤768px la regla base conserva el full-width (REQ-11-02/05). */
 @media (min-width: 769px) {
-  .post__content .video-container {
-    max-width: var(--video-max-width);
-    margin: var(--gap-card) auto;
-  }
+  .mx-prose .video-container { max-width: var(--video-max-width); margin: var(--gap-card) auto; }
 }
 
-@media (max-width: 768px) {
-  .post__content img {
-    margin-bottom: 24px;
-    border-radius: var(--radius-square);
-  }
-}
-
-/* Bloques de código resaltados por Shiki (fix 2026-09-19: ```text de
-   02-principios y ```c# de 03-principios_solid). Shiki inyecta el fondo del
-   tema github-dark inline en el pre y ese negro rompe la superficie del
-   sitio: se iguala a --color-surface con !important (precedente
-   hero-card.css: el estilo inline de terceros solo cede ante !important).
-   El code interno queda transparente y sin el padding del código inline. */
-.post__content pre.astro-code {
-  background: var(--color-surface) !important;
-  border-color: var(--color-border);
-  color: var(--color-text);
-}
-
-.post__content pre.astro-code code {
-  background: transparent;
-  padding: 0;
-}
+.mx-prose pre.astro-code { background: var(--color-surface) !important; border-color: var(--color-border); color: var(--color-text); }

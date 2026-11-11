@@ -1,14 +1,13 @@
 ---
-import '../../styles/search-results.css';
 import '../../styles/search-live.css';
 ---
 
 <section class="search-live" data-search-live aria-label="Resultados en vivo" hidden>
   <p class="mx-visually-hidden" role="status" aria-live="polite" data-search-status></p>
-  <div class="search-results__empty" data-search-empty hidden>
-    <p class="search-results__empty-message">No se encontraron resultados para '<span data-search-term></span>'</p>
+  <div class="mx-notice" data-search-empty hidden>
+    <p class="mx-notice__text mx-notice__text--lg">No se encontraron resultados para '<span data-search-term></span>'</p>
   </div>
-  <ul class="search-results__list" data-search-list hidden></ul>
+  <ul class="mx-result-list" data-search-list hidden></ul>
   <a class="search-live__all" data-search-all href="/search" hidden>Ver todos los resultados</a>
 </section>
 

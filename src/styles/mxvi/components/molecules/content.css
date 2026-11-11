@@ -65,6 +65,15 @@
 
 .mx-notice__text { margin: 0; color: var(--color-text-secondary); line-height: 1.55; }
 
+.mx-notice__text--lg { font-size: 1.05rem; }
+
+/* Page notice (not found): even padding and a page-sized title. */
+.mx-notice--page { padding: calc(var(--gap-card) * 2); }
+
+.mx-notice__title--lg { font-size: 1.75rem; }
+
+.mx-notice--page .mx-notice__text { line-height: normal; }
+
 .mx-notice__actions { display: flex; flex-wrap: wrap; gap: var(--gap-card); margin-top: var(--gap-card); }
 
 @media (max-width: 768px) {

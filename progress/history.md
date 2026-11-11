@@ -256,3 +256,16 @@ salida real en ambos informes.
   sitemap, JSON-LD y tarjetas promocionales.
 - `./init.sh` en verde (118/118); redirecciones comprobadas en `astro preview`.
 - Artefactos: `progress/impl_whoami-page.md`, `progress/review_whoami-page.md` (APPROVED).
+
+## Sesión 2026-11-11 — Artículo, búsqueda y 404 usan los componentes del design system MXVI (feature 15)
+
+### Feature 15 — `mxvi-article-search` (done, APPROVED)
+
+- Quinta y última fase del refactor a mxvi.css. Spec: `specs/15_mxvi-article-search/` (REQ-15-01..13).
+- Test-first: `tests/mxvi-article-search.test.mjs` (7 tests) visto en rojo; contratos ajustados.
+- Implementado: cabecera, prosa, copiar código, siguiente y recomendados; búsqueda, resultados en
+  vivo y 404 con clases `.mx-*` (mxvi-design-system@b8edcc7); siete hojas eliminadas, incluida
+  typography.css.
+- `./init.sh` en verde (125/125). Regresión visual: 0 % en 24 capturas y en los estados interactivos.
+- El sitio queda con tokens.css, la copia mxvi/ y seis hojas propias de comportamiento o de página.
+- Artefactos: `progress/impl_mxvi-article-search.md`, `progress/review_mxvi-article-search.md` (APPROVED).

@@ -56,6 +56,7 @@
   padding: 10px 18px;
   border-color: var(--color-border);
   color: var(--color-accent);
+  font-size: 0.8333rem;
   font-weight: 400;
 }
 

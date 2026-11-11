@@ -60,13 +60,11 @@ test('REQ-09-06..10: reglas concretas usan var(--radius-square)', () => {
   assert.match(rule(read(`${STYLES}/mxvi/components/molecules/content.css`), '.mx-callout'), SQUARE);
 });
 
-test('REQ-09-11: ninguna hoja pierde declaraciones de radio (línea base 19 en 7 hojas, REQ-11-08, REQ-12-12 y REQ-13-12)', () => {
+test('REQ-09-11: ninguna hoja pierde declaraciones de radio (línea base 1 en 1 hoja: el resto vive en el design system, REQ-11-08, REQ-12-12, REQ-13-12 y REQ-15-11)', () => {
   const baseline = {
-    'article.css': 3, 'code-copy.css': 1,
-    'not-found.css': 1, 'post-header.css': 4, 'post-next.css': 2, 'post.css': 2,
-    'search-results.css': 6,
+    'article.css': 1,
   };
-  assert.equal(Object.values(baseline).reduce((a, b) => a + b, 0), 19);
+  assert.equal(Object.values(baseline).reduce((a, b) => a + b, 0), 1);
   for (const [sheet, count] of Object.entries(baseline)) {
     const actual = radii(read(`${STYLES}/${sheet}`)).length;
     assert.ok(actual >= count, `${sheet}: ${actual} < ${count}`);

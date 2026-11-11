@@ -44,6 +44,7 @@
   border-color: var(--color-accent);
   color: var(--color-accent);
   opacity: 1;
+  gap: 6px;
   white-space: nowrap;
   font-family: var(--font-sans);
   font-size: 0.75rem;

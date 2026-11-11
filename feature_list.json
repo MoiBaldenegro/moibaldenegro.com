@@ -261,6 +261,21 @@
         13
       ],
       "status": "done"
+    },
+    {
+      "id": 15,
+      "name": "mxvi-article-search",
+      "title": "Artículo, búsqueda y 404 usan los componentes MXVI",
+      "description": "Fase 5 de 5 del refactor al design system MXVI (petición humana 2026-11-11). Detalle de artículo, copiar código, siguiente y recomendados, búsqueda, resultados en vivo y página no encontrada pasan a las clases .mx-*; siete hojas propias (incluida typography.css) se eliminan. Spec: specs/15_mxvi-article-search/requirements.md (REQ-15-01..13) y design.md.",
+      "acceptance": [
+        "Artículo, búsqueda y 404 usan las clases mx-* de REQ-15-01..10.",
+        "Las siete hojas antiguas no existen y src no usa las clases post__, search-results__, search-page, not-found__, code-copy ni code-block.",
+        "La comparación de capturas de artículo, búsqueda y 404 a 390, 768, 1024 y 1440 px no muestra diferencias más allá del ruido de render."
+      ],
+      "depends_on": [
+        14
+      ],
+      "status": "done"
     }
   ]
 }
