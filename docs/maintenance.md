@@ -97,9 +97,35 @@ con su CSS cargado (200 en la pestaña Network).
 Para desactivarlo, pon `IN_MAINTENANCE` en `false` (o elimínala) y comprueba que
 `/` vuelve a responder `301` hacia `/home` y que las páginas responden `200`.
 
+## Comprobación automática (smoke)
+
+`scripts/check-maintenance-smoke.mjs` automatiza las comprobaciones anteriores
+contra una URL base configurable. Usa solo la librería estándar de Node, no forma
+parte del build y sale con código `0` si todo cuadra y distinto de `0` si algo
+falla (útil en CI o antes de cerrar un despliegue).
+
+Con el flag activo (`--mode on`, por defecto):
+
+```bash
+node scripts/check-maintenance-smoke.mjs --base-url http://127.0.0.1:8787 --mode on
+# exige 503 + Cache-Control: no-store en / y /whoami,
+# y 200 en /maintenance.css y /favicon.ico
+```
+
+Con el flag desactivado (`--mode off`):
+
+```bash
+node scripts/check-maintenance-smoke.mjs --base-url http://127.0.0.1:8787 --mode off
+# exige que / responda 301
+```
+
+La URL base por defecto es `http://127.0.0.1:8787` (el `wrangler dev` local). El
+test del script vive en `tests/maintenance-smoke.test.mjs`.
+
 ## Referencias
 
+- `scripts/check-maintenance-smoke.mjs` — check de humo del toggle (issue #7).
 - `src/domain/http/maintenance.ts` — flag, clasificación de assets y respuesta 503.
 - `src/middleware.ts` — lectura del binding de runtime y conexión con el middleware.
 - `astro.config.mjs` — `IN_MAINTENANCE` en el env schema (`default: false`).
-- `tests/maintenance-mode.test.mjs` y `tests/maintenance-env.test.mjs` — tests del modo.
+- `tests/maintenance-mode.test.mjs`, `tests/maintenance-env.test.mjs` y `tests/maintenance-smoke.test.mjs` — tests del modo y del check de humo.
