@@ -7,11 +7,14 @@ import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join, relative } from 'node:path';
+import { join, relative, sep } from 'node:path';
 
 const MXVI = 'src/styles/mxvi';
 const read = (path) => readFileSync(path, 'utf8');
-const sha256 = (path) => createHash('sha256').update(readFileSync(path)).digest('hex');
+// El manifiesto se generó con LF y rutas POSIX; en Windows el checkout puede
+// traer CRLF, así que se normaliza antes de comparar.
+const sha256 = (path) => createHash('sha256').update(read(path).replace(/\r\n/g, '\n')).digest('hex');
+const toPosix = (path) => path.split(sep).join('/');
 const cssFiles = (dir) => readdirSync(dir).flatMap((name) => {
   const path = join(dir, name);
   return statSync(path).isDirectory() ? cssFiles(path) : name.endsWith('.css') ? [path] : [];
@@ -33,7 +36,7 @@ test('REQ-10-03/04: el manifiesto declara el origen y cada sha256 coincide', () 
 
 test('REQ-10-05: la carpeta y el manifiesto declaran las mismas hojas', () => {
   const declared = Object.keys(manifest().files).sort();
-  const onDisk = cssFiles(MXVI).map((path) => relative(MXVI, path)).sort();
+  const onDisk = cssFiles(MXVI).map((path) => toPosix(relative(MXVI, path))).sort();
   assert.deepEqual(onDisk, declared);
 });
 

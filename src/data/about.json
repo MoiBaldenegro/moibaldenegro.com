@@ -68,10 +68,16 @@
     { "area": "Frontend y herramientas", "items": ["Angular", "React", "Astro", "Git", "GitHub", "Swagger/OpenAPI", "Scrum"] }
   ],
   "projects": [
+    { "name": "Article-Voice", "description": "Detecta el artículo de una página y lo lee en voz alta directamente en el navegador, sin depender de frameworks.", "href": "https://moibaldenegro.github.io/article-voice/" },
+    { "name": "MXVI-Engineering", "description": "Arquitectura, convenciones y estructura de código del ecosistema MXVI, documentadas para agentes de IA.", "href": "https://moibaldenegro.github.io/mxvi-engineering-system/" },
+    { "name": "MXVI-Design", "description": "Contrato de comportamiento para que sistemas de IA generen interfaces y código con el design system MXVI.", "href": "https://moibaldenegro.github.io/mxvi-design-system/" },
     { "name": "Raúl", "description": "Framework HTTP/MVC educativo para Node.js en TypeScript, sin dependencias y con adaptador de servidor intercambiable.", "href": "https://github.com/MoiBaldenegro/raul-framework" },
-    { "name": "mouter-router", "description": "Librería de routing ligera y tipada para React, publicada en npm.", "href": "https://www.npmjs.com/package/mouter-router" },
     { "name": "MFinance", "description": "App de finanzas personales con Tauri v2, Rust y React.", "href": "https://github.com/MoiBaldenegro/mfinance" },
     { "name": "Testimo", "description": "SaaS de testimonios con NestJS, React, un SDK de Web Components y Docker, creado en un hackathon.", "href": "https://github.com/MoiBaldenegro/cubepath-cms-hackaton" },
+    { "name": "mouter-router", "description": "Librería de routing ligera y tipada para React, publicada en npm.", "href": "https://www.npmjs.com/package/mouter-router" },
+    { "name": "Cinnamon", "description": "Runtime de alto rendimiento para JavaScript y TypeScript construido sobre Rust.", "href": "https://cinnamon.ai" },
+    { "name": "SO/Deck", "description": "Ocho diapositivas y seis simuladores interactivos sobre procesos, memoria, archivos, seguridad y concurrencia de sistemas operativos.", "href": "https://moibaldenegro.github.io/lamar_sistemas_operativos/" },
+    { "name": "WoW Armory", "description": "Integración OAuth con Battle.net y perfiles de personajes de World of Warcraft en tiempo real.", "href": "https://wow-armory-ovbq.vercel.app/" },
     { "name": "Harness Kit", "description": "Kit para trabajar con agentes de IA: una feature a la vez, specs EARS y tests antes que el código.", "href": "https://github.com/MoiBaldenegro/harness-engineering" }
   ],
   "content": [
