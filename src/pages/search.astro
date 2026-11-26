@@ -3,7 +3,9 @@ import Layout from '../layouts/Layout.astro';
 import SearchResults from '../components/search-results/search-results.astro';
 import { SEARCH_DESCRIPTION } from '../domain/seo/head.ts';
 
-export const prerender = true;
+// Issue #4: on-demand para que el middleware de mantenimiento pueda responder 503
+// a /search en runtime (una página prerenderizada se sirve como asset y lo esquiva).
+export const prerender = false;
 
 // Feature 47: el índice ya no se embebe; el cliente lo pide a /search-index.json.
 ---

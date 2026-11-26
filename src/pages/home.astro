@@ -9,7 +9,9 @@ import SearchLive from '../components/search-live/search-live.astro';
 import { HeroProfileRepository } from '../domain/repositories/hero-profile-repository.ts';
 import { SITE_DESCRIPTION } from '../domain/seo/head.ts';
 
-export const prerender = true;
+// Issue #4: on-demand para que el middleware de mantenimiento pueda responder 503
+// a /home en runtime (una página prerenderizada se sirve como asset y lo esquiva).
+export const prerender = false;
 
 const profile = new HeroProfileRepository().getProfile();
 

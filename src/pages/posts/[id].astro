@@ -1,82 +1,78 @@
 ---
 // Feature 15 (REQ-15-01..03): cabecera, prosa, siguiente y recomendados del design system MXVI;
 // article.css solo con los ganchos del contenido Markdown (vídeo, figura y Shiki).
+// Issue #4: on-demand para que el middleware de mantenimiento pueda responder 503 a
+// /posts/* en runtime (una página prerenderizada se sirve como asset y lo esquiva).
 import "../../styles/article.css";
 import Layout from "../../layouts/Layout.astro";
 import CodeCopy from "../../components/code-copy/code-copy.astro";
+import NotFound from "../../components/not-found/not-found.astro";
 import { PostsDataError, PostsRepository } from "../../domain/repositories/posts-repository.ts";
 import { resolveRelatedTitles } from "../../domain/related-titles.ts";
 import { blogPostingJsonLd, serializeJsonLd } from "../../domain/seo/json-ld.ts";
+import { NOT_FOUND_DESCRIPTION } from "../../domain/seo/head.ts";
 import { getCollection, render } from "astro:content";
 
-export async function getStaticPaths() {
-  // DECISIÓN 2026-09-18 (colección unificada posts/): params.id = slug del
-  // frontmatter, no entry.id (lleva subcarpeta architecture/ u os/).
-  const posts = await new PostsRepository().getPosts();
-  const entries = await getCollection("posts");
-  if (entries.length !== posts.length) {
-    throw new PostsDataError(
-      "posts: la colección y el repositorio no coinciden en número de artículos",
-    );
-  }
-  const postById = new Map(posts.map((post) => [post.slug, post]));
-  return entries.map((entry) => {
-    const slug = entry.data.slug;
-    const post = postById.get(slug);
-    if (!post) {
-      throw new PostsDataError(`posts: no existe un post con id ${slug}`);
-    }
-    return {
-      params: { id: slug },
-      props: { post, entry, relatedLinks: resolveRelatedTitles(posts, post.related) },
-    };
-  });
+export const prerender = false;
+
+// DECISIÓN 2026-09-18 (colección unificada posts/): params.id = slug del
+// frontmatter, no entry.id (lleva subcarpeta architecture/ u os/).
+const { id } = Astro.params;
+const posts = await new PostsRepository().getPosts();
+const entries = await getCollection("posts");
+if (entries.length !== posts.length) {
+  throw new PostsDataError("posts: la colección y el repositorio no coinciden en número de artículos");
 }
-
-const { post, entry, relatedLinks } = Astro.props;
-const { title, author, readtime, img } = post;
-const { Content } = await render(entry);
+const post = posts.find((item) => item.slug === id);
+const entry = entries.find((item) => item.data.slug === id);
+if (!post || !entry) Astro.response.status = 404;
+const relatedLinks = post ? resolveRelatedTitles(posts, post.related) : [];
 // REQ-44-06: un único JSON-LD BlogPosting por post (escape de </script en el dominio).
-const jsonLd = serializeJsonLd(blogPostingJsonLd(post, Astro.site ?? Astro.url.origin));
-
-export const prerender = true;
+const jsonLd = post ? serializeJsonLd(blogPostingJsonLd(post, Astro.site ?? Astro.url.origin)) : "";
+const Content = entry ? (await render(entry)).Content : undefined;
 ---
 
-<Layout title={title} description={post.description} image={`/assets/content/${img}`} type="article" published={post.created} modified={post.updated}>
-  <div class="mx-page">
-    <header class="mx-post-hero">
-      <img transition:name={`img-${entry.id}`} src={`/assets/content/${img}`} alt="" class="mx-media" width="1376" height="768" fetchpriority="high" />
-      <div class="mx-post-hero__copy">
-        <p class="mx-kicker">#{post.tags[0]}</p>
-        <h1 transition:name={`title-${entry.id}`} class="mx-post-hero__title">{title}</h1>
-        <p class="mx-meta mx-meta--pill">Por {author} • {readtime} min de lectura</p>
-      </div>
-    </header>
-    <article class="mx-prose">
-      <Content />
-    </article>
-    <CodeCopy />
-    <script type="application/ld+json" is:inline set:html={jsonLd}></script>
-    {post.next && (
-      <footer class="mx-post-next">
-        <a class="mx-button mx-button--surface" href={post.next}>Siguiente artículo</a>
-      </footer>
-    )}
-    {post.related && (
-      <section class="mx-post-related">
-        <h2 class="mx-post-related__title">Recomendados</h2>
-        <ul class="mx-result-list">
-          {relatedLinks.map((item) => (
-            <li class="mx-result-row">
-              <img class="mx-thumb" src={`/assets/content/${item.img}`} alt="" width="1376" height="768" loading="lazy" decoding="async" />
-              <div class="mx-result-row__body">
-                <a class="mx-result-row__link" href={item.href}>{item.title}</a>
-                <p class="mx-result-row__meta">Por {item.author} • {item.readtime} min</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </section>
-    )}
-  </div>
-</Layout>
+{post && entry && Content ? (
+  <Layout title={post.title} description={post.description} image={`/assets/content/${post.img}`} type="article" published={post.created} modified={post.updated}>
+    <div class="mx-page">
+      <header class="mx-post-hero">
+        <img transition:name={`img-${entry.id}`} src={`/assets/content/${post.img}`} alt="" class="mx-media" width="1376" height="768" fetchpriority="high" />
+        <div class="mx-post-hero__copy">
+          <p class="mx-kicker">#{post.tags[0]}</p>
+          <h1 transition:name={`title-${entry.id}`} class="mx-post-hero__title">{post.title}</h1>
+          <p class="mx-meta mx-meta--pill">Por {post.author} • {post.readtime} min de lectura</p>
+        </div>
+      </header>
+      <article class="mx-prose">
+        <Content />
+      </article>
+      <CodeCopy />
+      <script type="application/ld+json" is:inline set:html={jsonLd}></script>
+      {post.next && (
+        <footer class="mx-post-next">
+          <a class="mx-button mx-button--surface" href={post.next}>Siguiente artículo</a>
+        </footer>
+      )}
+      {post.related && (
+        <section class="mx-post-related">
+          <h2 class="mx-post-related__title">Recomendados</h2>
+          <ul class="mx-result-list">
+            {relatedLinks.map((item) => (
+              <li class="mx-result-row">
+                <img class="mx-thumb" src={`/assets/content/${item.img}`} alt="" width="1376" height="768" loading="lazy" decoding="async" />
+                <div class="mx-result-row__body">
+                  <a class="mx-result-row__link" href={item.href}>{item.title}</a>
+                  <p class="mx-result-row__meta">Por {item.author} • {item.readtime} min</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+    </div>
+  </Layout>
+) : (
+  <Layout title="Página no encontrada" description={NOT_FOUND_DESCRIPTION} noindex>
+    <NotFound />
+  </Layout>
+)}

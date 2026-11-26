@@ -16,7 +16,9 @@ import { SITE_DESCRIPTION } from '../domain/seo/head.ts';
 const profile = new HeroProfileRepository().getProfile();
 const about = new AboutRepository().getProfile();
 
-export const prerender = true;
+// Issue #4: on-demand para que el middleware de mantenimiento pueda responder 503
+// a /whoami en runtime (una página prerenderizada se sirve como asset y lo esquiva).
+export const prerender = false;
 
 ---
 
