@@ -2,27 +2,16 @@
 
 Estado en que quedó la última corrida. Cada corrida lo reescribe al terminar.
 
-- Estado: issue #7 (check de humo del toggle de mantenimiento) **completado**.
+- Estado: issue #8 (corregir guía: `/` redirige a `/whoami`, no a `/home`) **completado**.
 - Qué se hizo:
-  - Nuevo script `scripts/check-maintenance-smoke.mjs` (Node stdlib, 96 líneas).
-    CLI `--base-url <url>` (defecto `http://127.0.0.1:8787`) y `--mode on|off`
-    (`on` por defecto). `on`: exige 503 + `Cache-Control: no-store` en `/` y
-    `/whoami`, y 200 en `/maintenance.css` y `/favicon.ico`. `off`: exige 301 en
-    `/`. Sale con código 0 si cuadra y != 0 si falla. Exporta `parseArgs`,
-    `checkMaintenance`, `checkLive` y `runSmoke` para poder testearlo sin red.
-  - Test propio `tests/maintenance-smoke.test.mjs` (99 líneas): unitarios con
-    `fetch` falso y un test de integración que levanta un `node:http` efímero y
-    comprueba los exit codes 0/!=0 del CLI.
-  - Documentado en `docs/maintenance.md` §«Comprobación automática (smoke)» y en
-    las referencias.
+  - `docs/maintenance.md` línea final: `301` hacia `/whoami` en vez de `/home`.
+    `/home` se mantiene donde corresponde (portada que responde 200 / 503).
+  - `tests/maintenance-docs.test.mjs`: nuevo test de regresión que exige
+    `` `301` hacia `/whoami` `` y prohíbe `301 ... /home`.
 - Verificación:
-  - `pnpm test`: 149/149 en verde (antes 143; +6 del nuevo test).
-  - `pnpm build`: OK.
-  - `node scripts/check-format.mjs`: OK.
-  - E2E real contra `wrangler dev -c dist/server/wrangler.json`:
-    `--mode on` (con `--var IN_MAINTENANCE:true`) → exit 0;
-    `--mode off` (sin var) → exit 0. Logs en `.factory/outbox/` (ignorado).
-- Siguiente paso: nada bloqueante para #7. Queda abierto #6 (revisión visual en
-  producción, requiere persona). Pendiente menor detectado: `docs/maintenance.md`
-  dice que `/` redirige a `/home`, pero `src/domain/http/root-redirect.ts` lo
-  manda a `/whoami`; proponer/corregir como issue de docs.
+  - `node --test tests/maintenance-docs.test.mjs`: 5/5 verde.
+  - `pnpm test`: 150/150 verde (antes 149; +1 del test de regresión).
+  - `./init.sh`: entorno perfecto (formato, tests y build OK).
+- Siguiente paso: nada bloqueante. Sigue abierto #6 (revisión visual de la
+  página 503 en producción), que requiere una persona con sesión verificada por
+  el Cloudflare Managed Challenge.

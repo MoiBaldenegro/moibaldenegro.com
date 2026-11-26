@@ -40,3 +40,9 @@ test('la guía aclara qué rutas responden 503 y cómo comprobarlo', () => {
     assert.ok(doc.includes(needle), `la guía no menciona "${needle}"`);
   }
 });
+
+test('la guía dice que la raíz redirige 301 a /whoami, no a /home (issue #8)', () => {
+  const doc = read();
+  assert.match(doc, /`301`\s+hacia\s+`\/whoami`/, 'la línea final debe decir 301 hacia /whoami');
+  assert.doesNotMatch(doc, /301`?\s*(hacia|a)\s*`?\/home/, 'no debe afirmar que / redirige a /home');
+});

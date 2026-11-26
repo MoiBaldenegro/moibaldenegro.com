@@ -95,7 +95,7 @@ navegador, una ventana privada debe mostrar la página «Sitio en mantenimiento�
 con su CSS cargado (200 en la pestaña Network).
 
 Para desactivarlo, pon `IN_MAINTENANCE` en `false` (o elimínala) y comprueba que
-`/` vuelve a responder `301` hacia `/home` y que las páginas responden `200`.
+`/` vuelve a responder `301` hacia `/whoami` y que las páginas responden `200`.
 
 ## Comprobación automática (smoke)
 
