@@ -46,3 +46,7 @@ Todos los comandos se ejecutan desde la raíz del proyecto:
 - [docs/architecture.md](docs/architecture.md) — qué significa hacer un buen trabajo en este proyecto.
 - [docs/conventions.md](docs/conventions.md) — reglas de estilo, nombres y estructura.
 - [docs/verification.md](docs/verification.md) — cómo comprobar que el trabajo funciona.
+
+## Operación
+
+- [docs/maintenance.md](docs/maintenance.md) — activar y desactivar el modo mantenimiento en Cloudflare sin recompilar.

@@ -2,12 +2,19 @@
 
 Estado en que quedó la última corrida. Cada corrida lo reescribe al terminar.
 
-- Estado: issue #4 (aplicar `IN_MAINTENANCE` en runtime) resuelto.
+- Estado: issue #5 (documentar el toggle de mantenimiento en producción) resuelto.
 - Cambios:
-  - `src/domain/http/maintenance.ts`: interpretación del flag, clasificación de assets y respuesta 503 HTML (`Cache-Control: no-store`, `Retry-After`).
-  - `src/middleware.ts`: con el flag activo responde mantenimiento (con `withSecurityHeaders`) antes de las redirecciones; lee `env.IN_MAINTENANCE` de `cloudflare:workers` y cae a `import.meta.env.IN_MAINTENANCE`.
-  - `public/maintenance.css`: hoja estática de la página (colores del sistema, sin hash).
-  - `tests/maintenance-mode.test.mjs`: cubre flag false (nada se bloquea), flag true (páginas 503), assets permitidos, 503 HTML y cabeceras de seguridad.
-  - `/home`, `/whoami`, `/search` y `/posts/[id]` pasaron a `prerender = false` para que el middleware pueda interceptarlos en runtime (si son assets estáticos, Cloudflare los sirve antes del Worker).
-- Verificación: `pnpm test` 139/139 y `./init.sh` en verde. Con `wrangler dev --var IN_MAINTENANCE:true` (build de producción): `/`, `/home`, `/whoami`, `/posts/*`, `/search` → 503 con el HTML; `/maintenance.css` y `/favicon.ico` → 200. Sin la variable: `/` → 301, páginas → 200.
-- Siguiente paso: documentar el toggle de mantenimiento en producción (variable `IN_MAINTENANCE` en Cloudflare/Wrangler) y revisar visualmente la página 503.
+  - `docs/maintenance.md`: guía nueva con el flag `IN_MAINTENANCE` (runtime
+    `env.IN_MAINTENANCE` → fallback `import.meta.env.IN_MAINTENANCE`), cómo
+    activarlo/desactivarlo en Cloudflare sin recompilar (dashboard o
+    `wrangler deploy --var`), qué rutas responden 503 (navegación runtime),
+    qué assets siguen disponibles (`/maintenance.css`, favicons, `/_astro/`,
+    `/assets/`, `/cdn-cgi/` y endpoints prerenderizados) y cómo comprobarlo con
+    `wrangler dev`/`curl`.
+  - `README.md`: sección «Operación» que enlaza la guía.
+  - `tests/maintenance-docs.test.mjs`: verifica que la guía existe y es
+    coherente con `src/domain/http/maintenance.ts` (estado 503 y prefijos de
+    assets) y `src/middleware.ts`.
+- Verificación: `./init.sh` en verde (tests + build).
+- Siguiente paso: revisar visualmente la página 503 en producción y, si se
+  quiere, añadir una comprobación de humo (`curl -I`) al pipeline de despliegue.
