@@ -52,9 +52,13 @@ export default defineConfig({
 
   env: {
     schema: {
+      // Flag público de mantenimiento. Tiene default para que `pnpm build` y
+      // `./init.sh` funcionen sin definir la variable a mano (issue #3); el
+      // entorno/.env puede sobrescribirlo cuando haga falta.
       IN_MAINTENANCE: envField.boolean({
         access: 'public',
         context: 'client',
+        default: false,
       }),
       HTB_API_TOKEN: envField.string({
         access: 'secret',
